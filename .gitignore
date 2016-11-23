@@ -1,0 +1,57 @@
+### Intellij ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/gradle.xml
+.idea/libraries
+.idea/mongoSettings.xml
+*.iws
+/out/
+.idea_modules/
+
+### Java ###
+*.class
+*.jar
+*.war
+*.ear
+
+### Windows ###
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+### Linux ###
+*~
+.Trash-*
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Icon
+
+
+### Gradle ###
+.gradle
+build/
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+### Maven ###
+target/
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!maven-wrapper.jar
