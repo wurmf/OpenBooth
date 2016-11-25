@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -41,8 +42,17 @@ public class MainApplication extends Application {
         mfWrapper.getController().setPrimaryStage(primaryStage);
         primaryStage.setTitle("SEPM - WS16 - Spring/Maven/FXML Sample");
         primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject(), 800, 200));
-
         primaryStage.show();
+
+        /* Creating shotFrame */
+        SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
+        Stage shotStage = new Stage();
+        shotStage.setScene(new Scene((Parent) shotWrapper.getLoadedObject()));
+        shotStage.setFullScreen(true);
+        shotStage.show();
+
+
     }
 
     @Override
