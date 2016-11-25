@@ -1,5 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.persistence.dbhandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,7 +12,7 @@ import java.sql.SQLException;
  * The class will always return the same connection-object as long as {@link #closeConnection()} is not called. If it is called a new connection will be opened when calling {@link #getConnection()}.
  */
 public class H2Handler  implements DBHandler{
-    //private final Logger logger= new Logger();
+    private final Logger logger= LoggerFactory.getLogger(H2Handler.class);
 
     private static H2Handler ourInstance = new H2Handler();
     private Connection connection;
@@ -34,7 +37,7 @@ public class H2Handler  implements DBHandler{
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/fotostudio", "sa","");
         } catch(SQLException e){
-            //logger.error("establishConnection - "+e.getMessage());
+            logger.error("openConnection - "+e.getMessage());
             throw e;
         }
     }
@@ -54,7 +57,7 @@ public class H2Handler  implements DBHandler{
                 connection.close();
             }
         } catch (SQLException e) {
-            //logger.error("closeConnection - "+e.getMessage());
+            logger.error("closeConnection - "+e.getMessage());
         } finally {
             connection=null;
         }
