@@ -9,7 +9,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.FotoService;
  * Created by macdnz on 24.11.16.
  */
 public class FotoServiceImpl implements FotoService {
-    private static JDBCFotoDAO dao;
+    private static FotoDAO dao;
 
     public FotoServiceImpl() throws Exception {
         dao = new JDBCFotoDAO();

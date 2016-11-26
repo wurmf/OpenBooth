@@ -35,7 +35,7 @@ public class FotoDatoTest {
      */
     @Test
     public void createValidImage() throws Throwable  {
-        Foto img = new Foto(99,"/images/asdfas.jpg",2,new Date());
+        Foto img = new Foto(99,"/images/validImage.jpg",2,new Date());
         img.setAutoDate();
 
         //There is no image in database with ID = 99
@@ -46,6 +46,36 @@ public class FotoDatoTest {
         //Check if the created image saved.
         assertThat(dao.read(createdImg.getImageID()).getImagepath(),is(img.getImagepath()));
     }
+
+    /**
+     * This test reads an existing image from database.
+     */
+    @Test
+    public void readExistingImageFromDatabase() throws Throwable  {
+        Foto img = new Foto(99,"/images/existingImage.jpg",2,new Date());
+        img.setAutoDate();
+
+        Foto createdImg = dao.create(img);
+
+        //Check if read function returns the saved image.
+        assertThat(dao.read(createdImg.getImageID()).getImagepath(),is("/images/existingImage.jpg"));
+    }
+
+    /**
+     * This test reads the path of last created image from database.
+     */
+    @Test
+    public void getLastCreatedImagePath() throws Throwable  {
+        Foto img = new Foto(99,"/images/lastCreatedImage.jpg",2,new Date());
+        img.setAutoDate();
+
+        dao.create(img);
+
+        //Check if the last created imagepath will be returned
+        assertThat(dao.getLastImgPath(2),is("/images/lastCreatedImage.jpg"));
+    }
+
+
 
 
 
