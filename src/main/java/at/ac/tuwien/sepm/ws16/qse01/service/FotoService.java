@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
 
 /**
- * Created by macdnz on 24.11.16.
+ * Interface to implement services for images.
  */
 public interface FotoService {
     /**
@@ -12,7 +12,7 @@ public interface FotoService {
      * @param f
      *            the name of foto object
      *
-     * @return Foto which successfully created.
+     * @return Foto image which successfully created.
      *
      * */
     public Foto create(Foto f);
@@ -23,7 +23,7 @@ public interface FotoService {
      * @param id
      *            the ID of foto object
      *
-     * @return Foto which successfully founded.
+     * @return Foto image which successfully founded.
      *
      * */
     public Foto read(int id);
@@ -34,7 +34,7 @@ public interface FotoService {
      * @param shootingid
      *            the ID of shooting
      *
-     * @return Imagepath of last image as String
+     * @return String imagepath of last image
      *
      * */
     public String getLastImgPath(int shootingid);

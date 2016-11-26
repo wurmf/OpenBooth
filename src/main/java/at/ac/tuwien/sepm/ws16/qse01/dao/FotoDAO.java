@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
 
 /**
- * Created by macdnz on 24.11.16.
+ * Interface allows users to create/read an image
  */
 public interface FotoDAO {
 

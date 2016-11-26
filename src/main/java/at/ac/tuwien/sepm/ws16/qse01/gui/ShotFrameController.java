@@ -5,8 +5,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.FotoService;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.FotoServiceImpl;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -18,7 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by macdnz on 25.11.16.
+ * The controller for the shotFrame.
+ *
  */
 
 @Component
@@ -49,13 +48,17 @@ public class ShotFrameController {
 
     }
 
+    /*
+     Precondition: shootingID must be defined
+     Postcondition: the last image will be showed
+     */
     /** showing the last image taken
      * @param camera - camera id of taken image
      *
      */
     @FXML
-    public void refreshShot(){ //TODO int camera
-        String imgPath = fotoService.getLastImgPath(1); //ShootingID = 1; TODO create a variable for actual shooting;
+    public void refreshShot(){ //TODO: int camera
+        String imgPath = fotoService.getLastImgPath(1); //ShootingID = 1; //TODO: create a variable for actual shooting;
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
 

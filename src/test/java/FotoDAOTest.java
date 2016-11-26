@@ -10,9 +10,9 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * Created by macdnz on 25.11.16.
+ * Tests if everything reacts so as required.
  */
-public class FotoDatoTest {
+public class FotoDAOTest {
     private FotoDAO dao;
 
     @Before

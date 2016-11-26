@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
- * Created by macdnz on 24.11.16.
+ * Represents a Foto/Image taken by users.
  */
 public class Foto {
     private int imageID;
@@ -55,6 +55,11 @@ public class Foto {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    /**
+     * Sets automatically timestamp for date column.
+     *
+     */
     public void setAutoDate(){
         this.date = Timestamp.valueOf(LocalDateTime.now());
     }

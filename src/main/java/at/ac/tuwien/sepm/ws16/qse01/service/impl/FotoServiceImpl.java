@@ -6,7 +6,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
 import at.ac.tuwien.sepm.ws16.qse01.service.FotoService;
 
 /**
- * Created by macdnz on 24.11.16.
+ * Class includes services for images.
  */
 public class FotoServiceImpl implements FotoService {
     private static FotoDAO dao;

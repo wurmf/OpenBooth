@@ -2,19 +2,14 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.FotoDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
-import at.ac.tuwien.sepm.ws16.qse01.persistence.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.ws16.qse01.persistence.dbhandler.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 
 /**
- * Created by macdnz on 24.11.16.
+ *  Class allows users to create/read an image from database.
  */
 public class JDBCFotoDAO implements FotoDAO {
     final static Logger LOGGER = LoggerFactory.getLogger(JDBCFotoDAO.class);

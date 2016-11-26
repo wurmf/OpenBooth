@@ -18,7 +18,6 @@ import java.io.IOException;
 /**
  * The starting point of the sample application.
  *
- * @author Dominik Moser
  */
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
@@ -44,6 +43,8 @@ public class MainApplication extends Application {
         primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject(), 800, 200));
         primaryStage.show();
 
+        //TODO: 1) creating camera table
+        //      2) number of frames to open = number of existing camera in DB
         /* Creating shotFrame */
         SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
