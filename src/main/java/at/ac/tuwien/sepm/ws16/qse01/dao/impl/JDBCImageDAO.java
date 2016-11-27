@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
-import at.ac.tuwien.sepm.ws16.qse01.persistence.dbhandler.H2Handler;
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;

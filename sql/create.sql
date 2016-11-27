@@ -1,7 +1,7 @@
-CREATE TABLE adminusers (adminname VARCHAR(20) PRIMARY KEY, password VARCHAR(50) NOT NULL);
+CREATE TABLE adminusers (adminname VARCHAR(20) PRIMARY KEY, password BINARY(32) NOT NULL);
 
 CREATE TABLE profiles (profileID INT AUTO_INCREMENT PRIMARY KEY,
-                      name VARCHAR(50) NOT NULL);
+                      name VARCHAR(50) NOT NULL, isActive BOOLEAN DEFAULT false);
 
 CREATE TABLE shootings (shootingID INT AUTO_INCREMENT PRIMARY KEY,
                       profileID INT REFERENCES profiles(profileID) ON DELETE SET NULL, 
