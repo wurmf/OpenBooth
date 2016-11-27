@@ -1,8 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.FotoService;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.FotoServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
@@ -27,7 +27,7 @@ public class ShotFrameController {
     private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
 
-    private FotoService fotoService;
+    private ImageService imageService;
 
     @FXML
     private ImageView shotView;
@@ -39,7 +39,7 @@ public class ShotFrameController {
     public ShotFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
 
-        fotoService = new FotoServiceImpl();
+        imageService = new ImageServiceImpl();
         if(shotView != null)
             shotView.setImage(new Image("/images/noimage.png"));
 
@@ -58,7 +58,8 @@ public class ShotFrameController {
      */
     @FXML
     public void refreshShot(){ //TODO: int camera
-        String imgPath = fotoService.getLastImgPath(1); //ShootingID = 1; //TODO: create a variable for actual shooting;
+
+        String imgPath = imageService.getLastImgPath(1); //ShootingID = 1; //TODO: create a variable for actual shooting;
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
 

@@ -1,6 +1,6 @@
-import at.ac.tuwien.sepm.ws16.qse01.dao.FotoDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCFotoDAO;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,12 +12,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * Tests if everything reacts so as required.
  */
-public class FotoDAOTest {
-    private FotoDAO dao;
+public class ImageDAOTest {
+    private ImageDAO dao;
 
     @Before
     public void before() throws Exception {
-        dao = new JDBCFotoDAO();
+        dao = new JDBCImageDAO();
     }
 
     /**
@@ -35,13 +35,13 @@ public class FotoDAOTest {
      */
     @Test
     public void createValidImage() throws Throwable  {
-        Foto img = new Foto(99,"/images/validImage.jpg",2,new Date());
+        Image img = new Image(99,"/images/validImage.jpg",2,new Date());
         img.setAutoDate();
 
         //There is no image in database with ID = 99
         assertThat(String.valueOf(dao.read(99)),is("null"));
 
-        Foto createdImg = dao.create(img);
+        Image createdImg = dao.create(img);
 
         //Check if the created image saved.
         assertThat(dao.read(createdImg.getImageID()).getImagepath(),is(img.getImagepath()));
@@ -52,10 +52,10 @@ public class FotoDAOTest {
      */
     @Test
     public void readExistingImageFromDatabase() throws Throwable  {
-        Foto img = new Foto(99,"/images/existingImage.jpg",2,new Date());
+        Image img = new Image(99,"/images/existingImage.jpg",2,new Date());
         img.setAutoDate();
 
-        Foto createdImg = dao.create(img);
+        Image createdImg = dao.create(img);
 
         //Check if read function returns the saved image.
         assertThat(dao.read(createdImg.getImageID()).getImagepath(),is("/images/existingImage.jpg"));
@@ -66,7 +66,7 @@ public class FotoDAOTest {
      */
     @Test
     public void getLastCreatedImagePath() throws Throwable  {
-        Foto img = new Foto(99,"/images/lastCreatedImage.jpg",2,new Date());
+        Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
         dao.create(img);

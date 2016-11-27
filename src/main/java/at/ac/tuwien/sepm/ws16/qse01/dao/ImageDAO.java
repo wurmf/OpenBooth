@@ -1,33 +1,33 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
 /**
  * Interface allows users to create/read an image
  */
-public interface FotoDAO {
+public interface ImageDAO {
 
     /**
-     * Creates a new foto in database.
+     * Creates a new image in database.
      *
      * @param f
-     *            the name of foto object
+     *            the name of image object
      *
-     * @return Foto which successfully created.
+     * @return Image which successfully created.
      *
      * */
-    public Foto create(Foto f);
+    public Image create(Image f);
 
     /**
-     * Reads a foto by id.
+     * Reads a image by id.
      *
      * @param id
-     *            the ID of foto object
+     *            the ID of image object
      *
-     * @return Foto which successfully founded.
+     * @return Image which successfully founded.
      *
      * */
-    public Foto read(int id);
+    public Image read(int id);
 
     /**
      * Returns the path for last image by shootingid

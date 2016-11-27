@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.FotoDAO;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.persistence.dbhandler.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,17 +11,17 @@ import java.time.LocalDateTime;
 /**
  *  Class allows users to create/read an image from database.
  */
-public class JDBCFotoDAO implements FotoDAO {
-    final static Logger LOGGER = LoggerFactory.getLogger(JDBCFotoDAO.class);
+public class JDBCImageDAO implements ImageDAO {
+    final static Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
     private Connection con;
 
-    public JDBCFotoDAO() throws Exception {
+    public JDBCImageDAO() throws Exception {
        con = H2Handler.getInstance().getConnection();
     }
 
     @Override
-    public Foto create(Foto f) {
+    public Image create(Image f) {
         LOGGER.debug("Entering create method with parameters {}"+f);
 
         PreparedStatement stmt = null;
@@ -65,12 +65,12 @@ public class JDBCFotoDAO implements FotoDAO {
     }
 
     @Override
-    public Foto read(int id) {
+    public Image read(int id) {
         LOGGER.debug("Entering read method with parameter: imageID = "+id);
 
         PreparedStatement stmt = null;
         String query = "select * from images where imageID = ? ";
-        Foto image = null;
+        Image image = null;
         try {
             stmt = con.prepareStatement(query);
             stmt.setInt(1,id);
@@ -78,7 +78,7 @@ public class JDBCFotoDAO implements FotoDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                image = new Foto();
+                image = new Image();
                 image.setImageID(rs.getInt("imageID"));
                 image.setImagepath(rs.getString("imagepath"));
                 image.setShootingid(rs.getInt("shootingid"));

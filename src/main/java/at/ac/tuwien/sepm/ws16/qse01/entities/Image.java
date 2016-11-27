@@ -5,19 +5,19 @@ import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
- * Represents a Foto/Image taken by users.
+ * Represents a Image/Image taken by users.
  */
-public class Foto {
+public class Image {
     private int imageID;
     private String imagepath;
     private int shootingid;
     private Date date;
 
-    public Foto(){
+    public Image(){
 
     }
 
-    public Foto(int imageID,String imagepath, int shootingid, Date date) {
+    public Image(int imageID, String imagepath, int shootingid, Date date) {
         this.imageID = imageID;
         this.imagepath = imagepath;
         this.shootingid = shootingid;
@@ -63,4 +63,15 @@ public class Foto {
     public void setAutoDate(){
         this.date = Timestamp.valueOf(LocalDateTime.now());
     }
+
+    /**
+     * Image data will be returned as String
+     * @return String the image data
+     *
+     */
+    @Override
+    public String toString(){
+        return " id = "+this.getImageID()+" | imagepath = "+this.getImagepath()+" | shooting = "+ getShootingid()+" | date = "+getDate();
+    }
+
 }

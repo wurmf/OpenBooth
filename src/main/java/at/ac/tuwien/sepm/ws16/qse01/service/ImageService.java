@@ -1,21 +1,21 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Foto;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
 /**
  * Interface to implement services for images.
  */
-public interface FotoService {
+public interface ImageService {
     /**
      * Creates a new foto in database.
      *
      * @param f
      *            the name of foto object
      *
-     * @return Foto image which successfully created.
+     * @return Image image which successfully created.
      *
      * */
-    public Foto create(Foto f);
+    public Image create(Image f);
 
     /**
      * Reads a foto by id.
@@ -23,10 +23,10 @@ public interface FotoService {
      * @param id
      *            the ID of foto object
      *
-     * @return Foto image which successfully founded.
+     * @return Image image which successfully founded.
      *
      * */
-    public Foto read(int id);
+    public Image read(int id);
 
     /**
      * Returns the path for last image by shootingid
