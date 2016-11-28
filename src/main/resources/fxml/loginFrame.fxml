@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.LoginFrameController">
+   <children>
+      <Button layoutX="96.0" layoutY="251.0" mnemonicParsing="false" onAction="#checkLogin" text="Bestätigen" />
+      <Button layoutX="244.0" layoutY="251.0" mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" />
+      <TextField fx:id="adminField" layoutX="155.0" layoutY="83.0" />
+      <TextField fx:id="passwordField" layoutX="158.0" layoutY="148.0" />
+      <Label layoutX="25.0" layoutY="90.0" text="Benutzername" />
+      <Label layoutX="29.0" layoutY="152.0" text="Passwort" />
+      <Label fx:id="wrongCredentialsLabel" layoutX="100.0" layoutY="204.0" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" />
+   </children>
+</AnchorPane>
