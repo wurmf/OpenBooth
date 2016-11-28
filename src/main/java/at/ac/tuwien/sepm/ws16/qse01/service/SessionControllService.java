@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profil;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.ServiceExeption;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public interface SessionControllService {
      * @param session
      * @autor Aniela
      */
-    public void add_session(Session session);
+    public void add_session(Session session) throws ServiceExeption;
 
     /**
      * calls search_isactive in DAO
@@ -25,7 +25,7 @@ public interface SessionControllService {
      * @return session
      * @autor Aniela
      */
-    public Session search_isactive();
+    public Session search_isactive() throws ServiceExeption;
 
     /**
      * calls end_session
@@ -33,11 +33,6 @@ public interface SessionControllService {
      */
     public void end_session();
 
-    /**
-     *
-     * @return List of profiels
-     *
-     */
-    public List<Profil> getall_profiles();
+
 }
 
