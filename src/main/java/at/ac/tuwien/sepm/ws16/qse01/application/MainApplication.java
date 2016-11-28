@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController;
 import javafx.application.Application;
@@ -35,19 +36,31 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
+
+
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
         SpringFXMLLoader springFXMLLoader = applicationContext.getBean(SpringFXMLLoader.class);
-        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
+
+        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shooting =
+                springFXMLLoader.loadAndWrap("/fxml/shoutingFrame.fxml", ShootingAdminController.class);
+        Stage shootingStage = new Stage();
+        shootingStage.setScene(new Scene((Parent) shooting.getLoadedObject()));
+        shootingStage.setFullScreen(true);
+        shootingStage.show();
+
+             SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
         mfWrapper.getController().setPrimaryStage(primaryStage);
         primaryStage.setTitle("SEPM - WS16 - Spring/Maven/FXML Sample");
         primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject(), 800, 200));
         primaryStage.show();
 
+
+
         //TODO: 1) creating camera table
         //      2) number of frames to open = number of existing camera in DB
         /* Creating shotFrame */
-        SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
+       SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
         Stage shotStage = new Stage();
         shotStage.setScene(new Scene((Parent) shotWrapper.getLoadedObject()));
@@ -60,6 +73,7 @@ public class MainApplication extends Application {
         profileStage.setTitle("Profile Verwaltung");
         profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
         profileStage.show();
+
     }
 
     @Override

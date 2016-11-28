@@ -12,7 +12,7 @@ public interface ShootingDAO {
      * adds new shouting to database
      *
      * @param shouting
-     * @autor Aniela
+     *
      */
     public void add_session(Shooting shouting) throws PersistenceException;
 
@@ -22,14 +22,13 @@ public interface ShootingDAO {
      * if null default with inactife gets passed
      *
      * @return Shooting
-     * @autor Aniela
+     *
      */
     public Shooting search_isactive() throws PersistenceException;
 
     /**
      * closes activ session
      *
-     * @autor Aniela
      */
     public void end_session();
 }

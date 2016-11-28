@@ -2,17 +2,17 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.service.shoutingservice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class ShootingServiceImpl implements shoutingservice {
+public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     ShootingDAO sessionDAO;
@@ -25,7 +25,6 @@ public class ShootingServiceImpl implements shoutingservice {
         return imagePath;
     }
 
-
     public void add_session(Shooting shouting) throws ServiceException {
         try {
             sessionDAO.add_session(shouting);
@@ -33,6 +32,7 @@ public class ShootingServiceImpl implements shoutingservice {
             throw new ServiceException(e.getMessage());
         }
     }
+
 
     public Shooting search_isactive() throws ServiceException {
 

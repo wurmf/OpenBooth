@@ -5,6 +5,9 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,25 +32,20 @@ public class MainFrameController {
     private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
 
-
+    ShootingService service;
     @Autowired
     public MainFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
-
-
-
+        service= new ShootingServiceImpl();
     }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    ShootingDAO service = new JDBCShootingDAO();
-
 
     /**
      * inizialize Mainfraim
      * tests whether there is still an session active
-     * @autor Aniela
      */
     @FXML
     private void initialize(){
@@ -58,7 +56,7 @@ public class MainFrameController {
             if(shouting_isactive.getIsactiv()==true){
                 in_case_of_restart();
             }
-        } catch (PersistenceException e) {
+        } catch (ServiceException e) {
             showingdialog("Ein fehler beim Starten des Programms ist aufgetreten.");
             LOGGER.info("MainFrameController:",e.getMessage());
          }
@@ -68,17 +66,15 @@ public class MainFrameController {
      * linkes to admin log in and followup options
      *
      * @param actionEvent
-     * @autor Aniela
      */
     public void on_StartSessionPressed(ActionEvent actionEvent) {
-        //Log in opens
+        //TODO:Log in opens
 
     }
 
     /**
      * in case of brakdown
      *
-     * @autor Aniela
      */
     public void in_case_of_restart(){
 
@@ -102,11 +98,16 @@ public class MainFrameController {
      * stop programm
      *
      * @param actionEvent
-     * @autor Aniela
      */
     public void on_EndPressed(ActionEvent actionEvent) {Platform.exit();
     }
 
+    /**
+     *information Panel
+     *
+     * @param messege
+     * @return JOptionPane
+     */
     private JOptionPane showingdialog(String messege){
         JOptionPane dialog = new JOptionPane();
         dialog.showMessageDialog(null, messege);

@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheConfig;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,23 +27,23 @@ public class JDBCShootingDAO implements ShootingDAO {
 
       private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
-
+@Override
     public void add_session(Shooting shouting) throws PersistenceException {
       try {
-          PreparedStatement stmt=con.prepareStatement("insert into Shooting( profileId, storageFile, isactive) values("+ shouting.getPropertyId()+
+          PreparedStatement stmt=con.prepareStatement("insert into Shootings( profileId,  FOLDERPATH, isactive) values("+ shouting.getPropertyId()+
                   shouting.getStorageFile()+", "+ shouting.getIsactiv()+ " )", java.sql.Statement.RETURN_GENERATED_KEYS);
 
       } catch (SQLException e) {
-            LOGGER.info("Shoouting",e.getMessage());
+            LOGGER.info("Shooting",e.getMessage());
           throw new PersistenceException(e);
         }
     }
 
-
+@Override
     public Shooting search_isactive() throws PersistenceException {
       Shooting shouting = new Shooting(0,"",false);
          try {//exists
-                PreparedStatement stmt = con.prepareStatement("select * from Shooting where isactive = false");
+                PreparedStatement stmt = con.prepareStatement("select * from Shootings where isactive = true");
                 //stmt.setString(1,name);
                 ResultSet rst = stmt.executeQuery();
                 while (rst.next()){
@@ -55,9 +56,10 @@ public class JDBCShootingDAO implements ShootingDAO {
         return shouting;
     }
 
+    @Override
     public void end_session() {
    try {
-            String prepered="update Shooting set isactive=? where isactive=?";
+            String prepered="update Shootings set isactive=? where isactive= ?";
             PreparedStatement stmt = con.prepareStatement(prepered);
 
             stmt.setBoolean(1,false);

@@ -1,27 +1,40 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
-import at.ac.tuwien.sepm.ws16.qse01.service.shoutingservice;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 import java.io.IOException;
@@ -31,7 +44,10 @@ import java.util.List;
 /**
  * Created by Aniela on 23.11.2016.
  */
+@Component
 public class ShootingAdminController {
+    private SpringFXMLLoader springFXMLLoader;
+    private Stage primaryStage;
 
     @FXML
     private Label lb_storageplace;//lb_storageplace.setText();
@@ -40,11 +56,14 @@ public class ShootingAdminController {
 
     String path ="";
 
-    shoutingservice sessionService;
+    ShootingService sessionService;
     ProfileService profileService;
-    public ShootingAdminController() throws Exception {
-        sessionService=new ShootingServiceImpl();
+
+    @Autowired
+    public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
+        sessionService = new ShootingServiceImpl();
         profileService= new ProfileServiceImpl();
+        this.springFXMLLoader = springFXMLLoader;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -52,7 +71,7 @@ public class ShootingAdminController {
 
     /**
      * inizialise cb_Profiles
-     * @autor Aniela
+     *
     */
     @FXML
     private void initialize() {
@@ -61,14 +80,20 @@ public class ShootingAdminController {
         try {
             prof = profileService.getAllProfiles();
         } catch (ServiceException e) {
-            showingdialog(e.getMessage());
+            showingdialog("Es wurden keien Profile gefunden!");
         }
-        List<String> s= new LinkedList<String>();
+      //  ObservableList<Profile> obj = FXCollections.observableArrayList(prof);
+       List<String> s= new LinkedList<String>();
+
         ObservableList<String> obj = new ObservableListWrapper<String>(s);
         for (int i = 0; i <prof.size() ; i++) {
-           obj.add(prof.get(i).getName());
+            obj.add(prof.get(i).getName());
         }
         cb_Profile.setItems(obj);
+
+       // cb_Profile.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
+
+
         if(cb_Profile!=null){
             cb_Profile.setValue(obj.get(0));
         }
@@ -80,7 +105,7 @@ public class ShootingAdminController {
      * when pressed an new session starts(costumer interface opens)
      *
      * @param actionEvent
-     * @autor Aniela
+     *
      */
     public void on_StartSessoionPressed(ActionEvent actionEvent) {
         List<Profile> prof = null;
@@ -95,8 +120,6 @@ public class ShootingAdminController {
             while (cb_Profile.getValue() != prof.get(i).getName()) {
                 i++;
             }
-            Shooting session = new Shooting(prof.get(i).getId(), path, true);
-
             Shooting shouting = new Shooting(prof.get(i).getId(), path, true);
 
                 LOGGER.info("ShootingAdminController:", shouting);
@@ -116,7 +139,7 @@ public class ShootingAdminController {
      *
      * Opens Mainfframe again
      * @param actionEvent
-     * @autor Aniela
+     *
      */
     public void on_DemolitionPressed(ActionEvent actionEvent) {
         try{
@@ -138,7 +161,7 @@ public class ShootingAdminController {
     /**
      * find ordner of desire to save new project in
      * @param actionEvent
-     * @autor Aniela
+     *
      */
     public void on_FinedPressed(ActionEvent actionEvent) {
 
@@ -162,7 +185,7 @@ public class ShootingAdminController {
      *Opens Profile edeting
      *
      * @param actionEvent
-     * @autor Aniela
+     *
      */
     public void on_EditPressed(ActionEvent actionEvent) {
 
@@ -182,33 +205,36 @@ public class ShootingAdminController {
 
     }
 
+    /**
+     * dialog window
+     * @param messege
+     * @return JOptionPane
+     */
     private JOptionPane showingdialog(String messege){
         JOptionPane dialog = new JOptionPane();
         dialog.showMessageDialog(null, messege);
         return dialog;
     }
+
     /**
      * deletes chosen Profile
      *
      * @param actionEvent
-     * @autor Aniela
-     */
+     *
     public void on_DeleteButtonPressed(ActionEvent actionEvent) {
 
         are_you_sure((String) cb_Profile.getValue());
 
-        //delete from DAO
     }
-
+    */
 
 
 
     /**
      * check if you want to delete
      *
-     * @param
-     * @autor Aniela
-     */
+     * @param profil name
+
     public void are_you_sure(String profil){
 
         Object [] options={"Ja", "Nein"};
@@ -227,6 +253,6 @@ public class ShootingAdminController {
 
     }
 
-
+    */
 }
 
