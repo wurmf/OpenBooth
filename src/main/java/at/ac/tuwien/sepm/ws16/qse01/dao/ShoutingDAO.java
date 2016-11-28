@@ -1,30 +1,30 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
 
 /**
  * Created by Moatzgeile Sau on 23.11.2016.
  */
-public interface SessionDAO {
+public interface ShoutingDAO {
     /**
      *
-     * adds new session to database
+     * adds new shouting to database
      *
-     * @param session
+     * @param shouting
      * @autor Aniela
      */
-    public void add_session(at.ac.tuwien.sepm.ws16.qse01.entities.Session session) throws PersistenceException;
+    public void add_session(Shouting shouting) throws PersistenceException;
 
     /**
      *
      * search for active sessions and returns them
      * if null default with inactife gets passed
      *
-     * @return Session
+     * @return Shouting
      * @autor Aniela
      */
-    public Session search_isactive() throws PersistenceException;
+    public Shouting search_isactive() throws PersistenceException;
 
     /**
      * closes activ session

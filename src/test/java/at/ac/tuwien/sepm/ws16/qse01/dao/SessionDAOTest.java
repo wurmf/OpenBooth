@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCSessionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShoutingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,11 +9,11 @@ import org.junit.Test;
  * Created by Aniela on 28.11.2016.
  */
 public class SessionDAOTest {
-    private SessionDAO dao;
+    private ShoutingDAO dao;
 
     @Before
     public void before() throws Exception {
-        dao = new JDBCSessionDAO();
+        dao = new JDBCShoutingDAO();
     }
 
     /**
@@ -31,7 +31,7 @@ public class SessionDAOTest {
      */
     @Test
     public void addValideSession () throws Exception{
-        Session session =new Session(0,"ab",true);
-        dao.add_session(session);
+        Shouting shouting =new Shouting(0,"ab",true);
+        dao.add_session(shouting);
     }
 }

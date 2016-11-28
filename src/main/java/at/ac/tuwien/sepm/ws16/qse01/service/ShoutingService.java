@@ -1,22 +1,20 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.ServiceExeption;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
-
-import java.util.List;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 /**
  * Created by Aniela on 23.11.2016.
  */
-public interface SessionControllService {
+public interface ShoutingService {
 
     /**
      *  calls adding in DAO
      *
-     * @param session
+     * @param shouting
      * @autor Aniela
      */
-    public void add_session(Session session) throws ServiceExeption;
+    public void add_session(Shouting shouting) throws ServiceException;
 
     /**
      * calls search_isactive in DAO
@@ -25,7 +23,7 @@ public interface SessionControllService {
      * @return session
      * @autor Aniela
      */
-    public Session search_isactive() throws ServiceExeption;
+    public Shouting search_isactive() throws ServiceException;
 
     /**
      * calls end_session

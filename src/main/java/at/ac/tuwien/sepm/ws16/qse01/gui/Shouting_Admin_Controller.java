@@ -1,17 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.SessionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.ServiceExeption;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShoutingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
-import at.ac.tuwien.sepm.ws16.qse01.service.SessionControllService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShoutingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.SessionControllServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
-import com.sun.javafx.collections.ObservableListWrapper;
-import javafx.collections.ObservableList;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShoutingServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,30 +29,31 @@ import java.util.List;
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class Session_Admin_Controller {
+public class Shouting_Admin_Controller {
 
     @FXML
     private Label lb_storageplace;//lb_storageplace.setText();
-    @FXML
+   /* @FXML
     private ChoiceBox cb_Profile;
-
+*/
     String path ="";
 
-    SessionControllService sessionService;
+    ShoutingService sessionService;
     ProfileService profileService;
-    public Session_Admin_Controller() throws Exception {
-        sessionService=new SessionControllServiceImpl();
+    public Shouting_Admin_Controller() throws Exception {
+        sessionService=new ShoutingServiceImpl();
         profileService= new ProfileServiceImpl();
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SessionDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShoutingDAO.class);
 
 
 
+   /*
     /**
      * inizialise cb_Profiles
      * @autor Aniela
-     */
+
     @FXML
     private void initialize() {
 
@@ -66,7 +63,7 @@ public class Session_Admin_Controller {
         } catch (ServiceException e) {
             showingdialog(e.getMessage());
         }
-        List<String > s= new LinkedList<>();
+        List<String> s= new LinkedList<String>();
         ObservableList<String> obj = new ObservableListWrapper<String>(s);
         for (int i = 0; i <prof.size() ; i++) {
            obj.add(prof.get(i).getName());
@@ -77,7 +74,7 @@ public class Session_Admin_Controller {
         }
 
     }
-
+    */
 
     /**
      *
@@ -94,25 +91,23 @@ public class Session_Admin_Controller {
             showingdialog(e.getMessage());
         }
         int i = 0;
-            if (cb_Profile.getValue() == null) {
-                while (cb_Profile.getValue() != prof.get(i).getName()) {
-                    i++;
-                }
-                Session session = new Session(prof.get(i).getId(), path, true);
+           //get chousen Profile
+        //Profile not null
+        //toDo:
+        if(true){
+                Shouting shouting = new Shouting(prof.get(i).getId(), path, true);
 
-                LOGGER.info("Session_Admin_Controller:", session);
+                LOGGER.info("Shouting_Admin_Controller:", shouting);
 
                 try {
-                    sessionService.add_session(session);
-                } catch (ServiceExeption serviceExeption) {
-                    LOGGER.info("session erstellen", serviceExeption.getMessage());
-                    showingdialog("Es konnte keine Session erstellt werden.");
+                    sessionService.add_session(shouting);
+                } catch (ServiceException serviceExeption) {
+                    LOGGER.info("shouting erstellen", serviceExeption.getMessage());
+                    showingdialog("Es konnte keine Shouting erstellt werden.");
                 }
             } else {
                 showingdialog("Bitte erstellen sie ein neues Profil");
             }
-
-
     }
 
     /**
@@ -133,7 +128,7 @@ public class Session_Admin_Controller {
             stage.show();
         }catch (IOException s){
             showingdialog("Es konnte nicht zur Hauptseite gewechselt werden. ");
-            LOGGER.info("Session_Admin_Controller: on_DemolitionPressed",s.getMessage());
+            LOGGER.info("Shouting_Admin_Controller: on_DemolitionPressed",s.getMessage());
         }
 
     }
@@ -154,50 +149,64 @@ public class Session_Admin_Controller {
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
            path = chooser.getSelectedFile().toString();
             lb_storageplace.setText(path);
-            LOGGER.info("Session_Admin_Controller: Path ",path);
+            LOGGER.info("Shouting_Admin_Controller: Path ",path);
         } else {
             showingdialog("Noch keinen Ordner ausgewählt");
-            LOGGER.info("Session_Admin_Controller:on_FinedPressed");
+            LOGGER.info("Shouting_Admin_Controller:on_FinedPressed");
         }
     }
 
+    /**
+     *Opens Profile edeting
+     *
+     * @param actionEvent
+     * @autor Aniela
+     */
+    public void on_EditPressed(ActionEvent actionEvent) {
+
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("profileFrame.fxml"));
+            Parent root1 = (Parent) fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.UNDECORATED);
+            // stage.setTitle("Main Frame");
+            stage.setScene(new Scene(root1));
+            stage.show();
+        }catch (IOException s){
+            showingdialog("Es konnte nicht zu den Profilen gewechselt werden. ");
+            LOGGER.info("Shouting_Admin_Controller: on_DemolitionPressed",s.getMessage());
+        }
+
+    }
+
+    private JOptionPane showingdialog(String messege){
+        JOptionPane dialog = new JOptionPane();
+        dialog.showMessageDialog(null, messege);
+        return dialog;
+    }
     /**
      * deletes chosen Profile
      *
      * @param actionEvent
      * @autor Aniela
-     */
+
     public void on_DeleteButtonPressed(ActionEvent actionEvent) {
 
         are_you_sure((String) cb_Profile.getValue());
 
         //delete from DAO
     }
+    */
 
-    /**
-     *Edit chosen Profile
-     *
-     * @param actionEvent
-     * @autor Aniela
-     */
-    public void on_EditPressed(ActionEvent actionEvent) {
-    }
 
-    /**
-     *Creat new Profile
-     *
-     * @param actionEvent
-     * @autor Aniela
-     */
-    public void on_NewPressed(ActionEvent actionEvent) {
-    }
 
     /**
      * check if you want to delete
      *
-     * @param profil
+     * @param
      * @autor Aniela
-     */
+
     public void are_you_sure(String profil){
 
         Object [] options={"Ja", "Nein"};
@@ -209,17 +218,13 @@ public class Session_Admin_Controller {
 
 
             //profileService.erase();
-            initialize();
+            //initialize();
             //
             //yes
         }
 
-    }
+    }*/
 
-    private JOptionPane showingdialog(String messege){
-        JOptionPane dialog = new JOptionPane();
-        dialog.showMessageDialog(null, messege);
-        return dialog;
-    }
+
 }
 

@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.dao.SessionDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShoutingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCSessionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShoutingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +41,7 @@ public class MainFrameController {
         this.primaryStage = primaryStage;
     }
 
-    SessionDAO service = new JDBCSessionDAO();
+    ShoutingDAO service = new JDBCShoutingDAO();
 
 
     /**
@@ -51,11 +51,11 @@ public class MainFrameController {
      */
     @FXML
     private void initialize(){
-        Session session_isactive= null;
+        Shouting shouting_isactive = null;
         try {
-            session_isactive = service.search_isactive();
+            shouting_isactive = service.search_isactive();
 
-            if(session_isactive.getIsactiv()==true){
+            if(shouting_isactive.getIsactiv()==true){
                 in_case_of_restart();
             }
         } catch (PersistenceException e) {
@@ -82,9 +82,9 @@ public class MainFrameController {
      */
     public void in_case_of_restart(){
 
-        Object [] options={"Fortfahren", "alte Session beenden"};
+        Object [] options={"Fortfahren", "alte Shouting beenden"};
 
-        int chouse= JOptionPane.showOptionDialog(null,"Die Anwendung wurde unerwartet geschlossen,\n möchten sie die zuletzt geöffnete Session wieder her stellen? "
+        int chouse= JOptionPane.showOptionDialog(null,"Die Anwendung wurde unerwartet geschlossen,\n möchten sie die zuletzt geöffnete Shouting wieder her stellen? "
                 ,"", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
 
         if(chouse==0){
@@ -93,7 +93,7 @@ public class MainFrameController {
             //yes
         } else if(chouse==1){
             service.end_session();
-            showingdialog("Session wurde beendet");
+            showingdialog("Shouting wurde beendet");
         }
 
     }
