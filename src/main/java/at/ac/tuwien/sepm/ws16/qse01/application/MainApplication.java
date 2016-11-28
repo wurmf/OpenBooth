@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
@@ -53,6 +54,7 @@ public class MainApplication extends Application {
         shotStage.setFullScreen(true);
         shotStage.show();
 
+        //CameraHandler cameraHandler= new CameraHandler(applicationContext.get);
 
     }
 
