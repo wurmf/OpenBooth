@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -53,7 +54,12 @@ public class MainApplication extends Application {
         shotStage.setFullScreen(true);
         shotStage.show();
 
-
+        SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
+        Stage profileStage = new Stage();
+        profileStage.setTitle("Profile Verwaltung");
+        profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
+        profileStage.show();
     }
 
     @Override

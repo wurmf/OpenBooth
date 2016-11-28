@@ -31,12 +31,13 @@ public class JDBCProfileDAO implements ProfileDAO {
     public Profile create(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering create method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error!:Called create method with null pointer.");
-        String sqlString = "INSERT INTO profiles (profileID,name) VALUES (?,?);";
+        //String sqlString = "INSERT INTO profiles (profileID,name) VALUES (?,?);";
+        String sqlString = "INSERT INTO profiles (name) VALUES (?);";
         PreparedStatement stmt = null;
         try {
             stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-            stmt.setInt(1,profile.getId());
-            stmt.setString(2,profile.getName());
+            //stmt.setInt(1,profile.getId());
+            stmt.setString(1,profile.getName());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()){profile.setId(rs.getInt(1));}
@@ -129,7 +130,7 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public void delete(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + profile);
-        String sqlString = "DELETE * from profiles WHERE profileID = ?;";
+        String sqlString = "DELETE from profiles WHERE profileID = ?;";
         PreparedStatement stmt = null;
 
         try {
