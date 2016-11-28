@@ -1,4 +1,4 @@
-INSERT INTO adminusers VALUES ('admin', 'password');
+INSERT INTO adminusers (adminname, password) VALUES ('admin','b6f8d434a847fb0f0c1a8d9b936b8ca952e224f205a55f4ba9b2c20f88fdc9e7');
 
 INSERT INTO profiles (name) VALUES ('Profile 1');
 INSERT INTO profiles (name) VALUES ('Profile 2');
