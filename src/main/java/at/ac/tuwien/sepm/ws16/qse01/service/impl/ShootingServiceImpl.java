@@ -1,23 +1,23 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShoutingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShoutingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShoutingService;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.service.shoutingservice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class ShoutingServiceImpl implements ShoutingService {
+public class ShootingServiceImpl implements shoutingservice {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShoutingServiceImpl.class);
-    ShoutingDAO sessionDAO;
-    public ShoutingServiceImpl() throws Exception {
-        sessionDAO = new JDBCShoutingDAO();
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
+    ShootingDAO sessionDAO;
+    public ShootingServiceImpl() throws Exception {
+        sessionDAO = new JDBCShootingDAO();
     }
     String getImageStorage(){
         //DAO.getImageStorage();
@@ -26,7 +26,7 @@ public class ShoutingServiceImpl implements ShoutingService {
     }
 
 
-    public void add_session(Shouting shouting) throws ServiceException {
+    public void add_session(Shooting shouting) throws ServiceException {
         try {
             sessionDAO.add_session(shouting);
         } catch (PersistenceException e) {
@@ -34,7 +34,7 @@ public class ShoutingServiceImpl implements ShoutingService {
         }
     }
 
-    public Shouting search_isactive() throws ServiceException {
+    public Shooting search_isactive() throws ServiceException {
 
         try {
             return sessionDAO.search_isactive();

@@ -3,12 +3,12 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class Shouting {
+public class Shooting {
     int propertyId;
     String storageFile;
     boolean isactiv;
 
-    public Shouting(int propertyId, String storageFile, boolean isactiv) {
+    public Shooting(int propertyId, String storageFile, boolean isactiv) {
         this.propertyId = propertyId;
         this.storageFile = storageFile;
         this.isactiv = isactiv;

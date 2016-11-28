@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShoutingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShoutingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,7 +41,7 @@ public class MainFrameController {
         this.primaryStage = primaryStage;
     }
 
-    ShoutingDAO service = new JDBCShoutingDAO();
+    ShootingDAO service = new JDBCShootingDAO();
 
 
     /**
@@ -51,7 +51,7 @@ public class MainFrameController {
      */
     @FXML
     private void initialize(){
-        Shouting shouting_isactive = null;
+        Shooting shouting_isactive = null;
         try {
             shouting_isactive = service.search_isactive();
 
@@ -82,9 +82,9 @@ public class MainFrameController {
      */
     public void in_case_of_restart(){
 
-        Object [] options={"Fortfahren", "alte Shouting beenden"};
+        Object [] options={"Fortfahren", "alte Shooting beenden"};
 
-        int chouse= JOptionPane.showOptionDialog(null,"Die Anwendung wurde unerwartet geschlossen,\n möchten sie die zuletzt geöffnete Shouting wieder her stellen? "
+        int chouse= JOptionPane.showOptionDialog(null,"Die Anwendung wurde unerwartet geschlossen,\n möchten sie die zuletzt geöffnete Shooting wieder her stellen? "
                 ,"", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
 
         if(chouse==0){
@@ -93,7 +93,7 @@ public class MainFrameController {
             //yes
         } else if(chouse==1){
             service.end_session();
-            showingdialog("Shouting wurde beendet");
+            showingdialog("Shooting wurde beendet");
         }
 
     }

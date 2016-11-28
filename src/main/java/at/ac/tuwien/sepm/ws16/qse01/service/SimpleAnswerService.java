@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
  *
  * @author Dominik Moser
  */
-@ShoutingService
+@shoutingservice
 public class SimpleAnswerService implements AnswerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleAnswerService.class);

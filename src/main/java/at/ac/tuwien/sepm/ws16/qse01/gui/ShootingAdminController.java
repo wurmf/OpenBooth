@@ -1,13 +1,15 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShoutingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShoutingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.shoutingservice;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShoutingServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shouting;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,31 +31,29 @@ import java.util.List;
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class Shouting_Admin_Controller {
+public class ShootingAdminController {
 
     @FXML
     private Label lb_storageplace;//lb_storageplace.setText();
-   /* @FXML
+    @FXML
     private ChoiceBox cb_Profile;
-*/
+
     String path ="";
 
-    ShoutingService sessionService;
+    shoutingservice sessionService;
     ProfileService profileService;
-    public Shouting_Admin_Controller() throws Exception {
-        sessionService=new ShoutingServiceImpl();
+    public ShootingAdminController() throws Exception {
+        sessionService=new ShootingServiceImpl();
         profileService= new ProfileServiceImpl();
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShoutingDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 
-
-   /*
     /**
      * inizialise cb_Profiles
      * @autor Aniela
-
+    */
     @FXML
     private void initialize() {
 
@@ -74,7 +74,6 @@ public class Shouting_Admin_Controller {
         }
 
     }
-    */
 
     /**
      *
@@ -91,19 +90,22 @@ public class Shouting_Admin_Controller {
             showingdialog(e.getMessage());
         }
         int i = 0;
-           //get chousen Profile
-        //Profile not null
-        //toDo:
-        if(true){
-                Shouting shouting = new Shouting(prof.get(i).getId(), path, true);
 
-                LOGGER.info("Shouting_Admin_Controller:", shouting);
+        if (cb_Profile.getValue() == null) {
+            while (cb_Profile.getValue() != prof.get(i).getName()) {
+                i++;
+            }
+            Shooting session = new Shooting(prof.get(i).getId(), path, true);
+
+            Shooting shouting = new Shooting(prof.get(i).getId(), path, true);
+
+                LOGGER.info("ShootingAdminController:", shouting);
 
                 try {
                     sessionService.add_session(shouting);
                 } catch (ServiceException serviceExeption) {
                     LOGGER.info("shouting erstellen", serviceExeption.getMessage());
-                    showingdialog("Es konnte keine Shouting erstellt werden.");
+                    showingdialog("Es konnte keine Shooting erstellt werden.");
                 }
             } else {
                 showingdialog("Bitte erstellen sie ein neues Profil");
@@ -128,7 +130,7 @@ public class Shouting_Admin_Controller {
             stage.show();
         }catch (IOException s){
             showingdialog("Es konnte nicht zur Hauptseite gewechselt werden. ");
-            LOGGER.info("Shouting_Admin_Controller: on_DemolitionPressed",s.getMessage());
+            LOGGER.info("ShootingAdminController: on_DemolitionPressed",s.getMessage());
         }
 
     }
@@ -149,10 +151,10 @@ public class Shouting_Admin_Controller {
         if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
            path = chooser.getSelectedFile().toString();
             lb_storageplace.setText(path);
-            LOGGER.info("Shouting_Admin_Controller: Path ",path);
+            LOGGER.info("ShootingAdminController: Path ",path);
         } else {
             showingdialog("Noch keinen Ordner ausgewählt");
-            LOGGER.info("Shouting_Admin_Controller:on_FinedPressed");
+            LOGGER.info("ShootingAdminController:on_FinedPressed");
         }
     }
 
@@ -175,7 +177,7 @@ public class Shouting_Admin_Controller {
             stage.show();
         }catch (IOException s){
             showingdialog("Es konnte nicht zu den Profilen gewechselt werden. ");
-            LOGGER.info("Shouting_Admin_Controller: on_DemolitionPressed",s.getMessage());
+            LOGGER.info("ShootingAdminController: on_DemolitionPressed",s.getMessage());
         }
 
     }
@@ -190,14 +192,14 @@ public class Shouting_Admin_Controller {
      *
      * @param actionEvent
      * @autor Aniela
-
+     */
     public void on_DeleteButtonPressed(ActionEvent actionEvent) {
 
         are_you_sure((String) cb_Profile.getValue());
 
         //delete from DAO
     }
-    */
+
 
 
 
@@ -206,7 +208,7 @@ public class Shouting_Admin_Controller {
      *
      * @param
      * @autor Aniela
-
+     */
     public void are_you_sure(String profil){
 
         Object [] options={"Ja", "Nein"};
@@ -223,7 +225,7 @@ public class Shouting_Admin_Controller {
             //yes
         }
 
-    }*/
+    }
 
 
 }
