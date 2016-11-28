@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.dao.SessionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.SessionDAOImpl;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCSessionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -11,9 +11,9 @@ import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/*import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-*/
+
 import javax.swing.*;
 
 /**
@@ -21,7 +21,7 @@ import javax.swing.*;
  *
  * @author Dominik Moser
  */
-//@Component
+@Component
 public class MainFrameController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
@@ -30,7 +30,7 @@ public class MainFrameController {
     private Stage primaryStage;
 
 
-  //  @Autowired
+    @Autowired
     public MainFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
 
@@ -41,7 +41,7 @@ public class MainFrameController {
         this.primaryStage = primaryStage;
     }
 
-    SessionDAO service = new SessionDAOImpl();
+    SessionDAO service = new JDBCSessionDAO();
 
 
     /**

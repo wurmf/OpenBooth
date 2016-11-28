@@ -17,11 +17,11 @@ import java.sql.SQLException;
 /**
  * Created by Aniela on 23.11.2016.
  */
-public class SessionDAOImpl implements SessionDAO {
+public class JDBCSessionDAO implements SessionDAO {
 
     private Connection con;
 
-    public SessionDAOImpl() throws Exception {
+    public JDBCSessionDAO() throws Exception {
         con = H2Handler.getInstance().getConnection();
     }
 

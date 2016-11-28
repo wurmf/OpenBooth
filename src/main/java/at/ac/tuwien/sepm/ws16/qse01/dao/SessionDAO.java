@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
 
 /**
  * Created by Moatzgeile Sau on 23.11.2016.
@@ -23,7 +24,7 @@ public interface SessionDAO {
      * @return Session
      * @autor Aniela
      */
-    public at.ac.tuwien.sepm.ws16.qse01.entities.Session search_isactive() throws PersistenceException;
+    public Session search_isactive() throws PersistenceException;
 
     /**
      * closes activ session

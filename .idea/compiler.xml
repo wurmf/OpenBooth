@@ -30,7 +30,7 @@
     <bytecodeTargetLevel>
       <module name="Desktop" target="1.5" />
       <module name="ss16_sepm_qse_01" target="1.8" />
-      <module name="ws16_sepm_qse_01" target="1.8" />
+      <module name="ws16_sepm_qse_01" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

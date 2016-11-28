@@ -2,16 +2,12 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.ServiceExeption;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Session;
 import at.ac.tuwien.sepm.ws16.qse01.dao.SessionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.SessionDAOImpl;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCSessionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.service.SessionControllService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by Aniela on 23.11.2016.
@@ -21,7 +17,7 @@ public class SessionControllServiceImpl implements SessionControllService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SessionControllServiceImpl.class);
     SessionDAO sessionDAO;
     public SessionControllServiceImpl() throws Exception {
-        sessionDAO = new SessionDAOImpl();
+        sessionDAO = new JDBCSessionDAO();
     }
     String getImageStorage(){
         //DAO.getImageStorage();
