@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController;
 import javafx.application.Application;
 import javafx.scene.Parent;
@@ -74,6 +76,11 @@ public class MainApplication extends Application {
         profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
         profileStage.show();
 
+        try {
+            CameraHandlerImpl cameraHandler= new CameraHandlerImpl((ShotFrameController) springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getLoadedObject(),new ImageServiceImpl());
+            cameraHandler.getImages();
+        } catch (Exception e) {
+        }
     }
 
     @Override
