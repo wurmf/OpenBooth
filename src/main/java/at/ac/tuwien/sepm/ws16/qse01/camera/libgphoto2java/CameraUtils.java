@@ -19,7 +19,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
-import at.ac.tuwien.sepm.ws16.qse01.camera.jna.GPhoto2Native;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native;
+
 
 import java.io.Closeable;
 import java.io.UnsupportedEncodingException;

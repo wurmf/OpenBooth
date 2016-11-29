@@ -23,7 +23,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.FloatByReference;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
-import at.ac.tuwien.sepm.ws16.qse01.camera.jna.GPhoto2Native;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native;
+
 
 import java.io.Closeable;
 import java.io.UnsupportedEncodingException;
@@ -125,7 +126,7 @@ public final class CameraWidgets implements Closeable {
             return valueType.isInstance(value);
         }
     }
-    private Map<String, Pointer> widgets = new HashMap<>();
+    private Map<String, Pointer> widgets = new HashMap<String, Pointer>();
     private final CameraGphoto cameraGphoto;
     private Pointer rootWidget;
 

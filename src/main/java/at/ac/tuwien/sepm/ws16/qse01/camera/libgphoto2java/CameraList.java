@@ -22,7 +22,8 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 import java.io.Closeable;
 import java.util.regex.Pattern;
-import at.ac.tuwien.sepm.ws16.qse01.camera.jna.GPhoto2Native;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native;
+
 
 /**
  * Lists connected cameras.

@@ -61,7 +61,6 @@ public class MainApplication extends Application {
         } catch (Exception e) {
         }
 
-
     }
 
     @Override

@@ -21,8 +21,8 @@ package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
-import at.ac.tuwien.sepm.ws16.qse01.camera.jna.GPhoto2Native;
-import at.ac.tuwien.sepm.ws16.qse01.camera.jna.GPhoto2Native.CameraFilePath;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native.CameraFilePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
