@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package at.ac.tuwien.sepm.ws16.qse01.camera;
+package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
@@ -47,6 +47,7 @@ public class CameraFile implements Closeable {
     /**
      * Closes this file link and frees allocated resources.
      */
+    @Override
     public void close() {
 	CameraUtils.check(GPhoto2Native.INSTANCE.gp_file_free(cf), "gp_file_free");
     }
@@ -72,12 +73,12 @@ public class CameraFile implements Closeable {
      */
     static class Path {
 
-	public final String filename;
-	public final String path;
+	final String filename;
+	final String path;
 
     /**
      * Creates new path.
-     * @param filename the file name, without the path, gphoto-dependent. See {@link GPhoto2Native#CameraFilePath} for details.
+     * @param filename the file name, without the path, gphoto-dependent.
      * @param path the path, gphoto-dependent.
      */
 	public Path(String filename, String path) {

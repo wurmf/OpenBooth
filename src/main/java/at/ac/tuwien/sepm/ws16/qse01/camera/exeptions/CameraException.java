@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package at.ac.tuwien.sepm.ws16.qse01.camera;
+package at.ac.tuwien.sepm.ws16.qse01.camera.exeptions;
 
 
 /**
@@ -26,7 +26,7 @@ package at.ac.tuwien.sepm.ws16.qse01.camera;
 public class CameraException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
-    public final int result;
+    private final int result;
 
     public CameraException(String message, Throwable cause, int result) {
 	super(message, cause);
@@ -36,5 +36,10 @@ public class CameraException extends RuntimeException {
     public CameraException(String message, int result) {
 	super(message);
 	this.result = result;
+    }
+
+    public int getResult()
+    {
+        return result;
     }
 }

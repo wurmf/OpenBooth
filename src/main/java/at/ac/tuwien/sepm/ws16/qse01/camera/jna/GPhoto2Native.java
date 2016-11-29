@@ -90,7 +90,7 @@ public interface GPhoto2Native extends Library {
     /**
      * The camera is already busy
      *
-     * Camera I/O or a command is in progress.
+     * CameraGphoto I/O or a command is in progress.
      *
      */
     int GP_ERROR_CAMERA_BUSY = -110;

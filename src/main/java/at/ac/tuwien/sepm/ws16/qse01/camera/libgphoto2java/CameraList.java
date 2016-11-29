@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package at.ac.tuwien.sepm.ws16.qse01.camera;
+package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;

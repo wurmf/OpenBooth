@@ -16,7 +16,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package at.ac.tuwien.sepm.ws16.qse01.camera;
+package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -36,6 +36,7 @@ import java.util.*;
  */
 public final class CameraWidgets implements Closeable {
 
+    @Override
     public void close() {
         if (rootWidget != null) {
             CameraUtils.checkQuietly(GPhoto2Native.INSTANCE.gp_widget_free(rootWidget), "gp_widget_free");
@@ -48,12 +49,12 @@ public final class CameraWidgets implements Closeable {
         if (rootWidget == null) {
             throw new IllegalStateException("Invalid state: closed");
         }
-        if (camera.isClosed()) {
-            throw new IllegalStateException("Invalid state: camera is closed");
+        if (cameraGphoto.isClosed()) {
+            throw new IllegalStateException("Invalid state: cameraGphoto is closed");
         }
     }
 
-    public static enum WidgetTypeEnum {
+    public enum WidgetTypeEnum {
 
         /**
          * Window widget This is the toplevel configuration widget. It should likely contain multiple GP_WIDGET_SECTION entries.
@@ -124,15 +125,15 @@ public final class CameraWidgets implements Closeable {
             return valueType.isInstance(value);
         }
     }
-    private Map<String, Pointer> widgets = new HashMap<String, Pointer>();
-    private final Camera camera;
+    private Map<String, Pointer> widgets = new HashMap<>();
+    private final CameraGphoto cameraGphoto;
     private Pointer rootWidget;
 
     /**
-     * Lists all configuration options for given camera.
+     * Lists all configuration options for given cameraGphoto.
      */
-    CameraWidgets(Camera c) {
-        camera = c;
+    CameraWidgets(CameraGphoto c) {
+        cameraGphoto = c;
         final PointerByReference ptrRoot = new PointerByReference();
         CameraUtils.check(GPhoto2Native.INSTANCE.gp_widget_new(WidgetTypeEnum.Window.cval, "", ptrRoot), "gp_widget_new");
         CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_get_config(c.camera, ptrRoot, CameraList.CONTEXT), "gp_camera_get_config");
@@ -421,7 +422,7 @@ public final class CameraWidgets implements Closeable {
      */
     public void apply() {
         checkNotClosed();
-        CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_set_config(camera.camera, rootWidget, CameraList.CONTEXT), "gp_camera_set_config");
+        CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_set_config(cameraGphoto.camera, rootWidget, CameraList.CONTEXT), "gp_camera_set_config");
     }
 
 
