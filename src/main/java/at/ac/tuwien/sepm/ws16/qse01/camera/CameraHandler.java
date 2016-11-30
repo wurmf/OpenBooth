@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
+
 /**
  * Created by osboxes on 28.11.16.
  */
@@ -14,5 +16,5 @@ public interface CameraHandler {
      * @return
      *
      * */
-    public void getImages();
+    public void getImages() throws CameraException;
 }

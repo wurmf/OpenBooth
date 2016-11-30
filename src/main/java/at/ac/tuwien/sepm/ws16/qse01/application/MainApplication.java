@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
@@ -56,9 +57,10 @@ public class MainApplication extends Application {
         shotStage.show();
 
         try {
-            CameraHandlerImpl cameraHandler= new CameraHandlerImpl((ShotFrameController) springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getLoadedObject(),new ImageServiceImpl());
+            CameraHandlerImpl cameraHandler= new CameraHandlerImpl();
             cameraHandler.getImages();
         } catch (Exception e) {
+            LOGGER.error(e.toString());
         }
 
     }
