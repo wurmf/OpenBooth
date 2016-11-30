@@ -53,7 +53,6 @@ public class ShotFrameController {
      Postcondition: the last image will be showed
      */
     /** showing the last image taken
-     * @param camera - camera id of taken image
      *
      */
     @FXML

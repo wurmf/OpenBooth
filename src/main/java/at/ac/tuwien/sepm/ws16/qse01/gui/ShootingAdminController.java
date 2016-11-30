@@ -11,12 +11,10 @@ import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import com.sun.javafx.collections.ObservableListWrapper;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
@@ -40,6 +38,8 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+
+//TODO: Remove everything Swing related! We have to use JavaFX-Classes
 
 /**
  * Created by Aniela on 23.11.2016.

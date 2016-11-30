@@ -4,9 +4,10 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.AdminUserDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,24 +17,18 @@ import java.sql.SQLException;
 /**
  * Implementation of the AdminUserDAO-Interface using H2-syntax to manipulate the the adminuser table in an H2-database.
  */
+@Repository
 public class JDBCAdminUserDAO implements AdminUserDAO {
-    static final Logger LOGGER = LoggerFactory.getLogger(JDBCAdminUserDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCAdminUserDAO.class);
 
     private Connection con;
-
-    /**
-     * Constructor that uses the default implementation of DBHandler (the H2Handler class) to retrieve a connection from.
-     * @throws PersistenceException if an error occurs while retrieving a connection from the H2Handler.
-     */
-    public JDBCAdminUserDAO() throws PersistenceException{
-        this.con= H2Handler.getInstance().getConnection();
-    }
 
     /**
      * Constructor with a DBHandler specified, which will be used to retrieve a database connection.
      * @param handler DBHandler from which the connection will be taken.
      * @throws PersistenceException if an error occurs while retrieving a connection from the DBHandler.
      */
+    @Autowired
     public JDBCAdminUserDAO(DBHandler handler) throws PersistenceException{
         con=handler.getConnection();
     }

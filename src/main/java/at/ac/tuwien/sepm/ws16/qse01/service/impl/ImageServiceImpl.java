@@ -1,9 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,8 +17,13 @@ public class ImageServiceImpl implements ImageService {
 
     private static ImageDAO dao;
 
-    public ImageServiceImpl() throws Exception {
+    public ImageServiceImpl() throws ServiceException {
+        try{
         dao = new JDBCImageDAO();
+        } catch(PersistenceException e){
+            LOGGER.error(e.toString());
+            throw new ServiceException(e);
+        }
     }
 
     @Override
