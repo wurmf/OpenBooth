@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.IOException;
 
+import static at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native.GP_EVENT_FILE_ADDED;
+
 /**
  * Represents a camera. Thread-unsafe.
  * @author Martin Vysny
@@ -124,32 +126,35 @@ public class CameraGphoto implements Closeable {
         }
     }
 
-    public CameraFile wait_for_image()
+    public CameraFile waitForImage()
     {
         checkNotClosed();
         PointerByReference event = new PointerByReference();
-        boolean returnedOk = false;
-        final CameraFile cfile = new CameraFile();
         try {
-            LOGGER.info("wait for Event from camera");
-            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 100000 , event, cfile.cf, CameraList.CONTEXT), "gp_camera_wait_for_event");
-            returnedOk = true;
-            return cfile;
+            LOGGER.debug("wait for Event from camera");
+            final CameraFilePath path = new CameraFilePath.ByReference();
+            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, path.getPointer(), CameraList.CONTEXT), "gp_camera_wait_for_event");
+            final CameraFile.Path p = new CameraFile.Path(path);
+            if(event.getPointer().getInt(0)==GP_EVENT_FILE_ADDED)
+            {
+                LOGGER.debug("file on camera added");
+                return p.newFile(camera);
+            }
+            else
+            {
+                return null;
+            }
         }
         catch(CameraException ex)
         {
+            LOGGER.error("wait for image failed");
             return null;
-        }
-        finally {
-            if (!returnedOk) {
-                CameraUtils.closeQuietly(cfile);
-            }
         }
 
     }
 
     /**
-     * Returns new configuration for the camera.
+     * Returns new configuration for the camera.e
      * @return the configuration, never null. Must be closed afterwards.
      */
     public CameraWidgets newConfiguration() {
