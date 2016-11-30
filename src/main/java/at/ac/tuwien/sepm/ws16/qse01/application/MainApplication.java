@@ -1,8 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -94,14 +97,14 @@ public class MainApplication extends Application {
         this.adminLoginStage.initOwner(primaryStage);
         adminLoginWrapper.getController().setStageAndMain(adminLoginStage, this);
         //TODO: Check CameraHandlerImpl, Nullpointer is thrown
-        /*
+
         try {
             CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl());
             cameraHandler.getImages();
-        } catch (ServiceException e) {
+        } catch (Exception e) {
             LOGGER.info("Getting camera - "+e);
         }
-        */
+
     }
 
     @Override
