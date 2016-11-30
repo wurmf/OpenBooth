@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ public class JDBCImageDAO implements ImageDAO {
 
     private Connection con;
 
-    public JDBCImageDAO() throws Exception {
+    public JDBCImageDAO() throws PersistenceException {
        con = H2Handler.getInstance().getConnection();
     }
 
