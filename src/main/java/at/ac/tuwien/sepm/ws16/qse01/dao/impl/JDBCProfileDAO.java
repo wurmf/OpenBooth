@@ -8,6 +8,9 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +18,12 @@ import java.util.List;
 /**
  * H2 database-Specific ProfileDAO Implementation
  */
+@Repository
 public class JDBCProfileDAO implements ProfileDAO {
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
+
+    @Autowired
     public JDBCProfileDAO() throws PersistenceException {
         LOGGER.debug("Entering constructor");
         try {
@@ -31,16 +37,31 @@ public class JDBCProfileDAO implements ProfileDAO {
     public Profile create(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering create method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error!:Called create method with null pointer.");
-        //String sqlString = "INSERT INTO profiles (profileID,name) VALUES (?,?);";
-        String sqlString = "INSERT INTO profiles (name) VALUES (?);";
+
         PreparedStatement stmt = null;
         try {
-            stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-            //stmt.setInt(1,profile.getId());
-            stmt.setString(1,profile.getName());
-            stmt.executeUpdate();
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()){profile.setId(rs.getInt(1));}
+            //AutoID
+            if(profile.getId()== Integer.MIN_VALUE)
+                {
+                String sqlString = "INSERT INTO profiles (name) VALUES (?);";
+                stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
+                stmt.setString(1,profile.getName());
+                stmt.executeUpdate();
+                ResultSet rs = stmt.getGeneratedKeys();
+                if (rs.next()){profile.setId(rs.getInt(1));}
+                LOGGER.debug("Persisted Profile successfully with AutoID:" + profile.getId());
+                }
+            //NoAutoID
+            else
+                {
+                String sqlString = "INSERT INTO profiles (profileID,name,isActive) VALUES (?,?,?);";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1,profile.getId());
+                stmt.setString(2,profile.getName());
+                stmt.setBoolean(3,profile.isActive());
+                stmt.executeUpdate();
+                LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
+                }
         }
         catch (SQLException e) {
             throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);

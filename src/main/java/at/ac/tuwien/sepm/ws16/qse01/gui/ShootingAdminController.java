@@ -62,7 +62,7 @@ public class ShootingAdminController {
     @Autowired
     public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
         sessionService = new ShootingServiceImpl();
-        profileService= new ProfileServiceImpl();
+        //profileService = new ProfileServiceImpl();
         this.springFXMLLoader = springFXMLLoader;
     }
 
