@@ -4,21 +4,27 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
- * Created by Martin Schroeder on 27.11.16.
+ * Test for implementations of the AdminUserService-Interface
  */
 public abstract class AbstractAdminUserServiceTest {
     static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdminUserServiceTest.class);
 
+    @Autowired
     protected AdminUserService adminUserService;
 
     protected void setAdminUserService(AdminUserService adminUserService){
         this.adminUserService=adminUserService;
     }
+
+    /**
+     * Checks the return calue of an existing entry.
+     */
     @Test
     public void checkExistentUser(){
         try {
@@ -27,6 +33,10 @@ public abstract class AbstractAdminUserServiceTest {
             LOGGER.error(e.toString());
         }
     }
+
+    /**
+     * Checks the return of a user that is not in the database
+     */
     @Test
     public void checkNonExistentUser(){
         try {
@@ -35,6 +45,10 @@ public abstract class AbstractAdminUserServiceTest {
             LOGGER.error(e.toString());
         }
     }
+
+    /**
+     * Checks the return for existing user and wrong password
+     */
     @Test
     public void checkWrongPassword(){
         try {
@@ -43,6 +57,10 @@ public abstract class AbstractAdminUserServiceTest {
             LOGGER.error(e.toString());
         }
     }
+
+    /**
+     * Checks the return for existing user and empty and null-password
+     */
     @Test
     public void checkEmptyPassword(){
         try {
@@ -52,6 +70,10 @@ public abstract class AbstractAdminUserServiceTest {
             LOGGER.error(e.toString());
         }
     }
+
+    /**
+     * Checks the return for empty or null username
+     */
     @Test
     public void checkEmptyAdminName(){
         try {
