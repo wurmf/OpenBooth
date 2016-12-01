@@ -43,6 +43,7 @@ public class MainFrameController {
         this.springFXMLLoader = springFXMLLoader;
         service= new ShootingServiceImpl();
     }
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }

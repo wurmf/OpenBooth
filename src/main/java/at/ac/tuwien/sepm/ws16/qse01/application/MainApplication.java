@@ -26,6 +26,7 @@ public class MainApplication extends Application {
     private Stage adminLoginStage;
     private Stage profileStage;
     private Stage shootingStage;
+    private Stage mainStage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
@@ -48,6 +49,7 @@ public class MainApplication extends Application {
         shootingStage = new Stage();
         shootingStage.setScene(new Scene((Parent) shootingWrapper.getLoadedObject()));
         shootingStage.setFullScreen(true);
+        shootingWrapper.getController().setStageAndMain(shootingStage, this);
 
         /*        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
@@ -102,6 +104,7 @@ public class MainApplication extends Application {
             LOGGER.info("Getting camera - "+e);
         }
         */
+
     }
 
     @Override
@@ -119,6 +122,7 @@ public class MainApplication extends Application {
     public void showShootingAdministration(){
         shootingStage.show();
     }
+    public void showMainFraim(){mainStage.show();}
 
     //TODO: call this from shootingStage
     public void showProfileStage(){
