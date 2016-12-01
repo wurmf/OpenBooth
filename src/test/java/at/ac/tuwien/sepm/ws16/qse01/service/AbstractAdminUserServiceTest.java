@@ -10,7 +10,7 @@ import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
- * JDBCProfileDAOTest for implementations of the AdminUserService-Interface
+ * Test for implementations of the AdminUserService-Interface
  */
 public abstract class AbstractAdminUserServiceTest {
     static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdminUserServiceTest.class);

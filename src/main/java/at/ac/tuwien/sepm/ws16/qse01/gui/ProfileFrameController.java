@@ -64,7 +64,6 @@ public class ProfileFrameController {
     private SpringFXMLLoader springFXMLLoader;
     private Stage profileStage;
 
-    @Autowired
     public ProfileFrameController(SpringFXMLLoader springFXMLLoader) throws ServiceException {
         this.springFXMLLoader = springFXMLLoader;
     }
@@ -73,7 +72,7 @@ public class ProfileFrameController {
     private void initialize(){
         LOGGER.debug("Initializing profile frame ...");
         try {
-            //pservice = new ProfileServiceImpl();
+            pservice = new ProfileServiceImpl();
             tc_id.setCellValueFactory(new PropertyValueFactory<Profile, Integer>("id"));
             tc_name.setCellValueFactory(new PropertyValueFactory<Profile, String>("name"));
             tc_isActive.setCellValueFactory(new PropertyValueFactory<Profile, Boolean>("isActive"));

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -62,7 +63,7 @@ public class ShootingAdminController {
     @Autowired
     public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
         sessionService = new ShootingServiceImpl();
-        //profileService = new ProfileServiceImpl();
+        profileService = new ProfileServiceImpl();
         this.springFXMLLoader = springFXMLLoader;
     }
 

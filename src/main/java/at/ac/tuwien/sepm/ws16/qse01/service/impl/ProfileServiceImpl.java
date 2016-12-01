@@ -2,7 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-//import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -17,19 +17,20 @@ import java.util.List;
 /**
  * Profile Service Implementation
  */
-@Service
+//@Service
 public class ProfileServiceImpl implements ProfileService{
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
-
-    private ProfileDAO profileDAO;
+    //private ProfileDAO profileDAO;
+    private static ProfileDAO profileDAO;
     private List<Profile> profileList = new ArrayList<>();
     private Profile activeProfile = null;
 
-    @Autowired
-    public ProfileServiceImpl(ProfileDAO profileDAO) throws ServiceException {
+    //@Autowired
+    //public ProfileServiceImpl(ProfileDAO profileDAO) throws ServiceException {
+    public ProfileServiceImpl() throws ServiceException {
+        //this.profileDAO = profileDAO;
         try {
-            this.profileDAO = profileDAO;
-            //profileDAO = new JDBCProfileDAO();
+            profileDAO = new JDBCProfileDAO();
             profileList.addAll(profileDAO.readAll());
             activeProfile = this.getActiveProfile();
         } catch (PersistenceException e) {

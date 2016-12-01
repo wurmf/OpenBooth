@@ -18,12 +18,11 @@ import java.util.List;
 /**
  * H2 database-Specific ProfileDAO Implementation
  */
-@Repository
+
 public class JDBCProfileDAO implements ProfileDAO {
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
 
-    @Autowired
     public JDBCProfileDAO() throws PersistenceException {
         LOGGER.debug("Entering constructor");
         try {

@@ -16,16 +16,19 @@ import java.util.List;
 /**
  * Class includes services for images.
  */
-@Service
+
 public class ImageServiceImpl implements ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
-    private ImageDAO dao;
+    private static ImageDAO dao;
 
-    @Autowired
-    public ImageServiceImpl(ImageDAO dao) throws ServiceException {
-        //dao = new JDBCImageDAO();
-        this.dao = dao;
+    public ImageServiceImpl() throws ServiceException {
+        try {
+            dao = new JDBCImageDAO();
+        } catch (PersistenceException e) {
+            LOGGER.error(e.toString());
+            throw new ServiceException(e);
+        }
     }
 
     @Override
@@ -45,11 +48,6 @@ public class ImageServiceImpl implements ImageService {
     public String getLastImgPath(int shootingid) {
         LOGGER.debug("Entering getLastImgPath method in Service with shootingid = "+shootingid);
         return dao.getLastImgPath(shootingid);
-    }
-
-    @Override
-    public List<String> getAllImagePaths(int shootingid) {
-        return null;
     }
 
 }
