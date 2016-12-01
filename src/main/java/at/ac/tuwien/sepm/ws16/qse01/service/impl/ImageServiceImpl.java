@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Class includes services for images.
  */
-
+@Service
 public class ImageServiceImpl implements ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
