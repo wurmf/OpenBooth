@@ -58,12 +58,13 @@ public class ShootingAdminController {
     String path ="";
 
     ShootingService sessionService;
+    @Resource
     ProfileService profileService;
 
     @Autowired
     public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
         sessionService = new ShootingServiceImpl();
-        profileService = new ProfileServiceImpl();
+        //profileService = new ProfileServiceImpl();
         this.springFXMLLoader = springFXMLLoader;
     }
 

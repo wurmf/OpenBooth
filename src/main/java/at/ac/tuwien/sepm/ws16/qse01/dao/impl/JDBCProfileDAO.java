@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
@@ -18,18 +19,16 @@ import java.util.List;
 /**
  * H2 database-Specific ProfileDAO Implementation
  */
-
+@Repository
 public class JDBCProfileDAO implements ProfileDAO {
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
 
-    public JDBCProfileDAO() throws PersistenceException {
+    @Autowired
+    public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
-        try {
-            con = H2Handler.getInstance().getConnection();
-        } catch (Exception e) {
-            throw new PersistenceException("Error!:Establishing connection to persistence store has failed." + e);
-        }
+        con = handler.getConnection();
+
     }
 
     @Override

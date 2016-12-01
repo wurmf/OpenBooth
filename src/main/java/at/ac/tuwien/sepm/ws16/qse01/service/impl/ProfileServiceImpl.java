@@ -11,26 +11,27 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Profile Service Implementation
  */
-//@Service
+@Service
 public class ProfileServiceImpl implements ProfileService{
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
-    //private ProfileDAO profileDAO;
-    private static ProfileDAO profileDAO;
+    @Resource
+    private ProfileDAO profileDAO;
     private List<Profile> profileList = new ArrayList<>();
     private Profile activeProfile = null;
 
-    //@Autowired
-    //public ProfileServiceImpl(ProfileDAO profileDAO) throws ServiceException {
-    public ProfileServiceImpl() throws ServiceException {
-        //this.profileDAO = profileDAO;
+    @Autowired
+    public ProfileServiceImpl(ProfileDAO profileDAO) throws ServiceException {
+    //public ProfileServiceImpl() throws ServiceException {
+        this.profileDAO = profileDAO;
         try {
-            profileDAO = new JDBCProfileDAO();
+            //profileDAO = new JDBCProfileDAO();
             profileList.addAll(profileDAO.readAll());
             activeProfile = this.getActiveProfile();
         } catch (PersistenceException e) {

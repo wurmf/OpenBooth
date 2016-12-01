@@ -25,8 +25,8 @@ public class ProfileServiceTestImpl extends ProfileServiceTest {
 
     @Before
     public void setUp() throws PersistenceException, ServiceException {
-        //ProfileServiceImpl profileService = new ProfileServiceImpl(new JDBCProfileDAO());
-        ProfileServiceImpl profileService = new ProfileServiceImpl();
+        ProfileServiceImpl profileService = new ProfileServiceImpl(new JDBCProfileDAO(H2Handler.getInstance()));
+        //ProfileServiceImpl profileService = new ProfileServiceImpl();
         this.con = H2Handler.getInstance().getConnection();
         setProfileService(profileService);
         try {

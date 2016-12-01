@@ -18,12 +18,13 @@ import org.slf4j.LoggerFactory;
  */
 public class JDBCProfileDAOTest extends ProfileDAOTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAOTest.class);
+
     private ProfileDAO profileDAO;
     private Connection con;
 
     @Before
     public void setUp() throws PersistenceException {
-        JDBCProfileDAO profileDAO = new JDBCProfileDAO();
+        //JDBCProfileDAO profileDAO = new JDBCProfileDAO();
         this.con = H2Handler.getInstance().getConnection();
         setProfileDAO(profileDAO);
         try {
