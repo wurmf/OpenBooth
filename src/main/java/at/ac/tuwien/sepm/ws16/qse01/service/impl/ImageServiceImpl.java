@@ -49,5 +49,9 @@ public class ImageServiceImpl implements ImageService {
         LOGGER.debug("Entering getLastImgPath method in Service with shootingid = "+shootingid);
         return dao.getLastImgPath(shootingid);
     }
-
+    @Override
+    public List<String> getAllImagePaths(int shootingid) {
+        LOGGER.debug("Entering getAllImagePaths method in Service with shootingid = "+shootingid);
+        return dao.getAllImagePaths(shootingid);
+    }
 }
