@@ -322,13 +322,13 @@ public interface GPhoto2Native extends Library {
 //            setFieldOrder(new String[] { "name", "folder" });
         }
 
-	public CameraFilePath(Pointer p){
-		super(p);
-	}
+        public CameraFilePath(){
 
-	public CameraFilePath(){
-		super();
-	}
+        }
+
+        public CameraFilePath(Pointer p){
+            super(p);
+        }
 
         /**
          * Name of the captured file.
