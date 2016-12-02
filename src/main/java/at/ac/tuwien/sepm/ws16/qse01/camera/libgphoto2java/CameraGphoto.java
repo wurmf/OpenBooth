@@ -131,7 +131,7 @@ public class CameraGphoto implements Closeable {
         checkNotClosed();
         PointerByReference event = new PointerByReference();
         try {
-            LOGGER.debug("wait for Event from camera");
+            //LOGGER.debug("wait for Event from camera");
             final PointerByReference event_data = new PointerByReference();
             CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
 
