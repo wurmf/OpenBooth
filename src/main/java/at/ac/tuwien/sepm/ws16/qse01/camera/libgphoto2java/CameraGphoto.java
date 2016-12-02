@@ -132,11 +132,14 @@ public class CameraGphoto implements Closeable {
         PointerByReference event = new PointerByReference();
         try {
             LOGGER.debug("wait for Event from camera");
-            final CameraFilePath path = new CameraFilePath.ByReference();
-            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, path.getPointer(), CameraList.CONTEXT), "gp_camera_wait_for_event");
-            final CameraFile.Path p = new CameraFile.Path(path);
+            final PointerByReference event_data = new PointerByReference();
+            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
+
             if(event.getPointer().getInt(0)==GP_EVENT_FILE_ADDED)
             {
+                final CameraFilePath path = new CameraFilePath(event_data.getValue());
+                path.read();
+                final CameraFile.Path p = new CameraFile.Path(path);
                 LOGGER.debug("file on camera added");
                 return p.newFile(camera);
             }

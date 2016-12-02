@@ -267,7 +267,7 @@ public interface GPhoto2Native extends Library {
 
     int gp_camera_set_config(Pointer camera, Pointer widget, Pointer context);
 
-    int gp_camera_wait_for_event(Pointer camera, int timeout, PointerByReference cameraEventType, Pointer eventData, Pointer context);
+    int gp_camera_wait_for_event(Pointer camera, int timeout, PointerByReference cameraEventType, PointerByReference eventData, Pointer context);
 
     int gp_file_ref(Pointer cf);
 
@@ -321,6 +321,15 @@ public interface GPhoto2Native extends Library {
             // must not call with JNA 3.5.0 or higher.
 //            setFieldOrder(new String[] { "name", "folder" });
         }
+
+        public CameraFilePath(){
+
+        }
+
+        public CameraFilePath(Pointer p){
+            super(p);
+        }
+
         /**
          * Name of the captured file.
          */
