@@ -58,7 +58,7 @@ public class CameraFile implements Closeable {
      * @param filename OS-dependent path on the local file system.
      */
     public void save(String filename) {
-		CameraUtils.check(GPhoto2Native.INSTANCE.gp_file_save(cf, "filename"), "gp_file_save");
+		CameraUtils.check(GPhoto2Native.INSTANCE.gp_file_save(cf, filename), "gp_file_save");
     }
 
     void ref() {
