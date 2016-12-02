@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
@@ -10,45 +8,25 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.Date;
 
+/**
+ * Created by osboxes on 03.12.16.
+ */
+public class CameraHandlerThread  extends Thread{
 
-public class CameraHandlerImpl implements CameraHandler {
-
-    Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
-    ShotFrameController shotFrameController;
-    private SpringFXMLLoader springFXMLLoader;
+    Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
-    ShootingService shootingService;
-    int id=5;
+    ShotFrameController shotFrameController;
+    int id;
 
-    @Autowired
-    public CameraHandlerImpl(ShotFrameController shotFrameController, ImageService imageService, ShootingService shootingService)
+    public void run()
     {
-        this.shotFrameController=shotFrameController;
-        this.imageService= imageService;
-        this.shootingService= shootingService;
-    }
-
-    /**
-     * Saves image in images folder and in database.
-     * Also tells the Shot monitor to refresh the image.
-     *
-     * TODO: get Imageservice and Sessionservice
-     *
-     * @return
-     *
-     * */
-    public void getImages() throws CameraException {
-
-       /* final CameraList cl = new CameraList();
+        final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
         } finally {
@@ -86,12 +64,18 @@ public class CameraHandlerImpl implements CameraHandler {
             }
             imageSaved=false;
         }
-        CameraUtils.closeQuietly(c);*/
-        CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
-        cameraHandlerThread.setId(id);
-        cameraHandlerThread.setImageService(imageService);
-        cameraHandlerThread.setShotFrameController(shotFrameController);
-        cameraHandlerThread.run();
+        CameraUtils.closeQuietly(c);
     }
 
+    public void setImageService(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
+    public void setShotFrameController(ShotFrameController shotFrameController) {
+        this.shotFrameController = shotFrameController;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
