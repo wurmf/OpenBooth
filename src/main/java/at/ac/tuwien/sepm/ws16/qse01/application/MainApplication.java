@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -8,6 +9,7 @@ import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,31 +68,40 @@ public class MainApplication extends Application {
         //      2) number of frames to open = number of existing camera in DB
 
         /* Creating shotFrame */
-        int anz = 1;
+
+
+        int anz = 2;
         int x = 200;
         for(int i=0; i<anz; i++) { // Anzahl der Kameras...
+            SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
+                    springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
             Stage stage = new Stage();
             stage.setTitle("Shot Frame "+(i+1));
-            stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
+            stage.setScene(new Scene((Parent) shotWrapper.getLoadedObject(),400,400));
             stage.setFullScreen(false);
-            stage.initOwner(primaryStage);
+            stage.initOwner(shootingStage);
             stage.setX(x);
             stage.show();
 
             x += 200;
         }
-    /*    //Creating Miniatur-Frame
+        //Creating Miniatur-Frame
        SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         miniaturStage = new Stage();
         miniaturStage.setTitle("Fotoübersicht");
         miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
         try {
-            miniWrapper.getController().init(primaryStage);
+            miniWrapper.getController().init(shootingStage);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-        miniaturStage.show();*/
+
+        miniaturStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+        miniaturStage.setHeight(Screen.getPrimary().getVisualBounds()
+                .getHeight());
+      //  miniaturStage.setFullScreen(true);
+        miniaturStage.show();
 
         //Creating Profile-Frame
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
