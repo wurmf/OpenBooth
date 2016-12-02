@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,31 +22,19 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
+@Scope("prototype")  //Multithreading for multiple shotframes
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
-
-    private SpringFXMLLoader springFXMLLoader;
-    private Stage primaryStage;
 
     private ImageService imageService;
 
     @FXML
     private ImageView shotView;
 
-    @FXML
-    private BorderPane pane;
-
     @Autowired
-    public ShotFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
-        this.springFXMLLoader = springFXMLLoader;
+    public ShotFrameController(ImageService imageService) throws Exception {
 
-        imageService = new ImageServiceImpl();
-        if(shotView != null)
-            shotView.setImage(new Image("/images/noimage.png"));
-
-        if(pane != null)
-            pane.setBackground(new Background(new BackgroundFill(Color.web("#000000"), CornerRadii.EMPTY, Insets.EMPTY)));
-
+        this.imageService = imageService;
     }
 
     /*
@@ -53,7 +42,6 @@ public class ShotFrameController {
      Postcondition: the last image will be showed
      */
     /** showing the last image taken
-     * @param camera - camera id of taken image
      *
      */
     @FXML
@@ -65,8 +53,5 @@ public class ShotFrameController {
 
         shotView.setImage(new Image(imgPath));
 
-    }
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
     }
 }

@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class ProfileFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileFrameController.class);
 
     private ObservableList<Profile> pList = FXCollections.observableArrayList();
-
-    private ProfileService pservice = null;
+    @Resource
+    private ProfileService pservice;
 
     private Profile activeProfile = null;
 
@@ -64,7 +65,6 @@ public class ProfileFrameController {
     private SpringFXMLLoader springFXMLLoader;
     private Stage profileStage;
 
-    @Autowired
     public ProfileFrameController(SpringFXMLLoader springFXMLLoader) throws ServiceException {
         this.springFXMLLoader = springFXMLLoader;
     }
@@ -73,7 +73,7 @@ public class ProfileFrameController {
     private void initialize(){
         LOGGER.debug("Initializing profile frame ...");
         try {
-            pservice = new ProfileServiceImpl();
+            //pservice = new ProfileServiceImpl();
             tc_id.setCellValueFactory(new PropertyValueFactory<Profile, Integer>("id"));
             tc_name.setCellValueFactory(new PropertyValueFactory<Profile, String>("name"));
             tc_isActive.setCellValueFactory(new PropertyValueFactory<Profile, Boolean>("isActive"));

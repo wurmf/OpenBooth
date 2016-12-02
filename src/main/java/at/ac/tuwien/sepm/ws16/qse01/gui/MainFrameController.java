@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -19,6 +17,9 @@ import org.springframework.stereotype.Component;
 
 import javax.swing.*;
 
+
+//TODO: Remove everything Swing related! We have to use JavaFX-Classes
+
 /**
  * The controller for the mainFrame.
  *
@@ -31,6 +32,7 @@ public class MainFrameController {
 
     private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
+    private MainApplication mainApp;
 
     ShootingService service;
     @Autowired
@@ -40,6 +42,10 @@ public class MainFrameController {
     }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+    public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
+        this.primaryStage = primaryStage;
+        this.mainApp = mainApp;
     }
 
 
@@ -68,8 +74,7 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void on_StartSessionPressed(ActionEvent actionEvent) {
-        //TODO:Log in opens
-
+        mainApp.showAdminLogin();
     }
 
     /**

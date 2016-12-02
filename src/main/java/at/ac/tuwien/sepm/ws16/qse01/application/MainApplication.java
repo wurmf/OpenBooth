@@ -1,15 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
-import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController;
-import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +24,15 @@ import java.io.IOException;
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
 public class MainApplication extends Application {
+    private Stage adminLoginStage;
+    private Stage profileStage;
+    private Stage shootingStage;
+    private Stage miniaturStage;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
-    private AnnotationConfigApplicationContext applicationContext = null;
+    private AnnotationConfigApplicationContext applicationContext;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -43,44 +46,77 @@ public class MainApplication extends Application {
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
         SpringFXMLLoader springFXMLLoader = applicationContext.getBean(SpringFXMLLoader.class);
 
-        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shooting =
+        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/shoutingFrame.fxml", ShootingAdminController.class);
-        Stage shootingStage = new Stage();
-        shootingStage.setScene(new Scene((Parent) shooting.getLoadedObject()));
-        shootingStage.setFullScreen(true);
+        shootingStage = new Stage();
+        shootingStage.setScene(new Scene((Parent) shootingWrapper.getLoadedObject()));
+     //   shootingStage.setFullScreen(true);
         shootingStage.show();
 
-             SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
+     /*           SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
-        mfWrapper.getController().setPrimaryStage(primaryStage);
-        primaryStage.setTitle("SEPM - WS16 - Spring/Maven/FXML Sample");
-        primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject(), 800, 200));
-        primaryStage.show();
+        mfWrapper.getController().setStageAndMain(primaryStage, this);
+        primaryStage.setTitle("Fotostudio");
+        primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject()));
+        primaryStage.show();*/
 
 
 
         //TODO: 1) creating camera table
         //      2) number of frames to open = number of existing camera in DB
-        /* Creating shotFrame */
-       SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
-        Stage shotStage = new Stage();
-        shotStage.setScene(new Scene((Parent) shotWrapper.getLoadedObject()));
-        shotStage.setFullScreen(true);
-        shotStage.show();
 
+        /* Creating shotFrame */
+        int anz = 1;
+        int x = 200;
+        for(int i=0; i<anz; i++) { // Anzahl der Kameras...
+            Stage stage = new Stage();
+            stage.setTitle("Shot Frame "+(i+1));
+            stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
+            stage.setFullScreen(false);
+            stage.initOwner(primaryStage);
+            stage.setX(x);
+            stage.show();
+
+            x += 200;
+        }
+    /*    //Creating Miniatur-Frame
+       SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
+        miniaturStage = new Stage();
+        miniaturStage.setTitle("Fotoübersicht");
+        miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
+        try {
+            miniWrapper.getController().init(primaryStage);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+        miniaturStage.show();*/
+
+        //Creating Profile-Frame
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
-        Stage profileStage = new Stage();
+        profileStage = new Stage();
         profileStage.setTitle("Profile Verwaltung");
         profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
-        profileStage.show();
 
+
+        //Creating Login-Frame
+        SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
+        this.adminLoginStage = new Stage();
+        this.adminLoginStage.setScene(new Scene((Parent) adminLoginWrapper.getLoadedObject()));
+        this.adminLoginStage.setTitle("Administratoren-Login");
+        this.adminLoginStage.initModality(Modality.APPLICATION_MODAL);
+        this.adminLoginStage.initOwner(primaryStage);
+        adminLoginWrapper.getController().setStageAndMain(adminLoginStage, this);
+        //TODO: Check CameraHandlerImpl, Nullpointer is thrown
+        /*
         try {
-            CameraHandlerImpl cameraHandler= new CameraHandlerImpl((ShotFrameController) springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getLoadedObject(),new ImageServiceImpl());
+            CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl());
             cameraHandler.getImages();
-        } catch (Exception e) {
+        } catch (ServiceException e) {
+            LOGGER.info("Getting camera - "+e);
         }
+        */
     }
 
     @Override
@@ -92,4 +128,15 @@ public class MainApplication extends Application {
         super.stop();
     }
 
+    public void showAdminLogin(){
+        adminLoginStage.show();
+    }
+    public void showShootingAdministration(){
+        shootingStage.show();
+    }
+
+    //TODO: call this from shootingStage
+    public void showProfileStage(){
+        profileStage.show();
+    }
 }

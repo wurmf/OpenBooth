@@ -24,6 +24,10 @@ public abstract class AbstractAdminUserDAOTest {
     protected void setAdminUserDAO(AdminUserDAO adminUserDAO){
         this.adminUserDAO=adminUserDAO;
     }
+
+    /**
+     * Check if nonexistent-user-read returns null
+     */
     @Test
     public void readNonExistentUser(){
         try {
@@ -32,6 +36,10 @@ public abstract class AbstractAdminUserDAOTest {
             LOGGER.error("readNonExistentUser - "+e);
         }
     }
+
+    /**
+     * Checks if read(null) returns null and not an exception
+     */
     @Test
     public void readNullUser(){
         try {
@@ -40,6 +48,10 @@ public abstract class AbstractAdminUserDAOTest {
             LOGGER.error("readNullUser - "+e);
         }
     }
+
+    /**
+     * Checks if read of empty string returns null
+     */
     @Test
     public void readEmptyUserName(){
         try {
@@ -48,6 +60,10 @@ public abstract class AbstractAdminUserDAOTest {
             LOGGER.error("readEmptyUserName - "+e);
         }
     }
+
+    /**
+     * Checks if existing user is returned and same values are returned as are put in the database
+     */
     @Test
     public void readExistingUser(){
         try {
