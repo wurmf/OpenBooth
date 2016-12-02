@@ -63,7 +63,7 @@ public class CameraHandlerImpl implements CameraHandler {
                 String imagePath= "/images/image" + id++ + ".jpg";
                 Image image= new Image(0,  imagePath, sessionID, new Date());
                 Image image2=imageService.create(image);
-                cf.save(new File("/images/shooting1/image" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
+                cf.save(new File("/home/fabian/image" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
 		CameraUtils.closeQuietly(cf);
                 shotFrameController.refreshShot();
             }

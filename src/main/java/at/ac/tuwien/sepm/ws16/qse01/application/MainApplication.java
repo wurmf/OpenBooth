@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -62,7 +64,7 @@ public class MainApplication extends Application {
         //      2) number of frames to open = number of existing camera in DB
 
         /* Creating shotFrame */
-        int anz = 3;
+        int anz = 1;
         int x = 200;
         for(int i=0; i<anz; i++) { // Anzahl der Kameras...
             Stage stage = new Stage();
