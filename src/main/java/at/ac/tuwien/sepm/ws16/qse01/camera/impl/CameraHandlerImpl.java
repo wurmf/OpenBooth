@@ -34,9 +34,6 @@ public class CameraHandlerImpl implements CameraHandler {
         this.imageService= imageService;
         //this.sessionService= sessionService;
     }
-    public CameraHandlerImpl()
-    {
-    }
 
     /**
      * Saves image in images folder and in database.
@@ -51,7 +48,7 @@ public class CameraHandlerImpl implements CameraHandler {
 
         final CameraList cl = new CameraList();
         try {
-            LOGGER.debug("Cameras: " + cl);
+            LOGGER.info("Cameras: " + cl);
         } finally {
             CameraUtils.closeQuietly(cl);
         }
@@ -61,23 +58,19 @@ public class CameraHandlerImpl implements CameraHandler {
             while(i==1) {
 
                 c.initialize();
-                final CameraFile cf = c.waitForImage();
-                if(cf!=null)
-                {
-                    int sessionID = 1;
-                    String imagePath = "/images/image" + id++ + ".jpg";
-                    Image image = new Image(0, imagePath, sessionID, new Date());
-                    //Image image2=imageService.create(image);
-                    cf.save(new File("image" + 1 + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
-                    //LOGGER.debug(image2.getImageID()+ "");
-                    //shotFrameController.refreshShot();
-                }
+                final CameraFile cf = c.wait_for_image();
+                int sessionID=1;
+                String imagePath= "/images/image" + id++ + ".jpg";
+                Image image= new Image(0,  imagePath, sessionID, new Date());
+                Image image2=imageService.create(image);
+                cf.save(new File("/images/shooting1/image" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
+		CameraUtils.closeQuietly(cf);
+                shotFrameController.refreshShot();
             }
         }
         catch(CameraException ex)
         {
-            LOGGER.debug("waitForImage Timeout");
-            //throw new CameraException(ex.getMessage(), ex.getResult());
+            throw new CameraException(ex.getMessage(), ex.getResult());
         }
         finally {
             CameraUtils.closeQuietly(c);

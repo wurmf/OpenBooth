@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.IOException;
 
-import static at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native.GP_EVENT_FILE_ADDED;
-
 /**
  * Represents a camera. Thread-unsafe.
  * @author Martin Vysny
@@ -126,35 +124,28 @@ public class CameraGphoto implements Closeable {
         }
     }
 
-    public CameraFile waitForImage()
+    public CameraFile wait_for_image()
     {
         checkNotClosed();
         PointerByReference event = new PointerByReference();
+	PointerByReference event_data = new PointerByReference();
         try {
-            LOGGER.debug("wait for Event from camera");
-            final CameraFilePath path = new CameraFilePath.ByReference();
-            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, path.getPointer(), CameraList.CONTEXT), "gp_camera_wait_for_event");
-            final CameraFile.Path p = new CameraFile.Path(path);
-            if(event.getPointer().getInt(0)==GP_EVENT_FILE_ADDED)
-            {
-                LOGGER.debug("file on camera added");
-                return p.newFile(camera);
-            }
-            else
-            {
-                return null;
-            }
+            LOGGER.info("wait for Event from camera");
+            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 100000 , event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
+
+	    final CameraFilePath path = new CameraFilePath(event_data.getValue());
+	    final CameraFile.Path p = new CameraFile.Path(path);
+
+            return p.newFile(camera);
         }
         catch(CameraException ex)
         {
-            LOGGER.error("wait for image failed");
             return null;
         }
-
     }
 
     /**
-     * Returns new configuration for the camera.e
+     * Returns new configuration for the camera.
      * @return the configuration, never null. Must be closed afterwards.
      */
     public CameraWidgets newConfiguration() {

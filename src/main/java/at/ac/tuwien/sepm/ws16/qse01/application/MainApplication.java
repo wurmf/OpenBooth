@@ -98,13 +98,13 @@ public class MainApplication extends Application {
         this.adminLoginStage.initOwner(primaryStage);
         adminLoginWrapper.getController().setStageAndMain(adminLoginStage, this);
         //TODO: Check CameraHandlerImpl, Nullpointer is thrown
-        /*
+
         try {
-            CameraHandlerImpl cameraHandler= new CameraHandlerImpl((ShotFrameController) springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getLoadedObject(),new ImageServiceImpl());
+            CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl());
             cameraHandler.getImages();
-        } catch (Exception e) {
+        } catch (ServiceException e) {
+            LOGGER.info("Getting camera - "+e);
         }
-        */
 
     }
 
