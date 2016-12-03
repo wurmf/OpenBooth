@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
+import java.util.List;
+
 /**
  * Interface to implement services for images.
  */
@@ -38,4 +40,15 @@ public interface ImageService {
      *
      * */
     public String getLastImgPath(int shootingid);
+
+    /**
+     * Returns a string list including all image paths by shootingid
+     *
+     * @param shootingid
+     *            the ID of shooting
+     *
+     * @return List<String> list of all imagepaths from given shooting
+     *
+     * */
+    public List<String> getAllImagePaths(int shootingid);
 }

@@ -1,6 +1,11 @@
+package at.ac.tuwien.sepm.ws16.qse01.dao;
+
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,11 +19,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * Tests if everything reacts so as required.
  */
 public class ImageDAOTest {
-    private ImageDAO dao;
-
+    private ImageDAO imageDAO;
+    private ShootingDAO shootingDAO;
     @Before
     public void before() throws Exception {
-        dao = new JDBCImageDAO();
+        imageDAO = new JDBCImageDAO();
+        shootingDAO = new JDBCShootingDAO();
     }
 
     /**
@@ -27,7 +33,7 @@ public class ImageDAOTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void createNullImage() throws Throwable  {
-        dao.create(null);
+        imageDAO.create(null);
     }
 
     /**
@@ -40,12 +46,12 @@ public class ImageDAOTest {
         img.setAutoDate();
 
         //There is no image in database with ID = 99
-        assertThat(String.valueOf(dao.read(99)),is("null"));
+        assertThat(String.valueOf(imageDAO.read(99)),is("null"));
 
-        Image createdImg = dao.create(img);
+        Image createdImg = imageDAO.create(img);
 
         //Check if the created image saved.
-        assertThat(dao.read(createdImg.getImageID()).getImagepath(),is(img.getImagepath()));
+        assertThat(imageDAO.read(createdImg.getImageID()).getImagepath(),is(img.getImagepath()));
     }
 
     /**
@@ -56,10 +62,10 @@ public class ImageDAOTest {
         Image img = new Image(99,"/images/existingImage.jpg",2,new Date());
         img.setAutoDate();
 
-        Image createdImg = dao.create(img);
+        Image createdImg = imageDAO.create(img);
 
         //Check if read function returns the saved image.
-        assertThat(dao.read(createdImg.getImageID()).getImagepath(),is("/images/existingImage.jpg"));
+        assertThat(imageDAO.read(createdImg.getImageID()).getImagepath(),is("/images/existingImage.jpg"));
     }
 
     /**
@@ -70,12 +76,26 @@ public class ImageDAOTest {
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
-        dao.create(img);
+        imageDAO.create(img);
 
         //Check if the last created imagepath will be returned
-        assertThat(dao.getLastImgPath(2),is("/images/lastCreatedImage.jpg"));
+        assertThat(imageDAO.getLastImgPath(2),is("/images/lastCreatedImage.jpg"));
     }
 
+    /**
+     * This test reads all image paths of an existing shooting in database.
+     */
+    @Test
+    public void getAllImagePaths() throws Throwable  {
+        shootingDAO.add_session(new Shooting(99,"/images/shooting99",true));
+        Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
+        img.setAutoDate();
+
+        imageDAO.create(img);
+        //TODO: shooting -> create() -> funktioniert nicht!
+        //Check if the last created imagepath will be returned
+        assertThat(imageDAO.getAllImagePaths(99).size(),is(1));
+    }
 
 
 
