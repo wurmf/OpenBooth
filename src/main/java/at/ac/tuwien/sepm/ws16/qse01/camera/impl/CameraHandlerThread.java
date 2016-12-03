@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * Created by osboxes on 03.12.16.
  */
-public class CameraHandlerThread  extends Thread{
+public class CameraHandlerThread  implements Runnable{
 
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
