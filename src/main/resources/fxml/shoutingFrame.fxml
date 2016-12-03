@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.scene.control.ComboBox?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController">
    <children>
       <Button layoutX="118.0" layoutY="929.0" mnemonicParsing="false" onAction="#on_DemolitionPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Abbrechen" textFill="WHITE">
@@ -14,12 +13,12 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <Button layoutX="1497.0" layoutY="926.0" mnemonicParsing="false" onAction="#on_StartSessoionPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
+      <Button layoutX="1511.0" layoutY="929.0" mnemonicParsing="false" onAction="#on_StartSessoionPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="cb_Profile" layoutX="404.0" layoutY="101.0" prefHeight="69.0" prefWidth="1000.0" />
+      <ChoiceBox fx:id="cb_Profile" layoutX="753.0" layoutY="95.0" prefHeight="82.0" prefWidth="999.0" />
       <Label layoutX="268.0" layoutY="110.0" prefHeight="52.0" prefWidth="114.0" text="Profil:" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
@@ -30,7 +29,7 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Label>
-      <Button layoutX="410.0" layoutY="382.0" mnemonicParsing="false" onAction="#on_FinedPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Durchsuchen" textFill="WHITE">
+      <Button layoutX="410.0" layoutY="382.0" mnemonicParsing="false" onAction="#on_FinedPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Durchsuchen" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
@@ -41,7 +40,7 @@
          </font>
       </Label>
 
-      <Button layoutX="885.0" layoutY="237.0" mnemonicParsing="false" onAction="#on_EditPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Zu den Profilen" textFill="WHITE">
+      <Button layoutX="410.0" layoutY="95.0" mnemonicParsing="false" onAction="#on_EditPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Zu den Profilen" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>

@@ -56,7 +56,7 @@ public class ShootingAdminController {
     @FXML
     private ChoiceBox cb_Profile;
 
-    String path ="";
+    String path =null;
 
     MainApplication mainApplication;
     ShootingService sessionService;
@@ -81,10 +81,9 @@ public class ShootingAdminController {
     /**
      * inizialise cb_Profiles
      *
-    */
+     */
     @FXML
     private void initialize() {
-
 
         try {
             List<Profile> prof = profileService.getAllProfiles();
@@ -104,29 +103,31 @@ public class ShootingAdminController {
     }
     }
 
+
     /**
      *
      * when pressed an new session starts(costumer interface opens)
      *
      * @param actionEvent
      *
-     */
+*/
     public void on_StartSessoionPressed(ActionEvent actionEvent) {
-
+        LOGGER.info(path);
         if (cb_Profile.getValue() != null) {
-            if(path==""||path==null) {
+            if(path!=null) {
 
+                try{
 
-                Profile profile = (Profile) cb_Profile.getSelectionModel().getSelectedItem();
-                Shooting shouting = new Shooting(profile.getId(), path, true);
+                    Profile profile = (Profile) cb_Profile.getSelectionModel().getSelectedItem();
+                    Shooting shouting = new Shooting(profile.getId(), path, true);
 
-                lb_storageplace.setText("");
-                LOGGER.info("ShootingAdminController:", shouting);
+                    lb_storageplace.setText("");
+                    LOGGER.info("ShootingAdminController:", path);
+                    path=null;
 
-                try {
                     sessionService.add_session(shouting);
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.info("shouting erstellen", serviceExeption.getMessage());
+                    LOGGER.debug( serviceExeption.getMessage());
                     informationDialog("Es konnte keine Shooting erstellt werden.");
                 }
             } else{
@@ -138,15 +139,15 @@ public class ShootingAdminController {
         }
     }
 
-    /**
-     *
-     * Opens Mainfframe again
-     * @param actionEvent
-     *
-     */
+            /**
+             *
+             * Opens Mainfframe again
+             * @param actionEvent
+             *
+             */
     public void on_DemolitionPressed(ActionEvent actionEvent) {
-        lb_storageplace.setText("");
-          mainApplication.showMainFraim();
+    lb_storageplace.setText("");
+    primaryStage.close();
     }
 
     /**
@@ -156,12 +157,16 @@ public class ShootingAdminController {
      */
     public void on_FinedPressed(ActionEvent actionEvent) {
 
+        try{
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Speicherort wählen");
             File savefile =directoryChooser.showDialog(primaryStage);
-            lb_storageplace.setText(savefile.getPath());
-            path = savefile.getPath();
 
+                lb_storageplace.setText(savefile.getPath());
+                path = savefile.getPath();
+        }catch (NullPointerException n){
+            informationDialog("Kein Pfad gewählt");
+        }
     }
 
     /**
@@ -183,5 +188,7 @@ public class ShootingAdminController {
         information.setHeaderText("Ein Fehler ist Aufgetreten");
         information.show();
     }
+
+
 }
 

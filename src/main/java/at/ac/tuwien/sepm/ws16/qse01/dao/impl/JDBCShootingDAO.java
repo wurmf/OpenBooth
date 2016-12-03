@@ -9,10 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by Aniela on 23.11.2016.
@@ -30,8 +27,14 @@ public class JDBCShootingDAO implements ShootingDAO {
 @Override
     public void add_session(Shooting shouting) throws PersistenceException {
       try {
-          PreparedStatement stmt=con.prepareStatement("insert into Shootings( profileId,  FOLDERPATH, isactive) values("+ shouting.getPropertyId()+
-                  shouting.getStorageFile()+", "+ shouting.getIsactiv()+ " )", java.sql.Statement.RETURN_GENERATED_KEYS);
+          String sql="insert into Shootings( profileId,  FOLDERPATH, isactive) values(?,?,?)";
+          PreparedStatement stmt = null;
+              stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+              //stmt.setInt(1,profile.getId());
+              stmt.setInt(1,shouting.getPropertyId());
+              stmt.setString(2,shouting.getStorageFile());
+              stmt.setBoolean(3,shouting.getIsactiv());
+              stmt.executeUpdate();
 
       } catch (SQLException e) {
             LOGGER.info("Shooting",e.getMessage());

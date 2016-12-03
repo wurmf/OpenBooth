@@ -27,6 +27,7 @@ public class ShootingServiceImpl implements ShootingService {
 
     public void add_session(Shooting shouting) throws ServiceException {
         try {
+
             sessionDAO.add_session(shouting);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());

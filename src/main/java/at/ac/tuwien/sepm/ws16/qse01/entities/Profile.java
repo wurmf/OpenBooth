@@ -49,4 +49,6 @@ public class Profile {
     public boolean isActive() {return isActive;}
 
     public void setIsActive(boolean isActive) {this.isActive = isActive;}
+
+    public String toString(){return this.name;}
 }

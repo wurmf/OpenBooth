@@ -51,14 +51,14 @@ public class MainApplication extends Application {
         shootingStage.setFullScreen(true);
         shootingWrapper.getController().setStageAndMain(shootingStage, this);
 
-        /*        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
+        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
         mfWrapper.getController().setStageAndMain(primaryStage, this);
         primaryStage.setTitle("Fotostudio");
         primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject()));
+        primaryStage.setFullScreen(true);
+        mainStage=primaryStage;
         primaryStage.show();
-
-*/
 
         //TODO: 1) creating camera table
         //      2) number of frames to open = number of existing camera in DB
@@ -124,7 +124,7 @@ public class MainApplication extends Application {
     }
     public void showMainFraim(){mainStage.show();}
 
-    //TODO: call this from shootingStage
+
     public void showProfileStage(){
         profileStage.show();
     }

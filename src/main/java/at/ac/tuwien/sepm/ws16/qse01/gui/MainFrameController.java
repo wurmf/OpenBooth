@@ -78,6 +78,7 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void on_StartSessionPressed(ActionEvent actionEvent) {
+        //mainApp.showShootingAdministration();
         mainApp.showAdminLogin();
     }
 
@@ -86,8 +87,6 @@ public class MainFrameController {
      *
      */
     public void in_case_of_restart(){
-
-       // Object [] options={"Wiederherstellen", "neue session"};
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                 "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
@@ -99,13 +98,9 @@ public class MainFrameController {
             //yes
         } else {
             service.end_session();
-
             informationDialog("Session wurde beendet");
-
         }
     }
-
-
 
     /**
      * stop programm
@@ -124,6 +119,4 @@ public class MainFrameController {
         information.setHeaderText("Ein Fehler ist Aufgetreten");
 
     }
-
-
 }
