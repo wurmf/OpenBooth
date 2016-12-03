@@ -25,27 +25,27 @@ public class ShootingServiceImpl implements ShootingService {
         return imagePath;
     }
 
-    public void add_session(Shooting shouting) throws ServiceException {
+    public void addShooting(Shooting shouting) throws ServiceException {
         try {
 
-            sessionDAO.add_session(shouting);
+            sessionDAO.create(shouting);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
     }
 
 
-    public Shooting search_isactive() throws ServiceException {
+    public Shooting searchIsActive() throws ServiceException {
 
         try {
-            return sessionDAO.search_isactive();
+            return sessionDAO.searchIsActive();
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
     }
 
 
-    public void end_session() {
-        sessionDAO.end_session();
+    public void endShooting() {
+        sessionDAO.endShooting();
     }
 }

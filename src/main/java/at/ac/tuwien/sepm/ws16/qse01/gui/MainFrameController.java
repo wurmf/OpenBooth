@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
 import java.util.Optional;
 
 
@@ -37,11 +36,12 @@ public class MainFrameController {
     private Stage primaryStage;
     private MainApplication mainApp;
 
-    ShootingService service;
+    ShootingService shootingService;
+
     @Autowired
     public MainFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
-        service= new ShootingServiceImpl();
+        shootingService = new ShootingServiceImpl();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -59,15 +59,15 @@ public class MainFrameController {
      */
     @FXML
     private void initialize(){
-        Shooting shouting_isactive = null;
+        Shooting activeShooting = null;
         try {
-            shouting_isactive = service.search_isactive();
+            activeShooting = shootingService.searchIsActive();
 
-            if(shouting_isactive.getIsactiv()==true){
-                in_case_of_restart();
+            if(activeShooting.getActive()==true){
+                showRecoveryDialog();
             }
         } catch (ServiceException e) {
-            informationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
+            showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
             LOGGER.info("MainFrameController:",e.getMessage());
          }
     }
@@ -77,8 +77,8 @@ public class MainFrameController {
      *
      * @param actionEvent
      */
-    public void on_StartSessionPressed(ActionEvent actionEvent) {
-       // mainApp.showShootingAdministration();
+    public void onStartShootingPressed(ActionEvent actionEvent) {
+        //mainApp.showShootingAdministration();
         mainApp.showAdminLogin();
     }
 
@@ -86,7 +86,7 @@ public class MainFrameController {
      * in case of brakdown
      *
      */
-    public void in_case_of_restart(){
+    public void showRecoveryDialog(){
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                 "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
@@ -98,8 +98,8 @@ public class MainFrameController {
             //verlinken auf Kunden interface
             //yes
         } else {
-            service.end_session();
-            informationDialog("Session wurde beendet");
+            shootingService.endShooting();
+            showInformationDialog("Shooting wurde beendet");
         }
     }
 
@@ -108,14 +108,14 @@ public class MainFrameController {
      *
      * @param actionEvent
      */
-    public void on_EndPressed(ActionEvent actionEvent) {Platform.exit();
+    public void onEndPressed(ActionEvent actionEvent) {Platform.exit();
     }
 
     /**
      * information dialog
      * @param info
      */
-    public void informationDialog(String info){
+    public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.initOwner(primaryStage);
         information.setHeaderText("Ein Fehler ist Aufgetreten");

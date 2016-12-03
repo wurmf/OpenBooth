@@ -11,22 +11,22 @@ public interface ShootingService {
     /**
      *  calls adding in DAO
      *
-     * @param shouting
+     * @param shooting
      */
-    public void add_session(Shooting shouting) throws ServiceException;
+    public void addShooting(Shooting shooting) throws ServiceException;
 
     /**
-     * calls search_isactive in DAO
+     * calls searchIsActive in DAO
      * returns value to UI
      *
-     * @return session
+     * @return Shooting
      */
-    public Shooting search_isactive() throws ServiceException;
+    public Shooting searchIsActive() throws ServiceException;
 
     /**
-     * calls end_session
+     * calls endShooting
      */
-    public void end_session();
+    public void endShooting();
 
 }
 

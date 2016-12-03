@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheConfig;
 
 import java.sql.*;
 
@@ -25,15 +24,15 @@ public class JDBCShootingDAO implements ShootingDAO {
       private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 @Override
-    public void add_session(Shooting shouting) throws PersistenceException {
+    public void create(Shooting shouting) throws PersistenceException {
       try {
           String sql="insert into Shootings( profileId,  FOLDERPATH, isactive) values(?,?,?)";
           PreparedStatement stmt = null;
               stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
               //stmt.setInt(1,profile.getId());
-              stmt.setInt(1,shouting.getPropertyId());
-              stmt.setString(2,shouting.getStorageFile());
-              stmt.setBoolean(3,shouting.getIsactiv());
+              stmt.setInt(1,shouting.getId());
+              stmt.setString(2,shouting.getStorageDir());
+              stmt.setBoolean(3,shouting.getActive());
               stmt.executeUpdate();
 
       } catch (SQLException e) {
@@ -43,7 +42,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
 @Override
-    public Shooting search_isactive() throws PersistenceException {
+    public Shooting searchIsActive() throws PersistenceException {
       Shooting shouting = new Shooting(0,"",false);
          try {//exists
                 PreparedStatement stmt = con.prepareStatement("select * from Shootings where isactive = true");
@@ -60,7 +59,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public void end_session() {
+    public void endShooting() {
    try {
             String prepered="update Shootings set isactive=? where isactive= ?";
             PreparedStatement stmt = con.prepareStatement(prepered);

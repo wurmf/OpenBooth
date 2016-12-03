@@ -9,12 +9,12 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 public interface ShootingDAO {
     /**
      *
-     * adds new shouting to database
+     * adds new shooting to database
      *
-     * @param shouting
+     * @param shooting
      *
      */
-    public void add_session(Shooting shouting) throws PersistenceException;
+    public void create(Shooting shooting) throws PersistenceException;
 
     /**
      *
@@ -24,11 +24,11 @@ public interface ShootingDAO {
      * @return Shooting
      *
      */
-    public Shooting search_isactive() throws PersistenceException;
+    public Shooting searchIsActive() throws PersistenceException;
 
     /**
      * closes activ session
      *
      */
-    public void end_session();
+    public void endShooting();
 }

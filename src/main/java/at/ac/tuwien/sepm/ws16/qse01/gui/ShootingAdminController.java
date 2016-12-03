@@ -7,38 +7,23 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
-import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.stage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
 import java.io.File;
-import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 //TODO: Remove everything Swing related! We have to use JavaFX-Classes
@@ -52,9 +37,9 @@ public class ShootingAdminController {
     private Stage primaryStage;
 
     @FXML
-    private Label lb_storageplace;//lb_storageplace.setText();
+    private Label storageDirLabel;//storageDirLabel.setText();
     @FXML
-    private ChoiceBox cb_Profile;
+    private ChoiceBox profileChoiceBox;
 
     String path =null;
 
@@ -67,7 +52,8 @@ public class ShootingAdminController {
         sessionService = new ShootingServiceImpl();
         profileService= new ProfileServiceImpl();
         this.springFXMLLoader = springFXMLLoader;
-    } public void setPrimaryStage(Stage primaryStage) {
+    }
+    public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
     public void setStageAndMain(Stage primaryStage, MainApplication mainApplication){
@@ -90,16 +76,16 @@ public class ShootingAdminController {
 
        ObservableList<Profile> observableListProfile = FXCollections.observableList(prof);
 
-        cb_Profile.setItems(observableListProfile);
+        profileChoiceBox.setItems(observableListProfile);
 
-       // cb_Profile.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
+       // profileChoiceBox.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
 
 
-        if(cb_Profile!=null){
-            cb_Profile.setValue(observableListProfile.get(0));
+        if(profileChoiceBox !=null){
+            profileChoiceBox.setValue(observableListProfile.get(0));
         }
     } catch (ServiceException e) {
-        informationDialog("Bitte erstellen Sie ein Profil");
+        showInformationDialog("Bitte erstellen Sie ein Profil");
     }
     }
 
@@ -110,31 +96,31 @@ public class ShootingAdminController {
      * @param actionEvent
      *
 */
-    public void on_StartSessoionPressed(ActionEvent actionEvent) {
+    public void onStartShootingPressed(ActionEvent actionEvent) {
         LOGGER.info(path);
-        if (cb_Profile.getValue() != null) {
+        if (profileChoiceBox.getValue() != null) {
             if(path!=null) {
 
                 try{
 
-                    Profile profile = (Profile) cb_Profile.getSelectionModel().getSelectedItem();
+                    Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
                     Shooting shouting = new Shooting(profile.getId(), path, true);
 
-                    lb_storageplace.setText("");
+                    storageDirLabel.setText("");
                     LOGGER.info("ShootingAdminController:", path);
                     path=null;
 
-                    sessionService.add_session(shouting);
+                    sessionService.addShooting(shouting);
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
-                    informationDialog("Es konnte keine Shooting erstellt werden.");
+                    showInformationDialog("Es konnte keine Shooting erstellt werden.");
                 }
             } else{
-                informationDialog("Bitte wählen Sie einen speicher Pfad aus");
+                showInformationDialog("Bitte wählen Sie einen speicher Pfad aus");
             }
 
         } else {
-            informationDialog("Bitte erstellen Sie ein neues Profil");
+            showInformationDialog("Bitte erstellen Sie ein neues Profil");
         }
     }
 
@@ -144,8 +130,8 @@ public class ShootingAdminController {
              * @param actionEvent
              *
              */
-    public void on_DemolitionPressed(ActionEvent actionEvent) {
-    lb_storageplace.setText("");
+    public void onDemolitionPressed(ActionEvent actionEvent) {
+    storageDirLabel.setText("");
     primaryStage.close();
     }
 
@@ -154,7 +140,7 @@ public class ShootingAdminController {
      * @param actionEvent
      *
      */
-    public void on_FinedPressed(ActionEvent actionEvent) {
+    public void onChooseStorageDirPressed(ActionEvent actionEvent) {
 
         try{
             DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -162,10 +148,10 @@ public class ShootingAdminController {
             //directoryChooser.in
             File savefile =directoryChooser.showDialog(primaryStage);
 
-                lb_storageplace.setText(savefile.getPath());
+                storageDirLabel.setText(savefile.getPath());
                 path = savefile.getPath();
         }catch (NullPointerException n){
-            informationDialog("Kein Pfad gewählt");
+            showInformationDialog("Kein Pfad gewählt");
         }
     }
 
@@ -175,7 +161,7 @@ public class ShootingAdminController {
      * @param actionEvent
      *
      */
-    public void on_EditPressed(ActionEvent actionEvent) {
+    public void onEditPressed(ActionEvent actionEvent) {
        mainApplication.showProfileStage();
     }
 
@@ -183,7 +169,7 @@ public class ShootingAdminController {
      * information dialog
      * @param info
      */
-    public void informationDialog(String info){
+    public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
         information.initOwner(primaryStage);
@@ -194,9 +180,12 @@ public class ShootingAdminController {
      * Shooting wird beendet
      * @param actionEvent
      */
-    public void on_StopShootingPressed(ActionEvent actionEvent) {
-        sessionService.end_session();
-        informationDialog("Session wurde beendet!");
+    public void onStopShootingPressed(ActionEvent actionEvent) {
+        sessionService.endShooting();
+        Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
+        information.setHeaderText("Bestätigung");
+        information.initOwner(primaryStage);
+        information.show();
     }
 }
 

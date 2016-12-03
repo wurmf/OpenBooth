@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import javafx.application.Application;
@@ -45,7 +44,7 @@ public class MainApplication extends Application {
         SpringFXMLLoader springFXMLLoader = applicationContext.getBean(SpringFXMLLoader.class);
 
         SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/shoutingFrame.fxml", ShootingAdminController.class);
+                springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
         shootingStage = new Stage();
         shootingStage.setScene(new Scene((Parent) shootingWrapper.getLoadedObject()));
         shootingStage.setFullScreen(true);
@@ -70,7 +69,7 @@ public class MainApplication extends Application {
             Stage stage = new Stage();
             stage.setTitle("Shot Frame "+(i+1));
             stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
-            stage.initModality(Modality.WINDOW_MODAL);
+            //stage.initModality(Modality.WINDOW_MODAL);
             stage.setFullScreen(false);
             stage.initOwner(primaryStage);
             stage.setX(x);
@@ -83,7 +82,7 @@ public class MainApplication extends Application {
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
         profileStage = new Stage();
-        profileStage.setTitle("Profile Verwaltung");
+        profileStage.setTitle("Profilverwaltung");
         profileStage.initOwner(shootingStage);
         profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
 
@@ -123,7 +122,7 @@ public class MainApplication extends Application {
     public void showShootingAdministration(){
         shootingStage.show();
     }
-    public void showMainFraim(){mainStage.show();}
+    public void showMainFrame(){mainStage.show();}
 
 
     public void showProfileStage(){

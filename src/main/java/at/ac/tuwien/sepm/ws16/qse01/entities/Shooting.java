@@ -4,37 +4,37 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  * Created by Aniela on 23.11.2016.
  */
 public class Shooting {
-    int propertyId;
-    String storageFile;
-    boolean isactiv;
+    int id;
+    String storageDir;
+    boolean isActive;
 
-    public Shooting(int propertyId, String storageFile, boolean isactiv) {
-        this.propertyId = propertyId;
-        this.storageFile = storageFile;
-        this.isactiv = isactiv;
+    public Shooting(int id, String storageDir, boolean isActive) {
+        this.id = id;
+        this.storageDir = storageDir;
+        this.isActive = isActive;
     }
 
-    public int getPropertyId() {
-        return propertyId;
+    public int getId() {
+        return id;
     }
 
-    public void setPropertyId(int propertyId) {
-        this.propertyId = propertyId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getStorageFile() {
-        return storageFile;
+    public String getStorageDir() {
+        return storageDir;
     }
 
-    public void setStorageFile(String storageFile) {
-        this.storageFile = storageFile;
+    public void setStorageDir(String storageDir) {
+        this.storageDir = storageDir;
     }
 
-    public boolean getIsactiv() {
-        return isactiv;
+    public boolean getActive() {
+        return isActive;
     }
 
-    public void setIsactiv(boolean isactiv) {
-        this.isactiv = isactiv;
+    public void setActive(boolean active) {
+        this.isActive = active;
     }
 }
