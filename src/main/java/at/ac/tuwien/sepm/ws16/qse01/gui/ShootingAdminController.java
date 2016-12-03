@@ -196,6 +196,7 @@ public class ShootingAdminController {
      */
     public void on_StopShootingPressed(ActionEvent actionEvent) {
         sessionService.end_session();
+        informationDialog("Session wurde beendet!");
     }
 }
 
