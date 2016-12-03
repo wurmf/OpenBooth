@@ -98,8 +98,12 @@ public class MainFrameController {
             //verlinken auf Kunden interface
             //yes
         } else {
-            shootingService.endShooting();
-            showInformationDialog("Shooting wurde beendet");
+            try {
+                shootingService.endShooting();
+                showInformationDialog("Shooting wurde beendet");
+            } catch (ServiceException e) {
+                showInformationDialog("Shooting konnte nicht beendet werden!");
+            }
         }
     }
 

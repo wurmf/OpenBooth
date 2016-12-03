@@ -59,7 +59,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public void endShooting() {
+    public void endShooting() throws PersistenceException {
    try {
             String prepered="update Shootings set isactive=? where isactive= ?";
             PreparedStatement stmt = con.prepareStatement(prepered);
@@ -70,6 +70,7 @@ public class JDBCShootingDAO implements ShootingDAO {
 
         } catch (SQLException e) {
             LOGGER.info("ShootingDAO", e.getMessage());
+            throw new PersistenceException(e.getMessage());
         }
     }
 

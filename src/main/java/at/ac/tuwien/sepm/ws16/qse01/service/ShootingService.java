@@ -26,7 +26,7 @@ public interface ShootingService {
     /**
      * calls endShooting
      */
-    public void endShooting();
+    public void endShooting() throws ServiceException;
 
 }
 

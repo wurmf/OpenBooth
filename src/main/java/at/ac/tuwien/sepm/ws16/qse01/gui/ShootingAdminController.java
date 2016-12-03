@@ -181,11 +181,15 @@ public class ShootingAdminController {
      * @param actionEvent
      */
     public void onStopShootingPressed(ActionEvent actionEvent) {
-        sessionService.endShooting();
-        Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
-        information.setHeaderText("Bestätigung");
-        information.initOwner(primaryStage);
-        information.show();
+        try {
+            sessionService.endShooting();
+            Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
+            information.setHeaderText("Bestätigung");
+            information.initOwner(primaryStage);
+            information.show();
+        } catch (ServiceException e) {
+            showInformationDialog("Shooting konnte nicht beendet werden!");
+        }
     }
 }
 

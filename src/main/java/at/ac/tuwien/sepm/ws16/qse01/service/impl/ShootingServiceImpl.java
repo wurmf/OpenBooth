@@ -45,7 +45,11 @@ public class ShootingServiceImpl implements ShootingService {
     }
 
 
-    public void endShooting() {
-        sessionDAO.endShooting();
+    public void endShooting() throws ServiceException {
+        try {
+            sessionDAO.endShooting();
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage());
+        }
     }
 }

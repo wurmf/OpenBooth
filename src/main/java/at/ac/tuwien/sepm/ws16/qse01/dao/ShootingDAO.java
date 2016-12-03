@@ -30,5 +30,5 @@ public interface ShootingDAO {
      * closes activ session
      *
      */
-    public void endShooting();
+    public void endShooting() throws PersistenceException;
 }
