@@ -54,4 +54,13 @@ public interface ImageDAO {
      *
      * */
     public List<String> getAllImagePaths(int shootingid);
+
+    /**
+     * Returns the next imageID
+     *
+     *
+     * @return int  next image ID
+     *
+     * */
+    public int getNextImageID();
 }
