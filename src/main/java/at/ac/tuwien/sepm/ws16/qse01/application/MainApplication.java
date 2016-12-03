@@ -84,6 +84,7 @@ public class MainApplication extends Application {
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
         profileStage = new Stage();
         profileStage.setTitle("Profile Verwaltung");
+        profileStage.initOwner(shootingStage);
         profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
 
 

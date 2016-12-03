@@ -160,6 +160,7 @@ public class ShootingAdminController {
         try{
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Speicherort wählen");
+            //directoryChooser.in
             File savefile =directoryChooser.showDialog(primaryStage);
 
                 lb_storageplace.setText(savefile.getPath());
@@ -186,6 +187,7 @@ public class ShootingAdminController {
     public void informationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.initOwner(primaryStage);
         information.show();
     }
 

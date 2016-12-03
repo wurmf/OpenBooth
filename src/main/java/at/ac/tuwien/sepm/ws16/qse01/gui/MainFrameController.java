@@ -91,6 +91,7 @@ public class MainFrameController {
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                 "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
         alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
+        alert.initOwner(primaryStage);
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
 
@@ -116,6 +117,7 @@ public class MainFrameController {
      */
     public void informationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+        information.initOwner(primaryStage);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
 
     }

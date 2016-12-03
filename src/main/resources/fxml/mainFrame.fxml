@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -12,12 +13,16 @@
             <Font name="HP Simplified" size="60.0" />
          </font>
       </Button>
-      <Button layoutX="1249.0" layoutY="72.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#on_EndPressed" prefHeight="55.0" prefWidth="55.0" snapToPixel="false" style="-fx-background-image: url(&quot;. . /GuiImage/cross.png&quot;); -fx-background-size: 50px 50px; -fx-background-position: center 25px;" textFill="WHITE">
+      <Button layoutX="1249.0" layoutY="72.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#on_EndPressed" prefHeight="55.0" prefWidth="55.0" snapToPixel="false" style="-fx-background-size: 50px 50px; -fx-background-position: center 25px; -fx-background-color: dimgray;" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="60.0" />
          </font>
          <graphic>
-            <ImageView id="endButtonImage" fitHeight="55.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true" style="-fx-image: ..\image\cross.png;" />
+            <ImageView id="endButtonImage" fitHeight="74.0" fitWidth="55.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@/images/cross.png" />
+               </image>
+            </ImageView>
          </graphic>
       </Button>
    </children>
