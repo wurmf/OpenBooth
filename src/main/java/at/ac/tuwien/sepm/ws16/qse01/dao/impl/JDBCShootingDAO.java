@@ -7,12 +7,14 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
 /**
  * Created by Aniela on 23.11.2016.
  */
+@Repository
 public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;

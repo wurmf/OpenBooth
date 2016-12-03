@@ -52,11 +52,11 @@ public class CameraHandlerThread  extends Thread{
                 final CameraFile cf = c.waitForImage();
                 LOGGER.debug("event");
                 if (cf != null) {
-                    Shooting activeShooting = shootingService.search_isactive();
+                    Shooting activeShooting = shootingService.searchIsActive();
                     if(activeShooting != null){
                         int imageID = imageService.getNextImageID();
 
-                        String directoryPath = activeShooting.getStorageFile() + "/shooting" + activeShooting.getPropertyId() + "/";
+                        String directoryPath = activeShooting.getStorageDir() + "/shooting" + activeShooting.getId() + "/";
                         Path storageDir = Paths.get(directoryPath);
                         try {
                             Files.createDirectory(storageDir);
@@ -69,7 +69,7 @@ public class CameraHandlerThread  extends Thread{
                         }
 
                         String imagePath = directoryPath + "img" + imageID;
-                        Image image = new Image(imageID, imagePath, activeShooting.getPropertyId(), new Date());
+                        Image image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
                         image = imageService.create(image);
 
                         cf.save(new File(imagePath).getAbsolutePath());
@@ -78,7 +78,7 @@ public class CameraHandlerThread  extends Thread{
 
 
                         LOGGER.debug(image.getImageID() + "");
-                        LOGGER.debug(imageService.getLastImgPath(activeShooting.getPropertyId()));
+                        LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
                     }else{
                         LOGGER.debug("no active shooting during capture");
                     }

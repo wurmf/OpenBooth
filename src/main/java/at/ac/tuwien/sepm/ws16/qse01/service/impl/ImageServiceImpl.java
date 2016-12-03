@@ -22,13 +22,8 @@ public class ImageServiceImpl implements ImageService {
 
     private static ImageDAO dao;
 
-    public ImageServiceImpl() throws ServiceException {
-        try {
-            dao = new JDBCImageDAO();
-        } catch (PersistenceException e) {
-            LOGGER.error(e.toString());
-            throw new ServiceException(e);
-        }
+    public ImageServiceImpl(ImageDAO imageDAO) throws ServiceException {
+        this.dao = imageDAO;
     }
 
     @Override

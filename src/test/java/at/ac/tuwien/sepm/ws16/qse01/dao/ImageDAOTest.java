@@ -87,7 +87,7 @@ public class ImageDAOTest {
      */
     @Test
     public void getAllImagePaths() throws Throwable  {
-        shootingDAO.add_session(new Shooting(99,"/images/shooting99",true));
+        shootingDAO.create(new Shooting(99,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 

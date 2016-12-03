@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.List;
 /**
  *  Class allows users to create/read an image from database.
  */
+@Repository
 public class JDBCImageDAO implements ImageDAO {
     final static Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
