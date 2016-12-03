@@ -39,9 +39,9 @@ public class MainFrameController {
     ShootingService shootingService;
 
     @Autowired
-    public MainFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
+    public MainFrameController(SpringFXMLLoader springFXMLLoader, ShootingServiceImpl shootingService) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
-        shootingService = new ShootingServiceImpl();
+        this.shootingService = shootingService;
     }
 
     public void setPrimaryStage(Stage primaryStage) {

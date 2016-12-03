@@ -16,8 +16,8 @@ public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     ShootingDAO sessionDAO;
-    public ShootingServiceImpl() throws Exception {
-        sessionDAO = new JDBCShootingDAO();
+    public ShootingServiceImpl(JDBCShootingDAO jdbcShootingDAO) throws Exception {
+        sessionDAO = jdbcShootingDAO;
     }
     String getImageStorage(){
         //DAO.getImageStorage();

@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import javafx.collections.FXCollections;
@@ -44,13 +43,13 @@ public class ShootingAdminController {
     String path =null;
 
     MainApplication mainApplication;
-    ShootingService sessionService;
+    ShootingService shootingService;
     ProfileService profileService;
 
     @Autowired
-    public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
-        sessionService = new ShootingServiceImpl();
-        profileService= new ProfileServiceImpl();
+    public ShootingAdminController(SpringFXMLLoader springFXMLLoader, ProfileService profileService, ShootingService shootingService) throws Exception {
+        this.shootingService = shootingService;
+        this.profileService= profileService;
         this.springFXMLLoader = springFXMLLoader;
     }
     public void setPrimaryStage(Stage primaryStage) {
@@ -110,7 +109,7 @@ public class ShootingAdminController {
                     LOGGER.info("ShootingAdminController:", path);
                     path=null;
 
-                    sessionService.addShooting(shouting);
+                    shootingService.addShooting(shouting);
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
                     showInformationDialog("Es konnte keine Shooting erstellt werden.");
@@ -182,7 +181,7 @@ public class ShootingAdminController {
      */
     public void onStopShootingPressed(ActionEvent actionEvent) {
         try {
-            sessionService.endShooting();
+            shootingService.endShooting();
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");
             information.initOwner(primaryStage);
