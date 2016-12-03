@@ -51,7 +51,7 @@ public class ShotFrameController {
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
 
-        shotView.setImage(new Image(imgPath));
+        shotView.setImage(new Image("file:" + imgPath));
 
     }
 }

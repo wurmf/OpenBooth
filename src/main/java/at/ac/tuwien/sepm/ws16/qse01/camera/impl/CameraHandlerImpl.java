@@ -92,6 +92,7 @@ public class CameraHandlerImpl implements CameraHandler {
         cameraHandlerThread.setImageService(imageService);
         cameraHandlerThread.setShotFrameController(shotFrameController);
         cameraHandlerThread.run();
+
     }
 
 }
