@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * Created by osboxes on 03.12.16.
  */
-public class CameraHandlerThread  implements Runnable{
+public class CameraHandlerThread  extends Thread{
 
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
@@ -26,6 +26,8 @@ public class CameraHandlerThread  implements Runnable{
 
     public void run()
     {
+        int i = 1;
+        boolean imageSaved = false;
         final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
@@ -33,29 +35,31 @@ public class CameraHandlerThread  implements Runnable{
             CameraUtils.closeQuietly(cl);
         }
         final CameraGphoto c = new CameraGphoto();
-        int i = 1;
-        boolean imageSaved = false;
+        c.initialize();
         while (i == 1)
         {
             try {
-                c.initialize();
+
                 final CameraFile cf = c.waitForImage();
+                LOGGER.debug("event");
                 if (cf != null) {
                     int shootngID = 1;
-                    String imagePath = "/images/shooting1/img" + id++ + ".jpg";
+                    String imagePath = System.getProperty("user.home") + "/images/shooting1/img" + id++ + ".jpg";
                     Image image = new Image(0, imagePath, shootngID, new Date());
                     Image image2 = imageService.create(image);
 
-                    cf.save(new File(System.getProperty("user.dir") + "/src/main/resources/images/shooting1/img" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
-                    CameraUtils.closeQuietly(cf);
+                    cf.save(new File(System.getProperty("user.home") + "/images/shooting1/img" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
+                    cf.close();
                     imageSaved=true;
+
+
                     LOGGER.debug(image2.getImageID() + "");
                     LOGGER.debug(imageService.getLastImgPath(shootngID));
+
                 }
 
             } catch (CameraException ex) {
                 LOGGER.debug("waitForImage Timeout");
-                CameraUtils.closeQuietly(c);
                 //throw new CameraException(ex.getMessage(), ex.getResult());
             }
             if(imageSaved)
@@ -65,6 +69,10 @@ public class CameraHandlerThread  implements Runnable{
             imageSaved=false;
         }
         CameraUtils.closeQuietly(c);
+    }
+
+    public static void main(String[] args) {
+        (new Thread(new CameraHandlerThread())).start();
     }
 
     public void setImageService(ImageService imageService) {
