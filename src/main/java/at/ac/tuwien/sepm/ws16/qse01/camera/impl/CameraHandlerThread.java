@@ -15,6 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 /**
@@ -49,13 +54,25 @@ public class CameraHandlerThread  extends Thread{
                 if (cf != null) {
                     Shooting activeShooting = shootingService.search_isactive();
                     if(activeShooting != null){
-                        int imageID = 100;
-                        String directoryPath = activeShooting.getStorageFile() + "shooting" + activeShooting.getPropertyId() + "/";
+                        int imageID = imageService.getNextImageID();
+
+                        String directoryPath = activeShooting.getStorageFile() + "/shooting" + activeShooting.getPropertyId() + "/";
+                        Path storageDir = Paths.get(directoryPath);
+                        try {
+                            Files.createDirectory(storageDir);
+                            LOGGER.info("directory created \n {} \n", storageDir);
+                        } catch (FileAlreadyExistsException e) {
+                            LOGGER.info("Directory " + e.getMessage() + " already exists \n");
+                        } catch (IOException e){
+                            LOGGER.error("error creating directory " + e.getMessage() + "\n");
+                            throw new ServiceException("error creating directory " + e.getMessage() + "\n");
+                        }
+
                         String imagePath = directoryPath + "img" + imageID;
                         Image image = new Image(imageID, imagePath, activeShooting.getPropertyId(), new Date());
                         image = imageService.create(image);
 
-                        cf.save(new File(imagePath).getAbsolutePath());       //TODO: get imageID aus der Datenbank
+                        cf.save(new File(imagePath).getAbsolutePath());
 
                         imageSaved=true;
 

@@ -2,10 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Interface allows users to create/read an image
  */
@@ -45,13 +41,11 @@ public interface ImageDAO {
     public String getLastImgPath(int shootingid);
 
     /**
-     * Returns a string list including all image paths by shootingid
+     * Returns the next imageID
      *
-     * @param shootingid
-     *            the ID of shooting
      *
-     * @return List<String> list of all imagepaths from given shooting
+     * @return int  next image ID
      *
      * */
-    public List<String> getAllImagePaths(int shootingid);
+    public int getNextImageID();
 }

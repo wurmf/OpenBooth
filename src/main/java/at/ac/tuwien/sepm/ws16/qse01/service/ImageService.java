@@ -42,6 +42,15 @@ public interface ImageService {
     public String getLastImgPath(int shootingid);
 
     /**
+     * Returns the next imageID
+     *
+     *
+     * @return int  next image ID
+     *
+     * */
+    public int getNextImageID();
+
+    /**
      * Returns a string list including all image paths by shootingid
      *
      * @param shootingid
