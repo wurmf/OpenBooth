@@ -6,8 +6,11 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,8 +24,9 @@ public class CameraHandlerThread  extends Thread{
 
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
+    ShootingService shootingService;
     ShotFrameController shotFrameController;
-    int id;
+
 
     public void run()
     {
@@ -43,24 +47,33 @@ public class CameraHandlerThread  extends Thread{
                 final CameraFile cf = c.waitForImage();
                 LOGGER.debug("event");
                 if (cf != null) {
-                    int shootngID = 1;
-                    String imagePath = System.getProperty("user.home") + "/images/shooting1/img" + id++ + ".jpg";
-                    Image image = new Image(0, imagePath, shootngID, new Date());
-                    Image image2 = imageService.create(image);
+                    Shooting activeShooting = shootingService.search_isactive();
+                    if(activeShooting != null){
+                        int imageID = 100;
+                        String directoryPath = activeShooting.getStorageFile() + "shooting" + activeShooting.getPropertyId() + "/";
+                        String imagePath = directoryPath + "img" + imageID;
+                        Image image = new Image(imageID, imagePath, activeShooting.getPropertyId(), new Date());
+                        image = imageService.create(image);
 
-                    cf.save(new File(System.getProperty("user.home") + "/images/shooting1/img" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
+                        cf.save(new File(imagePath).getAbsolutePath());       //TODO: get imageID aus der Datenbank
+
+                        imageSaved=true;
+
+
+                        LOGGER.debug(image.getImageID() + "");
+                        LOGGER.debug(imageService.getLastImgPath(activeShooting.getPropertyId()));
+                    }else{
+                        LOGGER.debug("no active shooting during capture");
+                    }
                     cf.close();
-                    imageSaved=true;
-
-
-                    LOGGER.debug(image2.getImageID() + "");
-                    LOGGER.debug(imageService.getLastImgPath(shootngID));
 
                 }
 
             } catch (CameraException ex) {
                 LOGGER.debug("waitForImage Timeout");
                 //throw new CameraException(ex.getMessage(), ex.getResult());
+            } catch (ServiceException ex) {
+                LOGGER.debug("Exception in service: {}", ex.getMessage());
             }
             if(imageSaved)
             {
@@ -83,7 +96,8 @@ public class CameraHandlerThread  extends Thread{
         this.shotFrameController = shotFrameController;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setShootingService(ShootingService shootingService){
+        this.shootingService = shootingService;
     }
+
 }

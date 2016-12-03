@@ -27,7 +27,6 @@ public class CameraHandlerImpl implements CameraHandler {
     private SpringFXMLLoader springFXMLLoader;
     ImageService imageService;
     ShootingService shootingService;
-    int id=5;
 
     @Autowired
     public CameraHandlerImpl(ShotFrameController shotFrameController, ImageService imageService, ShootingService shootingService)
@@ -88,10 +87,10 @@ public class CameraHandlerImpl implements CameraHandler {
         }
         CameraUtils.closeQuietly(c);*/
         CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
-        cameraHandlerThread.setId(id);
         cameraHandlerThread.setImageService(imageService);
         cameraHandlerThread.setShotFrameController(shotFrameController);
-        cameraHandlerThread.run();
+        cameraHandlerThread.setShootingService(shootingService);
+        cameraHandlerThread.start();
 
     }
 
