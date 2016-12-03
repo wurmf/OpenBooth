@@ -177,17 +177,15 @@ public class JDBCImageDAO implements ImageDAO {
         LOGGER.debug("Entering getNextImageID method");
 
         PreparedStatement stmt = null;
-        String query = "select current_value from information_schema.sequences where id = ? ;";
+        String query = "select nextval('images_seq') as nextid; ";
 
         int nextImageID = 0;
         try {
             stmt = con.prepareStatement(query);
-            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
-
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-               nextImageID = rs.getInt("current_value")+1;
+               nextImageID = rs.getInt("nextid")+1;
             }
 
         } catch (SQLException e ) {
