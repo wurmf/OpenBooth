@@ -78,7 +78,7 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void on_StartSessionPressed(ActionEvent actionEvent) {
-        //mainApp.showShootingAdministration();
+       // mainApp.showShootingAdministration();
         mainApp.showAdminLogin();
     }
 

@@ -103,7 +103,6 @@ public class ShootingAdminController {
     }
     }
 
-
     /**
      *
      * when pressed an new session starts(costumer interface opens)
@@ -191,6 +190,12 @@ public class ShootingAdminController {
         information.show();
     }
 
-
+    /**
+     * Shooting wird beendet
+     * @param actionEvent
+     */
+    public void on_StopShootingPressed(ActionEvent actionEvent) {
+        sessionService.end_session();
+    }
 }
 

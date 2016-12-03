@@ -3,6 +3,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -24,7 +26,7 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Label>
-      <Label layoutX="118.0" layoutY="397.0" prefHeight="52.0" prefWidth="235.0" text="Speicher Ort:" textFill="WHITE">
+      <Label layoutX="118.0" layoutY="397.0" prefHeight="52.0" prefWidth="235.0" text="Speicherort:" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
@@ -41,6 +43,11 @@
       </Label>
 
       <Button layoutX="410.0" layoutY="95.0" mnemonicParsing="false" onAction="#on_EditPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Zu den Profilen" textFill="WHITE">
+         <font>
+            <Font name="HP Simplified" size="43.0" />
+         </font>
+      </Button>
+      <Button layoutX="697.0" layoutY="929.0" mnemonicParsing="false" onAction="#on_StopShootingPressed" prefHeight="82.0" prefWidth="527.0" style="-fx-background-color: darkgray;" text="Aktives Shooting Beenden" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
