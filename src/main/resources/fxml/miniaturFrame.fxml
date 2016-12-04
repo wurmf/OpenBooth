@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.MiniaturFrameController">
+   <VBox alignment="CENTER" minWidth="${scrollPane.viewportBounds.width}">
+      <HBox fx:id="hbox" alignment="CENTER">
+<!--  prefHeight="740.0" prefWidth="1240.0" -->
+
+               <TilePane fx:id="tile" maxHeight="-Infinity" maxWidth="1260" minHeight="740" minWidth="-Infinity" prefWidth="1240" snapToPixel="false" style="-fx-background-color: dimgray;">
+                  <children>
+
+                  </children>
+               </TilePane>
+
+      </HBox>
+   </VBox>
+
+</ScrollPane>
