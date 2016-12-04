@@ -22,7 +22,7 @@ public class SessionDAOTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addnullSession() throws Exception {
-        dao.add_session(null);
+        dao.create(null);
     }
 
     /**
@@ -32,6 +32,6 @@ public class SessionDAOTest {
     @Test
     public void addValideSession () throws Exception{
         Shooting shouting =new Shooting(0,"ab",true);
-        dao.add_session(shouting);
+        dao.create(shouting);
     }
 }

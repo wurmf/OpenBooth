@@ -7,12 +7,8 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheConfig;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by Aniela on 23.11.2016.
@@ -28,10 +24,16 @@ public class JDBCShootingDAO implements ShootingDAO {
       private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 @Override
-    public void add_session(Shooting shouting) throws PersistenceException {
+    public void create(Shooting shouting) throws PersistenceException {
       try {
-          PreparedStatement stmt=con.prepareStatement("insert into Shootings( profileId,  FOLDERPATH, isactive) values("+ shouting.getPropertyId()+
-                  shouting.getStorageFile()+", "+ shouting.getIsactiv()+ " )", java.sql.Statement.RETURN_GENERATED_KEYS);
+          String sql="insert into Shootings( profileId,  FOLDERPATH, isactive) values(?,?,?)";
+          PreparedStatement stmt = null;
+              stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+              //stmt.setInt(1,profile.getId());
+              stmt.setInt(1,shouting.getId());
+              stmt.setString(2,shouting.getStorageDir());
+              stmt.setBoolean(3,shouting.getActive());
+              stmt.executeUpdate();
 
       } catch (SQLException e) {
             LOGGER.info("Shooting",e.getMessage());
@@ -40,7 +42,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
 @Override
-    public Shooting search_isactive() throws PersistenceException {
+    public Shooting searchIsActive() throws PersistenceException {
       Shooting shouting = new Shooting(0,"",false);
          try {//exists
                 PreparedStatement stmt = con.prepareStatement("select * from Shootings where isactive = true");
@@ -57,7 +59,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public void end_session() {
+    public void endShooting() throws PersistenceException {
    try {
             String prepered="update Shootings set isactive=? where isactive= ?";
             PreparedStatement stmt = con.prepareStatement(prepered);
@@ -68,6 +70,7 @@ public class JDBCShootingDAO implements ShootingDAO {
 
         } catch (SQLException e) {
             LOGGER.info("ShootingDAO", e.getMessage());
+            throw new PersistenceException(e.getMessage());
         }
     }
 

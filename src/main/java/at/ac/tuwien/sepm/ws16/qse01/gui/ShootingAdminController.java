@@ -1,43 +1,28 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
-import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-import javax.swing.*;
-import java.io.IOException;
-import java.util.LinkedList;
+import java.io.File;
 import java.util.List;
 
 //TODO: Remove everything Swing related! We have to use JavaFX-Classes
@@ -51,21 +36,28 @@ public class ShootingAdminController {
     private Stage primaryStage;
 
     @FXML
-    private Label lb_storageplace;//lb_storageplace.setText();
+    private Label storageDirLabel;//storageDirLabel.setText();
     @FXML
-    private ChoiceBox cb_Profile;
+    private ChoiceBox profileChoiceBox;
 
-    String path ="";
+    String path =null;
 
-    ShootingService sessionService;
-    @Resource
+    MainApplication mainApplication;
+    ShootingService shootingService;
     ProfileService profileService;
 
     @Autowired
-    public ShootingAdminController(SpringFXMLLoader springFXMLLoader) throws Exception {
-        sessionService = new ShootingServiceImpl();
-        //profileService = new ProfileServiceImpl();
+    public ShootingAdminController(SpringFXMLLoader springFXMLLoader, ProfileService profileService, ShootingService shootingService) throws Exception {
+        this.shootingService = shootingService;
+        this.profileService= profileService;
         this.springFXMLLoader = springFXMLLoader;
+    }
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+    public void setStageAndMain(Stage primaryStage, MainApplication mainApplication){
+        this.primaryStage = primaryStage;
+        this.mainApplication = mainApplication;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -74,32 +66,26 @@ public class ShootingAdminController {
     /**
      * inizialise cb_Profiles
      *
-    */
+     */
     @FXML
     private void initialize() {
 
-        List<Profile> prof = null;
         try {
-            prof = profileService.getAllProfiles();
-        } catch (ServiceException e) {
-            showingdialog("Es wurden keien Profile gefunden!");
+            List<Profile> prof = profileService.getAllProfiles();
+
+       ObservableList<Profile> observableListProfile = FXCollections.observableList(prof);
+
+        profileChoiceBox.setItems(observableListProfile);
+
+       // profileChoiceBox.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
+
+
+        if(profileChoiceBox !=null){
+            profileChoiceBox.setValue(observableListProfile.get(0));
         }
-      //  ObservableList<Profile> obj = FXCollections.observableArrayList(prof);
-       List<String> s= new LinkedList<String>();
-
-        ObservableList<String> obj = new ObservableListWrapper<String>(s);
-        for (int i = 0; i <prof.size() ; i++) {
-            obj.add(prof.get(i).getName());
-        }
-        cb_Profile.setItems(obj);
-
-       // cb_Profile.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
-
-
-        if(cb_Profile!=null){
-            cb_Profile.setValue(obj.get(0));
-        }
-
+    } catch (ServiceException e) {
+        showInformationDialog("Bitte erstellen Sie ein Profil");
+    }
     }
 
     /**
@@ -108,56 +94,44 @@ public class ShootingAdminController {
      *
      * @param actionEvent
      *
-     */
-    public void on_StartSessoionPressed(ActionEvent actionEvent) {
-        List<Profile> prof = null;
-        try {
-            prof = profileService.getAllProfiles();
-        } catch (ServiceException e) {
-            showingdialog(e.getMessage());
-        }
-        int i = 0;
+*/
+    public void onStartShootingPressed(ActionEvent actionEvent) {
+        LOGGER.info(path);
+        if (profileChoiceBox.getValue() != null) {
+            if(path!=null) {
 
-        if (cb_Profile.getValue() == null) {
-            while (cb_Profile.getValue() != prof.get(i).getName()) {
-                i++;
-            }
-            Shooting shouting = new Shooting(prof.get(i).getId(), path, true);
+                try{
 
-                LOGGER.info("ShootingAdminController:", shouting);
+                    Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                    Shooting shouting = new Shooting(profile.getId(), path, true);
 
-                try {
-                    sessionService.add_session(shouting);
+                    storageDirLabel.setText("");
+                    LOGGER.info("ShootingAdminController:", path);
+                    path=null;
+
+                    shootingService.addShooting(shouting);
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.info("shouting erstellen", serviceExeption.getMessage());
-                    showingdialog("Es konnte keine Shooting erstellt werden.");
+                    LOGGER.debug( serviceExeption.getMessage());
+                    showInformationDialog("Es konnte keine Shooting erstellt werden.");
                 }
-            } else {
-                showingdialog("Bitte erstellen sie ein neues Profil");
+            } else{
+                showInformationDialog("Bitte wählen Sie einen speicher Pfad aus");
             }
+
+        } else {
+            showInformationDialog("Bitte erstellen Sie ein neues Profil");
+        }
     }
 
-    /**
-     *
-     * Opens Mainfframe again
-     * @param actionEvent
-     *
-     */
-    public void on_DemolitionPressed(ActionEvent actionEvent) {
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("mainframe.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);
-           // stage.setTitle("Main Frame");
-            stage.setScene(new Scene(root1));
-            stage.show();
-        }catch (IOException s){
-            showingdialog("Es konnte nicht zur Hauptseite gewechselt werden. ");
-            LOGGER.info("ShootingAdminController: on_DemolitionPressed",s.getMessage());
-        }
-
+            /**
+             *
+             * Opens Mainfframe again
+             * @param actionEvent
+             *
+             */
+    public void onDemolitionPressed(ActionEvent actionEvent) {
+    storageDirLabel.setText("");
+    primaryStage.close();
     }
 
     /**
@@ -165,21 +139,18 @@ public class ShootingAdminController {
      * @param actionEvent
      *
      */
-    public void on_FinedPressed(ActionEvent actionEvent) {
+    public void onChooseStorageDirPressed(ActionEvent actionEvent) {
 
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new java.io.File("C:"));// to adapt
-        chooser.setDialogTitle("Speicher ort Wählen");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
+        try{
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Speicherort wählen");
+            //directoryChooser.in
+            File savefile =directoryChooser.showDialog(primaryStage);
 
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-           path = chooser.getSelectedFile().toString();
-            lb_storageplace.setText(path);
-            LOGGER.info("ShootingAdminController: Path ",path);
-        } else {
-            showingdialog("Noch keinen Ordner ausgewählt");
-            LOGGER.info("ShootingAdminController:on_FinedPressed");
+                storageDirLabel.setText(savefile.getPath());
+                path = savefile.getPath();
+        }catch (NullPointerException n){
+            showInformationDialog("Kein Pfad gewählt");
         }
     }
 
@@ -189,72 +160,35 @@ public class ShootingAdminController {
      * @param actionEvent
      *
      */
-    public void on_EditPressed(ActionEvent actionEvent) {
-
-        try{
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("profileFrame.fxml"));
-            Parent root1 = (Parent) fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.initStyle(StageStyle.UNDECORATED);
-            // stage.setTitle("Main Frame");
-            stage.setScene(new Scene(root1));
-            stage.show();
-        }catch (IOException s){
-            showingdialog("Es konnte nicht zu den Profilen gewechselt werden. ");
-            LOGGER.info("ShootingAdminController: on_DemolitionPressed",s.getMessage());
-        }
-
+    public void onEditPressed(ActionEvent actionEvent) {
+       mainApplication.showProfileStage();
     }
 
     /**
-     * dialog window
-     * @param messege
-     * @return JOptionPane
+     * information dialog
+     * @param info
      */
-    private JOptionPane showingdialog(String messege){
-        JOptionPane dialog = new JOptionPane();
-        dialog.showMessageDialog(null, messege);
-        return dialog;
+    public void showInformationDialog(String info){
+        Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+        information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.initOwner(primaryStage);
+        information.show();
     }
 
     /**
-     * deletes chosen Profile
-     *
+     * Shooting wird beendet
      * @param actionEvent
-     *
-    public void on_DeleteButtonPressed(ActionEvent actionEvent) {
-
-        are_you_sure((String) cb_Profile.getValue());
-
-    }
-    */
-
-
-
-    /**
-     * check if you want to delete
-     *
-     * @param profil name
-
-    public void are_you_sure(String profil){
-
-        Object [] options={"Ja", "Nein"};
-
-        int chouse= JOptionPane.showOptionDialog(null,"Möchten sie das gewählte Profiel tatsächlich löschen? "
-                ,"", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
-
-        if(chouse==0){
-
-
-            //profileService.erase();
-            //initialize();
-            //
-            //yes
+     */
+    public void onStopShootingPressed(ActionEvent actionEvent) {
+        try {
+            shootingService.endShooting();
+            Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
+            information.setHeaderText("Bestätigung");
+            information.initOwner(primaryStage);
+            information.show();
+        } catch (ServiceException e) {
+            showInformationDialog("Shooting konnte nicht beendet werden!");
         }
-
     }
-
-    */
 }
 

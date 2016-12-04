@@ -24,6 +24,12 @@
         <processorPath useClasspath="true" />
         <module name="Desktop" />
         <module name="ss16_sepm_qse_01" />
+      </profile>
+      <profile default="false" name="Annotation profile for ws16_sepm_qse_01" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
         <module name="ws16_sepm_qse_01" />
       </profile>
     </annotationProcessing>
