@@ -8,7 +8,10 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Class includes services for images.
@@ -19,13 +22,8 @@ public class ImageServiceImpl implements ImageService {
 
     private static ImageDAO dao;
 
-    public ImageServiceImpl() throws ServiceException {
-        try{
-        dao = new JDBCImageDAO();
-        } catch(PersistenceException e){
-            LOGGER.error(e.toString());
-            throw new ServiceException(e);
-        }
+    public ImageServiceImpl(ImageDAO imageDAO) throws ServiceException {
+        this.dao = imageDAO;
     }
 
     @Override
@@ -45,6 +43,17 @@ public class ImageServiceImpl implements ImageService {
     public String getLastImgPath(int shootingid) {
         LOGGER.debug("Entering getLastImgPath method in Service with shootingid = "+shootingid);
         return dao.getLastImgPath(shootingid);
+    }
+    @Override
+    public List<String> getAllImagePaths(int shootingid) {
+        LOGGER.debug("Entering getAllImagePaths method in Service with shootingid = "+shootingid);
+        return dao.getAllImagePaths(shootingid);
+    }
+
+    @Override
+    public int getNextImageID() {
+        LOGGER.debug("Entering getNextImageID method in Service ");
+        return dao.getNextImageID();
     }
 
 }

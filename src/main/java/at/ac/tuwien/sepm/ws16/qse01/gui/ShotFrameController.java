@@ -22,9 +22,9 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-@Scope("prototype")  //Multithreading for multiple shotframes
+//@Scope("prototype")  //Multithreading for multiple shotframes
 public class ShotFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
 
     private ImageService imageService;
 
@@ -51,7 +51,7 @@ public class ShotFrameController {
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
 
-        shotView.setImage(new Image(imgPath));
+        shotView.setImage(new Image("file:" + imgPath));
 
     }
 }
