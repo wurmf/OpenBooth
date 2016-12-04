@@ -105,7 +105,7 @@ public class MainApplication extends Application {
 
         //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
         try {
-            CameraHandler cameraHandler = applicationContext.getBean(CameraHandler.class);
+            CameraHandler cameraHandler = applicationContext.getBean(CameraHandlerImpl.class);
             //CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl(), new ShootingServiceImpl());
             cameraHandler.getImages();
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
+
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
@@ -40,23 +41,32 @@ public class CameraHandlerThread  extends Thread{
         final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
-        } finally {
+        } catch (CameraException ex) {
+            return;
+        }
+        finally {
             CameraUtils.closeQuietly(cl);
         }
         final CameraGphoto c = new CameraGphoto();
-        c.initialize();
+        try {
+            c.initialize();
+        }
+        catch(CameraException ca) {
+            LOGGER.error("No Camera found");
+            return;
+        }
+
         while (i == 1)
         {
             try {
 
                 final CameraFile cf = c.waitForImage();
-                LOGGER.debug("event");
                 if (cf != null) {
                     Shooting activeShooting = shootingService.searchIsActive();
                     if(activeShooting != null){
                         int imageID = imageService.getNextImageID();
 
-                        String directoryPath = activeShooting.getStorageDir() + "/shooting" + activeShooting.getId() + "/";
+                        String directoryPath = activeShooting.getStorageDir() + "shooting" + activeShooting.getId() + "/";
                         Path storageDir = Paths.get(directoryPath);
                         try {
                             Files.createDirectory(storageDir);

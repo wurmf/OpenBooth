@@ -87,12 +87,13 @@ public class CameraHandlerImpl implements CameraHandler {
             imageSaved=false;
         }
         CameraUtils.closeQuietly(c);*/
+
+
         CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
         cameraHandlerThread.setImageService(imageService);
         cameraHandlerThread.setShotFrameController(shotFrameController);
         cameraHandlerThread.setShootingService(shootingService);
         cameraHandlerThread.start();
-
     }
 
 }
