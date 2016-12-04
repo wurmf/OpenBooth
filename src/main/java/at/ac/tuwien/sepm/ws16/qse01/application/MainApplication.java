@@ -32,6 +32,7 @@ public class MainApplication extends Application {
     private Stage profileStage;
     private Stage shootingStage;
     private Stage mainStage;
+    private Stage pictureFullStage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
@@ -103,6 +104,12 @@ public class MainApplication extends Application {
         this.adminLoginStage.initOwner(primaryStage);
         adminLoginWrapper.getController().setStageAndMain(adminLoginStage, this);
 
+        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
+        pictureFullStage = new Stage();
+        pictureFullStage.setScene(new Scene((Parent) pictureWrapper.getLoadedObject()));
+        pictureFullStage.setFullScreen(true);
+        pictureWrapper.getController().setStageAndMain(pictureFullStage, this);
+
         //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
         try {
             CameraHandler cameraHandler = applicationContext.getBean(CameraHandlerImpl.class);
@@ -131,7 +138,9 @@ public class MainApplication extends Application {
     }
     public void showMainFrame(){mainStage.show();}
 
-    //TODO: call this from shootingStage
+    public void showPicturFullStage(){
+        pictureFullStage.show();
+    }
     public void showProfileStage(){
         profileStage.show();
     }

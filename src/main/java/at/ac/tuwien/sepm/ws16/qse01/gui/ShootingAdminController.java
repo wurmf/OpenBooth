@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.List;
 
-//TODO: Remove everything Swing related! We have to use JavaFX-Classes
-
 /**
  * Created by Aniela on 23.11.2016.
  */

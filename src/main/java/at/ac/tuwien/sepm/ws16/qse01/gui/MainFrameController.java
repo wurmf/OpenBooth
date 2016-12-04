@@ -79,7 +79,8 @@ public class MainFrameController {
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
         //mainApp.showShootingAdministration();
-        mainApp.showAdminLogin();
+         mainApp.showAdminLogin();
+       // mainApp.showPicturFullStage();
     }
 
     /**

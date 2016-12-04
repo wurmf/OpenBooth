@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import java.util.List;
 
@@ -60,4 +61,21 @@ public interface ImageService {
      *
      * */
     public List<String> getAllImagePaths(int shootingid);
+
+    /**
+     * deltes image given as parameter
+     *
+     * @param image
+     * @throws ServiceException
+     */
+    public void delet(Image image)throws ServiceException;
+
+    /**
+     * gets all images by shooting id
+     *
+     * @param shootingid
+     * @return
+     * @throws ServiceException
+     */
+    public List<Image> getAllImages(int shootingid) throws ServiceException;
 }

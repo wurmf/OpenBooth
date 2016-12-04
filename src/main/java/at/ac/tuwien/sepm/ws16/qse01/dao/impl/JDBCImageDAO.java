@@ -207,4 +207,51 @@ public class JDBCImageDAO implements ImageDAO {
         }
         return nextImageID;
     }
+
+    @Override
+    public void delet(Image image) throws PersistenceException {
+        try{
+            String sql = "DELETE FROM Images WHERE  IMAGEID=?";
+            PreparedStatement stmt;
+            stmt= con.prepareStatement(sql);
+            stmt.setInt(1,image.getImageID());
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Image> getAllImages(int shootingid) throws PersistenceException {
+        List<Image> imageList = new ArrayList<Image>();
+        PreparedStatement stmt = null;
+        String query = "select * from images where shootingid = ? ;";
+
+        try {
+            stmt = con.prepareStatement(query);
+            stmt.setInt(1,shootingid);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Image i = new Image(rs.getInt("IMAGEID"),rs.getString("IMAGEPATH"),1,rs.getTime("TIME"));
+                imageList.add(i);
+            }
+
+        } catch (SQLException e ) {
+            throw new PersistenceException(e.getMessage());
+        } catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    new IllegalArgumentException("Select",e);
+                }
+            }
+        }
+        return imageList;
+    }
 }
+

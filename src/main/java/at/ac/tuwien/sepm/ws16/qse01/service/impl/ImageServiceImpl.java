@@ -56,4 +56,22 @@ public class ImageServiceImpl implements ImageService {
         return dao.getNextImageID();
     }
 
+    @Override
+    public void delet(Image image)throws ServiceException {
+        try {
+            dao.delet(image);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Image> getAllImages(int shootingid) throws ServiceException {
+        try {
+            return dao.getAllImages(shootingid);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage());
+        }
+    }
+
 }
