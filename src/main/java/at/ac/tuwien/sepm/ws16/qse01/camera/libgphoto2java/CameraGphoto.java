@@ -57,13 +57,7 @@ public class CameraGphoto implements Closeable {
     public void initialize() {
         checkNotClosed();
         if (!isInitialized) {
-            try {
-                CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_init(camera, CameraList.CONTEXT), "gp_camera_init");
-            }
-            catch (CameraException ex)
-            {
-                LOGGER.error(ex.toString());
-            }
+            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_init(camera, CameraList.CONTEXT), "gp_camera_init");
             isInitialized = true;
         }
     }

@@ -19,9 +19,9 @@ public interface ProfileDAO {
     Profile create(Profile profile) throws PersistenceException;
 
     /**
-     * Persists an existing and changed profile
+     * Persists change of an existing and already persisted profile
      * identification, if profile exists already in persistence store is made by comparing ids
-     *
+     * if profile with give id doesn't exist in persistence store, nothing will be updated
      * @param profile - profile entity with changed properties to be persisted
      */
     void update(Profile profile) throws PersistenceException;
