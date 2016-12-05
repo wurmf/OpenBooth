@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
@@ -23,8 +24,8 @@ public class ImageDAOTest {
     private ShootingDAO shootingDAO;
     @Before
     public void before() throws Exception {
-        imageDAO = new JDBCImageDAO();
-        shootingDAO = new JDBCShootingDAO();
+        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
+        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
     }
 
     /**
