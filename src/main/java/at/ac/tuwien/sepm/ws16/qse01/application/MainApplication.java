@@ -1,13 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
-import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

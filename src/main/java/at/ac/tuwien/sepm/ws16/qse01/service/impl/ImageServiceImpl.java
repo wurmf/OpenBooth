@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -22,6 +20,7 @@ public class ImageServiceImpl implements ImageService {
 
     private static ImageDAO dao;
 
+    @Autowired
     public ImageServiceImpl(ImageDAO imageDAO) throws ServiceException {
         this.dao = imageDAO;
     }

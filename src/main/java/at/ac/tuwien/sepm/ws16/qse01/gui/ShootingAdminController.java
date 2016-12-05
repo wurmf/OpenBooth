@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
