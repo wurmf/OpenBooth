@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
