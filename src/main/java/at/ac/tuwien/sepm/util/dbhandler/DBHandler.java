@@ -17,7 +17,6 @@ public interface DBHandler {
 
     /**
      * Closes an open connection to the database.
-     * @throws PersistenceException if the implementation is unable to close an established connection.
      */
     void closeConnection();
 }
