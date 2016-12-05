@@ -1,12 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -19,8 +21,9 @@ public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
 
-    public JDBCShootingDAO() throws Exception {
-        con = H2Handler.getInstance().getConnection();
+    @Autowired
+    public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {
+        con = dbHandler.getConnection();
     }
 
       private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);

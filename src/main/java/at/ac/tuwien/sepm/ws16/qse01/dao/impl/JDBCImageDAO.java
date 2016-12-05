@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -22,8 +24,9 @@ public class JDBCImageDAO implements ImageDAO {
 
     private Connection con;
 
-    public JDBCImageDAO() throws PersistenceException {
-       con = H2Handler.getInstance().getConnection();
+    @Autowired
+    public JDBCImageDAO(DBHandler dbHandler) throws PersistenceException {
+       con = dbHandler.getConnection();
     }
 
     @Override
