@@ -148,12 +148,12 @@ public class JDBCImageDAO implements ImageDAO {
         LOGGER.debug("Entering getNextImageID method");
 
         PreparedStatement stmt = null;
-        String query = "select current_value from information_schema.sequences where id = ? ;";
+        String query = "select current_value from information_schema.sequences where sequence_name LIKE ?;";
 
         int nextImageID = 0;
         try {
             stmt = con.prepareStatement(query);
-            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
+            stmt.setString(1,"IMAGES_SEQ");
 
             ResultSet rs = stmt.executeQuery();
 
@@ -223,105 +223,7 @@ public class JDBCImageDAO implements ImageDAO {
         return imageList;
     }
 
-    @Override
-    public int getNextImageID() {
-        LOGGER.debug("Entering getNextImageID method");
 
-        PreparedStatement stmt = null;
-        String query = "select current_value from information_schema.sequences where id = ? ;";
 
-        int nextImageID = 0;
-        try {
-            stmt = con.prepareStatement(query);
-            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                nextImageID = rs.getInt("current_value")+1;
-            }
-
-        } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
-        } catch(NullPointerException e){
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
-                }
-            }
-        }
-        return nextImageID;
-    }
-
-    @Override
-    public int getNextImageID() {
-        LOGGER.debug("Entering getNextImageID method");
-
-        PreparedStatement stmt = null;
-        String query = "select current_value from information_schema.sequences where id = ? ;";
-
-        int nextImageID = 0;
-        try {
-            stmt = con.prepareStatement(query);
-            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                nextImageID = rs.getInt("current_value")+1;
-            }
-
-        } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
-        } catch(NullPointerException e){
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
-                }
-            }
-        }
-        return nextImageID;
-    }
-
-    @Override
-    public int getNextImageID() {
-        LOGGER.debug("Entering getNextImageID method");
-
-        PreparedStatement stmt = null;
-        String query = "select current_value from information_schema.sequences where id = ? ;";
-
-        int nextImageID = 0;
-        try {
-            stmt = con.prepareStatement(query);
-            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                nextImageID = rs.getInt("current_value")+1;
-            }
-
-        } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
-        } catch(NullPointerException e){
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
-                }
-            }
-        }
-        return nextImageID;
-    }
 }
