@@ -5,19 +5,23 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Aniela on 23.11.2016.
  */
+@Service
 public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
-    ShootingDAO sessionDAO;
-    public ShootingServiceImpl() throws Exception {
-        sessionDAO = new JDBCShootingDAO();
+    ShootingDAO shootingDAO;
+
+    @Autowired
+    public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) throws Exception {
+        shootingDAO = jdbcShootingDAO;
     }
     String getImageStorage(){
         //DAO.getImageStorage();
@@ -25,26 +29,31 @@ public class ShootingServiceImpl implements ShootingService {
         return imagePath;
     }
 
-    public void add_session(Shooting shouting) throws ServiceException {
+    public void addShooting(Shooting shooting) throws ServiceException {
         try {
-            sessionDAO.add_session(shouting);
+
+            shootingDAO.create(shooting);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
     }
 
 
-    public Shooting search_isactive() throws ServiceException {
+    public Shooting searchIsActive() throws ServiceException {
 
         try {
-            return sessionDAO.search_isactive();
+            return shootingDAO.searchIsActive();
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
     }
 
 
-    public void end_session() {
-        sessionDAO.end_session();
+    public void endShooting() throws ServiceException {
+        try {
+            shootingDAO.endShooting();
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage());
+        }
     }
 }

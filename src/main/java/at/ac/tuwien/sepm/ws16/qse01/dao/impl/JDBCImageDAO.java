@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,13 +17,15 @@ import java.util.List;
 /**
  *  Class allows users to create/read an image from database.
  */
+@Repository
 public class JDBCImageDAO implements ImageDAO {
     final static Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
     private Connection con;
 
-    public JDBCImageDAO() throws PersistenceException {
-       con = H2Handler.getInstance().getConnection();
+    @Autowired
+    public JDBCImageDAO(DBHandler dbHandler) throws PersistenceException {
+       con = dbHandler.getConnection();
     }
 
     @Override
@@ -63,7 +68,6 @@ public class JDBCImageDAO implements ImageDAO {
                 }
             }
         }
-
         f.setImageID(fid);
         return f;
     }
@@ -138,54 +142,23 @@ public class JDBCImageDAO implements ImageDAO {
         return imagepath;
     }
 
-    @Override
-    public List<String> getAllImagePaths(int shootingid) {
-       List<String> paths = new ArrayList<String>();
-        LOGGER.debug("Entering getAllImagePaths method with parameter: shootingid = "+shootingid);
-
-        PreparedStatement stmt = null;
-        String query = "select * from images where shootingid = ? ;";
-
-        try {
-            stmt = con.prepareStatement(query);
-            stmt.setInt(1,shootingid);
-
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                paths.add(rs.getString("imagepath"));
-            }
-
-        } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
-        } catch(NullPointerException e){
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
-                }
-            }
-        }
-        return paths;
-    }
 
     @Override
     public int getNextImageID() {
         LOGGER.debug("Entering getNextImageID method");
 
         PreparedStatement stmt = null;
-        String query = "select nextval('images_seq') as nextid; ";
+        String query = "select current_value from information_schema.sequences where id = ? ;";
 
         int nextImageID = 0;
         try {
             stmt = con.prepareStatement(query);
+            stmt.setInt(1,17); // 17 ist die ID von imageID-sequence
+
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-               nextImageID = rs.getInt("nextid")+1;
+                nextImageID = rs.getInt("current_value")+1;
             }
 
         } catch (SQLException e ) {
@@ -202,5 +175,51 @@ public class JDBCImageDAO implements ImageDAO {
             }
         }
         return nextImageID;
+    }
+
+    @Override
+    public void delete(Image image) throws PersistenceException {
+        try{
+            String sql = "DELETE FROM Images WHERE  IMAGEID=?";
+            PreparedStatement stmt;
+            stmt= con.prepareStatement(sql);
+            stmt.setInt(1,image.getImageID());
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
+    @Override
+    public List<Image> getAllImages(int shootingid) throws PersistenceException {
+        List<Image> imageList = new ArrayList<Image>();
+        PreparedStatement stmt = null;
+        String query = "select * from images where shootingid = ? ;";
+
+        try {
+            stmt = con.prepareStatement(query);
+            stmt.setInt(1,shootingid);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Image i = new Image(rs.getInt("IMAGEID"),rs.getString("IMAGEPATH"),1,rs.getTime("TIME"));
+                imageList.add(i);
+            }
+
+        } catch (SQLException e ) {
+            throw new PersistenceException(e.getMessage());
+        } catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    new IllegalArgumentException("Select",e);
+                }
+            }
+        }
+        return imageList;
     }
 }

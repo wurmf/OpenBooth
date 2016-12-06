@@ -13,7 +13,7 @@ public class JDBCImageDAOTest extends AbstractImageDAOTest {
     @Before
     public void setUp() throws Exception {
         setImageDAO(new JDBCImageDAO(H2Handler.getInstance()));
-        setShootingDAO(new JDBCShootingDAO());
+        setShootingDAO(new JDBCShootingDAO(H2Handler.getInstance()));
     }
     @After
     public void restore(){

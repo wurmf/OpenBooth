@@ -43,8 +43,8 @@ import javax.annotation.Resource;
 public class MiniaturFrameController {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MiniaturFrameController.class);
 
-
     private Stage stage;
+
     @Resource
     private ImageService imageService;
     @FXML
@@ -68,13 +68,17 @@ public class MiniaturFrameController {
 
 
 
-        List<String> listOfImages = imageService.getAllImagePaths(1);
+        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(1);
 
-        for (final String file : listOfImages) {
+        for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
             ImageView imageView;
             try {
-                imageView = createImageView(new File(System.getProperty("user.dir") + "/src/main/resources" + file));
-                tile.getChildren().add(imageView);
+                if(new File(img.getImagepath()).isFile()) {
+                    imageView = createImageView(new File(img.getImagepath()));
+                    tile.getChildren().add(imageView);
+                }else{
+                    imageService.delete(img);
+                }
             }catch (Exception e){
                 LOGGER.debug("Fehler: "+e.getMessage());
             }

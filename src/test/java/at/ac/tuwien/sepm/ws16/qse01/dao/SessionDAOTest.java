@@ -1,4 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.junit.Before;
@@ -13,7 +14,7 @@ public class SessionDAOTest {
 
     @Before
     public void before() throws Exception {
-        dao = new JDBCShootingDAO();
+        dao = new JDBCShootingDAO(H2Handler.getInstance());
     }
 
     /**
@@ -22,7 +23,7 @@ public class SessionDAOTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void addnullSession() throws Exception {
-        dao.add_session(null);
+        dao.create(null);
     }
 
     /**
@@ -32,6 +33,6 @@ public class SessionDAOTest {
     @Test
     public void addValideSession () throws Exception{
         Shooting shouting =new Shooting(0,"ab",true);
-        dao.add_session(shouting);
+        dao.create(shouting);
     }
 }

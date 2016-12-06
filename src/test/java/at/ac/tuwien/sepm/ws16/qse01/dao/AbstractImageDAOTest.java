@@ -88,18 +88,18 @@ public abstract class AbstractImageDAOTest {
     }
 
     /**
-     * This test reads all image paths of an existing shooting in database.
+     * This test reads all images of an existing shooting in database.
      */
     @Test
-    public void getAllImagePaths() throws Throwable  {
-        shootingDAO.add_session(new Shooting(1,"/images/shooting99",true));
+    public void getAllImagesByExistingShootingID() throws Throwable  {
+        shootingDAO.create(new Shooting(1,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
         imageDAO.create(img);
         //TODO: shooting -> create() -> funktioniert nicht!
         //Check if the last created imagepath will be returned
-        assertThat(imageDAO.getAllImagePaths(99).size(),is(1));
+        assertThat(imageDAO.getAllImages(99).size(),is(1));
     }
 
     /**

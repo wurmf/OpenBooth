@@ -9,13 +9,15 @@ import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
+import java.util.Optional;
 
 
 //TODO: Remove everything Swing related! We have to use JavaFX-Classes
@@ -34,12 +36,14 @@ public class MainFrameController {
     private Stage primaryStage;
     private MainApplication mainApp;
 
-    ShootingService service;
+    ShootingService shootingService;
+
     @Autowired
-    public MainFrameController(SpringFXMLLoader springFXMLLoader) throws Exception {
+    public MainFrameController(SpringFXMLLoader springFXMLLoader, ShootingServiceImpl shootingService) throws Exception {
         this.springFXMLLoader = springFXMLLoader;
-        service= new ShootingServiceImpl();
+        this.shootingService = shootingService;
     }
+
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
@@ -55,15 +59,15 @@ public class MainFrameController {
      */
     @FXML
     private void initialize(){
-        Shooting shouting_isactive = null;
+        Shooting activeShooting = null;
         try {
-            shouting_isactive = service.search_isactive();
+            activeShooting = shootingService.searchIsActive();
 
-            if(shouting_isactive.getIsactiv()==true){
-                in_case_of_restart();
+            if(activeShooting.getActive()==true){
+                showRecoveryDialog();
             }
         } catch (ServiceException e) {
-            showingdialog("Ein fehler beim Starten des Programms ist aufgetreten.");
+            showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
             LOGGER.info("MainFrameController:",e.getMessage());
          }
     }
@@ -73,7 +77,8 @@ public class MainFrameController {
      *
      * @param actionEvent
      */
-    public void on_StartSessionPressed(ActionEvent actionEvent) {
+    public void onStartShootingPressed(ActionEvent actionEvent) {
+        //mainApp.showShootingAdministration();
         mainApp.showAdminLogin();
     }
 
@@ -81,22 +86,25 @@ public class MainFrameController {
      * in case of brakdown
      *
      */
-    public void in_case_of_restart(){
+    public void showRecoveryDialog(){
 
-        Object [] options={"Fortfahren", "alte Shooting beenden"};
-
-        int chouse= JOptionPane.showOptionDialog(null,"Die Anwendung wurde unerwartet geschlossen,\n möchten sie die zuletzt geöffnete Shooting wieder her stellen? "
-                ,"", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,null,options,options[0]);
-
-        if(chouse==0){
+        Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
+                "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
+        alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
+        alert.initOwner(primaryStage);
+        Optional<ButtonType> result =alert.showAndWait();
+        if(result.isPresent()&&result.get()==ButtonType.OK){
 
             //verlinken auf Kunden interface
             //yes
-        } else if(chouse==1){
-            service.end_session();
-            showingdialog("Shooting wurde beendet");
+        } else {
+            try {
+                shootingService.endShooting();
+                showInformationDialog("Shooting wurde beendet");
+            } catch (ServiceException e) {
+                showInformationDialog("Shooting konnte nicht beendet werden!");
+            }
         }
-
     }
 
     /**
@@ -104,18 +112,17 @@ public class MainFrameController {
      *
      * @param actionEvent
      */
-    public void on_EndPressed(ActionEvent actionEvent) {Platform.exit();
+    public void onEndPressed(ActionEvent actionEvent) {Platform.exit();
     }
 
     /**
-     *information Panel
-     *
-     * @param messege
-     * @return JOptionPane
+     * information dialog
+     * @param info
      */
-    private JOptionPane showingdialog(String messege){
-        JOptionPane dialog = new JOptionPane();
-        dialog.showMessageDialog(null, messege);
-        return dialog;
+    public void showInformationDialog(String info){
+        Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+        information.initOwner(primaryStage);
+        information.setHeaderText("Ein Fehler ist Aufgetreten");
+
     }
 }

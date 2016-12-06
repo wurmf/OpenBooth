@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
@@ -23,8 +24,8 @@ public class ImageDAOTest {
     private ShootingDAO shootingDAO;
     @Before
     public void before() throws Exception {
-        imageDAO = new JDBCImageDAO();
-        shootingDAO = new JDBCShootingDAO();
+        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
+        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
     }
 
     /**
@@ -87,14 +88,14 @@ public class ImageDAOTest {
      */
     @Test
     public void getAllImagePaths() throws Throwable  {
-        shootingDAO.add_session(new Shooting(99,"/images/shooting99",true));
+        shootingDAO.create(new Shooting(99,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
         imageDAO.create(img);
         //TODO: shooting -> create() -> funktioniert nicht!
         //Check if the last created imagepath will be returned
-        assertThat(imageDAO.getAllImagePaths(99).size(),is(1));
+        assertThat(imageDAO.getAllImages(99).size(),is(1));
     }
 
 
