@@ -25,7 +25,6 @@ public class LoginFrameController {
 
     private Stage primaryStage;
     private MainApplication mainApp;
-    @Resource
     private AdminUserService adminUserService;
     @FXML
     private TextField adminField;
@@ -36,7 +35,8 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController() throws ServiceException{
+    public LoginFrameController(AdminUserService adminUserService) throws ServiceException{
+        this.adminUserService=adminUserService;
     }
 
     /**
