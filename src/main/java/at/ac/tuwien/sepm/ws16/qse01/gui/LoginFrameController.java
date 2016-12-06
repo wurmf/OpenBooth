@@ -23,8 +23,7 @@ import javax.annotation.Resource;
 public class LoginFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
 
-    private Stage primaryStage;
-    private MainApplication mainApp;
+    private WindowManager windowManager;
     private AdminUserService adminUserService;
     @FXML
     private TextField adminField;
@@ -35,18 +34,9 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(AdminUserService adminUserService) throws ServiceException{
+    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
         this.adminUserService=adminUserService;
-    }
-
-    /**
-     * Setter for the stage that contains this controllers Scene and the MainApplication-instance that calls this controller.
-     * @param primaryStage  the stage that contains this controllers Scene
-     * @param mainApp       the MainApplication-instance that calls this controller
-     */
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
-        this.primaryStage = primaryStage;
-        this.mainApp = mainApp;
+        this.windowManager=windowManager;
     }
 
     /**
@@ -59,7 +49,7 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                mainApp.showShootingAdministration();
+                windowManager.showShootingAdministration();
                 closeLogin();
             } else{
                 wrongCredentialsLabel.setVisible(true);
@@ -77,6 +67,5 @@ public class LoginFrameController {
         wrongCredentialsLabel.setVisible(false);
         adminField.setText("");
         passwordField.setText("");
-        primaryStage.close();
     }
 }

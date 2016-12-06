@@ -31,7 +31,6 @@ import java.util.List;
  */
 @Component
 public class ShootingAdminController {
-    private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
 
     @FXML
@@ -41,22 +40,18 @@ public class ShootingAdminController {
 
     String path =null;
 
-    MainApplication mainApplication;
     ShootingService shootingService;
     ProfileService profileService;
+    WindowManager windowManager;
 
     @Autowired
-    public ShootingAdminController(SpringFXMLLoader springFXMLLoader, ProfileService profileService, ShootingService shootingService) throws Exception {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) throws Exception {
         this.shootingService = shootingService;
         this.profileService= profileService;
-        this.springFXMLLoader = springFXMLLoader;
+        this.windowManager = windowManager;
     }
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApplication){
-        this.primaryStage = primaryStage;
-        this.mainApplication = mainApplication;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -160,7 +155,7 @@ public class ShootingAdminController {
      *
      */
     public void onEditPressed(ActionEvent actionEvent) {
-       mainApplication.showProfileStage();
+       windowManager.showProfileStage();
     }
 
     /**

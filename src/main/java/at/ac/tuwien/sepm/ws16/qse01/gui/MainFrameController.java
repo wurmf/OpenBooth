@@ -32,24 +32,19 @@ public class MainFrameController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
 
-    private SpringFXMLLoader springFXMLLoader;
+    private WindowManager windowManager;
     private Stage primaryStage;
-    private MainApplication mainApp;
 
     ShootingService shootingService;
 
     @Autowired
-    public MainFrameController(SpringFXMLLoader springFXMLLoader, ShootingServiceImpl shootingService) throws Exception {
-        this.springFXMLLoader = springFXMLLoader;
+    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager) throws Exception {
         this.shootingService = shootingService;
+        this.windowManager = windowManager;
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
-    }
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
-        this.primaryStage = primaryStage;
-        this.mainApp = mainApp;
     }
 
 
@@ -79,7 +74,7 @@ public class MainFrameController {
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
         //mainApp.showShootingAdministration();
-        mainApp.showAdminLogin();
+        windowManager.showAdminLogin();
     }
 
     /**
