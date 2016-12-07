@@ -33,9 +33,9 @@ public class JDBCShootingDAO implements ShootingDAO {
 
             stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             //stmt.setInt(1,profile.getId());
-            stmt.setInt(2,shouting.getProfileid());
-            stmt.setString(3,shouting.getStorageDir());
-            stmt.setBoolean(4,shouting.getActive());
+            stmt.setInt(1,shouting.getProfileid());
+            stmt.setString(2,shouting.getStorageDir());
+            stmt.setBoolean(3,shouting.getActive());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
