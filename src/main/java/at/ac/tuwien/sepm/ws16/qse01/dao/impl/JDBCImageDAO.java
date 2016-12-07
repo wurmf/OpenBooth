@@ -234,7 +234,7 @@ public class JDBCImageDAO implements ImageDAO {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Image i = new Image(rs.getInt("IMAGEID"),rs.getString("IMAGEPATH"),1,rs.getTime("TIME"));
+                Image i = new Image(rs.getInt("IMAGEID"),rs.getString("IMAGEPATH"),rs.getInt("shootingid"),rs.getTime("TIME"));
                 imageList.add(i);
             }
 

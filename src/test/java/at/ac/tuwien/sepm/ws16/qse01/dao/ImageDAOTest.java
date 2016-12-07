@@ -101,19 +101,23 @@ public class ImageDAOTest {
     @Test
     public void getAllImages() throws Throwable{
 
-        shootingDAO.create(new Shooting(99,2,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
         imageDAO.create(img);
-        assertThat(imageDAO.getAllImagePaths(99).size(),is(1));
+        assertThat(imageDAO.getAllImages(99).size(),is(1));
     }
 
     @Test
     public void deleteImage() throws Throwable{
         Image img = new Image(3,"ddd",2,new Date());
+        img.setAutoDate();
         imageDAO.create(img);
+
+        assertThat(imageDAO.getAllImages(99).size(),is(1));
         imageDAO.delet(img);
+
+        assertThat(imageDAO.getAllImages(99).size(),is(0));
     }
 
 
