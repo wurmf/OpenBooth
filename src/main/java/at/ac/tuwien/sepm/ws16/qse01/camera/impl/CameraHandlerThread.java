@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
+import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
@@ -31,13 +32,18 @@ public class CameraHandlerThread  extends Thread{
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
     ShootingService shootingService;
-    ShotFrameController shotFrameController;
+    ShotFrameManager shotFrameManager;
 
 
     public void run()
     {
         int i = 1;
         boolean imageSaved = false;
+        // Anmerkung: Manueller Test
+      /*  shotFrameManager.refreshShot(1,"/images/shooting1/img1.jpg");
+        shotFrameManager.refreshShot(2,"/images/shooting1/img2.jpg");
+        System.out.println("ende refreshing..");*/
+
         final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
@@ -104,7 +110,8 @@ public class CameraHandlerThread  extends Thread{
             }
             if(imageSaved)
             {
-                shotFrameController.refreshShot();
+               // shotFrameManager.refreshShot(1); TODO: cameraID und imgpath übergeben
+               // shotFrameManager.refreshShot(2);
             }
             imageSaved=false;
         }
@@ -119,8 +126,8 @@ public class CameraHandlerThread  extends Thread{
         this.imageService = imageService;
     }
 
-    public void setShotFrameController(ShotFrameController shotFrameController) {
-        this.shotFrameController = shotFrameController;
+    public void setShotFrameManager(ShotFrameManager shotFrameManager) {
+        this.shotFrameManager = shotFrameManager;
     }
 
     public void setShootingService(ShootingService shootingService){

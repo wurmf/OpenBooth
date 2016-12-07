@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
+import com.sun.tools.internal.jxc.gen.config.Classes;
 import javafx.fxml.FXML;
 import java.io.File;
 import java.io.FileInputStream;
@@ -76,7 +77,11 @@ public class MiniaturFrameController {
                 if(new File(img.getImagepath()).isFile()) {
                     imageView = createImageView(new File(img.getImagepath()));
                     tile.getChildren().add(imageView);
-                }else{
+                }else if(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).isFile()){
+                    imageView = createImageView(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()));
+                    tile.getChildren().add(imageView);
+                }else {
+                    LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
                     imageService.delete(img);
                 }
             }catch (Exception e){

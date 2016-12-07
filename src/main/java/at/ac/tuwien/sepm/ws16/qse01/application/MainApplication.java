@@ -5,7 +5,10 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -13,6 +16,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -65,24 +69,6 @@ public class MainApplication extends Application {
 
 
 
-        //TODO: 1) creating camera table
-        //      2) number of frames to open = number of existing camera in DB
-
-        /* Creating shotFrame */
-        int anz = 2;
-        int x = 200;
-        for(int i=0; i<anz; i++) { // Anzahl der Kameras...
-            Stage stage = new Stage();
-            stage.setTitle("Shot Frame "+(i+1));
-            stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
-            //stage.initModality(Modality.WINDOW_MODAL);
-            stage.setFullScreen(false);
-            stage.initOwner(primaryStage);
-            stage.setX(x);
-            stage.show();
-
-            x += 200;
-        }
 
         //Creating Miniatur-Frame
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
@@ -100,7 +86,7 @@ public class MainApplication extends Application {
         miniaturStage.setHeight(Screen.getPrimary().getVisualBounds()
                 .getHeight());
         //  miniaturStage.setFullScreen(true);
-      //  miniaturStage.show();
+      // miniaturStage.show();
 
         //Creating Profile-Frame
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =

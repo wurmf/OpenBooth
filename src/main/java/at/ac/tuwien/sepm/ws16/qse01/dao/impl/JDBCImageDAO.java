@@ -124,6 +124,7 @@ public class JDBCImageDAO implements ImageDAO {
 
             while (rs.next()) {
                imagepath = rs.getString("imagepath");
+                LOGGER.debug("imagepath ="+imagepath);
             }
 
         } catch (SQLException e ) {
