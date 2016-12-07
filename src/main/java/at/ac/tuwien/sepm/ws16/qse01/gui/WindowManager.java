@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
+import javafx.scene.Camera;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
@@ -52,8 +53,7 @@ public class WindowManager {
         this.mainStage.setTitle("Fotostudio");
         this.mainScene=new Scene((Parent) mfWrapper.getLoadedObject(),screenWidth,screenHeight);
         this.mainStage.setScene(mainScene);
-        //this.mainStage.setFullScreen(true);
-        this.mainStage.show();
+        this.mainStage.setFullScreen(true);
 
 
 
@@ -93,16 +93,31 @@ public class WindowManager {
         } catch (Exception e) {
             LOGGER.info("Getting camera - "+e);
         }
+
+
+        this.mainStage.show();
     }
 
     public void showAdminLogin(){
         mainStage.setScene(adminLoginScene);
+        mainStage.setFullScreen(true);
     }
     public void showShootingAdministration(){
         mainStage.setScene(shootingScene);
+        mainStage.setFullScreen(true);
     }
-    public void showMainFrame(){mainStage.show();}
+    public void showMainFrame(){
+        mainStage.setScene(mainScene);
+        mainStage.setFullScreen(true);
+    }
     public void showProfileStage(){
         mainStage.setScene(profileScene);
+        mainStage.setFullScreen(true);
+    }
+    public void closeStage(){
+        mainStage.close();
+    }
+    public Stage getStage(){
+        return this.mainStage;
     }
 }

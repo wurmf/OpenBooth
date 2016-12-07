@@ -67,5 +67,6 @@ public class LoginFrameController {
         wrongCredentialsLabel.setVisible(false);
         adminField.setText("");
         passwordField.setText("");
+        windowManager.showMainFrame();
     }
 }
