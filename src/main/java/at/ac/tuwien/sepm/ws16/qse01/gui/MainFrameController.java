@@ -25,7 +25,6 @@ import java.util.Optional;
 /**
  * The controller for the mainFrame.
  *
- * @author Dominik Moser
  */
 @Component
 public class MainFrameController {

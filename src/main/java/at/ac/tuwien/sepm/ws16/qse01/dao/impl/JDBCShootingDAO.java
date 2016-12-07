@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.*;
 
 /**
- * Created by Aniela on 23.11.2016.
+ * ShootingDaoImpl
  */
 @Repository
 public class JDBCShootingDAO implements ShootingDAO {
@@ -29,13 +29,13 @@ public class JDBCShootingDAO implements ShootingDAO {
     public void create(Shooting shouting) throws PersistenceException {
         PreparedStatement stmt = null;
         try {
-            String sql="insert into Shootings( profileId,  FOLDERPATH, isactive) values(?,?,?)";
+            String sql="insert into Shootings(profileId,  FOLDERPATH, isactive) values(?,?,?)";
 
             stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             //stmt.setInt(1,profile.getId());
-            stmt.setInt(1,shouting.getId());
-            stmt.setString(2,shouting.getStorageDir());
-            stmt.setBoolean(3,shouting.getActive());
+            stmt.setInt(2,shouting.getProfileid());
+            stmt.setString(3,shouting.getStorageDir());
+            stmt.setBoolean(4,shouting.getActive());
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -46,7 +46,7 @@ public class JDBCShootingDAO implements ShootingDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.error("Select",e);
                 }
             }
         }
@@ -56,13 +56,13 @@ public class JDBCShootingDAO implements ShootingDAO {
     public Shooting searchIsActive() throws PersistenceException {
 
         PreparedStatement stmt =null;
-        Shooting shouting = new Shooting(0,"",false);
+        Shooting shouting = new Shooting(0,0,"",false);
         try {//exists
             stmt = con.prepareStatement("select * from Shootings where isactive = true");
             //stmt.setString(1,name);
             ResultSet rst = stmt.executeQuery();
             while (rst.next()){
-                shouting = new Shooting(rst.getInt(2), rst.getString(3), rst.getBoolean(4));
+                shouting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getBoolean("ISACTIVE"));
             }
         } catch (SQLException e) {
             LOGGER.info("ShootingDAO",e.getMessage());
@@ -72,7 +72,7 @@ public class JDBCShootingDAO implements ShootingDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                   LOGGER.error("Select",e);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class JDBCShootingDAO implements ShootingDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.error(e.getMessage());
                 }
             }
         }
