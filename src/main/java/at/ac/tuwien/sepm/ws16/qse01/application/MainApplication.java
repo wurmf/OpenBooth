@@ -77,7 +77,7 @@ public class MainApplication extends Application {
         miniaturStage.setTitle("Fotoübersicht");
         miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
         try {
-            miniWrapper.getController().init(shootingStage);
+            miniWrapper.getController().init(shootingStage,miniaturStage);
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -85,8 +85,9 @@ public class MainApplication extends Application {
         miniaturStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
         miniaturStage.setHeight(Screen.getPrimary().getVisualBounds()
                 .getHeight());
+
         //  miniaturStage.setFullScreen(true);
-      // miniaturStage.show();
+       miniaturStage.show();
 
         //Creating Profile-Frame
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =

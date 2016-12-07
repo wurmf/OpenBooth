@@ -53,13 +53,14 @@ public interface ImageDAO {
      *
      * */
     public int getNextImageID();
+
     /**
      * deletes given image in database
      *
-     * @param image image to delete
+     * @param imageID ID of image to delete
      * @throws ServiceException
      */
-    public void delete(Image image) throws PersistenceException;
+    public void delete(int imageID) throws PersistenceException;
 
 
     /**

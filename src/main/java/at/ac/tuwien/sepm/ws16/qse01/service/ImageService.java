@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -56,10 +54,10 @@ public interface ImageService {
     /**
      * deletes given image in database
      *
-     * @param image image to delete
+     * @param imageID ID of image to delete
      * @throws ServiceException
      */
-    public void delete(Image image) throws ServiceException;
+    public void delete(int imageID) throws ServiceException;
 
 
     /**

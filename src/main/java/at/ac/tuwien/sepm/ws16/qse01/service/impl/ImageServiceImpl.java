@@ -48,10 +48,10 @@ public class ImageServiceImpl implements ImageService {
         return dao.read(id);
     }
     @Override
-    public void delete(Image image) throws ServiceException {
+    public void delete(int imageID) throws ServiceException {
         try {
-            LOGGER.debug("Entering delete method in Service with parameters = " + image.toString());
-            dao.delete(image);
+            LOGGER.debug("Entering delete method in Service with imageID = " + imageID);
+            dao.delete(imageID);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Deleting in service layer has failed.:" + e);
         }
