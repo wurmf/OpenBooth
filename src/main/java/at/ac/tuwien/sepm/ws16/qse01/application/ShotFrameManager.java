@@ -50,7 +50,9 @@ public class ShotFrameManager {
         this.imageService = imageService;
         this.shootingService = shootingService;
         shotframes = new ArrayList<ShotFrameController>();
-
+    }
+    public void init(){
+        //TODO: die aktive kameras aus der datenbank holen
          /* Creating shotFrame */
         int anz = 2;
         int x = 200;
@@ -81,9 +83,8 @@ public class ShotFrameManager {
     }
 
     public void refreshShot(int cameraID,String imgPath) {
-        System.out.println("manager->refershhot");
+        LOGGER.debug("ShotFrameManager->refershhot with cameraID="+cameraID+", imgPath="+imgPath);
         for(ShotFrameController shotFrameController: shotframes){
-            System.out.println(shotFrameController.getFrameID()+"_"+cameraID);
             if(shotFrameController.getFrameID()==cameraID){
                 shotFrameController.refreshShot(imgPath);
             }
