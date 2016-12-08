@@ -16,6 +16,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A class that will control stages and serves as a means of communication between all controllers.
@@ -31,6 +33,7 @@ public class WindowManager {
     private Scene shootingScene;
     private Scene adminLoginScene;
     private Scene profileScene;
+    private List<Stage> shotStageList;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader){
@@ -61,16 +64,17 @@ public class WindowManager {
         //      2) number of frames to open = number of existing camera in DB
 
         /* Creating shotFrame */
+        shotStageList=new LinkedList<>();
         int anz = 1;
         int x = 200;
         for(int i=0; i<anz; i++) { // Anzahl der Kameras...
             Stage stage = new Stage();
             stage.setTitle("Shot Frame "+(i+1));
             stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
-            //stage.initModality(Modality.WINDOW_MODAL);
             stage.setFullScreen(false);
             stage.initOwner(mainStage);
             stage.setX(x);
+            shotStageList.add(stage);
             stage.show();
 
             x += 200;
@@ -114,7 +118,8 @@ public class WindowManager {
         mainStage.setScene(profileScene);
         mainStage.setFullScreen(true);
     }
-    public void closeStage(){
+    public void closeStages(){
+        shotStageList.forEach(Stage::close);
         mainStage.close();
     }
     public Stage getStage(){

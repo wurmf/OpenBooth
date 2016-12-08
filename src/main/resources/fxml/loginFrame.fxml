@@ -6,15 +6,15 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.LoginFrameController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.LoginFrameController">
    <children>
-      <Button layoutX="77.0" layoutY="151.0" mnemonicParsing="false" onAction="#checkLogin" text="Bestätigen" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="85.0" />
-      <Button layoutX="211.0" layoutY="151.0" mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="85.0" />
-      <TextField fx:id="adminField" layoutX="179.0" layoutY="56.0" AnchorPane.rightAnchor="50.0" />
-      <Label layoutX="35.0" layoutY="61.0" text="Benutzername" AnchorPane.leftAnchor="50.0" />
-      <Label layoutX="41.0" layoutY="107.0" text="Passwort" AnchorPane.leftAnchor="50.0" />
-      <Label fx:id="wrongCredentialsLabel" layoutX="82.5" layoutY="204.0" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" AnchorPane.bottomAnchor="60.0" />
-      <PasswordField fx:id="passwordField" layoutX="178.0" layoutY="102.0" AnchorPane.rightAnchor="50.0" />
-      <Label layoutX="59.0" layoutY="20.0" text="Geben Sie Benutzername und Passwort ein" AnchorPane.topAnchor="20.0" />
+      <Button layoutX="993.0" layoutY="638.0" mnemonicParsing="false" onAction="#checkLogin" text="Bestätigen" AnchorPane.bottomAnchor="416.0" AnchorPane.leftAnchor="993.0" />
+      <Button layoutX="1236.0" layoutY="658.0" mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" AnchorPane.bottomAnchor="396.0" AnchorPane.rightAnchor="595.0" />
+      <TextField fx:id="adminField" layoutX="1041.0" layoutY="404.0" AnchorPane.rightAnchor="708.0" />
+      <Label layoutX="822.0" layoutY="415.0" text="Benutzername" AnchorPane.leftAnchor="822.0" />
+      <Label layoutX="840.0" layoutY="517.0" text="Passwort" AnchorPane.leftAnchor="840.0" />
+      <Label fx:id="wrongCredentialsLabel" layoutX="899.0" layoutY="585.0" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" AnchorPane.bottomAnchor="479.0" />
+      <PasswordField fx:id="passwordField" layoutX="1085.0" layoutY="516.0" AnchorPane.rightAnchor="664.0" />
+      <Label layoutX="959.0" layoutY="352.0" text="Geben Sie Benutzername und Passwort ein" AnchorPane.topAnchor="352.0" />
    </children>
 </AnchorPane>

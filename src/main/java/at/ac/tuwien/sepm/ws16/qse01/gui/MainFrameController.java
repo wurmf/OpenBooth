@@ -73,7 +73,6 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        //mainApp.showShootingAdministration();
         windowManager.showAdminLogin();
     }
 
@@ -107,7 +106,9 @@ public class MainFrameController {
      *
      * @param actionEvent
      */
-    public void onEndPressed(ActionEvent actionEvent) {Platform.exit();
+    public void onEndPressed(ActionEvent actionEvent) {
+        windowManager.closeStages();
+        //Platform.exit();
     }
 
     /**
