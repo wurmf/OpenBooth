@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
@@ -17,15 +18,15 @@ import org.springframework.stereotype.Component;
 public class CameraHandlerImpl implements CameraHandler {
 
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
-    ShotFrameController shotFrameController;
+    ShotFrameManager shotFrameManager;
     private SpringFXMLLoader springFXMLLoader;
     ImageService imageService;
     ShootingService shootingService;
 
     @Autowired
-    public CameraHandlerImpl(ShotFrameController shotFrameController, ImageService imageService, ShootingService shootingService)
+    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService)
     {
-        this.shotFrameController=shotFrameController;
+        this.shotFrameManager=shotFrameManager;
         this.imageService= imageService;
         this.shootingService= shootingService;
     }
@@ -84,7 +85,7 @@ public class CameraHandlerImpl implements CameraHandler {
 
         CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
         cameraHandlerThread.setImageService(imageService);
-        cameraHandlerThread.setShotFrameController(shotFrameController);
+        cameraHandlerThread.setShotFrameManager(shotFrameManager);
         cameraHandlerThread.setShootingService(shootingService);
         cameraHandlerThread.start();
     }

@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,23 +21,30 @@ import javax.annotation.Resource;
  *
  */
 
-@Component
-//@Scope("prototype")  //Multithreading for multiple shotframes
+/*@Component
+//@Scope("prototype")  //Multithreading for multiple shotframes*/
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
 
-    @Resource
+
     private ImageService imageService;
 
-    @Resource
+
     private ShootingService shootingService;
 
     @FXML
     private ImageView shotView;
 
-    @Autowired
-    public ShotFrameController(ImageService imageService,ShootingService shootingService) throws Exception {
+    private int frameID;
 
+
+    public ShotFrameController() throws Exception {
+
+
+
+    }
+    public void initShotFrame(int cameraID,ImageService imageService,ShootingService shootingService)  {
+        this.frameID  = cameraID;
         this.imageService = imageService;
         this.shootingService = shootingService;
 
@@ -50,13 +59,13 @@ public class ShotFrameController {
      *
      */
     @FXML
-    public void refreshShot() { //TODO: int camera
-        String imgPath = null;
+    public void refreshShot(String imgPath) {
+    /*    String imgPath = null;
         try {
             imgPath = imageService.getLastImgPath(shootingService.searchIsActive().getId());
         } catch (ServiceException e) {
             LOGGER.debug("Fehler: "+e.getMessage());
-        }
+        }*/
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
         try {
@@ -65,5 +74,9 @@ public class ShotFrameController {
             LOGGER.debug("Fehler: "+e.getMessage());
         }
 
+    }
+
+    public int getFrameID(){
+        return frameID;
     }
 }

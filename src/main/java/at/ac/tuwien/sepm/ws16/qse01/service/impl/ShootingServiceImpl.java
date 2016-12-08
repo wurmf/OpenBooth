@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -19,6 +22,13 @@ public class ShootingServiceImpl implements ShootingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     ShootingDAO shootingDAO;
 
+    public ShootingServiceImpl() throws ServiceException{
+        try {
+            this.shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error: "+e.getMessage());
+        }
+    }
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) throws Exception {
         shootingDAO = jdbcShootingDAO;

@@ -124,6 +124,7 @@ public class JDBCImageDAO implements ImageDAO {
 
             while (rs.next()) {
                imagepath = rs.getString("imagepath");
+                LOGGER.debug("imagepath ="+imagepath);
             }
 
         } catch (SQLException e ) {
@@ -178,12 +179,12 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
     @Override
-    public void delete(Image image) throws PersistenceException {
+    public void delete(int imageID) throws PersistenceException {
         try{
             String sql = "DELETE FROM Images WHERE  IMAGEID=?";
             PreparedStatement stmt;
             stmt= con.prepareStatement(sql);
-            stmt.setInt(1,image.getImageID());
+            stmt.setInt(1,imageID);
             stmt.execute();
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
