@@ -77,7 +77,7 @@ public class MainApplication extends Application {
         miniaturStage.setTitle("Fotoübersicht");
         miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
         try {
-            miniWrapper.getController().init(shootingStage,miniaturStage);
+            miniWrapper.getController().init(miniaturStage);
         } catch (ServiceException e) {
             e.printStackTrace();
         }

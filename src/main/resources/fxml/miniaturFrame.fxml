@@ -13,8 +13,8 @@
 <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.MiniaturFrameController">
 
     <VBox alignment="CENTER_LEFT" minWidth="${scrollPane.viewportBounds.width}">
-        <HBox fx:id="hboxMenu" alignment="CENTER_LEFT">
-            <ImageView fx:id="backbutton" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#backButtonClicked" pickOnBounds="true" preserveRatio="true">
+        <HBox  alignment="CENTER_LEFT">
+            <ImageView  fitHeight="60.0" fitWidth="60.0" onMouseClicked="#backButtonClicked" pickOnBounds="true" preserveRatio="true">
                 <image>
                     <Image url="@/images/back.png" />
                 </image>

@@ -36,16 +36,24 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image create(Image f) {
-        LOGGER.debug("Entering create method in Service with parameters {}"+f);
-
-        return dao.create(f);
+    public Image create(Image f) throws ServiceException {
+        try{
+            LOGGER.debug("Entering create method in Service with parameters {}"+f);
+            return dao.create(f);
+         } catch (PersistenceException e) {
+            throw new ServiceException("Error! Creating in service layer has failed.:" + e.getMessage());
+        }
     }
 
     @Override
-    public Image read(int id) {
-        LOGGER.debug("Entering read method in Service with image id = "+id);
-        return dao.read(id);
+    public Image read(int id) throws ServiceException {
+        try {
+            LOGGER.debug("Entering read method in Service with image id = "+id);
+            return dao.read(id);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! Reading in service layer has failed.:" + e.getMessage());
+        }
+
     }
     @Override
     public void delete(int imageID) throws ServiceException {
@@ -53,30 +61,40 @@ public class ImageServiceImpl implements ImageService {
             LOGGER.debug("Entering delete method in Service with imageID = " + imageID);
             dao.delete(imageID);
         } catch (PersistenceException e) {
-            throw new ServiceException("Error! Deleting in service layer has failed.:" + e);
+            throw new ServiceException("Error! Deleting in service layer has failed.:" + e.getMessage());
         }
     }
 
     @Override
-    public String getLastImgPath(int shootingid) {
-        LOGGER.debug("Entering getLastImgPath method in Service with shootingid = "+shootingid);
-        return dao.getLastImgPath(shootingid);
+    public String getLastImgPath(int shootingid) throws ServiceException  {
+        try {
+            LOGGER.debug("Entering getLastImgPath method in Service with shootingid = " + shootingid);
+            return dao.getLastImgPath(shootingid);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! getLastImgPath in service layer has failed.:" + e.getMessage());
+        }
     }
+
     @Override
     public List<Image> getAllImages(int shootingid) throws ServiceException {
         try {
             LOGGER.debug("Entering getAllImages method in Service with shootingid = " + shootingid);
             return dao.getAllImages(shootingid);
         }catch(PersistenceException e){
-            throw new ServiceException("Error! Showing all images in service layer has failed.:" + e);
+            throw new ServiceException("Error! Showing all images in service layer has failed.:" + e.getMessage());
         }
     }
 
     @Override
-    public int getNextImageID() {
-        LOGGER.debug("Entering getNextImageID method in Service ");
-        return dao.getNextImageID();
+    public int getNextImageID() throws ServiceException {
+        try {
+            LOGGER.debug("Entering getNextImageID method in Service ");
+            return dao.getNextImageID();
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! getNextImageId in service layer has failed.:" + e.getMessage());
+        }
     }
+
 
 
 }
