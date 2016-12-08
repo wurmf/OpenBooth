@@ -25,9 +25,6 @@ public class ShotFrameManager {
     private List<ShotFrameController> shotframes;
 
 
-   /* @Resource
-    private CameraService cameraService;*/
-
     public ShotFrameManager() throws ServiceException {
 
         shotframes = new ArrayList<>();
@@ -35,9 +32,9 @@ public class ShotFrameManager {
     public void init(){
         //TODO: die aktive kameras aus der datenbank holen
          /* Creating shotFrame */
-        int anz = 2;
+        int anz = 3;
         int x = 200;
-        for(int i=0; i<anz; i++) { // Anzahl der Kameras...
+        for(int i=1; i<anz; i++) { // Anzahl der Kameras...
             Stage stage = new Stage();
             stage.setTitle("Shot Frame "+(i+1));
 
@@ -46,7 +43,7 @@ public class ShotFrameManager {
                         "/fxml/shotFrame.fxml"));
                 Parent root = loader.load();
                 ShotFrameController shotFrameController = loader.getController();
-                shotFrameController.initShotFrame((i+1));
+                shotFrameController.initShotFrame(i);
                 shotframes.add(shotFrameController);
 
                 stage.setScene(new Scene(root ,400,400));

@@ -13,8 +13,9 @@ public class Image {
     private int shootingid;
     private Date date;
 
-    public Image(){
 
+    public Image(){
+        //Empty Constructor
     }
 
     public Image(int imageID, String imagepath, int shootingid, Date date) {

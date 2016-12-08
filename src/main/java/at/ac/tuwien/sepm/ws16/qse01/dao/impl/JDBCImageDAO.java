@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public class JDBCImageDAO implements ImageDAO {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
     private Connection con;
 
@@ -57,10 +57,12 @@ public class JDBCImageDAO implements ImageDAO {
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing create failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing create failed: " + e.getMessage());
+                }
             }
         }
         f.setImageID(fid);
@@ -89,14 +91,16 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            throw new PersistenceException("Select failed: "+e.getMessage());
+            throw new PersistenceException("Reading failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing read failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing read failed: " + e.getMessage());
+                }
             }
         }
         return image;
@@ -121,14 +125,16 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            throw new PersistenceException("Select failed: "+e.getMessage());
+            throw new PersistenceException("GetLastImgPath failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing getLastImgPath failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing getLastImgPath failed: " + e.getMessage());
+                }
             }
         }
         return imagepath;
@@ -154,14 +160,16 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            throw new PersistenceException("Select failed: "+e.getMessage());
+            throw new PersistenceException("getNextImageID failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing getNextImageID failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing getNextImageID failed: " + e.getMessage());
+                }
             }
         }
         return nextImageID;
@@ -181,10 +189,12 @@ public class JDBCImageDAO implements ImageDAO {
         }catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing delete failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing delete failed: " + e.getMessage());
+                }
             }
         }
     }
@@ -211,10 +221,12 @@ public class JDBCImageDAO implements ImageDAO {
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
-            if (stmt != null) try {
-                stmt.close();
-            } catch (SQLException e) {
-                LOGGER.debug("Closing getAllImages failed: " + e.getMessage());
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing getAllImages failed: " + e.getMessage());
+                }
             }
         }
         return imageList;

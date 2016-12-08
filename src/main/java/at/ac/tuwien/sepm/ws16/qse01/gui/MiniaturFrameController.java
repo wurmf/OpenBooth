@@ -10,6 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -79,7 +80,7 @@ public class MiniaturFrameController {
             ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
             delete.setFitHeight(30);
             delete.setFitWidth(30);
-            delete.setOnMouseClicked(mouseEvent -> {
+            delete.setOnMouseClicked((MouseEvent mouseEvent) -> {
                 LOGGER.debug("delete button clicked...");
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setHeaderText("Bild Löschen");
@@ -119,7 +120,7 @@ public class MiniaturFrameController {
                 }
                 if(imageView!=null){
                     VBox vBox = new VBox();
-                    LOGGER.debug("imageview id = "+String.valueOf(img.getImageID()));
+                    LOGGER.debug("imageview id = "+img.getImageID());
                     imageView.setId(String.valueOf(img.getImageID()));
                     vBox.getChildren().addAll(imageView,hBox);
                     tile.getChildren().add(vBox);
@@ -128,10 +129,6 @@ public class MiniaturFrameController {
                 LOGGER.debug("Fehler: "+e.getMessage());
             }
         }
-      //  ImageView firstImageView = (ImageView) ((VBox) tile.getChildren().get(0)).getChildren().get(1);
-       // imageClicked1(firstImageView);
-
-
 
     }
 
@@ -155,36 +152,11 @@ public class MiniaturFrameController {
 
                         imageClicked1(imgView);
                     }
-                   /* }else if(mouseEvent.getClickCount() == 2) { // bei doppelklick das bild öffnen
-                        try {
-                            BorderPane borderPane = new BorderPane();
-                            ImageView imageView = new ImageView();
-                            Image image = new Image(new FileInputStream(imageFile));
-                            imageView.setImage(image);
-                            imageView.setStyle("-fx-background-color: BLACK");
-                            imageView.setFitHeight(stage.getHeight() - 10);
-                            imageView.setPreserveRatio(true);
-                            imageView.setSmooth(true);
-                            imageView.setCache(true);
-                            borderPane.setCenter(imageView);
-                            borderPane.setStyle("-fx-background-color: BLACK");
-                            Stage newStage = new Stage();
-                            newStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-                            newStage.setHeight(Screen.getPrimary().getVisualBounds().getHeight());
-                            newStage.setTitle(imageFile.getName());
-                            Scene scene = new Scene(borderPane,Color.BLACK);
-                            newStage.setScene(scene);
-                            newStage.show();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
-
-                    }*/
                 }
             });
             return imageView;
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+           LOGGER.debug("image not found : "+ex.getMessage());
         }
         return null;
     }
