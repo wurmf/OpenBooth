@@ -23,7 +23,6 @@ public class ProfileServiceImpl implements ProfileService{
     @Resource
     private ProfileDAO profileDAO;
     private List<Profile> profileList = new ArrayList<>();
-    private Profile activeProfile = null;
 
     @Autowired
     public ProfileServiceImpl(ProfileDAO profileDAO) throws ServiceException {
@@ -32,7 +31,6 @@ public class ProfileServiceImpl implements ProfileService{
         try {
             //profileDAO = new JDBCProfileDAO();
             profileList.addAll(profileDAO.readAll());
-            activeProfile = this.getActiveProfile();
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Initializing service layer has failed.:" + e);
         }
@@ -62,7 +60,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public Profile get(int id) throws ServiceException {
+    public Profile get(long id) throws ServiceException {
         LOGGER.debug("Entering get method with parameter id = " + id);
         try {
             return profileDAO.read(id);
@@ -93,38 +91,4 @@ public class ProfileServiceImpl implements ProfileService{
         }
     }
 
-    @Override
-    public void setActiveProfile(Profile profile) throws ServiceException{
-        LOGGER.debug("Entering setActiveProfile method with parameters " + profile);
-        if (profile == null) {throw new IllegalArgumentException("Error! SetActiveProfile methode has been called with a null Argument");}
-        try {
-            if (this.activeProfile != null){
-                this.activeProfile.setIsActive(false);
-                profileDAO.update(this.activeProfile);
-            }
-            profile.setIsActive(true);
-            profileDAO.update(profile);
-            this.profileList = profileDAO.readAll();
-            this.activeProfile = this.getActiveProfile();
-        } catch (PersistenceException e) {
-            throw new ServiceException("Error! Setting active profile in service layer has failed.:" + e);
-        }
-    }
-
-    @Override
-    public Profile getActiveProfile() throws ServiceException{
-        LOGGER.debug("Entering getActiveProfile method");
-        try {
-            this.profileList = profileDAO.readAll();
-        } catch (PersistenceException e) {
-            throw new ServiceException("Error! Getting active profile in service layer has failed.:" + e);
-        }
-        this.activeProfile = null;
-        for (Profile profile:profileList){
-            if(profile.isActive()){
-                this.activeProfile = profile;
-            }
-        }
-        return this.activeProfile;
-    }
 }

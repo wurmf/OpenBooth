@@ -1,11 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -20,6 +22,13 @@ public class JDBCPositionDAO implements PositionDAO{
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
 
+    @Autowired
+    public JDBCPositionDAO(DBHandler handler) throws PersistenceException {
+        LOGGER.debug("Entering constructor");
+        con = handler.getConnection();
+    }
+
+
     @Override
     public Position create(Position position) throws PersistenceException {
         LOGGER.debug("Entering create method with parameters " + position);
@@ -28,7 +37,7 @@ public class JDBCPositionDAO implements PositionDAO{
         PreparedStatement stmt = null;
         try {
             //AutoID
-            if(position.getId()== Integer.MIN_VALUE)
+            if(position.getId()== Long.MIN_VALUE)
             {
                 String sqlString = "INSERT INTO positions(name) VALUES (?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
@@ -43,7 +52,7 @@ public class JDBCPositionDAO implements PositionDAO{
             {
                 String sqlString = "INSERT INTO positions(positionID,name,isDeleted) VALUES (?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
-                stmt.setInt(1,position.getId());
+                stmt.setLong(1,position.getId());
                 stmt.setString(2,position.getName());
                 stmt.setBoolean(3,position.isDeleted());
                 stmt.executeUpdate();
@@ -72,7 +81,7 @@ public class JDBCPositionDAO implements PositionDAO{
             stmt = this.con.prepareStatement(sqlString);
             stmt.setString(1,position.getName());
             stmt.setBoolean(2,position.isDeleted());
-            stmt.setInt(3,position.getId());
+            stmt.setLong(3,position.getId());
             stmt.executeUpdate();
             ResultSet rs = stmt.getResultSet();
             if (rs.next()){return true;} else {return false;}
@@ -144,7 +153,7 @@ public class JDBCPositionDAO implements PositionDAO{
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,position.getId());
+            stmt.setLong(1,position.getId());
             stmt.executeUpdate();
             ResultSet rs = stmt.getResultSet();
             if (rs.next()){return true;} else {return false;}

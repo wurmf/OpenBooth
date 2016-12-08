@@ -58,7 +58,13 @@ public class PositionServiceImpl implements PositionService{
 
     @Override
     public List<Position> getAllPositions() throws ServiceException {
-        return null;
+        LOGGER.debug("Entering getAllPositions method");
+        try {
+            this.positionList = positionDAO.readAll();
+            return this.positionList;
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! Getting All in service layer has failed.:" + e);
+        }
     }
 
     @Override

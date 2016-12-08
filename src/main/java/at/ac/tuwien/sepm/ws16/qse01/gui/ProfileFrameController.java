@@ -31,20 +31,12 @@ public class ProfileFrameController {
     @Resource
     private ProfileService pservice;
 
-    private Profile activeProfile = null;
-
     @FXML
     private TableView<Profile> tv_profiles;
     @FXML
     private TableColumn<Profile,Integer> tc_id;
     @FXML
     private TableColumn<Profile,String> tc_name;
-    @FXML
-    private TableColumn<Profile,Boolean> tc_isActive;
-    @FXML
-    private Label label_activeProfile;
-    @FXML
-    private TextField tf_activeProfile;
 
     @FXML
     private Button bt_Add;
@@ -75,12 +67,8 @@ public class ProfileFrameController {
             //pservice = new ProfileServiceImpl();
             tc_id.setCellValueFactory(new PropertyValueFactory<Profile, Integer>("id"));
             tc_name.setCellValueFactory(new PropertyValueFactory<Profile, String>("name"));
-            tc_isActive.setCellValueFactory(new PropertyValueFactory<Profile, Boolean>("isActive"));
+
             this.refreshTableViewProfiles(pservice.getAllProfiles());
-            this.activeProfile = pservice.getActiveProfile();
-            if (this.activeProfile != null)
-            {String activeProfileName = this.activeProfile.getName();
-            tf_activeProfile.setText(activeProfileName);}
 
         } catch (ServiceException e) {
             e.printStackTrace();
@@ -130,19 +118,6 @@ public class ProfileFrameController {
         Profile p = tv_profiles.getSelectionModel().getSelectedItem();
         if(p != null) try {
             pservice.erase(p);
-            refreshTableViewProfiles(pservice.getAllProfiles());
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void bt_SetActiveClicked(ActionEvent actionEvent) {
-        LOGGER.debug("Button Set Active has been clicked");
-        Profile p = tv_profiles.getSelectionModel().getSelectedItem();
-        if(p != null) try {
-            pservice.setActiveProfile(p);
-            tf_activeProfile.setText(p.getName());
             refreshTableViewProfiles(pservice.getAllProfiles());
         } catch (ServiceException e) {
             e.printStackTrace();

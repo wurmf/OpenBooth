@@ -30,7 +30,7 @@ public interface ProfileService {
      * @return profile with id
      * @throws ServiceException if getting is not possible
      */
-    Profile get(int id) throws ServiceException;
+    Profile get(long id) throws ServiceException;
 
     /**
      * Get all profiles
@@ -45,18 +45,4 @@ public interface ProfileService {
      * @throws ServiceException if erasing is not possible
      */
     void erase(Profile profile) throws ServiceException;
-
-    /**
-     * Setting active profile(maximal one profile can be active)
-     * @param profile profile to be set active
-     * @throws ServiceException if setting active profile is not possible
-     */
-    void setActiveProfile(Profile profile) throws ServiceException;
-
-    /**
-     * Getting active profile(maximal one profile can be active)
-     * @return profile that is active or null, if no profile is currently active
-     * @throws ServiceException if getting active profile is not possible
-     */
-    Profile getActiveProfile() throws ServiceException;
 }

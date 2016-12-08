@@ -24,7 +24,7 @@ public interface ProfileDAO {
      * if profile with give id doesn't exist in persistence store, nothing will be updated
      * @param profile - profile entity with changed properties to be persisted
      */
-    void update(Profile profile) throws PersistenceException;
+    boolean update(Profile profile) throws PersistenceException;
 
     /**
      * Retrieve a profile entity identified by id from the persistence store
@@ -32,7 +32,7 @@ public interface ProfileDAO {
      * @return profile that has been looked for, if a profile with given id doesn't
      * exist in prsistence store null will be returned
      */
-    Profile read(int id) throws PersistenceException;
+    Profile read(long id) throws PersistenceException;
 
     /**
      * Retrieve all profiles entities from persistence store
@@ -44,5 +44,5 @@ public interface ProfileDAO {
      * Remove given profile from persistence store
      * @param profile - profile to be remove is identified by its id
      */
-    void delete(Profile profile) throws PersistenceException;
+    boolean delete(Profile profile) throws PersistenceException;
 }

@@ -11,11 +11,19 @@ INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting1/img2.jp
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img1.jpg',2,'2003-06-25 16:52:20');
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img2.jpg',2,'2003-06-25 16:53:20');
 
-INSERT INTO positions(name,isDeleted) VALUES ('DB-Test-Position-1',FALSE);
-INSERT INTO positions(name,isDeleted) VALUES ('DB-Test-Position-2',FALSE);
+INSERT INTO positions(positionID,name,isDeleted) VALUES (1,'DB-Test-Position-1',FALSE);
+INSERT INTO positions(positionID,name,isDeleted) VALUES (2,'DB-Test-Position-2',FALSE);
 
-INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
-INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
+INSERT INTO logos(logoID,path) VALUES (1,'/logos/logo1.jpg');
+INSERT INTO logos(LogoID,path) VALUES (2,'/logos/logo2.jpg');
+INSERT INTO logos(LogoID,path) VALUES (3,'/logos/watermark1.jpg');
+
+INSERT INTO cameras(cameraID,label,modelName,portNumber,serialNumber) VALUES (1,'DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
+INSERT INTO cameras(cameraID,label,modelName,portNumber,serialNumber) VALUES (2,'DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
 
 INSERT INTO profile_camera_positions VALUES (1,1,1,false);
 INSERT INTO profile_camera_positions VALUES (1,2,2,false);
+
+INSERT INTO profile_logo_rpositions VALUES (1,1,85.0,95.0,80.0,90.0);
+INSERT INTO profile_logo_rpositions VALUES (1,2, 5.0,10.0,15.0,20.0);
+INSERT INTO profile_logo_rpositions VALUES (1,3, -1.0,-1.0,-1.0,-1.0);

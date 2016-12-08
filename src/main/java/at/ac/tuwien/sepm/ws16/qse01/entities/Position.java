@@ -4,38 +4,39 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  * Position entity
  */
 public class Position {
-    private int id;
+    private long id;
     private String name;
     private boolean isDeleted;
 
     /**
      * Constructor with known ID
      *
-     * @param id - positive profile id
-     * @param name - no empty profile name
-     * @param isDeleted - mark this profile with true value like deleted
+     * @param id - positive position id
+     * @param name - no empty position name
+     * @param isDeleted - mark this position with true value as deleted
      */
-    public Position(int id, String name, boolean isDeleted){
+    public Position(long id, String name, boolean isDeleted){
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
+
     }
 
     /**
-     * Constructor with unknown id will set id to Integer.MIN_VALUE and persistence layer has
+     * Constructor with unknown id will set id to Long.MIN_VALUE and persistence layer has
      * to provide a valid id
      *
      * @param name - no empty position name
      */
     public Position(String name){
-        this(Integer.MIN_VALUE, name,false);
+        this(Long.MIN_VALUE, name,false);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
