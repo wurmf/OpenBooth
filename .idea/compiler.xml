@@ -8,7 +8,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Desktop" />
         <module name="ss16_sepm_qse_01" />
-        <module name="ws16_sepm_qse_01" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.8">
