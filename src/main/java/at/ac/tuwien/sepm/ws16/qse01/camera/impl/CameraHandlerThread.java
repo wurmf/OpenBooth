@@ -66,7 +66,7 @@ public class CameraHandlerThread  extends Thread{
                     if(activeShooting != null){
                         int imageID = imageService.getNextImageID();
 
-                        String directoryPath = activeShooting.getStorageDir() + "shooting" + activeShooting.getId() + "/";
+                        String directoryPath = activeShooting.getStorageDir() + "/shooting" + activeShooting.getId() + "/";
                         Path storageDir = Paths.get(directoryPath);
                         try {
                             Files.createDirectory(storageDir);

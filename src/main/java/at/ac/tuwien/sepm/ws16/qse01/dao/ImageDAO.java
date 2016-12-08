@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import java.util.List;
 
@@ -42,16 +44,6 @@ public interface ImageDAO {
      * */
     public String getLastImgPath(int shootingid);
 
-    /**
-     * Returns a string list including all image paths by shootingid
-     *
-     * @param shootingid
-     *            the ID of shooting
-     *
-     * @return List<String> list of all imagepaths from given shooting
-     *
-     * */
-    public List<String> getAllImagePaths(int shootingid);
 
     /**
      * Returns the next imageID
@@ -61,4 +53,22 @@ public interface ImageDAO {
      *
      * */
     public int getNextImageID();
+    /**
+     * deletes given image in database
+     *
+     * @param image image to delete
+     * @throws ServiceException
+     */
+    public void delete(Image image) throws PersistenceException;
+
+
+    /**
+     * gets all images by shooting id
+     *
+     * @param shootingid the ID of shooting
+     *
+     * @return List<Image> list of all images belonging to given shooting
+     * @throws ServiceException
+     */
+    public List<Image> getAllImages(int shootingid) throws PersistenceException;
 }

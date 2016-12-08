@@ -1,6 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -51,13 +54,23 @@ public interface ImageService {
     public int getNextImageID();
 
     /**
-     * Returns a string list including all image paths by shootingid
+     * deletes given image in database
      *
-     * @param shootingid
-     *            the ID of shooting
+     * @param image image to delete
+     * @throws ServiceException
+     */
+    public void delete(Image image) throws ServiceException;
+
+
+    /**
+     * gets all images by shooting id
      *
-     * @return List<String> list of all imagepaths from given shooting
+     * @param shootingid the ID of shooting
      *
-     * */
-    public List<String> getAllImagePaths(int shootingid);
+     * @return List<Image> list of all images belonging to given shooting
+     * @throws ServiceException
+     */
+    public List<Image> getAllImages(int shootingid) throws ServiceException;
+
+
 }

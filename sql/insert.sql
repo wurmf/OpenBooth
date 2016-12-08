@@ -10,3 +10,12 @@ INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting1/img1.jp
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting1/img2.jpg',1,'2003-06-25 16:51:20');
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img1.jpg',2,'2003-06-25 16:52:20');
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img2.jpg',2,'2003-06-25 16:53:20');
+
+INSERT INTO positions(name,isDeleted) VALUES ('DB-Test-Position-1',FALSE);
+INSERT INTO positions(name,isDeleted) VALUES ('DB-Test-Position-2',FALSE);
+
+INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
+INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
+
+INSERT INTO profile_camera_positions VALUES (1,1,1,false);
+INSERT INTO profile_camera_positions VALUES (1,2,2,false);

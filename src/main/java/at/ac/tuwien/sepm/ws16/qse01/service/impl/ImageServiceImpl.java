@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -20,8 +19,9 @@ import java.util.List;
 public class ImageServiceImpl implements ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
-    private static ImageDAO dao;
+    private ImageDAO dao;
 
+    @Autowired
     public ImageServiceImpl(ImageDAO imageDAO) throws ServiceException {
         this.dao = imageDAO;
     }
@@ -38,6 +38,15 @@ public class ImageServiceImpl implements ImageService {
         LOGGER.debug("Entering read method in Service with image id = "+id);
         return dao.read(id);
     }
+    @Override
+    public void delete(Image image) throws ServiceException {
+        try {
+            LOGGER.debug("Entering delete method in Service with parameters = " + image.toString());
+            dao.delete(image);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! Deleting in service layer has failed.:" + e);
+        }
+    }
 
     @Override
     public String getLastImgPath(int shootingid) {
@@ -45,9 +54,13 @@ public class ImageServiceImpl implements ImageService {
         return dao.getLastImgPath(shootingid);
     }
     @Override
-    public List<String> getAllImagePaths(int shootingid) {
-        LOGGER.debug("Entering getAllImagePaths method in Service with shootingid = "+shootingid);
-        return dao.getAllImagePaths(shootingid);
+    public List<Image> getAllImages(int shootingid) throws ServiceException {
+        try {
+            LOGGER.debug("Entering getAllImages method in Service with shootingid = " + shootingid);
+            return dao.getAllImages(shootingid);
+        }catch(PersistenceException e){
+            throw new ServiceException("Error! Showing all images in service layer has failed.:" + e);
+        }
     }
 
     @Override
@@ -55,5 +68,6 @@ public class ImageServiceImpl implements ImageService {
         LOGGER.debug("Entering getNextImageID method in Service ");
         return dao.getNextImageID();
     }
+
 
 }

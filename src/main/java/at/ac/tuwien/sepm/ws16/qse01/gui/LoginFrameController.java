@@ -23,11 +23,8 @@ import javax.annotation.Resource;
 public class LoginFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
 
-    private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
-    private boolean correctCredentials;
     private MainApplication mainApp;
-    @Resource
     private AdminUserService adminUserService;
     @FXML
     private TextField adminField;
@@ -38,17 +35,23 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(SpringFXMLLoader springFXMLLoader) throws ServiceException{
-        this.springFXMLLoader = springFXMLLoader;
+    public LoginFrameController(AdminUserService adminUserService) throws ServiceException{
+        this.adminUserService=adminUserService;
     }
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
+
+    /**
+     * Setter for the stage that contains this controllers Scene and the MainApplication-instance that calls this controller.
+     * @param primaryStage  the stage that contains this controllers Scene
+     * @param mainApp       the MainApplication-instance that calls this controller
+     */
     public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
         this.primaryStage = primaryStage;
         this.mainApp = mainApp;
     }
 
+    /**
+     * Lets an AdminUserService instance check if the values given in the adminname- and password-TextField correspond to a saved admin-user.
+     */
     @FXML
     public void checkLogin(){
         String adminName=adminField.getText();
@@ -56,7 +59,6 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                this.correctCredentials=true;
                 mainApp.showShootingAdministration();
                 closeLogin();
             } else{
@@ -66,6 +68,10 @@ public class LoginFrameController {
             LOGGER.error("checkLogin - "+e);
         }
     }
+
+    /**
+     * Closes the login-frame and sets back all the values possibly changed during the time it was open.
+     */
     @FXML
     public void closeLogin(){
         wrongCredentialsLabel.setVisible(false);
