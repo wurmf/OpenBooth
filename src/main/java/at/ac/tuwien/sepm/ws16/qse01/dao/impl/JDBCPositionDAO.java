@@ -28,45 +28,53 @@ public class JDBCPositionDAO implements PositionDAO{
         con = handler.getConnection();
     }
 
-
     @Override
     public Position create(Position position) throws PersistenceException {
         LOGGER.debug("Entering create method with parameters " + position);
-        if(position==null)throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+
+        if(position==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
+        ResultSet rs;
+        String sqlString;
+
         try {
             //AutoID
             if(position.getId()== Long.MIN_VALUE)
             {
-                String sqlString = "INSERT INTO positions(name) VALUES (?);";
+                sqlString = "INSERT INTO positions(name,buttonImagePath) VALUES (?,?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1,position.getName());
+                stmt.setString(2,position.getButtonImagePath());
                 stmt.executeUpdate();
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()){position.setId(rs.getInt(1));}
-                LOGGER.debug("Persisted Position successfully with AutoID:" + position.getId());
+                //Get autoassigned id
+                rs = stmt.getGeneratedKeys();
+                if (rs.next()){position.setId(rs.getLong(1));}
+                LOGGER.debug("Persisted object creation successfully with AutoID:" + position.getId());
             }
             //NoAutoID
             else
             {
-                String sqlString = "INSERT INTO positions(positionID,name,isDeleted) VALUES (?,?,?);";
+                sqlString = "INSERT INTO positions(positionID,name,isDeleted) VALUES (?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setLong(1,position.getId());
                 stmt.setString(2,position.getName());
                 stmt.setBoolean(3,position.isDeleted());
                 stmt.executeUpdate();
-                LOGGER.debug("Persisted Position successfully without AutoID:" + position.getId());
+                LOGGER.debug("Persisted objected creation successfully without AutoID:" + position.getId());
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Creating object in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
+        // Return persisted object
         return position;
     }
 
@@ -74,21 +82,35 @@ public class JDBCPositionDAO implements PositionDAO{
     public boolean update(Position position) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + position);
         if(position==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
-        String sqlString = "UPDATE positions SET name = ?,isDeleted = ? WHERE positionID = ?;";
+        LOGGER.debug("Passed:Checking parameters according to specification.");
+
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "UPDATE positions SET name = ?,buttonImagePath = ?, isDeleted = ? WHERE positionID = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setString(1,position.getName());
-            stmt.setBoolean(2,position.isDeleted());
-            stmt.setLong(3,position.getId());
+            stmt.setString(2,position.getButtonImagePath());
+            stmt.setBoolean(3,position.isDeleted());
+            stmt.setLong(4,position.getId());
             stmt.executeUpdate();
-            ResultSet rs = stmt.getResultSet();
-            if (rs.next()){return true;} else {return false;}
+            rs = stmt.getResultSet();
+            // Check, if object has been updated and return suitable boolean value
+            if (rs.next()){
+                LOGGER.debug("Persisted object update has been successfully(return value true)");
+                return true;
+                }
+            else {
+                LOGGER.debug("Provided object has been not updated, since it doesn't exist in persistence data store(return value false)");
+                return false;}
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Updating object in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
@@ -96,23 +118,34 @@ public class JDBCPositionDAO implements PositionDAO{
     }
 
     @Override
-    public Position read(int id) throws PersistenceException{
+    public Position read(long id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter id=" + id);
-        String sqlString = "SELECT * FROM positions WHERE postionID = ?;";
+
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM positions WHERE positionID = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,id);
-            ResultSet rs = stmt.executeQuery();
-            if(!rs.next()) {
+            stmt.setLong(1,id);
+            rs = stmt.executeQuery();
+            if(rs.next()) {
+                Position position = new Position(rs.getLong("positionID"), rs.getString("name"), rs.getString("buttonImagePath"), rs.getBoolean("isDeleted"));
+                LOGGER.debug("Persisted object reading has been successfully. " + position);
+                return position;
+            }
+            else {
+                LOGGER.debug("Persisted object reading has been not successfully, since it doesn't exist in persistence data store(return null)");
                 return null;
             }
-            return new Position(rs.getInt("positionID"),rs.getString("name"),rs.getBoolean("isDeleted"));
-        } catch (SQLException e) {
-            throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Reading object in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
@@ -122,23 +155,28 @@ public class JDBCPositionDAO implements PositionDAO{
     @Override
     public List<Position> readAll() throws PersistenceException{
         LOGGER.debug("Entering readAll method");
-        String sqlString = "SELECT * FROM positions where isDeleted = 'false';";
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM positions where isDeleted = 'false';";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            ResultSet rs = stmt.executeQuery();
-            List<Position> pList = new ArrayList<>();
+            rs = stmt.executeQuery();
+            List<Position> returnList = new ArrayList<>();
 
             while (rs.next()) {
-                Position position = new Position(rs.getInt("positionID"),rs.getString("name"),rs.getBoolean("isDeleted"));
-                pList.add(position);
+                Position position = this.read(rs.getLong("positionID"));
+                returnList.add(position);
             }
-            return pList;
+            LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
+            return returnList;
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Reading all profiles in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Reading all objects in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
@@ -148,19 +186,32 @@ public class JDBCPositionDAO implements PositionDAO{
     @Override
     public boolean delete(Position position) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + position);
-        String sqlString = "DELETE from position WHERE positionID = ?;";
+
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "UPDATE positions SET isDeleted = 'true' WHERE positionID = ? AND isDeleted = 'false';";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setLong(1,position.getId());
             stmt.executeUpdate();
-            ResultSet rs = stmt.getResultSet();
-            if (rs.next()){return true;} else {return false;}
+            rs = stmt.getResultSet();
+            // Check, if object has been updated and return suitable boolean value
+            if (rs.next()){
+                LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
+                return true;
+            }
+            else {
+                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+                return false;
+            }
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
