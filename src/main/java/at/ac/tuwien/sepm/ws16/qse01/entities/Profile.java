@@ -8,8 +8,8 @@ import java.util.List;
 public class Profile {
     private long id;
     private String name;
-    private List<ProfileCameraPosition> profileCameraPositions;
-    private List<ProfileLogoRposition> profileLogoRpositions;
+    private List<PairCameraPosition> pairCameraPositions;
+    private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
@@ -23,8 +23,8 @@ public class Profile {
      */
     public Profile(long id,
                    String name,
-                   List<ProfileCameraPosition> profileCameraPositions,
-                   List<ProfileLogoRposition> profileLogoRpositions,
+                   List<PairCameraPosition> pairCameraPositions,
+                   List<PairLogoRelativeRectangle> pairLogoRelativeRectangles,
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
@@ -32,8 +32,8 @@ public class Profile {
                    ) {
         this.id = id;
         this.name = name;
-        this.profileCameraPositions = profileCameraPositions;
-        this.profileLogoRpositions = profileLogoRpositions;
+        this.pairCameraPositions = pairCameraPositions;
+        this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
@@ -66,20 +66,20 @@ public class Profile {
         this.name = name;
     }
 
-    public List<ProfileCameraPosition> getCameraPositions() {
-        return profileCameraPositions;
+    public List<PairCameraPosition> getCameraPositions() {
+        return pairCameraPositions;
     }
 
-    public void setCameraPositions(List<ProfileCameraPosition> profileCameraPositions) {
-        this.profileCameraPositions = profileCameraPositions;
+    public void setCameraPositions(List<PairCameraPosition> pairCameraPositions) {
+        this.pairCameraPositions = pairCameraPositions;
     }
 
-    public List<ProfileLogoRposition> getProfileLogoRpositions() {
-        return profileLogoRpositions;
+    public List<PairLogoRelativeRectangle> getPairLogoRelativeRectangles() {
+        return pairLogoRelativeRectangles;
     }
 
-    public void setProfileLogoRpositions(List<ProfileLogoRposition> profileLogoRpositions) {
-        this.profileLogoRpositions = profileLogoRpositions;
+    public void setPairLogoRelativeRectangles(List<PairLogoRelativeRectangle> pairLogoRelativeRectangles) {
+        this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;
     }
 
     public boolean isPrintEnabled() {
