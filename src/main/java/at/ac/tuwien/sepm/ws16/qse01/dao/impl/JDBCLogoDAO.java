@@ -30,7 +30,9 @@ public class JDBCLogoDAO implements LogoDAO {
     @Override
     public Logo create(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering create methode with parameter " + logo);
+
         if (logo==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
         ResultSet rs;
@@ -75,7 +77,33 @@ public class JDBCLogoDAO implements LogoDAO {
 
     @Override
     public boolean update(Logo logo) throws PersistenceException {
-        return false;
+        LOGGER.debug("Entering update method with parameters " + logo);
+        if(logo==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "UPDATE logo SET path = ?, isDeleted = ? WHERE logoId = ?;";
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setString(1,logo.getPath());
+            stmt.setBoolean(2,logo.isDeleted());
+            stmt.setLong(3,logo.getId());
+            stmt.executeUpdate();
+            rs = stmt.getResultSet();
+            // Check, if object has been updated and return suitable boolean value
+            if (rs.next()){return true;} else {return false;}
+        } catch (SQLException e) {
+            throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
+        }
     }
 
     @Override
