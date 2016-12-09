@@ -42,7 +42,7 @@ public class JDBCLogoDAO implements LogoDAO {
             //AutoID
             if(logo.getId()==Long.MIN_VALUE)
             {
-                sqlString = "INSERT INTO logo(path) VALUES (?);";
+                sqlString = "INSERT INTO logos(path) VALUES (?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1,logo.getPath());
                 stmt.executeUpdate();
@@ -53,7 +53,7 @@ public class JDBCLogoDAO implements LogoDAO {
             }
             //No AutoID
             else {
-                sqlString = "INSERT INTO logo(logoID,path,isDeleted) VALUES (?,?,?);";
+                sqlString = "INSERT INTO logos(logoID,path,isDeleted) VALUES (?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setLong(1,logo.getId());
                 stmt.setString(2,logo.getPath());
@@ -85,7 +85,7 @@ public class JDBCLogoDAO implements LogoDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "UPDATE logo SET path = ?, isDeleted = ? WHERE logoId = ?;";
+        sqlString = "UPDATE logos SET path = ?, isDeleted = ? WHERE logoId = ?;";
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setString(1,logo.getPath());
@@ -108,7 +108,33 @@ public class JDBCLogoDAO implements LogoDAO {
 
     @Override
     public Logo read(long id) throws PersistenceException {
-        return null;
+        LOGGER.debug("Entering read method with parameter id=" + id);
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM logos WHERE logoID = ?;";
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setLong(1,id);
+            rs = stmt.executeQuery();
+            if(!rs.next()) {
+                return null;
+            }
+            else {
+                return new Logo(rs.getLong("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Reading object in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
+        }
     }
 
     @Override
