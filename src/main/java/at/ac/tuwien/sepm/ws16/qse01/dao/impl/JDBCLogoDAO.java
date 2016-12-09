@@ -170,6 +170,28 @@ public class JDBCLogoDAO implements LogoDAO {
 
     @Override
     public boolean delete(Logo logo) throws PersistenceException {
-        return false;
+        LOGGER.debug("Entering delete method with parameters " + logo);
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "UPDATE logos SET isDeleted = 'true' WHERE logoID = ? AND isDeleted = 'false' ;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setLong(1,logo.getId());
+            stmt.executeUpdate();
+            rs = stmt.getResultSet();
+            // Check, if object has been updated and return suitable boolean value
+            if (rs.next()){return true;} else {return false;}
+        } catch (SQLException e) {
+            throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
+        }
     }
 }
