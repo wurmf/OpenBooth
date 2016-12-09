@@ -50,7 +50,7 @@ public class JDBCLogoDAO implements LogoDAO {
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
                 if (rs.next()){logo.setId(rs.getLong(1));}
-                LOGGER.debug("Persisted logo object successfully with AutoID:" + logo.getId());
+                LOGGER.debug("Persisted object creation successfully with AutoID:" + logo.getId());
             }
             //No AutoID
             else {
@@ -60,7 +60,7 @@ public class JDBCLogoDAO implements LogoDAO {
                 stmt.setString(2,logo.getPath());
                 stmt.setBoolean(3,logo.isDeleted());
                 stmt.executeUpdate();
-                LOGGER.debug("Persisted logo object successfully without AutoID:" + logo.getId());
+                LOGGER.debug("Persisted object creation successfully without AutoID:" + logo.getId());
             }
         }
         catch (SQLException e) {
@@ -95,7 +95,13 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){return true;} else {return false;}
+            if (rs.next()){
+                LOGGER.debug("Persisted object update has been successfully(return value true)");
+                return true;
+                }
+                else {
+                LOGGER.debug("Provided object has been not updated, since it doesn't exist in persistence data store(return value false)");
+                return false;}
         } catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
@@ -121,10 +127,13 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt.setLong(1,id);
             rs = stmt.executeQuery();
             if(!rs.next()) {
-                return null;
+                Logo logo = new Logo(rs.getLong("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
+                LOGGER.debug("Persisted object reading has been successfully. " + logo);
+                return logo;
             }
             else {
-                return new Logo(rs.getLong("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
+                LOGGER.debug("Persisted object reading has been not successfully, since it doesn't exist in persistence data store(return null)");
+                return null;
             }
         }
         catch (SQLException e) {
@@ -156,6 +165,7 @@ public class JDBCLogoDAO implements LogoDAO {
                 Logo logo = this.read(rs.getLong("logoID"));
                 returnList.add(logo);
             }
+            LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
             return returnList;
         } catch (SQLException e) {
             throw new PersistenceException("Error! Reading all objects in persistence layer has failed.:" + e);
@@ -183,7 +193,14 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){return true;} else {return false;}
+            if (rs.next()){
+                LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
+                return true;
+            }
+            else {
+                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+                return false;
+            }
         } catch (SQLException e) {
             throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
         }
