@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
-import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
-
 import java.util.List;
 
 /**
@@ -10,8 +8,8 @@ import java.util.List;
 public class Profile {
     private long id;
     private String name;
-    private List<CameraPosition> cameraPositions;
-    private List<LogoRposition> logoRpositions;
+    private List<ProfileCameraPosition> profileCameraPositions;
+    private List<ProfileLogoRposition> profileLogoRpositions;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
@@ -25,8 +23,8 @@ public class Profile {
      */
     public Profile(long id,
                    String name,
-                   List<CameraPosition> cameraPositions,
-                   List<LogoRposition> logoRpositions,
+                   List<ProfileCameraPosition> profileCameraPositions,
+                   List<ProfileLogoRposition> profileLogoRpositions,
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
@@ -34,8 +32,8 @@ public class Profile {
                    ) {
         this.id = id;
         this.name = name;
-        this.cameraPositions = cameraPositions;
-        this.logoRpositions = logoRpositions;
+        this.profileCameraPositions = profileCameraPositions;
+        this.profileLogoRpositions = profileLogoRpositions;
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
@@ -68,20 +66,20 @@ public class Profile {
         this.name = name;
     }
 
-    public List<CameraPosition> getCameraPositions() {
-        return cameraPositions;
+    public List<ProfileCameraPosition> getCameraPositions() {
+        return profileCameraPositions;
     }
 
-    public void setCameraPositions(List<CameraPosition> cameraPositions) {
-        this.cameraPositions = cameraPositions;
+    public void setCameraPositions(List<ProfileCameraPosition> profileCameraPositions) {
+        this.profileCameraPositions = profileCameraPositions;
     }
 
-    public List<LogoRposition> getLogoRpositions() {
-        return logoRpositions;
+    public List<ProfileLogoRposition> getProfileLogoRpositions() {
+        return profileLogoRpositions;
     }
 
-    public void setLogoRpositions(List<LogoRposition> logoRpositions) {
-        this.logoRpositions = logoRpositions;
+    public void setProfileLogoRpositions(List<ProfileLogoRposition> profileLogoRpositions) {
+        this.profileLogoRpositions = profileLogoRpositions;
     }
 
     public boolean isPrintEnabled() {

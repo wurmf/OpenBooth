@@ -3,7 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
 /**
  * Logo-Relative Position Entity
  */
-public class LogoRposition {
+public class ProfileLogoRposition {
     private long profileId;
     private Logo logo;
     private double x1;
