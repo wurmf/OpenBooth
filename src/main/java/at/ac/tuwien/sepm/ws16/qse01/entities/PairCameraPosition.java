@@ -1,21 +1,12 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
 /**
- * Camera-Position-Entity
+ * Camera-Position Pair Entity
  */
-public class ProfileCameraPosition {
-    private long profileId;
+public class PairCameraPosition {
     private Camera camera;
     private Position position;
     private boolean isGreenScreenReady;
-
-    public long getProfileId() {
-        return profileId;
-    }
-
-    public void setProfileId(long profileId) {
-        this.profileId = profileId;
-    }
 
     public Camera getCamera() {
         return camera;
