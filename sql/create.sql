@@ -23,6 +23,7 @@ CREATE TABLE images (imageID BIGINT DEFAULT images_seq.nextval PRIMARY KEY, imag
 
 CREATE TABLE positions(positionID BIGINT DEFAULT positions_seq.nextval PRIMARY KEY,
                         name VARCHAR(50) NOT NULL,
+                        buttonImagePath VARCHAR(250) NOT NULL,
                         isDeleted BOOLEAN DEFAULT false);
 
 CREATE TABLE cameras(cameraID BIGINT DEFAULT cameras_seq.nextval PRIMARY KEY,
