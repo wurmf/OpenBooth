@@ -6,6 +6,7 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
 public class Position {
     private long id;
     private String name;
+    private String buttonImagePath;
     private boolean isDeleted;
 
     /**
@@ -15,11 +16,11 @@ public class Position {
      * @param name - no empty position name
      * @param isDeleted - mark this position with true value as deleted
      */
-    public Position(long id, String name, boolean isDeleted){
+    public Position(long id, String name, String buttonImagePath, boolean isDeleted){
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
-
+        this.buttonImagePath = buttonImagePath;
     }
 
     /**
@@ -28,8 +29,8 @@ public class Position {
      *
      * @param name - no empty position name
      */
-    public Position(String name){
-        this(Long.MIN_VALUE, name,false);
+    public Position(String name, String buttonImagePath){
+        this(Long.MIN_VALUE, buttonImagePath, name,false);
     }
 
     public long getId() {
@@ -47,6 +48,10 @@ public class Position {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getButtonImagePath() {return buttonImagePath;}
+
+    public void setButtonImagePath(String buttonImagePath) {this.buttonImagePath = buttonImagePath;}
 
     public boolean isDeleted() {
         return isDeleted;
