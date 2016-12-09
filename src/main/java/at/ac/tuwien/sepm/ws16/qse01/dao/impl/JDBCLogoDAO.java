@@ -126,7 +126,7 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setLong(1,id);
             rs = stmt.executeQuery();
-            if(!rs.next()) {
+            if(rs.next()) {
                 Logo logo = new Logo(rs.getLong("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
                 LOGGER.debug("Persisted object reading has been successfully. " + logo);
                 return logo;
