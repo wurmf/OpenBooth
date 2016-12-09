@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -139,7 +140,32 @@ public class JDBCLogoDAO implements LogoDAO {
 
     @Override
     public List<Logo> readAll() throws PersistenceException {
-        return null;
+        LOGGER.debug("Entering readAll method");
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM logos where isDeleted = 'false';";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            rs = stmt.executeQuery();
+            List<Logo> returnList = new ArrayList<>();
+
+            while (rs.next()) {
+                Logo logo = this.read(rs.getLong("logoID"));
+                returnList.add(logo);
+            }
+            return returnList;
+        } catch (SQLException e) {
+            throw new PersistenceException("Error! Reading all objects in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
+        }
     }
 
     @Override
