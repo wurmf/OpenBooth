@@ -24,11 +24,12 @@ import java.io.IOException;
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
 public class MainApplication extends Application {
+    private Stage miniaturStage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
     private AnnotationConfigApplicationContext applicationContext;
-    WindowManager windowManager;
+    private WindowManager windowManager;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -40,6 +41,28 @@ public class MainApplication extends Application {
 
 
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
+
+
+
+
+        //Creating Miniatur-Frame
+        SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
+        miniaturStage = new Stage();
+        miniaturStage.setTitle("Fotoübersicht");
+        miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
+        try {
+            miniWrapper.getController().init(miniaturStage);
+        } catch (ServiceException e) {
+            e.printStackTrace();
+        }
+
+        miniaturStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
+        miniaturStage.setHeight(Screen.getPrimary().getVisualBounds()
+                .getHeight());
+
+        //  miniaturStage.setFullScreen(true);
+        miniaturStage.show();
         windowManager = applicationContext.getBean(WindowManager.class);
         windowManager.prepare(primaryStage, applicationContext);
     }
@@ -52,6 +75,5 @@ public class MainApplication extends Application {
         }
         super.stop();
     }
-
-
+    public void showMiniaturStage(){ miniaturStage.show();}
 }
