@@ -107,4 +107,66 @@ public class Profile {
     }
 
     public String toString(){return this.name;}
+
+    /**
+     * Camera-Position Pair Entity
+     */
+    public static class PairCameraPosition {
+        private Camera camera;
+        private Position position;
+        private boolean isGreenScreenReady;
+
+        public Camera getCamera() {
+            return camera;
+        }
+
+        public void setCamera(Camera camera) {
+            this.camera = camera;
+        }
+
+        public Position getPosition() {
+            return position;
+        }
+
+        public void setPosition(Position position) {
+            this.position = position;
+        }
+
+        public boolean isGreenScreenReady() {
+            return isGreenScreenReady;
+        }
+
+        public void setGreenScreenReady(boolean greenScreenReady) {
+            isGreenScreenReady = greenScreenReady;
+        }
+    }
+
+    /**
+     * Logo-RelativeRectangle Pair Entity
+     */
+    public static class PairLogoRelativeRectangle {
+        private Logo logo;
+        private RelativeRectangle relativeRectangle;
+
+        public Logo getLogo() {
+            return logo;
+        }
+
+        public void setLogo(Logo logo) {
+            this.logo = logo;
+        }
+
+        public PairLogoRelativeRectangle(Logo logo, RelativeRectangle relativeRectangle) {
+            this.logo = logo;
+            this.relativeRectangle = relativeRectangle;
+        }
+
+        public RelativeRectangle getRelativeRectangle() {
+            return relativeRectangle;
+        }
+
+        public void setRelativeRectangle(RelativeRectangle relativeRectangle) {
+            this.relativeRectangle = relativeRectangle;
+        }
+    }
 }
