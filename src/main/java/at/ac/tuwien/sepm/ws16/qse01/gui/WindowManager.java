@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Camera;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -33,6 +34,7 @@ public class WindowManager {
     private Scene shootingScene;
     private Scene adminLoginScene;
     private Scene profileScene;
+    private Scene miniaturScene;
     private List<Stage> shotStageList;
 
     @Autowired
@@ -89,6 +91,17 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
         this.adminLoginScene = new Scene((Parent) adminLoginWrapper.getLoadedObject(),screenWidth,screenHeight);
 
+        //Creating Miniatur-Frame
+        SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
+        this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
+        try {
+            miniWrapper.getController().init(mainStage);
+        } catch (ServiceException e) {
+            LOGGER.error("prepare - "+e);
+        }
+
+
         //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
         try {
             CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
@@ -114,8 +127,12 @@ public class WindowManager {
         mainStage.setScene(mainScene);
         mainStage.setFullScreen(true);
     }
-    public void showProfileStage(){
+    public void showProfileScene(){
         mainStage.setScene(profileScene);
+        mainStage.setFullScreen(true);
+    }
+    public void showMiniatureFrame(){
+        mainStage.setScene(miniaturScene);
         mainStage.setFullScreen(true);
     }
     public void closeStages(){

@@ -45,24 +45,7 @@ public class MainApplication extends Application {
 
 
 
-        //Creating Miniatur-Frame
-        SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
-        miniaturStage = new Stage();
-        miniaturStage.setTitle("Fotoübersicht");
-        miniaturStage.setScene(new Scene((Parent) miniWrapper.getLoadedObject(),800,500));
-        try {
-            miniWrapper.getController().init(miniaturStage);
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }
 
-        miniaturStage.setWidth(Screen.getPrimary().getVisualBounds().getWidth());
-        miniaturStage.setHeight(Screen.getPrimary().getVisualBounds()
-                .getHeight());
-
-        //  miniaturStage.setFullScreen(true);
-        miniaturStage.show();
         windowManager = applicationContext.getBean(WindowManager.class);
         windowManager.prepare(primaryStage, applicationContext);
     }

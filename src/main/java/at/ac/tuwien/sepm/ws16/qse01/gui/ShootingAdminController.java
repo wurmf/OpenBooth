@@ -152,7 +152,7 @@ public class ShootingAdminController {
      *
      */
     public void onEditPressed(ActionEvent actionEvent) {
-       windowManager.showProfileStage();
+       windowManager.showProfileScene();
     }
 
     /**

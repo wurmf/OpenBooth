@@ -38,6 +38,7 @@ public class MiniaturFrameController {
 
     @Resource
     private ImageService imageService;
+    private WindowManager windowManager;
     @FXML
     private TilePane tile;
     @FXML
@@ -46,8 +47,9 @@ public class MiniaturFrameController {
     private ImageView activeImageView = null;
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService) throws ServiceException {
+    public MiniaturFrameController(ImageService imageService, WindowManager windowManager) throws ServiceException {
         this.imageService = imageService;
+        this.windowManager = windowManager;
     }
 
     public void init(Stage stage) throws ServiceException {
@@ -177,6 +179,7 @@ public class MiniaturFrameController {
     }
 
     public void backButtonClicked(){
+        windowManager.showMainFrame();
         LOGGER.debug("backbutton cliked...");
     }
 }
