@@ -85,6 +85,9 @@ public class FullScreenImageController {
     @FXML
     private ImageView ivfullscreenImage;
 
+    /**
+     * iniziaising full screen image view
+     */
     @FXML
     private void initialize(){
         try {
@@ -128,6 +131,11 @@ public class FullScreenImageController {
         }
     }
 
+    /**
+     * deletes the choosen image
+     * usests its id
+     * @param actionEvent
+     */
     public void onDeletePressed(ActionEvent actionEvent) {
         try {
             if(ivfullscreenImage!=null&&imageList!=null){
@@ -195,6 +203,10 @@ public class FullScreenImageController {
         }
     }
 
+    /**
+     * closes full screen and opens miniatur sceen again
+     * @param actionEvent
+     */
     public void onClosePressed(ActionEvent actionEvent) {
         //mainApp.miniatur;
     }
@@ -219,6 +231,10 @@ public class FullScreenImageController {
 
     }
 
+    /**
+     * information dialog
+     * @param info
+     */
     public void informationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
@@ -226,7 +242,14 @@ public class FullScreenImageController {
         information.show();
     }
 
-
+    /**
+     * Initialising Transision
+     * @param imageView
+     * @param fromValue
+     * @param toValue
+     * @param durationInMilliseconds
+     * @return transision to be performed
+     */
     public FadeTransition getFadeTransition(ImageView imageView, double fromValue, double toValue, int durationInMilliseconds) {
 
         FadeTransition ft = new FadeTransition(Duration.millis(durationInMilliseconds), imageView);
@@ -237,6 +260,10 @@ public class FullScreenImageController {
 
     }
 
+    /**
+     * gets last image (image when swiped left)
+     * @param actionEvent
+     */
     public void onGetLastImage(ActionEvent actionEvent) {
         try {
             if(slide[0]!=null) {
@@ -268,6 +295,10 @@ public class FullScreenImageController {
         }
     }
 
+    /**
+     * get next image (image when deleted or swiped right)
+     * @param actionEvent
+     */
     public void onGetNextImage(ActionEvent actionEvent) {
         try {
             if(slide[2]!=null) {
@@ -298,6 +329,11 @@ public class FullScreenImageController {
         }
     }
 
+    /**
+     * to get an full screen image without buttons
+     * and reload the buttons when pressed again
+     * @param actionEvent
+     */
     public void onfullscreen1(ActionEvent actionEvent) {
 
         if(planbottom.isVisible()){
@@ -330,6 +366,11 @@ public class FullScreenImageController {
 
     }
 
+    /**
+     * to get an full screen image without buttons
+     * and reload the buttons when pressed again
+     * @param actionEvent
+     */
     public void onfullscreen2(ActionEvent actionEvent) {
         if(planbottom.isVisible()){
             planbottom.setVisible(false);
