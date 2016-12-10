@@ -53,14 +53,14 @@ public interface ProfileService {
      * @return added position with autoassigned id
      * @throws ServiceException if adding position is not possible
      */
-    Position add(Position position) throws ServiceException;
+    Position addPosition(Position position) throws ServiceException;
 
     /**
      * Edit a existing position and update its properties
      * @param position - position to be edited
      * @throws ServiceException if editing is not possible
      */
-    void edit(Position position) throws ServiceException;
+    void editPosition(Position position) throws ServiceException;
 
     /**
      * Get a certain position by its id
@@ -68,7 +68,7 @@ public interface ProfileService {
      * @return position with id
      * @throws ServiceException if getting is not possible
      */
-    Position get(int id) throws ServiceException;
+    Position getPosition(int id) throws ServiceException;
 
     /**
      * Get all positions
@@ -82,5 +82,5 @@ public interface ProfileService {
      * @param position - Position to be erased
      * @throws ServiceException if erasing is not possible
      */
-    void erase(Position position) throws ServiceException;
+    void erasePosition(Position position) throws ServiceException;
 }

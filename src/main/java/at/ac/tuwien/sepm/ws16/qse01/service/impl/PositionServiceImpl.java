@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Service
 public class PositionServiceImpl implements PositionService{
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PositionServiceImpl.class);
     @Resource
     private PositionDAO positionDAO;
     private List<Position> positionList = new ArrayList<>();
