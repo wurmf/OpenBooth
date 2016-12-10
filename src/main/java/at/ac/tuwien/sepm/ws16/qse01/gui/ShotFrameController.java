@@ -5,11 +5,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
 
 /**
  * Controller for the shotFrame.
  *
  */
+@Controller
 
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
@@ -40,7 +42,6 @@ public class ShotFrameController {
         }catch (Exception e){
             LOGGER.debug("Fehler: "+e.getMessage());
         }
-
     }
 
     public int getFrameID(){
