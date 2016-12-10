@@ -42,28 +42,22 @@ public class WindowManager {
         this.springFXMLLoader=springFXMLLoader;
     }
 
-    public void prepare(Stage mainStage, ApplicationContext applicationContext) throws IOException{
+    /**
+     * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
+     * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
+     * @param applicationContext the applicationContext generated in the MainApplication
+     * @throws IOException
+     */
+    public void start(Stage mainStage, ApplicationContext applicationContext) throws IOException{
         this.mainStage=mainStage;
         this.applicationContext=applicationContext;
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
 
-        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
-        this.shootingScene=new Scene((Parent) shootingWrapper.getLoadedObject(),screenWidth,screenHeight);
 
 
-        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
-        this.mainStage.setTitle("Fotostudio");
-        this.mainScene=new Scene((Parent) mfWrapper.getLoadedObject(),screenWidth,screenHeight);
-        this.mainStage.setScene(mainScene);
-        this.mainStage.setFullScreen(true);
-
-
-
-        //TODO: 1) creating camera table
-        //      2) number of frames to open = number of existing camera in DB
+        //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
 
         /* Creating shotFrame */
         shotStageList=new LinkedList<>();
@@ -82,6 +76,14 @@ public class WindowManager {
             x += 200;
         }
 
+        //Creating Main-Scene
+        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
+        this.mainScene=new Scene((Parent) mfWrapper.getLoadedObject(),screenWidth,screenHeight);
+
+        //Creating Shooting-Scene
+        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper = springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
+        this.shootingScene=new Scene((Parent) shootingWrapper.getLoadedObject(),screenWidth,screenHeight);
+
         //Creating Profile-Scene
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
@@ -91,14 +93,15 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
         this.adminLoginScene = new Scene((Parent) adminLoginWrapper.getLoadedObject(),screenWidth,screenHeight);
 
-        //Creating Miniatur-Frame
+        //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
+
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
-            LOGGER.error("prepare - "+e);
+            LOGGER.error("start - "+e);
         }
 
 
@@ -108,37 +111,63 @@ public class WindowManager {
             //CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl(), new ShootingServiceImpl());
             cameraHandler.getImages();
         } catch (Exception e) {
-            LOGGER.info("Getting camera - "+e);
+            LOGGER.info("start - Getting camera - "+e);
         }
 
-
+        this.mainStage.setTitle("Fotostudio");
+        this.mainStage.setScene(mainScene);
+        this.mainStage.setFullScreen(true);
         this.mainStage.show();
+        this.mainStage.setFullScreenExitHint("");
     }
 
+    /**
+     * Sets the adminLoginScene as Scene in the mainStage.
+     */
     public void showAdminLogin(){
         mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
+    /**
+     * Sets the shootingScene as Scene in the mainStage.
+     */
     public void showShootingAdministration(){
         mainStage.setScene(shootingScene);
         mainStage.setFullScreen(true);
     }
+    /**
+     * Sets the mainScene as Scene in the mainStage.
+     */
     public void showMainFrame(){
         mainStage.setScene(mainScene);
         mainStage.setFullScreen(true);
     }
+    /**
+     * Sets the profileScene as Scene in the mainStage.
+     */
     public void showProfileScene(){
         mainStage.setScene(profileScene);
         mainStage.setFullScreen(true);
     }
+    /**
+     * Sets the miniaturScene as Scene in the mainStage.
+     */
     public void showMiniatureFrame(){
         mainStage.setScene(miniaturScene);
         mainStage.setFullScreen(true);
     }
+    /**
+     * Closes the mainStage and all shotStages, which leads to the application being closed, too.
+     */
     public void closeStages(){
         shotStageList.forEach(Stage::close);
         mainStage.close();
     }
+
+    /**
+     * Returns the mainStage.
+     * @return the mainStage
+     */
     public Stage getStage(){
         return this.mainStage;
     }

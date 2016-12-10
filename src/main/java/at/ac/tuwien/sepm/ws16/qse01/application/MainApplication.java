@@ -1,13 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
-import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +18,10 @@ import java.io.IOException;
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
 public class MainApplication extends Application {
-    private Stage miniaturStage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
     private AnnotationConfigApplicationContext applicationContext;
-    private WindowManager windowManager;
 
     public static void main(String[] args) {
         Application.launch(args);
@@ -39,15 +31,9 @@ public class MainApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
 
-
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
-
-
-
-
-
-        windowManager = applicationContext.getBean(WindowManager.class);
-        windowManager.prepare(primaryStage, applicationContext);
+        WindowManager windowManager = applicationContext.getBean(WindowManager.class);
+        windowManager.start(primaryStage, applicationContext);
     }
 
     @Override
@@ -58,5 +44,4 @@ public class MainApplication extends Application {
         }
         super.stop();
     }
-    public void showMiniaturStage(){ miniaturStage.show();}
 }
