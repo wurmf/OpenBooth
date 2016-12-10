@@ -3,8 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
@@ -55,11 +54,12 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public void edit(Profile profile) throws ServiceException {
+    public boolean edit(Profile profile) throws ServiceException {
         LOGGER.debug("Entering editPosition method with parameters " + profile);
         try {
-            profileDAO.update(profile);
+            boolean returnvalue = profileDAO.update(profile);
             this.profileList = profileDAO.readAll();
+            return returnvalue;
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Editing in service layer has failed.:" + e);
         }
@@ -87,11 +87,12 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public void erase(Profile profile) throws ServiceException {
+    public boolean erase(Profile profile) throws ServiceException {
         LOGGER.debug("Entering erase method with parameters " + profile);
         try {
-            profileDAO.delete(profile);
+            boolean returnvalue = profileDAO.delete(profile);
             this.profileList = profileDAO.readAll();
+            return returnvalue;
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Erasing in service layer has failed.:" + e);
         }
@@ -109,12 +110,12 @@ public class ProfileServiceImpl implements ProfileService{
         }
     }
 
-    public void editPosition(Position position) throws ServiceException {
-
+    public boolean editPosition(Position position) throws ServiceException {
+        return false;
     }
 
     @Override
-    public Position getPosition(int id) throws ServiceException {
+    public Position getPosition(long id) throws ServiceException {
         return null;
     }
 
@@ -130,8 +131,123 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public void erasePosition(Position position) throws ServiceException {
+    public boolean erasePosition(Position position) throws ServiceException {
+        return false;
+    }
 
+    @Override
+    public Position addLogo(Logo logo) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean editLogo(Logo logo) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public Position getLogo(long id) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<Logo> getAllLogos() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean eraseLogo(Logo logo) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean setEditedProfile(Profile profile) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public Profile getEditedProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public Profile getActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<Position> getAllPositionsOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<Camera> getAllCamerasOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<RelativeRectangle> getAllRelativeRectanglesOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public List<Logo> getAllLogosOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public Position getPositionOfCameraOfActiveProfile(Camera camera) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public Camera getCameraOfPositionOfActiveProfile(Position position) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean isGreenScreenReadyPositionOfActiveProfile(Position position) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public Logo getRelativeRectangleOfLogoOfActiveProfile(RelativeRectangle relativeRectangle) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public RelativeRectangle getLogoOfRelativeRectangleOfActiveProfile(Logo logo) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public Logo getWaterMarkOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public String getNameOfActiveProfile() throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean isPrintEnabledActiveProfile() throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean isFilerEnabledActiveProfile() throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean isGreenscreenEnabledActiveProfile() throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean setActiveProfile(Profile profile) throws ServiceException {
+        return false;
     }
 
 }
