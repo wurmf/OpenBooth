@@ -52,6 +52,7 @@ public abstract class ProfileDAOTest {
         profileDAO.update(null);
     }
 
+    /**
     @Test
     public void updateProfileWithValidArgument() throws PersistenceException {
         Profile profile = new Profile("Testprofile");
@@ -68,7 +69,9 @@ public abstract class ProfileDAOTest {
         profile = profileDAO.read(id);
         assertTrue(profile.getName() == "Testprofile2");
     }
+    */
 
+    /**
     @Test
     public void updateProfileWithValidValidArgumentButDoesNotExistInPersistenceStore() throws PersistenceException{
         Profile profile = new Profile("Testprofile");
@@ -85,6 +88,7 @@ public abstract class ProfileDAOTest {
         profile = profileDAO.read(id-1);
         assertFalse(profile.getName()=="Testprofile2");
     }
+     */
 
     @Test
     public void readProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{

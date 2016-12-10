@@ -24,7 +24,8 @@ public class JDBCProfileDAOTest extends ProfileDAOTest {
 
     @Before
     public void setUp() throws PersistenceException {
-        //JDBCProfileDAO profileDAO = new JDBCProfileDAO();
+        JDBCProfileDAO profileDAO = new JDBCProfileDAO(H2Handler.getInstance());
+        JDBCPositionDAO positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
         this.con = H2Handler.getInstance().getConnection();
         setProfileDAO(profileDAO);
         try {

@@ -32,7 +32,7 @@ public class SessionDAOTest {
      */
     @Test
     public void addValideSession () throws Exception{
-        Shooting shouting =new Shooting(0,"ab",true);
+        Shooting shouting =new Shooting(1,"ab",true);
         dao.create(shouting);
     }
 }
