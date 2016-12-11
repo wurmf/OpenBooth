@@ -1,13 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.stage.*;
+import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +96,7 @@ public class ShootingAdminController {
                     path=null;
 
                     shootingService.addShooting(shouting);
+                    windowManager.showMiniatureFrame();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
                     showInformationDialog("Es konnte keine Shooting erstellt werden.");

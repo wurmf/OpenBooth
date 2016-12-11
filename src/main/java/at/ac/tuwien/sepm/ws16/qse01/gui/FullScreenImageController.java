@@ -105,7 +105,7 @@ public class FullScreenImageController {
                // currentIndex = imageList.indexOf(image);
                 currentIndex=0;
             }
-            if(currentIndex>=0&&imageList!=null) {
+            if(currentIndex>=0&&imageList!=null && imageList.size()>0) {
 
                 Image imlast=null;
                 Image imnext=null;

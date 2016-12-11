@@ -4,10 +4,8 @@ import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.scene.Camera;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -59,26 +56,11 @@ public class WindowManager {
 
 
         //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
-
-        /* Creating shotFrame */
-        shotStageList=new LinkedList<>();
-        int anz = 1;
-        int x = 200;
-        for(int i=0; i<anz; i++) { // Anzahl der Kameras...
-            Stage stage = new Stage();
-            stage.setTitle("Shot Frame "+(i+1));
-            stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
-            stage.setFullScreen(false);
-            stage.initOwner(mainStage);
-            stage.setX(x);
-            shotStageList.add(stage);
-            stage.show();
-
-            x += 200;
-        }
+        // Anmerkung: shotframemanager wird in camerapackage erstellt und initializiert und die werden nicht in gleichem
+        // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
-        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
+       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
 
