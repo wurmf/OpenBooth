@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Created by Aniela on 28.11.2016.
  */
-public class SessionDAOTest {
+public class ShootingDAOTest {
     private ShootingDAO dao;
 
     @Before
