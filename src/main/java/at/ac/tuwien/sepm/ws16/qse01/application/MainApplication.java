@@ -1,7 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.util.printer.ImagePrinter;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.gui.WindowManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -11,7 +9,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import java.awt.print.PrinterException;
 import java.io.IOException;
 
 /**
@@ -33,6 +30,7 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
+
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
         WindowManager windowManager = applicationContext.getBean(WindowManager.class);
         windowManager.start(primaryStage, applicationContext);
