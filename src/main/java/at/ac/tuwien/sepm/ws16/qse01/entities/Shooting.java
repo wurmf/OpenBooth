@@ -1,17 +1,27 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
 /**
- * Created by Aniela on 23.11.2016.
+ * Shooting entety
  */
 public class Shooting {
     int id;
     String storageDir;
     boolean isActive;
+    int profileid;
 
-    public Shooting(int id, String storageDir, boolean isActive) {
+    public Shooting(int id,int profileid, String storageDir, boolean isActive) {
         this.id = id;
+        this.profileid=profileid;
         this.storageDir = storageDir;
         this.isActive = isActive;
+    }
+
+    public int getProfileid() {
+        return profileid;
+    }
+
+    public void setProfileid(int profileid) {
+        this.profileid = profileid;
     }
 
     public int getId() {

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by Aniela on 23.11.2016.
+ * Shooting service impl
  */
 @Service
 public class ShootingServiceImpl implements ShootingService {

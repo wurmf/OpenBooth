@@ -4,7 +4,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 
 /**
- * Created by Moatzgeile Sau on 23.11.2016.
+ * Shooting Dao
  */
 public interface ShootingDAO {
     /**

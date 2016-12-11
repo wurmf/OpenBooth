@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public class JDBCImageDAO implements ImageDAO {
-    final static Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
     private Connection con;
 
@@ -29,12 +29,11 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
     @Override
-    public Image create(Image f) {
+    public Image create(Image f) throws PersistenceException {
         LOGGER.debug("Entering create method with parameters {}"+f);
 
         PreparedStatement stmt = null;
         String query = "INSERT INTO images(imagepath,shootingid,time) VALUES (?,?,?) ; ";
-
 
 
         Integer fid = 0;
@@ -44,9 +43,7 @@ public class JDBCImageDAO implements ImageDAO {
             stmt.setString(1,f.getImagepath());
             stmt.setInt(2,f.getShootingid());
 
-            stmt.setTimestamp (3,Timestamp.valueOf(LocalDateTime.now())); //new java.sql.Date(f.getDate().getTime()));
-            //  stmt.setDate(4,new java.sql.Date(p.getBirthdate().getTime()));
-
+            stmt.setTimestamp (3,Timestamp.valueOf(LocalDateTime.now()));
 
             stmt.executeUpdate();
 
@@ -56,7 +53,7 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            new IllegalArgumentException("Create failed",e);
+            throw new PersistenceException("Create failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
@@ -64,7 +61,7 @@ public class JDBCImageDAO implements ImageDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Create",e);
+                    LOGGER.debug("Closing create failed: " + e.getMessage());
                 }
             }
         }
@@ -73,7 +70,7 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
     @Override
-    public Image read(int id) {
+    public Image read(int id) throws PersistenceException {
         LOGGER.debug("Entering read method with parameter: imageID = "+id);
 
         PreparedStatement stmt = null;
@@ -94,7 +91,7 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
+            throw new PersistenceException("Reading failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
@@ -102,7 +99,7 @@ public class JDBCImageDAO implements ImageDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.debug("Closing read failed: " + e.getMessage());
                 }
             }
         }
@@ -110,7 +107,7 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
     @Override
-    public String getLastImgPath(int shootingid) {
+    public String getLastImgPath(int shootingid) throws PersistenceException {
         LOGGER.debug("Entering getLastImgPath method with parameter: shootingid = "+shootingid);
 
         PreparedStatement stmt = null;
@@ -128,7 +125,7 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
+            throw new PersistenceException("GetLastImgPath failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
@@ -136,7 +133,7 @@ public class JDBCImageDAO implements ImageDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.debug("Closing getLastImgPath failed: " + e.getMessage());
                 }
             }
         }
@@ -145,7 +142,7 @@ public class JDBCImageDAO implements ImageDAO {
 
 
     @Override
-    public int getNextImageID() {
+    public int getNextImageID() throws PersistenceException {
         LOGGER.debug("Entering getNextImageID method");
 
         PreparedStatement stmt = null;
@@ -163,7 +160,7 @@ public class JDBCImageDAO implements ImageDAO {
             }
 
         } catch (SQLException e ) {
-            new IllegalArgumentException("Select failed",e);
+            throw new PersistenceException("getNextImageID failed: "+e.getMessage());
         } catch(NullPointerException e){
             throw new IllegalArgumentException();
         } finally {
@@ -171,7 +168,7 @@ public class JDBCImageDAO implements ImageDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.debug("Closing getNextImageID failed: " + e.getMessage());
                 }
             }
         }
@@ -180,20 +177,31 @@ public class JDBCImageDAO implements ImageDAO {
 
     @Override
     public void delete(int imageID) throws PersistenceException {
+        String sql = "DELETE FROM Images WHERE  IMAGEID=?";
+        PreparedStatement stmt = null;
+
         try{
-            String sql = "DELETE FROM Images WHERE  IMAGEID=?";
-            PreparedStatement stmt;
             stmt= con.prepareStatement(sql);
             stmt.setInt(1,imageID);
             stmt.execute();
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
+        }catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing delete failed: " + e.getMessage());
+                }
+            }
         }
     }
 
     @Override
     public List<Image> getAllImages(int shootingid) throws PersistenceException {
-        List<Image> imageList = new ArrayList<Image>();
+        List<Image> imageList = new ArrayList<>();
         PreparedStatement stmt = null;
         String query = "select * from images where shootingid = ? ;";
 
@@ -217,7 +225,7 @@ public class JDBCImageDAO implements ImageDAO {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    new IllegalArgumentException("Select",e);
+                    LOGGER.debug("Closing getAllImages failed: " + e.getMessage());
                 }
             }
         }

@@ -1,20 +1,15 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Resource;
 
 /**
  * Controller for the loginFrame
@@ -23,8 +18,7 @@ import javax.annotation.Resource;
 public class LoginFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
 
-    private Stage primaryStage;
-    private MainApplication mainApp;
+    private WindowManager windowManager;
     private AdminUserService adminUserService;
     @FXML
     private TextField adminField;
@@ -35,18 +29,9 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(AdminUserService adminUserService) throws ServiceException{
+    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
         this.adminUserService=adminUserService;
-    }
-
-    /**
-     * Setter for the stage that contains this controllers Scene and the MainApplication-instance that calls this controller.
-     * @param primaryStage  the stage that contains this controllers Scene
-     * @param mainApp       the MainApplication-instance that calls this controller
-     */
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
-        this.primaryStage = primaryStage;
-        this.mainApp = mainApp;
+        this.windowManager=windowManager;
     }
 
     /**
@@ -59,8 +44,8 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                mainApp.showShootingAdministration();
-                closeLogin();
+                windowManager.showShootingAdministration();
+                resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
             }
@@ -74,9 +59,16 @@ public class LoginFrameController {
      */
     @FXML
     public void closeLogin(){
+        resetValues();
+        windowManager.showMainFrame();
+    }
+
+    /**
+     * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible.
+     */
+    private void resetValues(){
         wrongCredentialsLabel.setVisible(false);
         adminField.setText("");
         passwordField.setText("");
-        primaryStage.close();
     }
 }
