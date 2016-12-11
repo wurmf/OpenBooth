@@ -9,7 +9,7 @@ import java.util.List;
  * Profile.PairCameraPositionDAO
  */
 public interface PairCameraPositionDAO {
-    Profile.PairCameraPosition create(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
-    List<Profile.PairCameraPosition> readAll() throws PersistenceException;
-    boolean delete(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
+    Profile.PairCameraPosition create(long profileId, Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
+    List<Profile.PairCameraPosition> readAll(long profileId) throws PersistenceException;
+    boolean delete(long profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
 }
