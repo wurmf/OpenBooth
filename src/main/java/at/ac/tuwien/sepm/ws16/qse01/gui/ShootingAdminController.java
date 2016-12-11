@@ -102,7 +102,7 @@ public class ShootingAdminController {
                 try{
 
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
-                    Shooting shouting = new Shooting(profile.getId(), path, true);
+                    Shooting shouting = new Shooting(0,(int)profile.getId(), path, true);
 
                     storageDirLabel.setText("");
                     LOGGER.info("ShootingAdminController:", path);
@@ -160,7 +160,7 @@ public class ShootingAdminController {
      *
      */
     public void onEditPressed(ActionEvent actionEvent) {
-       mainApplication.showProfileStage();
+       //mainApplication.showProfileStage();
     }
 
     /**
