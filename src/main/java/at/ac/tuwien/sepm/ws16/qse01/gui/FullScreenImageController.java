@@ -45,20 +45,21 @@ public class FullScreenImageController {
     @FXML
     private Button button9;
     @FXML
-    public Button button7;
+    private Button button7;
     @FXML
-    public Button button8;
+    private Button button8;
     @FXML
-    public Button button3;
+    private Button button3;
     @FXML
-    public Button button4;
+    private Button button4;
     @FXML
-    public Button button1;
+    private Button button1;
     @FXML
-    public Button button2;
-    
-    public ImageView image4;
-    public ImageView image3;
+    private Button button2;
+    @FXML
+    private ImageView image4;
+    @FXML
+    private ImageView image3;
     private WindowManager windowManager;
 
     private ImageView[]slide =new ImageView[3];
@@ -196,7 +197,7 @@ public class FullScreenImageController {
                     slide = null;
                     ivfullscreenImage = null;
                     imageService.delete(imageList.get(currentIndex).getImageID());
-                    primaryStage.close();
+                    windowManager.showMiniatureFrame();
                 }
             }
             }
@@ -213,7 +214,7 @@ public class FullScreenImageController {
      * @param actionEvent
      */
     public void onClosePressed(ActionEvent actionEvent) {
-        //mainApp.miniatur;
+        windowManager.showMiniatureFrame();
     }
 
     public void onFilter4Pressed(ActionEvent actionEvent) {

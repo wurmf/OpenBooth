@@ -116,7 +116,7 @@ public class ImageDAOTest {
         imageDAO.create(img);
 
         assertThat(imageDAO.getAllImages(99).size(),is(1));
-        imageDAO.delet(img);
+        imageDAO.delete(img.getImageID());
 
         assertThat(imageDAO.getAllImages(99).size(),is(0));
     }
