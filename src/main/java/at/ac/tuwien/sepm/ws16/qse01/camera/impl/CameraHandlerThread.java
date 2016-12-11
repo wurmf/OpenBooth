@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
@@ -24,15 +25,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 
-/**
- * Created by osboxes on 03.12.16.
- */
+
 public class CameraHandlerThread  extends Thread{
 
     Logger LOGGER = LoggerFactory.getLogger(CameraHandlerThread.class);
     ImageService imageService;
     ShootingService shootingService;
     ShotFrameManager shotFrameManager;
+    CameraGphoto cameraGphoto;
+    Camera camera;
 
 
     public void run()
@@ -134,4 +135,11 @@ public class CameraHandlerThread  extends Thread{
         this.shootingService = shootingService;
     }
 
+    public void setCameraGphoto(CameraGphoto cameraGphoto) {
+        this.cameraGphoto = cameraGphoto;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
 }

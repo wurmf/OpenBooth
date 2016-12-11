@@ -113,10 +113,10 @@ public class ImageDAOTest {
     public void deleteImage() throws Throwable{
         Image img = new Image(3,"ddd",2,new Date());
         img.setAutoDate();
-        imageDAO.create(img);
+        img=imageDAO.create(img);
 
         assertThat(imageDAO.getAllImages(99).size(),is(1));
-        imageDAO.delet(img);
+        imageDAO.delete(img.getImageID());
 
         assertThat(imageDAO.getAllImages(99).size(),is(0));
     }

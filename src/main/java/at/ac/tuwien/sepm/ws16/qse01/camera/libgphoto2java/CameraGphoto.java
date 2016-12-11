@@ -145,6 +145,7 @@ public class CameraGphoto implements Closeable {
         catch(CameraException ex)
         {
             LOGGER.error("wait for image failed");
+
             return null;
         }
 
@@ -171,7 +172,7 @@ public class CameraGphoto implements Closeable {
         return p.newFile(camera);
     }
 
-    void ref() {
+    public void ref() {
         checkNotClosed();
         CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_ref(camera), "gp_camera_ref");
     }
