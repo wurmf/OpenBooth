@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
-import at.ac.tuwien.sepm.ws16.qse01.gui.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
-
+        //TODO: revert to original state
         Image img=new Image();
         img.setImagepath("/home/martin/Bilder/PTBWE2_M_C0696_20161029.jpg");
         try {

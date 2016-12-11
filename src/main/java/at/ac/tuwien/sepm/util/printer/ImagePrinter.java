@@ -69,14 +69,17 @@ public class ImagePrinter {
                 double imageHeight=image.getHeight();
                 double scaleHeight=pageHeight/imageHeight;
                 double scaleWidth=pageWidth/imageWidth;
+                //TODO: scale for smaller images and check for widescreen images
                 double scale= (scaleHeight<scaleWidth)?scaleHeight:scaleWidth;
 
                 if(imageWidth>imageHeight){
                     LOGGER.debug("Orientation set to Landscape ImageWidth: "+imageWidth+" | ImageHeight: "+imageHeight);
-                    AffineTransform transform=new AffineTransform();
-                    transform.rotate(Math.PI/2,imageWidth/2, imageHeight/2);
-                    g2d.transform(transform);
-                    pageFormat.setOrientation(PageFormat.LANDSCAPE);
+                    //TODO: fix rotation
+                    //AffineTransform transform=new AffineTransform();
+                    //transform.rotate(Math.PI/2,imageWidth/2, imageHeight/2);
+                    //g2d.transform(transform);
+                    pageFormat.setOrientation(PageFormat.PORTRAIT);
+                    g2d.rotate(Math.PI/2,imageWidth/2, imageHeight/2);
                 } else{
                     LOGGER.debug("Orientation set to Portrait ImageWidth: "+imageWidth+" | ImageHeight: "+imageHeight);
                     pageFormat.setOrientation(PageFormat.PORTRAIT);

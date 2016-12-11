@@ -40,7 +40,7 @@ public class ShotFrameController {
         try {
             shotView.setImage(new Image(imgPath));
         }catch (Exception e){
-            LOGGER.debug("Fehler: "+e.getMessage());
+            LOGGER.debug("Fehler: "+e);
         }
     }
 
