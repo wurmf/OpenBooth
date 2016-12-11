@@ -37,7 +37,6 @@ public class ImagePrinter {
             LOGGER.error("print - "+e);
             throw new PrinterException("Unable to read file from given path");
         }
-        LOGGER.debug("Leaving first print method");
     }
 
     /**
@@ -49,7 +48,6 @@ public class ImagePrinter {
         PrinterJob job=PrinterJob.getPrinterJob();
         job.setPrintable(new PrintableImage(image));
         job.print();
-        LOGGER.debug("Job done");
     }
 
     private class PrintableImage implements Printable{
@@ -60,35 +58,42 @@ public class ImagePrinter {
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
-            LOGGER.debug("print in PrintableImage started");
             if(pageIndex==0&&this.image!=null) {
                 Graphics2D g2d=(Graphics2D) graphics;
                 double pageWidth=pageFormat.getWidth();
                 double pageHeight=pageFormat.getHeight();
                 double imageWidth=image.getWidth();
                 double imageHeight=image.getHeight();
-                double scaleHeight=pageHeight/imageHeight;
-                double scaleWidth=pageWidth/imageWidth;
-                //TODO: scale for smaller images and check for widescreen images
-                double scale= (scaleHeight<scaleWidth)?scaleHeight:scaleWidth;
 
                 if(imageWidth>imageHeight){
-                    LOGGER.debug("Orientation set to Landscape ImageWidth: "+imageWidth+" | ImageHeight: "+imageHeight);
-                    //TODO: fix rotation
-                    //AffineTransform transform=new AffineTransform();
-                    //transform.rotate(Math.PI/2,imageWidth/2, imageHeight/2);
-                    //g2d.transform(transform);
-                    pageFormat.setOrientation(PageFormat.PORTRAIT);
-                    g2d.rotate(Math.PI/2,imageWidth/2, imageHeight/2);
+                    AffineTransform transform=new AffineTransform();
+                    transform.translate(imageHeight/2, imageWidth/2);
+                    transform.rotate(Math.PI/2);
+                    transform.translate(-imageWidth/2,-imageHeight/2);
+                    AffineTransformOp transformOp=new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+                    image=transformOp.filter(image, null);
+                    double help=imageHeight;
+                    imageHeight=imageWidth;
+                    imageWidth=help;
+                }
+
+                double scaleHeight=pageHeight/imageHeight;
+                double scaleWidth=pageWidth/imageWidth;
+                double scale;
+
+                int xInset=0;
+                int yInset=0;
+                if(scaleHeight<scaleWidth){
+                    scale=scaleHeight;
+                    xInset=(int) Math.round((pageWidth-imageWidth*scale)/4);
                 } else{
-                    LOGGER.debug("Orientation set to Portrait ImageWidth: "+imageWidth+" | ImageHeight: "+imageHeight);
-                    pageFormat.setOrientation(PageFormat.PORTRAIT);
+                    scale=scaleWidth;
+                    yInset=(int) Math.round((pageHeight-imageHeight*scale)/4);
                 }
                 g2d.scale(scale,scale);
-                graphics.drawImage(image,0,0,null);
+                graphics.drawImage(image,xInset,yInset,null);
                 return PAGE_EXISTS;
             }
-            LOGGER.debug("print - NO_SUCH_PAGE");
             return NO_SUCH_PAGE;
         }
     }
