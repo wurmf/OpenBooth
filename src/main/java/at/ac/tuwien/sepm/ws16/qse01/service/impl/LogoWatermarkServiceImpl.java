@@ -28,7 +28,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     private ProfileService profileService;
     private Map<Logo, BufferedImage> cachedLogos = new HashMap<>();
     private String currentWatermarkPath = null;
-    private BufferedImage cachedWatermarrk = null;
+    private BufferedImage cachedWatermark = null;
 
     @Autowired
     public LogoWatermarkServiceImpl(ProfileService profileService){
@@ -47,29 +47,25 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             throw new ServiceException(e);
         }
 
-        List<PairLogoRelativeRectangle> pairList = profileService.getListPairLogoRelativeRelativeRectangle();
-
-        //cache all Logos
-        for(pair : pairList){
-            Logo curLogo = pair.getLogo();
-            //comparison with equals in Logo
-            if(!cachedLogos.containsKey(curLogo)){
-                BufferedImage logoImage = ImageIO.read(curLogo.getPath());
-                cachedLogos.put(curLogo, logoImage);
+        List<Logo> logos = profileService.getAllLogosOfActiveProfile();
+        for(logo : logos){
+            //check if cached and cache if not
+            //comparison with equals in logo entity
+            if(!cachedLogos.containsKey(logo)){
+                BufferedImage logoImage = ImageIO.read(logo.getPath());
+                cachedLogos.put(logo, logoImage);
             }
+            //add current logo
+            RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfActiveProfile(logo);
+            addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
         }
 
-        for(pair : pairList){
-            BufferedImage curLogoImg = cachedLogos.get(pair.getLogo());
-            addLogoAtPosition(img, curLogoImg, pair.getRelativeRectangle());
-        }
 
+        //save image
         try {
-            String formatName = destImgPath.substring(destImgPath.lastIndexOf('.'));
-            File newImage = new File(destImgPath);
-            ImageIO.write(img, formatName, newImage);
+            saveImage(img, destImgPath);
         } catch (IOException e) {
-            LOGGER.error("addLogoCreateNewImage - error during saving new image" + e);
+            LOGGER.error("addLogosCreateNewImage - error during saving new image" + e);
             throw new ServiceException(e);
         }
 
@@ -79,9 +75,56 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     @Override
     public void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
 
+        Logo watermark = profileService.getWaterMarkOfActiveProfile();
+        String newWatermarkPath = watermark.getPath();
+
+        if(!newWatermarkPath.equals(currentWatermarkPath)){
+            currentWatermarkPath = newWatermarkPath;
+            try {
+                cachedWatermark = ImageIO.read(new File(srcImgPath));
+            } catch (IOException e) {
+                LOGGER.error("addWatermarkCreateNewImage - error loading watermark" + e);
+                throw new ServiceException(e);
+            }
+        }
+
+        BufferedImage img;
+
+        try {
+            img = ImageIO.read(new File(srcImgPath));
+        } catch (IOException e) {
+            LOGGER.error("addWatermarkCreateNewImage - error loading given image" + e);
+            throw new ServiceException(e);
+        }
+
+        Graphics g = img.getGraphics();
+
+        g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), new LogoWatermarkServiceImageObserver(this));
+        try {
+            this.wait();
+        } catch (InterruptedException e) {
+            LOGGER.error("addWatermarkCreateNewImage -" + e);
+            throw new ServiceException(e);
+        }
+
+        //save image
+        try {
+            saveImage(img, destImgPath);
+        } catch (IOException e) {
+            LOGGER.error("addWatermarkCreateNewImage - error during saving new image" + e);
+            throw new ServiceException(e);
+        }
+
+
     }
 
-    private void addLogoAtPosition(BufferedImage img, BufferedImage logo, RelativeRectangle position){
+    private void saveImage(BufferedImage img, String destImgPath) throws IOException{
+        String formatName = destImgPath.substring(destImgPath.lastIndexOf('.'));
+        File newImage = new File(destImgPath);
+        ImageIO.write(img, formatName, newImage);
+    }
+
+    private void addLogoAtPosition(BufferedImage img, BufferedImage logo, RelativeRectangle position) throws ServiceException{
 
         double imgWidth = img.getWidth();
         double imgHeight = img.getHeight();
@@ -92,25 +135,45 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         int absoluteXPosition = (int)(imgWidth * relativeXPosition / (100d));
         int absoluteYPosition = (int)(imgHeight * relativeYPosition / (100d));
 
-        double logoRelativeWidth = position.getWidth();
-        double logoRelativeHeight = position.getHeight();
+        double relativeLogoWidth = position.getWidth();
+        double relativeLogoHeight = position.getHeight();
 
-        LogoServiceImageObserver observer = new LogoServiceImageObserver(this);
+        LogoWatermarkServiceImageObserver observer = new LogoWatermarkServiceImageObserver(this);
 
         Graphics g = img.getGraphics();
 
-        if(logoRelativeHeight == -1 && logoRelativeWidth == -1){
-            g.drawImage(logo, absoluteXPosition, absoluteYPosition, observer);
-            this.wait();
-        }else if(logoRelativeHeight == -1 && logoRelativeWidth > 0){
-            
+        try {
+            if(relativeLogoHeight == -1 && relativeLogoWidth == -1){
+                g.drawImage(logo, absoluteXPosition, absoluteYPosition, observer);
+                this.wait();
+            }else if(relativeLogoHeight == -1 && relativeLogoWidth > 0){
+                double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
+                double absoluteLogoHeight = relativeLogoHeight/relativeLogoWidth * absoluteLogoWidth;
+                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, observer);
+                this.wait();
+            }else if(relativeLogoHeight > 0 && relativeLogoWidth == -1){
+                double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
+                double absoluteLogoWidth = relativeLogoWidth / relativeLogoHeight * absoluteLogoHeigth;
+                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, observer);
+                this.wait();
+            }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
+                double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
+                double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
+                this.wait();
+            }else{
+                LOGGER.error("addLogoAtPosition - no valid logo width and height");
+                throw new ServiceException("addLogoAtPosition - no valid logo width and heigh");
+            }
+        } catch (InterruptedException e) {
+            LOGGER.error("addLogoAtPosition -" + e);
+            throw new ServiceException(e);
         }
     }
 
-    private class LogoServiceImageObserver implements ImageObserver{
+    private class LogoWatermarkServiceImageObserver implements ImageObserver{
         private LogoWatermarkService instanceToNotify;
 
-        private LogoServiceImageObserver(LogoWatermarkService instanceToNotify){
+        private LogoWatermarkServiceImageObserver(LogoWatermarkService instanceToNotify){
             this.instanceToNotify = instanceToNotify;
         }
 
