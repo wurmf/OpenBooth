@@ -47,8 +47,8 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             throw new ServiceException(e);
         }
 
-        List<Logo> logos = profileService.getAllLogosOfActiveProfile();
-        for(logo : logos){
+        List<Logo> logos = profileService.getAllLogosOfProfile();
+        for(Logo logo : logos){
             //check if cached and cache if not
             //comparison with equals in logo entity
             if(!cachedLogos.containsKey(logo)){
@@ -56,7 +56,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
                 cachedLogos.put(logo, logoImage);
             }
             //add current logo
-            RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfActiveProfile(logo);
+            RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfProfile(logo);
             addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
         }
 
@@ -75,7 +75,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     @Override
     public void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
 
-        Logo watermark = profileService.getWaterMarkOfActiveProfile();
+        Logo watermark = profileService.getProfileWaterMark();
         String newWatermarkPath = watermark.getPath();
 
         if(!newWatermarkPath.equals(currentWatermarkPath)){
