@@ -30,7 +30,8 @@ public class ProfileServiceTestImpl extends ProfileServiceTest {
         ProfileServiceImpl profileService = new ProfileServiceImpl(
                 new JDBCProfileDAO(H2Handler.getInstance()),
                 new JDBCPositionDAO(H2Handler.getInstance()),
-                new JDBCLogoDAO(H2Handler.getInstance()));
+                new JDBCLogoDAO(H2Handler.getInstance()),
+                new ShootingServiceImpl());
         //ProfileServiceImpl profileService = new ProfileServiceImpl();
         this.con = H2Handler.getInstance().getConnection();
         setProfileService(profileService);

@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +29,16 @@ public class ProfileServiceImpl implements ProfileService{
     private PositionDAO positionDAO;
     @Resource
     private LogoDAO logoDAO;
+    @Resource
+    private ShootingService shootingService;
     private List<Profile> profileList = new ArrayList<>();
     private List<Position> positionList = new ArrayList<>();
     private List<Logo> logoList = new ArrayList<>();
     @Autowired
     public ProfileServiceImpl(ProfileDAO profileDAO,
                               PositionDAO positionDAO,
-                              LogoDAO logoDAO
+                              LogoDAO logoDAO,
+                              ShootingService shootingService
     ) throws ServiceException {
     //public ProfileServiceImpl() throws ServiceException {
         this.profileDAO = profileDAO;
@@ -334,5 +338,80 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public boolean isProfileGreenscreenEnabled(Profile profile) throws ServiceException {
         return profile.isGreenscreenEnabled();
+    }
+
+    @Override
+    public Profile getActiveProfile() throws ServiceException {
+        return this.get(this.shootingService.searchIsActive().getId());
+    }
+
+    @Override
+    public List<Position> getAllPositionsOfProfile() throws ServiceException {
+        return getAllPositionsOfProfile(this.getActiveProfile());
+    }
+
+    @Override
+    public List<Camera> getAllCamerasOfProfile() throws ServiceException {
+        return getAllCamerasOfProfile(this.getActiveProfile());
+    }
+
+    @Override
+    public List<RelativeRectangle> getAllRelativeRectanglesOfProfile() throws ServiceException {
+        return getAllRelativeRectanglesOfProfile(this.getActiveProfile());
+    }
+
+    @Override
+    public List<Logo> getAllLogosOfProfile() throws ServiceException {
+        return getAllLogosOfProfile(this.getActiveProfile());
+    }
+
+    @Override
+    public Position getPositionOfCameraOfProfile(Camera camera) throws ServiceException {
+        return getPositionOfCameraOfProfile(this.getActiveProfile(),camera);
+    }
+
+    @Override
+    public Camera getCameraOfPositionOfProfile(Position position) throws ServiceException {
+        return getCameraOfPositionOfProfile(this.getActiveProfile(),position);
+    }
+
+    @Override
+    public boolean isPositionGreenScreenReadyPositionOfProfile(Position position) throws ServiceException {
+        return isPositionGreenScreenReadyPositionOfProfile(this.getActiveProfile(),position);
+    }
+
+    @Override
+    public Logo getLogoOfRelativeRectangleOfProfile(RelativeRectangle relativeRectangle) throws ServiceException {
+        return getLogoOfRelativeRectangleOfProfile(this.getActiveProfile(),relativeRectangle);
+    }
+
+    @Override
+    public RelativeRectangle getRelativeRectangleOfLogoOfProfile(Logo logo) throws ServiceException {
+        return getRelativeRectangleOfLogoOfProfile(this.getActiveProfile(),logo);
+    }
+
+    @Override
+    public Logo getProfileWaterMark() throws ServiceException {
+        return getProfileWaterMark(this.getActiveProfile());
+    }
+
+    @Override
+    public String getProfileName() throws ServiceException {
+        return getProfileName(this.getActiveProfile());
+    }
+
+    @Override
+    public boolean isProfilePrintEnabled() throws ServiceException {
+        return isProfilePrintEnabled(this.getActiveProfile());
+    }
+
+    @Override
+    public boolean isProfileFilerEnabled() throws ServiceException {
+        return isProfileFilerEnabled(this.getActiveProfile());
+    }
+
+    @Override
+    public boolean isProfileGreenscreenEnabled() throws ServiceException {
+        return isProfileGreenscreenEnabled(this.getActiveProfile());
     }
 }
