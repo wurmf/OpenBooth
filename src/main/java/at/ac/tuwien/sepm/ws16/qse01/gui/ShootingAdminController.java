@@ -24,10 +24,8 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.util.List;
 
-//TODO: Remove everything Swing related! We have to use JavaFX-Classes
-
 /**
- * Created by Aniela on 23.11.2016.
+ * Controlles the Shooting Admnisitration
  */
 @Component
 public class ShootingAdminController {
@@ -93,7 +91,7 @@ public class ShootingAdminController {
                 try{
 
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
-                    Shooting shouting = new Shooting(profile.getId(), path, true);
+                    Shooting shouting = new Shooting(0,profile.getId(), path, true);
 
                     storageDirLabel.setText("");
                     LOGGER.info("ShootingAdminController:", path);

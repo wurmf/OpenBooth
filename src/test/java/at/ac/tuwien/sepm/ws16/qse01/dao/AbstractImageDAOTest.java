@@ -92,7 +92,7 @@ public abstract class AbstractImageDAOTest {
      */
     @Test
     public void getAllImagesByExistingShootingID() throws Throwable  {
-        shootingDAO.create(new Shooting(1,"/images/shooting99",true));
+        shootingDAO.create(new Shooting(1,1,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 

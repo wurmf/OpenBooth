@@ -35,6 +35,7 @@ public class WindowManager {
     private Scene adminLoginScene;
     private Scene profileScene;
     private Scene miniaturScene;
+    private Scene pictureFullScene;
     private List<Stage> shotStageList;
 
     @Autowired
@@ -75,6 +76,11 @@ public class WindowManager {
 
             x += 200;
         }
+
+        //Creating ImageFullscreenscene
+        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
+        Parent root = (Parent) pictureWrapper.getLoadedObject();
+        this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
 
         //Creating Main-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
@@ -162,6 +168,11 @@ public class WindowManager {
     public void closeStages(){
         shotStageList.forEach(Stage::close);
         mainStage.close();
+    }
+
+    public void showFullscreenImage(){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
     }
 
     /**

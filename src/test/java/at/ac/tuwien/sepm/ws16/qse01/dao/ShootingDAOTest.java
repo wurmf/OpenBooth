@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Created by Aniela on 28.11.2016.
  */
-public class SessionDAOTest {
+public class ShootingDAOTest {
     private ShootingDAO dao;
 
     @Before
@@ -32,7 +32,7 @@ public class SessionDAOTest {
      */
     @Test
     public void addValideSession () throws Exception{
-        Shooting shouting =new Shooting(0,"ab",true);
+        Shooting shouting =new Shooting(0,1,"ab",true);
         dao.create(shouting);
     }
 }
