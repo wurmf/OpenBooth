@@ -37,7 +37,7 @@ public interface LogoDAO {
      * exist in persistence store, null value will be returned
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    Logo read(long id) throws PersistenceException;
+    Logo read(int id) throws PersistenceException;
 
     /**
      * Retrieve all logo objects from persistence store(that have not been deleted)

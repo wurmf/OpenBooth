@@ -4,7 +4,7 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  * Entity Logo
  */
 public class Logo {
-    private long id;
+    private int id;
     private String path;
     private boolean isDeleted;
 
@@ -15,7 +15,7 @@ public class Logo {
      * @param path - no empty logo path
      * @param isDeleted - mark this logo with true value as deleted
      */
-    public Logo(long id, String path, boolean isDeleted){
+    public Logo(int id, String path, boolean isDeleted){
         this.id = id;
         this.path = path;
         this.isDeleted = isDeleted;
@@ -23,20 +23,20 @@ public class Logo {
     }
 
     /**
-     * Constructor with unknown id will set id to Long.MIN_VALUE and persistence layer has
+     * Constructor with unknown id will set id to Integer.MIN_VALUE and persistence layer has
      * to provide a valid id
      *
      * @param path - no empty logo path
      */
     public Logo(String path){
-        this(Long.MIN_VALUE, path,false);
+        this(Integer.MIN_VALUE, path,false);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

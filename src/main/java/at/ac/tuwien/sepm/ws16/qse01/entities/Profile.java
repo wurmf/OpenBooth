@@ -6,7 +6,7 @@ import java.util.List;
  * Profile entity
  */
 public class Profile {
-    private long id;
+    private int id;
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
@@ -21,7 +21,7 @@ public class Profile {
      * @param id - positive profile id
      * @param name - no empty profile name
      */
-    public Profile(long id,
+    public Profile(int id,
                    String name,
                    List<PairCameraPosition> pairCameraPositions,
                    List<PairLogoRelativeRectangle> pairLogoRelativeRectangles,
@@ -47,14 +47,14 @@ public class Profile {
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Long.MIN_VALUE, name,null,null,false,false,false,false);
+        this(Integer.MIN_VALUE, name,null,null,false,false,false,false);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

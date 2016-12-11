@@ -32,7 +32,7 @@ public interface ProfileDAO {
      * @return profile that has been looked for, if a profile with given id doesn't
      * exist in prsistence store null will be returned
      */
-    Profile read(long id) throws PersistenceException;
+    Profile read(int id) throws PersistenceException;
 
     /**
      * Retrieve all profiles entities from persistence store

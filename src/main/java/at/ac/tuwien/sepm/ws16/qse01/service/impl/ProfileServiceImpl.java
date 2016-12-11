@@ -76,7 +76,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public Profile get(long id) throws ServiceException {
+    public Profile get(int id) throws ServiceException {
         LOGGER.debug("Entering get method with parameter id = " + id);
         try {
             return profileDAO.read(id);
@@ -132,7 +132,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public Position getPosition(long id) throws ServiceException {
+    public Position getPosition(int id) throws ServiceException {
         LOGGER.debug("Entering get method with parameter id = " + id);
         try {
             return positionDAO.read(id);
@@ -189,7 +189,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public Logo getLogo(long id) throws ServiceException {
+    public Logo getLogo(int id) throws ServiceException {
         LOGGER.debug("Entering get method with parameter id = " + id);
         try {
             return logoDAO.read(id);

@@ -34,7 +34,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
     }
 
     @Override
-    public Profile.PairLogoRelativeRectangle create(long profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+    public Profile.PairLogoRelativeRectangle create(int profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
         LOGGER.debug("Entering create methode with parameter " + pairLogoRelativeRectangle);
 
         if (pairLogoRelativeRectangle==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
@@ -48,8 +48,8 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,profileId);
-            stmt.setLong(2,pairLogoRelativeRectangle.getLogo().getId());
+            stmt.setInt(1,profileId);
+            stmt.setInt(2,pairLogoRelativeRectangle.getLogo().getId());
             stmt.setDouble(3,pairLogoRelativeRectangle.getRelativeRectangle().getX());
             stmt.setDouble(4,pairLogoRelativeRectangle.getRelativeRectangle().getY());
             stmt.setDouble(5,pairLogoRelativeRectangle.getRelativeRectangle().getWidth());
@@ -82,7 +82,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
     }
 
     @Override
-    public List<Profile.PairLogoRelativeRectangle> readAll(long profileId) throws PersistenceException {
+    public List<Profile.PairLogoRelativeRectangle> readAll(int profileId) throws PersistenceException {
         LOGGER.debug("Entering readAll method");
 
         PreparedStatement stmt = null;
@@ -93,14 +93,14 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,profileId);
+            stmt.setInt(1,profileId);
             rs = stmt.executeQuery();
             List<Profile.PairLogoRelativeRectangle> returnList = new ArrayList<>();
 
             while (rs.next()) {
                 Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle =
                         new Profile.PairLogoRelativeRectangle(
-                                (new JDBCLogoDAO(H2Handler.getInstance()).read(rs.getLong("logoId"))),
+                                (new JDBCLogoDAO(H2Handler.getInstance()).read(rs.getInt("logoId"))),
                                 new RelativeRectangle(
                                         rs.getDouble("x1"),
                                         rs.getDouble("y1"),
@@ -124,7 +124,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
     }
 
     @Override
-    public boolean delete(long profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+    public boolean delete(int profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + pairLogoRelativeRectangle);
 
         ResultSet rs;
@@ -175,7 +175,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1, profile.getId());
+            stmt.setInt(1, profile.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if objects have been deleted and return suitable boolean value

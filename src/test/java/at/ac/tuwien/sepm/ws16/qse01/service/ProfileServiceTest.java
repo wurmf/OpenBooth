@@ -66,7 +66,7 @@ public abstract class ProfileServiceTest {
         profile.setName("Testprofile2");
 
         profileService.edit(profile);
-        long id = profile.getId();
+        int id = profile.getId();
         profile = profileService.get(id);
         assertTrue(profile.getName() == "Testprofile2");
     }
@@ -83,7 +83,7 @@ public abstract class ProfileServiceTest {
         profile.setName("Testprofile2");
         profile.setId(profile.getId()+1);
         profileService.edit(profile);
-        long id = profile.getId();
+        int id = profile.getId();
         profile = profileService.get(id-1);
         assertFalse(profile.getName()=="Testprofile2");
 

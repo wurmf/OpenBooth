@@ -44,7 +44,7 @@ public class JDBCProfileDAO implements ProfileDAO {
         PreparedStatement stmt = null;
         try {
             //AutoID
-            if(profile.getId()== Long.MIN_VALUE)
+            if(profile.getId()== Integer.MIN_VALUE)
                 {
                 String sqlString = "INSERT INTO"
                         + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
@@ -66,7 +66,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                     + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
                     + " VALUES (?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
-                stmt.setLong(1,profile.getId());
+                stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());
                 stmt.setBoolean(3,profile.isPrintEnabled());
                 stmt.setBoolean(4,profile.isFilerEnabled());
@@ -127,7 +127,7 @@ public class JDBCProfileDAO implements ProfileDAO {
     }
 
     @Override
-    public Profile read(long id) throws PersistenceException{
+    public Profile read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter profileid=" + id);
         String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted"
                 + " FROM profiles WHERE profileID = ?;";
@@ -142,7 +142,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 /*new PersistenceException("No data existing to read: Profile with " + id + " isn't persisted yet!");*/
             }
             return new Profile(
-                    rs.getLong("profileID"),
+                    rs.getInt("profileID"),
                     rs.getString("name"),
                     pairCameraPositionDAO.readAll(id),
                     pairLogoRelativeRectangleDAO.readAll(id),
@@ -195,7 +195,7 @@ public class JDBCProfileDAO implements ProfileDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,profile.getId());
+            stmt.setInt(1,profile.getId());
             stmt.executeUpdate();
 
             ResultSet rs = stmt.getResultSet();

@@ -35,7 +35,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public Profile.PairCameraPosition create(long profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
+    public Profile.PairCameraPosition create(int profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
         LOGGER.debug("Entering create methode with parameter " + pairCameraPosition);
 
         if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
@@ -48,9 +48,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         sqlString = "INSERT INTO profile_camera_positions(profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?);";
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,profileId);
-            stmt.setLong(2,pairCameraPosition.getCamera().getId());
-            stmt.setLong(3,pairCameraPosition.getPosition().getId());
+            stmt.setInt(1,profileId);
+            stmt.setInt(2,pairCameraPosition.getCamera().getId());
+            stmt.setInt(3,pairCameraPosition.getPosition().getId());
             stmt.setBoolean(4,pairCameraPosition.isGreenScreenReady());
             stmt.executeUpdate();
             LOGGER.debug("Persisted object creation successfully");
@@ -80,7 +80,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public List<Profile.PairCameraPosition> readAll(long profileId) throws PersistenceException {
+    public List<Profile.PairCameraPosition> readAll(int profileId) throws PersistenceException {
         LOGGER.debug("Entering readAll method");
 
         PreparedStatement stmt = null;
@@ -91,15 +91,15 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,profileId);
+            stmt.setInt(1,profileId);
             rs = stmt.executeQuery();
             List<Profile.PairCameraPosition> returnList = new ArrayList<>();
 
             while (rs.next()) {
                 Profile.PairCameraPosition pairCameraPosition =
                         new Profile.PairCameraPosition(
-                                new Camera((int) rs.getLong("cameraId"),"",""),
-                                (new JDBCPositionDAO(H2Handler.getInstance()).read(rs.getLong("positionId"))),
+                                new Camera(rs.getInt("cameraId"),"",""),
+                                (new JDBCPositionDAO(H2Handler.getInstance()).read(rs.getInt("positionId"))),
                                 rs.getBoolean("isGreenscreenReady"));
                 returnList.add(pairCameraPosition);
             }
@@ -118,7 +118,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public boolean delete(long profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
+    public boolean delete(int profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + pairCameraPosition);
 
         ResultSet rs;
@@ -130,9 +130,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1, profileId);
-            stmt.setLong(2, pairCameraPosition.getCamera().getId());
-            stmt.setLong(3, pairCameraPosition.getPosition().getId());
+            stmt.setInt(1, profileId);
+            stmt.setInt(2, pairCameraPosition.getCamera().getId());
+            stmt.setInt(3, pairCameraPosition.getPosition().getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been deleted and return suitable boolean value
@@ -167,7 +167,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1, profile.getId());
+            stmt.setInt(1, profile.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if objects have been deleted and return suitable boolean value

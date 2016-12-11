@@ -32,7 +32,7 @@ public interface ProfileService {
      * @return profile with id
      * @throws ServiceException if getting is not possible
      */
-    Profile get(long id) throws ServiceException;
+    Profile get(int id) throws ServiceException;
 
     /**
      * Get all profiles
@@ -69,7 +69,7 @@ public interface ProfileService {
      * @return position with id
      * @throws ServiceException if getting is not possible
      */
-    Position getPosition(long id) throws ServiceException;
+    Position getPosition(int id) throws ServiceException;
 
     /**
      * Get all positions
@@ -106,7 +106,7 @@ public interface ProfileService {
      * @return logo object with given id
      * @throws ServiceException if getting is not possible
      */
-    Logo getLogo(long id) throws ServiceException;
+    Logo getLogo(int id) throws ServiceException;
 
     /**
      * Get all logos

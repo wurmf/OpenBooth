@@ -41,7 +41,7 @@ public class JDBCLogoDAO implements LogoDAO {
 
         try {
             //AutoID
-            if(logo.getId()==Long.MIN_VALUE)
+            if(logo.getId()==Integer.MIN_VALUE)
             {
                 sqlString = "INSERT INTO logos(path) VALUES (?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
@@ -49,14 +49,14 @@ public class JDBCLogoDAO implements LogoDAO {
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){logo.setId(rs.getLong(1));}
+                if (rs.next()){logo.setId(rs.getInt(1));}
                 LOGGER.debug("Persisted object creation successfully with AutoID:" + logo.getId());
             }
             //No AutoID
             else {
                 sqlString = "INSERT INTO logos(logoID,path,isDeleted) VALUES (?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
-                stmt.setLong(1,logo.getId());
+                stmt.setInt(1,logo.getId());
                 stmt.setString(2,logo.getPath());
                 stmt.setBoolean(3,logo.isDeleted());
                 stmt.executeUpdate();
@@ -91,7 +91,7 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setString(1,logo.getPath());
             stmt.setBoolean(2,logo.isDeleted());
-            stmt.setLong(3,logo.getId());
+            stmt.setInt(3,logo.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value
@@ -114,7 +114,7 @@ public class JDBCLogoDAO implements LogoDAO {
     }
 
     @Override
-    public Logo read(long id) throws PersistenceException {
+    public Logo read(int id) throws PersistenceException {
         LOGGER.debug("Entering read method with parameter id=" + id);
 
         ResultSet rs;
@@ -124,10 +124,10 @@ public class JDBCLogoDAO implements LogoDAO {
         sqlString = "SELECT * FROM logos WHERE logoID = ?;";
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,id);
+            stmt.setInt(1,id);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                Logo logo = new Logo(rs.getLong("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
+                Logo logo = new Logo(rs.getInt("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
                 LOGGER.debug("Persisted object reading has been successfully. " + logo);
                 return logo;
             }
@@ -162,7 +162,7 @@ public class JDBCLogoDAO implements LogoDAO {
             List<Logo> returnList = new ArrayList<>();
 
             while (rs.next()) {
-                Logo logo = this.read(rs.getLong("logoID"));
+                Logo logo = this.read(rs.getInt("logoID"));
                 returnList.add(logo);
             }
             LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
@@ -189,7 +189,7 @@ public class JDBCLogoDAO implements LogoDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,logo.getId());
+            stmt.setInt(1,logo.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value

@@ -50,7 +50,7 @@ public class JDBCPositionDAO implements PositionDAO{
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){position.setId(rs.getLong(1));}
+                if (rs.next()){position.setId(rs.getInt(1));}
                 LOGGER.debug("Persisted object creation successfully with AutoID:" + position.getId());
             }
             //NoAutoID
@@ -58,7 +58,7 @@ public class JDBCPositionDAO implements PositionDAO{
             {
                 sqlString = "INSERT INTO positions(positionID,name,isDeleted) VALUES (?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
-                stmt.setLong(1,position.getId());
+                stmt.setInt(1,position.getId());
                 stmt.setString(2,position.getName());
                 stmt.setBoolean(3,position.isDeleted());
                 stmt.executeUpdate();
@@ -95,7 +95,7 @@ public class JDBCPositionDAO implements PositionDAO{
             stmt.setString(1,position.getName());
             stmt.setString(2,position.getButtonImagePath());
             stmt.setBoolean(3,position.isDeleted());
-            stmt.setLong(4,position.getId());
+            stmt.setInt(4,position.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value
@@ -118,7 +118,7 @@ public class JDBCPositionDAO implements PositionDAO{
     }
 
     @Override
-    public Position read(long id) throws PersistenceException{
+    public Position read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter id=" + id);
 
         ResultSet rs;
@@ -129,10 +129,10 @@ public class JDBCPositionDAO implements PositionDAO{
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,id);
+            stmt.setInt(1,id);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                Position position = new Position(rs.getLong("positionID"), rs.getString("name"), rs.getString("buttonImagePath"), rs.getBoolean("isDeleted"));
+                Position position = new Position(rs.getInt("positionID"), rs.getString("name"), rs.getString("buttonImagePath"), rs.getBoolean("isDeleted"));
                 LOGGER.debug("Persisted object reading has been successfully. " + position);
                 return position;
             }
@@ -167,7 +167,7 @@ public class JDBCPositionDAO implements PositionDAO{
             List<Position> returnList = new ArrayList<>();
 
             while (rs.next()) {
-                Position position = this.read(rs.getLong("positionID"));
+                Position position = this.read(rs.getInt("positionID"));
                 returnList.add(position);
             }
             LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
@@ -195,7 +195,7 @@ public class JDBCPositionDAO implements PositionDAO{
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,position.getId());
+            stmt.setInt(1,position.getId());
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if object has been updated and return suitable boolean value

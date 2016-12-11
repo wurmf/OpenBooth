@@ -4,7 +4,7 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  * Position entity
  */
 public class Position {
-    private long id;
+    private int id;
     private String name;
     private String buttonImagePath;
     private boolean isDeleted;
@@ -16,7 +16,7 @@ public class Position {
      * @param name - no empty position name
      * @param isDeleted - mark this position with true value as deleted
      */
-    public Position(long id, String name, String buttonImagePath, boolean isDeleted){
+    public Position(int id, String name, String buttonImagePath, boolean isDeleted){
         this.id = id;
         this.name = name;
         this.isDeleted = isDeleted;
@@ -30,14 +30,14 @@ public class Position {
      * @param name - no empty position name
      */
     public Position(String name, String buttonImagePath){
-        this(Long.MIN_VALUE, buttonImagePath, name,false);
+        this(Integer.MIN_VALUE, buttonImagePath, name,false);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

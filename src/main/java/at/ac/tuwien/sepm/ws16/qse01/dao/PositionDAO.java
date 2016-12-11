@@ -31,7 +31,7 @@ public interface PositionDAO {
      * @return position that has been looked for, if a position with given id doesn't
      * exist in persistence store, null will be returned
      */
-    Position read(long id) throws PersistenceException;
+    Position read(int id) throws PersistenceException;
 
     /**
      * Retrieve all position entities from persistence store(that have not been deleted)
