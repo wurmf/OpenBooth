@@ -71,6 +71,17 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
     }
 
     @Override
+    public List<Profile.PairLogoRelativeRectangle> createAll(Profile profile) throws PersistenceException {
+        LOGGER.debug("Entering creatAll method");
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = new ArrayList<>();
+        for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
+            pairLogoRelativeRectangles.add(this.create(profile.getId(), pairLogoRelativeRectangle));
+        }
+        LOGGER.debug("Persisted createAll method has completed successfully " + pairLogoRelativeRectangles);
+        return  pairLogoRelativeRectangles;
+    }
+
+    @Override
     public List<Profile.PairLogoRelativeRectangle> readAll(long profileId) throws PersistenceException {
         LOGGER.debug("Entering readAll method");
 
@@ -149,6 +160,41 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
+        }
+    }
+
+    @Override
+    public boolean deleteAll(Profile profile) throws PersistenceException {
+        LOGGER.debug("Entering deleteAll method");
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "DELETE FROM profile_logo_rpositions"
+                + " WHERE profileId = ?;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setLong(1, profile.getId());
+            stmt.executeUpdate();
+            rs = stmt.getResultSet();
+            // Check, if objects have been deleted and return suitable boolean value
+            if (rs.next()) {
+                LOGGER.debug("Persisted objects deletion has been successfully(returned value true)");
+                return true;
+            } else {
+                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+                return false;
+            }
+        } catch (SQLException e) {
+            throw new PersistenceException("Error! Deleting objects in persistence layer has failed.:" + e);
+        } finally {
+            // Return resources
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);
+            }
         }
     }
 }
