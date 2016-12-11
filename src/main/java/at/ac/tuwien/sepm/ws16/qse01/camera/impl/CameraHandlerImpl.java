@@ -10,13 +10,18 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.ws.handler.PortInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,14 +34,18 @@ public class CameraHandlerImpl implements CameraHandler {
     private SpringFXMLLoader springFXMLLoader;
     ImageService imageService;
     ShootingService shootingService;
+    CameraService cameraService;
     List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
+    List<String> cameraModelList = new ArrayList<>();
+    List<String> cameraPortList = new ArrayList<>();
 
     @Autowired
-    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService)
+    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService, CameraService cameraService)
     {
         this.shotFrameManager=shotFrameManager;
         this.imageService= imageService;
         this.shootingService= shootingService;
+        this.cameraService=cameraService;
     }
 
     /**
@@ -46,15 +55,24 @@ public class CameraHandlerImpl implements CameraHandler {
      * */
     @Override
     public void getImages() throws CameraException {
+        shotFrameManager.init();
 
-        for(int i=0;i<cameraGphotoList.size();i++)
-        {
-
+        Camera camera;
+        for(int i=0;i<cameraGphotoList.size();i++) {
+            try{
+            camera= cameraService.createCamera(new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i));
+                cameraService.setCameraActive(camera.getId());
+            }
+            catch (ServiceException ex)
+            {
+                throw new CameraException(ex.getMessage(), -1);
+            }
             CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
             cameraHandlerThread.setImageService(imageService);
             cameraHandlerThread.setShotFrameManager(shotFrameManager);
             cameraHandlerThread.setShootingService(shootingService);
             cameraHandlerThread.setCameraGphoto(cameraGphotoList.get(i));
+            cameraHandlerThread.setCamera(camera);
             cameraHandlerThread.start();
         }
     }
@@ -67,17 +85,24 @@ public class CameraHandlerImpl implements CameraHandler {
             LOGGER.debug("Cameras: " + cl);
 
             count=cl.getCount();
+            for(int i=0;i<count;i++)
+            {
+                cameraGphotoList.add(new CameraGphoto());
+                Pointer pInfo=cl.getPortInfo(i);
+                cameraPortList.add(cl.getPort(i));
+                cameraModelList.add(cl.getModel(i));
+                LOGGER.debug(pInfo.toString());
+
+                cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
+
+                cameraGphotoList.get(i).initialize();
+                cameraGphotoList.get(i).ref();
+            }
 
         } finally {
             CameraUtils.closeQuietly(cl);
         }
-        //final CameraGphoto c = new CameraGphoto();
-        for(int i=0;i<count;i++)
-        {
-            cameraGphotoList.add(new CameraGphoto());
-            cameraGphotoList.get(i).initialize();
-            cameraGphotoList.get(i).ref();
-        }
+
         return null;
     }
 }

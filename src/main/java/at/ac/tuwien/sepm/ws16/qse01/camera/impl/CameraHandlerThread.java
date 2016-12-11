@@ -23,6 +23,8 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -45,29 +47,12 @@ public class CameraHandlerThread  extends Thread{
         shotFrameManager.refreshShot(2,"/images/shooting1/img2.jpg");
         System.out.println("ende refreshing..");*/
 
-        final CameraList cl = new CameraList();
-        try {
-            LOGGER.debug("Cameras: " + cl);
-        } catch (CameraException ex) {
-            return;
-        }
-        finally {
-            CameraUtils.closeQuietly(cl);
-        }
-        final CameraGphoto c = new CameraGphoto();
-        try {
-            c.initialize();
-        }
-        catch(CameraException ca) {
-            LOGGER.error("No Camera found");
-            return;
-        }
-
         while (i == 1)
         {
+            Image image=null;
             try {
 
-                final CameraFile cf = c.waitForImage();
+                final CameraFile cf = cameraGphoto.waitForImage();
                 if (cf != null) {
                     Shooting activeShooting = shootingService.searchIsActive();
                     if(activeShooting != null){
@@ -84,9 +69,10 @@ public class CameraHandlerThread  extends Thread{
                             LOGGER.error("error creating directory " + e.getMessage() + "\n");
                             throw new ServiceException("error creating directory " + e.getMessage() + "\n");
                         }
-
-                        String imagePath = directoryPath + "img" + imageID;
-                        Image image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
+                        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HH:mm:ss");
+                        Date date = new Date();
+                        String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date);
+                        image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
                         image = imageService.create(image);
 
                         cf.save(new File(imagePath).getAbsolutePath());
@@ -111,12 +97,11 @@ public class CameraHandlerThread  extends Thread{
             }
             if(imageSaved)
             {
-               // shotFrameManager.refreshShot(1); TODO: cameraID und imgpath übergeben
-               // shotFrameManager.refreshShot(2);
+                shotFrameManager.refreshShot(camera.getId(), image.getImagepath());
             }
             imageSaved=false;
         }
-        CameraUtils.closeQuietly(c);
+        CameraUtils.closeQuietly(cameraGphoto);
     }
 
     public static void main(String[] args) {
