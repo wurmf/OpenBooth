@@ -91,7 +91,7 @@ public interface ProfileService {
      * @return added logo with autoassigned id
      * @throws ServiceException if adding logo is not possible
      */
-    Position addLogo(Logo logo) throws ServiceException;
+    Logo addLogo(Logo logo) throws ServiceException;
 
     /**
      * Edit a existing logo and update its properties
@@ -106,7 +106,7 @@ public interface ProfileService {
      * @return logo object with given id
      * @throws ServiceException if getting is not possible
      */
-    Position getLogo(long id) throws ServiceException;
+    Logo getLogo(long id) throws ServiceException;
 
     /**
      * Get all logos
@@ -116,143 +116,120 @@ public interface ProfileService {
     List<Logo> getAllLogos() throws ServiceException;
 
     /**
-     * Erase a certain logo by its id
-     * @param logo - Logo to be erased
+     * Erase a given logo by its id
+     * @param logo - given logo to be erased
      * @throws ServiceException if erasing is not possible
      */
     boolean eraseLogo(Logo logo) throws ServiceException;
 
     /**
-     * Set to be edited profile object
-     *
-     * @param profile profile that is intended to be edited
-     * @return true, if setting is possible, otherwise false
-     * @throws ServiceException if setting active profile is not possible
+     * Get all positions of given profile
+     * @param profile - given profile
+     * @return List<Position> list of positions of given profile
+     * if no positions included, list will be just empty, but not null value
      */
-    boolean setEditedProfile(Profile profile) throws ServiceException;
+    List<Position> getAllPositionsOfProfile(Profile profile) throws ServiceException;
 
     /**
-     * Get profile object that is set currently to be edited
-     *
-     * @return profile object, maybe also be null, if no profile is set to be edited currently
-     * @throws ServiceException if getting currently edited profile is not possible
-     */
-    Profile getEditedProfile() throws ServiceException;
-
-    /**
-     * Set active profile object in currently active shooting
-     *
-     * @param profile profile that is intended to be set active for active shooting
-     * @return true, if setting is possible, otherwise false
-     * @throws ServiceException if setting active profile is not possible
-     */
-    boolean setActiveProfile(Profile profile) throws ServiceException;
-
-    /**
-     * Get active profile object that is set by ShootingService
-     *
-     * @return profile object, maybe also be null, if no active profile is set
-     * @throws ServiceException if getting active profile is not possible
-     */
-    Profile getActiveProfile() throws ServiceException;
-
-    /**
-     * Get all positions of active profile
-     * @return List<Position> list of positions of active profile
-     * in case the active profile is not set, returned list is just empty but not null
-     */
-    List<Position> getAllPositionsOfActiveProfile() throws ServiceException;
-
-    /**
-     * Get all cameras of active profile
+     * Get all cameras of given profile
+     * @param profile - given profile
      * @return List<Camera> list of cameras of active profile
-     * in case the active profile is not set, returned list is just empty but not null
+     * if no camera included, list will be just empty, but not null value
      */
-    List<Camera> getAllCamerasOfActiveProfile() throws ServiceException;
+    List<Camera> getAllCamerasOfProfile(Profile profile) throws ServiceException;
 
     /**
-     * Get all relative rectangles(sub areas of image where logos are embedded) of active profile
+     * Get all relative rectangles(sub areas of image where logos are embedded) of given profile
+     * @param profile - given profile
      * @return List <RelativeRectangle> list of sub aras of image where logos are embedded
-     * in case the active profile is not set, returned list is just empty but not null
+     * if no relative rectangles included, list will be just empty, but not null value
      */
-    List <RelativeRectangle> getAllRelativeRectanglesOfActiveProfile()throws ServiceException;
+    List <RelativeRectangle> getAllRelativeRectanglesOfProfile(Profile profile)throws ServiceException;
 
     /**
-     * Get all logos used in active profile
-     * @return List <Logo> list of logos used in active profile
-     * in case the active profile is not set, returned list will be just empty, but not null value
+     * Get all logos used in given profile
+     * @param profile - given profile
+     * @return List <Logo> list of logos used in given profile
+     * if no logos included, list will be just empty, but not null value
      */
-    List<Logo> getAllLogosOfActiveProfile()throws ServiceException;
+    List<Logo> getAllLogosOfProfile(Profile profile)throws ServiceException;
 
     /**
-     * Get position of given camera of active profile
-     * @param camera - given camera of active profile
+     * Get position of given camera of given profile
+     * @param profile - given profile
+     * @param camera - given camera
      * @return Position - position of the given camera
-     * if given camera is not included in active profile, null value will be returned
+     * if given camera is not included in given profile, null value will be returned
      */
-    Position getPositionOfCameraOfActiveProfile(Camera camera)throws ServiceException;
+    Position getPositionOfCameraOfProfile(Profile profile,Camera camera)throws ServiceException;
 
     /**
-     * Get camera of given position of  active profile
-     * @param position - given position of active profile
+     * Get camera of given position of given profile
+     * @param profile - given profile
+     * @param position - given position
      * @return Camera - camera of the given camera
-     * if given camera is not included in active profile, null value will be returned
+     * if given camera is not included in given profile, null value will be returned
      */
-    Camera getCameraOfPositionOfActiveProfile(Position position)throws ServiceException;
+    Camera getCameraOfPositionOfProfile(Profile profile,Position position)throws ServiceException;
 
     /**
-     * Find out, if this position is greenscreen-ready in this active profile
-     * @param position - given position of active profile
-     * @return boolean
+     * Find out, if given position in given profile is greenscreen-ready
+     * @param profile - given profile
+     * @param position - given position of given profile
+     * @return boolean true, if greenscreen-ready
      */
-    boolean isGreenScreenReadyPositionOfActiveProfile(Position position) throws ServiceException;
+    boolean isPositionGreenScreenReadyPositionOfProfile(Profile profile,Position position) throws ServiceException;
 
     /**
-     * Get logo of given relative rectangle(sub area of image where logos are embedded) of active profile
+     * Get logo of given relative rectangle(sub area of image where logos are embedded) of given profile
      * @param relativeRectangle - given relative rectangle(sub area of image where logos are embedded)
      * @return Logo - logo of the given sub area of image where logos are embedded
-     * if given logo is not included in active profile, null value will be returned
+     * if given logo is not included in given profile, null value will be returned
      */
-    Logo getRelativeRectangleOfLogoOfActiveProfile(RelativeRectangle relativeRectangle)throws ServiceException;
+    Logo getLogoOfRelativeRectangleOfProfile(Profile profile,RelativeRectangle relativeRectangle)throws ServiceException;
 
     /**
-     * Get relative rectangle(sub area of image where logos are embedded) of given logo of active profile
-     * @param logo - given logo of active profile
+     * Get relative rectangle(sub area of image where logos are embedded) of given logo of given profile
+     * @param profile - given profile
+     * @param logo - given logo of given profile
      * @return RelativeRectangle - relative rectangle(sub area of image where logos are embedded)
-     * if given relative rectangle is not included in active profile, null value will be returned
+     * if given relative rectangle is not included in given profile, null value will be returned
      */
-    RelativeRectangle getLogoOfRelativeRectangleOfActiveProfile(Logo logo)throws ServiceException;
+    RelativeRectangle getRelativeRectangleOfLogoOfProfile(Profile profile,Logo logo)throws ServiceException;
 
     /**
-     * Get water mark of active profile
+     * Get water mark of given profile
      * @return Logo - watermark of active profile
      * Water mark is a special logo that covers all the image
-     * if no water mark is set in active profile, null value will be returned
+     * if no water mark is set in given profile, null value will be returned
      */
-    Logo getWaterMarkOfActiveProfile()throws ServiceException;
+    Logo getProfileWaterMark(Profile profile)throws ServiceException;
 
     /**
-     * Get name of active profile
-     * @return String - name of active profile (max. 50 characters long)
+     * Get name of given profile
+     * @param profile - given profile
+     * @return String - name of given profile (max. 50 characters long)
      */
-    String getNameOfActiveProfile()throws ServiceException;
+    String getProfileName(Profile profile)throws ServiceException;
 
     /**
-     * Find out, if active profile is print enabled
-     * @return boolean
+     * Find out, if given profile is print enabled
+     * @param profile - given profile
+     * @return boolean - true, if enabled
      */
-    boolean isPrintEnabledActiveProfile()throws ServiceException;
+    boolean isProfilePrintEnabled(Profile profile)throws ServiceException;
 
     /**
-     * Find out, if active profile is filter enabled
-     * @return boolean
+     * Find out, if given profile is filter enabled
+     * @param profile - given profile
+     * @return boolean - true, if enabled
      */
-    boolean isFilerEnabledActiveProfile()throws ServiceException;
+    boolean isProfileFilerEnabled(Profile profile)throws ServiceException;
 
     /**
-     * Find out, if active profile is green screen enabled
-     * @return boolean
+     * Find out, if given profile is green screen enabled
+     * @param profile - given profile
+     * @return boolean - true, if enabled
      */
-    boolean isGreenscreenEnabledActiveProfile()throws ServiceException;
-
+    boolean isProfileGreenscreenEnabled(Profile profile)throws ServiceException;
 }

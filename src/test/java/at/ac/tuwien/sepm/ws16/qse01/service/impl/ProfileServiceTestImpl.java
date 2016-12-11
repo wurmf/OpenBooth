@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCLogoDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCPositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -26,7 +27,10 @@ public class ProfileServiceTestImpl extends ProfileServiceTest {
 
     @Before
     public void setUp() throws PersistenceException, ServiceException {
-        ProfileServiceImpl profileService = new ProfileServiceImpl(new JDBCProfileDAO(H2Handler.getInstance()),new JDBCPositionDAO(H2Handler.getInstance()));
+        ProfileServiceImpl profileService = new ProfileServiceImpl(
+                new JDBCProfileDAO(H2Handler.getInstance()),
+                new JDBCPositionDAO(H2Handler.getInstance()),
+                new JDBCLogoDAO(H2Handler.getInstance()));
         //ProfileServiceImpl profileService = new ProfileServiceImpl();
         this.con = H2Handler.getInstance().getConnection();
         setProfileService(profileService);
