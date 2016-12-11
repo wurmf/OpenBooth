@@ -9,7 +9,7 @@ import java.util.List;
  * Profile.LogoRelativeRectangleDAO
  */
 public interface PairLogoRelativeRectangleDAO {
-    Profile.PairLogoRelativeRectangle create(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
-    List<Profile.PairLogoRelativeRectangle> readAll() throws PersistenceException;
-    boolean delete(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
+    Profile.PairLogoRelativeRectangle create(long profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
+    List<Profile.PairLogoRelativeRectangle> readAll(long profileId) throws PersistenceException;
+    boolean delete(long profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
 }
