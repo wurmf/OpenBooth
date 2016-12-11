@@ -50,4 +50,12 @@ public class RelativeRectangle {
     public void setWidth(double width) {
         this.width = width;
     }
+
+    public boolean equals(RelativeRectangle relativeRectangle){
+        if(this.x == relativeRectangle.getX() && this.y == relativeRectangle.getY()
+                && this.width == relativeRectangle.getWidth() && this.getHeight() == relativeRectangle.getHeight())
+            {return true;}
+        else
+            {return false;}
+    }
 }
