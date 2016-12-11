@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS profile_camera_positions;
+DROP TABLE IF EXISTS profile_camera_positions IF Exists;
 DROP TABLE IF EXISTS positions;
 DROP TABLE IF EXISTS cameras;
 DROP TABLE IF EXISTS images;

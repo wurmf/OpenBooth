@@ -17,7 +17,6 @@
         <columns>
           <TableColumn fx:id="tc_id" prefWidth="75.0" text="Id" />
           <TableColumn fx:id="tc_name" prefWidth="75.0" text="Name" />
-            <TableColumn fx:id="tc_isActive" prefWidth="75.0" text="isActive" />
         </columns>
       </TableView>
    </center>
@@ -27,7 +26,6 @@
             <Button fx:id="bt_Add" mnemonicParsing="false" onAction="#bt_AddClicked" text="Hinzufügen" />
           <Button fx:id="bt_Edit" mnemonicParsing="false" onAction="#bt_EditClicked" text="Ändern" />
             <Button fx:id="bt_Erase" mnemonicParsing="false" onAction="#bt_EraseClicked" text="Löschen" />
-            <Button fx:id="bt_SetActive" mnemonicParsing="false" onAction="#bt_SetActiveClicked" text="Aktiv Setzen" />
         </buttons>
       </ButtonBar>
    </bottom>
@@ -42,8 +40,6 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="label_activeProfile" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="172.0" text="Aktives Profil" />
-            <TextField fx:id="tf_activeProfile" GridPane.columnIndex="1" />
             <Label fx:id="label_profileName" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="172.0" text="Profilname" GridPane.rowIndex="1" />
             <TextField fx:id="tf_profileName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>

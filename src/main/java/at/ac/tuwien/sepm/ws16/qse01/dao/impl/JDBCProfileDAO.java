@@ -2,6 +2,9 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
@@ -22,12 +25,15 @@ import java.util.List;
 public class JDBCProfileDAO implements ProfileDAO {
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
+    private PairCameraPositionDAO pairCameraPositionDAO;
+    private PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
 
     @Autowired
     public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
-
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRecangleDAO(H2Handler.getInstance());
     }
 
     @Override
@@ -40,9 +46,14 @@ public class JDBCProfileDAO implements ProfileDAO {
             //AutoID
             if(profile.getId()== Integer.MIN_VALUE)
                 {
-                String sqlString = "INSERT INTO profiles (name) VALUES (?);";
+                String sqlString = "INSERT INTO"
+                        + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
+                        + " VALUES (?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1,profile.getName());
+                stmt.setBoolean(2,profile.isPrintEnabled());
+                stmt.setBoolean(3,profile.isFilerEnabled());
+                stmt.setBoolean(4,profile.isGreenscreenEnabled());
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()){profile.setId(rs.getInt(1));}
@@ -51,14 +62,21 @@ public class JDBCProfileDAO implements ProfileDAO {
             //NoAutoID
             else
                 {
-                String sqlString = "INSERT INTO profiles (profileID,name,isActive) VALUES (?,?,?);";
+                String sqlString = "INSERT INTO"
+                    + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
+                    + " VALUES (?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());
-                stmt.setBoolean(3,profile.isActive());
+                stmt.setBoolean(3,profile.isPrintEnabled());
+                stmt.setBoolean(4,profile.isFilerEnabled());
+                stmt.setBoolean(5,profile.isGreenscreenEnabled());
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
+            pairCameraPositionDAO.createAll(profile);
+            pairLogoRelativeRectangleDAO.createAll(profile);
+            LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
         catch (SQLException e) {
             throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);
@@ -72,18 +90,32 @@ public class JDBCProfileDAO implements ProfileDAO {
     }
 
     @Override
-    public void update(Profile profile) throws PersistenceException {
+    public boolean update(Profile profile) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
-        String sqlString = "UPDATE profiles SET name = ?,isActive = ? WHERE profileID = ?;";
+        String sqlString = "UPDATE profiles"
+                + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?"
+                + " WHERE profileID = ?;";
         PreparedStatement stmt = null;
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setString(1,profile.getName());
-            stmt.setBoolean(2,profile.isActive());
-            stmt.setInt(3,profile.getId());
+            stmt.setBoolean(2,profile.isPrintEnabled());
+            stmt.setBoolean(3,profile.isFilerEnabled());
+            stmt.setBoolean(4,profile.isGreenscreenEnabled());
+            stmt.setLong(5,profile.getId());
             stmt.executeUpdate();
+            ResultSet rs = stmt.getResultSet();
+
+            if (rs.next()){
+                pairCameraPositionDAO.deleteAll(profile);
+                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                pairCameraPositionDAO.createAll(profile);
+                pairLogoRelativeRectangleDAO.createAll(profile);
+                return true;
+            }
+            else {return false;}
         } catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
@@ -97,18 +129,28 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public Profile read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter profileid=" + id);
-        String sqlString = "SELECT * FROM profiles WHERE profileID = ?;";
+        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted"
+                + " FROM profiles WHERE profileID = ?;";
         PreparedStatement stmt = null;
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,id);
+            stmt.setLong(1,id);
             ResultSet rs = stmt.executeQuery();
             if(!rs.next()) {
                 return null;
                 /*new PersistenceException("No data existing to read: Profile with " + id + " isn't persisted yet!");*/
             }
-            return new Profile(rs.getInt("profileID"),rs.getString("name"),rs.getBoolean("isActive"));
+            return new Profile(
+                    rs.getInt("profileID"),
+                    rs.getString("name"),
+                    pairCameraPositionDAO.readAll(id),
+                    pairLogoRelativeRectangleDAO.readAll(id),
+                    rs.getBoolean("isPrintEnabled"),
+                    rs.getBoolean("isFilterEnabled"),
+                    rs.getBoolean("isGreenscreenEnabled"),
+                    rs.getBoolean("isDeleted")
+                    );
         } catch (SQLException e) {
             throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
         }
@@ -122,7 +164,7 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public List<Profile> readAll() throws PersistenceException{
         LOGGER.debug("Entering readAll method");
-        String sqlString = "SELECT * FROM profiles;";
+        String sqlString = "SELECT * FROM profiles where isDeleted ='false';";
         PreparedStatement stmt = null;
 
         try {
@@ -131,7 +173,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             List<Profile> pList = new ArrayList<>();
 
             while (rs.next()) {
-                Profile profile = new Profile(rs.getInt("profileID"),rs.getString("name"),rs.getBoolean("isActive"));
+                Profile profile = this.read(rs.getInt("profileID"));
                 pList.add(profile);
             }
             return pList;
@@ -146,15 +188,22 @@ public class JDBCProfileDAO implements ProfileDAO {
     }
 
     @Override
-    public void delete(Profile profile) throws PersistenceException{
+    public boolean delete(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + profile);
-        String sqlString = "DELETE from profiles WHERE profileID = ?;";
+        String sqlString = "UPDATE profiles SET isDeleted = 'true' WHERE profileID = ? AND isDeleted = 'false';";
         PreparedStatement stmt = null;
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,profile.getId());
             stmt.executeUpdate();
+
+            ResultSet rs = stmt.getResultSet();
+            if (rs.next()){
+                pairCameraPositionDAO.deleteAll(profile);
+                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                return true;}
+            else {return false;}
         } catch (SQLException e) {
             throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
         }

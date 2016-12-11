@@ -30,25 +30,23 @@ public abstract class ProfileServiceTest {
     @Test
     public void addProfileWithValidArgumentWithAutoID() throws ServiceException {
         Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Integer.MIN_VALUE);
+        assertTrue(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
         profileService.add(profile);
         assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Integer.MIN_VALUE);
+        assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
     }
 
     @Test
     public void addProfileWithValidArgumentWithoutAutoID() throws ServiceException {
-        Profile profile = new Profile(10,"TestprofileNoAutoID",false);
+        Profile profile = new Profile(10,"TestprofileNoAutoID",null,null,false,false,false,false);
         assertTrue(profile.getId() == 10);
         assertTrue(profile.getName() == "TestprofileNoAutoID");
-        assertTrue(!profile.isActive());
         profileService.add(profile);
         assertTrue(profile.getId()==10);
-        assertFalse(profile.getId() == Integer.MIN_VALUE);
+        assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "TestprofileNoAutoID");
-        assertTrue(!profile.isActive());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -59,60 +57,58 @@ public abstract class ProfileServiceTest {
     @Test
     public void editProfileWithValidArgument() throws ServiceException {
         Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Integer.MIN_VALUE);
+        assertTrue(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
         profileService.add(profile);
         assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Integer.MIN_VALUE);
+        assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
         profile.setName("Testprofile2");
-        profile.setIsActive(true);
+
         profileService.edit(profile);
         int id = profile.getId();
         profile = profileService.get(id);
         assertTrue(profile.getName() == "Testprofile2");
-        assertTrue(profile.isActive());
     }
 
     @Test
     public void editProfileWithValidValidArgumentButDoesNotExistInPersistenceStore() throws ServiceException{
         Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Integer.MIN_VALUE);
+        assertTrue(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
         profileService.add(profile);
         assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Integer.MIN_VALUE);
+        assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
         profile.setName("Testprofile2");
-        profile.setIsActive(true);
         profile.setId(profile.getId()+1);
         profileService.edit(profile);
         int id = profile.getId();
         profile = profileService.get(id-1);
         assertFalse(profile.getName()=="Testprofile2");
-        assertFalse(profile.isActive());
+
     }
 
     @Test
     public void getProfileWithValidArgumentThatExistsInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
         profileService.add(profile);
         profile = profileService.get(100);
-        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100 && !profile.isActive());
+        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
     }
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
         profileService.add(profile);
         profile = profileService.get(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
         profileService.add(profile);
         profile = profileService.get(100);
-        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100 && !profile.isActive());
+        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
         profileService.erase(profile);
         profile = profileService.get(100);
         assertTrue(profile == null);

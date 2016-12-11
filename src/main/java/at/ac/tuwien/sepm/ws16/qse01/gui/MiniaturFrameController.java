@@ -18,7 +18,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,7 +31,7 @@ import java.util.Optional;
  * Controller for MiniaturFrame
  */
 @Component
-@Scope("prototype")
+/*@Scope("prototype")*/
 public class MiniaturFrameController {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(MiniaturFrameController.class);
 
@@ -77,7 +76,10 @@ public class MiniaturFrameController {
             ImageView fullscreen = new ImageView( getClass().getResource("/images/fullscreen2.png").toExternalForm());
             fullscreen.setFitHeight(30);
             fullscreen.setFitWidth(30);
-            fullscreen.setOnMouseClicked(mouseEvent -> LOGGER.debug("fullscreen clicked..."));
+            fullscreen.setOnMouseClicked(mouseEvent -> {
+                LOGGER.debug("fullscreen clicked...");
+                windowManager.showFullscreenImage();
+            });
 
             ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
             delete.setFitHeight(30);
@@ -96,9 +98,14 @@ public class MiniaturFrameController {
                     LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
                     try {
 
-                        imageService.delete(Integer.parseInt(imageView.getId()));
+                        imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
+
+
+
+
                         tile.getChildren().remove(imageView.getParent());
                         //TODO: das Foto ausm Filesystem löschen. -> FotoDAO->FIleSystem
+                        new File(String.valueOf(imageView.getUserData())).delete();
                     } catch (ServiceException e) {
                         LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
                     }
@@ -115,7 +122,8 @@ public class MiniaturFrameController {
                 if(new File(img.getImagepath()).isFile()) {
                     imageView = createImageView(new File(img.getImagepath()));
                 }else if(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).isFile()){
-                    imageView = createImageView(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()));
+                    img.setImagepath(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath());
+                    imageView = createImageView(new File(img.getImagepath()));
                 }else {
                     LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
                     imageService.delete(img.getImageID());
@@ -124,6 +132,7 @@ public class MiniaturFrameController {
                     VBox vBox = new VBox();
                     LOGGER.debug("imageview id = "+img.getImageID());
                     imageView.setId(String.valueOf(img.getImageID()));
+                    imageView.setUserData(img.getImagepath());
                     vBox.getChildren().addAll(imageView,hBox);
                     tile.getChildren().add(vBox);
                 }
