@@ -1,17 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
-import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
-import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.*;
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.application.Application;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +18,6 @@ import java.io.IOException;
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
 public class MainApplication extends Application {
-    private Stage adminLoginStage;
-    private Stage profileStage;
-    private Stage shootingStage;
-    private Stage mainStage;
-    private Stage pictureFullStage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
@@ -46,79 +31,9 @@ public class MainApplication extends Application {
     public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
 
-
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
-        SpringFXMLLoader springFXMLLoader = applicationContext.getBean(SpringFXMLLoader.class);
-
-        SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
-        shootingStage = new Stage();
-        shootingStage.setScene(new Scene((Parent) shootingWrapper.getLoadedObject()));
-        shootingStage.setFullScreen(true);
-        shootingWrapper.getController().setStageAndMain(shootingStage, this);
-
-        SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
-        mfWrapper.getController().setStageAndMain(primaryStage, this);
-        primaryStage.setTitle("Fotostudio");
-        primaryStage.setScene(new Scene((Parent) mfWrapper.getLoadedObject()));
-        primaryStage.setFullScreen(true);
-        mainStage=primaryStage;
-        primaryStage.show();
-
-
-
-        //TODO: 1) creating camera table
-        //      2) number of frames to open = number of existing camera in DB
-
-        /* Creating shotFrame */
-        int anz = 1;
-        int x = 200;
-        for(int i=0; i<anz; i++) { // Anzahl der Kameras...
-            Stage stage = new Stage();
-            stage.setTitle("Shot Frame "+(i+1));
-            stage.setScene(new Scene((Parent) springFXMLLoader.load("/fxml/shotFrame.fxml"),400,400));
-            //stage.initModality(Modality.WINDOW_MODAL);
-            stage.setFullScreen(false);
-            stage.initOwner(primaryStage);
-            stage.setX(x);
-            stage.show();
-
-            x += 200;
-        }
-
-        //Creating Profile-Frame
-        SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
-        profileStage = new Stage();
-        profileStage.setTitle("Profilverwaltung");
-        profileStage.initOwner(shootingStage);
-        profileStage.setScene(new Scene((Parent) profileWrapper.getLoadedObject(),400,400));
-
-
-        //Creating Login-Frame
-        SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
-        this.adminLoginStage = new Stage();
-        this.adminLoginStage.setScene(new Scene((Parent) adminLoginWrapper.getLoadedObject()));
-        this.adminLoginStage.setTitle("Administratoren-Login");
-        this.adminLoginStage.initModality(Modality.APPLICATION_MODAL);
-        this.adminLoginStage.initOwner(primaryStage);
-        adminLoginWrapper.getController().setStageAndMain(adminLoginStage, this);
-
-        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
-        pictureFullStage = new Stage();
-        pictureFullStage.setScene(new Scene((Parent) pictureWrapper.getLoadedObject()));
-        pictureFullStage.setFullScreen(true);
-        pictureWrapper.getController().setStageAndMain(pictureFullStage, this);
-
-        //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
-        try {
-            CameraHandler cameraHandler = applicationContext.getBean(CameraHandlerImpl.class);
-            //CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl(), new ShootingServiceImpl());
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("Getting camera - "+e);
-        }
-
+        WindowManager windowManager = applicationContext.getBean(WindowManager.class);
+        windowManager.start(primaryStage, applicationContext);
     }
 
     @Override
@@ -128,20 +43,5 @@ public class MainApplication extends Application {
             this.applicationContext.close();
         }
         super.stop();
-    }
-
-    public void showAdminLogin(){
-        adminLoginStage.show();
-    }
-    public void showShootingAdministration(){
-        shootingStage.show();
-    }
-    public void showMainFrame(){mainStage.show();}
-
-    public void showPicturFullStage(){
-        pictureFullStage.show();
-    }
-    public void showProfileStage(){
-        profileStage.show();
     }
 }

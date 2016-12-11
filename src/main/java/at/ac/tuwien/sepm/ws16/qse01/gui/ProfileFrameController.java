@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -65,6 +63,7 @@ public class ProfileFrameController {
     private SpringFXMLLoader springFXMLLoader;
     private Stage profileStage;
 
+    @Autowired
     public ProfileFrameController(SpringFXMLLoader springFXMLLoader) throws ServiceException {
         this.springFXMLLoader = springFXMLLoader;
     }

@@ -1,40 +1,29 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ImageServiceImpl;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 /**
- * The controller for the shotFrame.
+ * Controller for the shotFrame.
  *
  */
+@Controller
 
-@Component
-//@Scope("prototype")  //Multithreading for multiple shotframes
 public class ShotFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
-
-    private ImageService imageService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
 
     @FXML
     private ImageView shotView;
 
-    @Autowired
-    public ShotFrameController(ImageService imageService) throws Exception {
+    private int frameID;
 
-        this.imageService = imageService;
+
+    public void initShotFrame(int cameraID)  {
+        this.frameID  = cameraID;
     }
 
     /*
@@ -45,13 +34,17 @@ public class ShotFrameController {
      *
      */
     @FXML
-    public void refreshShot(){ //TODO: int camera
-
-        String imgPath = imageService.getLastImgPath(1); //ShootingID = 1; //TODO: create a variable for actual shooting;
+    public void refreshShot(String imgPath) {
 
         LOGGER.debug("refreshing Shot with imagepath = "+imgPath);
+        try {
+            shotView.setImage(new Image(imgPath));
+        }catch (Exception e){
+            LOGGER.debug("Fehler: "+e.getMessage());
+        }
+    }
 
-        shotView.setImage(new Image("file:" + imgPath));
-
+    public int getFrameID(){
+        return frameID;
     }
 }

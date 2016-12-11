@@ -1,32 +1,36 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
-import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Date;
 
-
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
- * Tests if everything reacts so as required.
+ * Abstract test-class for AdminUserDAOs.
  */
-public class ImageDAOTest {
-    private ImageDAO imageDAO;
-    private ShootingDAO shootingDAO;
-    @Before
-    public void before() throws Exception {
-        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
-        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+public abstract class AbstractImageDAOTest {
+
+    protected ImageDAO imageDAO;
+    protected ShootingDAO shootingDAO;
+
+    protected void setImageDAO(ImageDAO imageDAO){
+        this.imageDAO=imageDAO;
     }
+    protected void setShootingDAO(ShootingDAO shootingDAO){ this.shootingDAO = shootingDAO;}
 
     /**
      * This test creates a null-image.
@@ -84,11 +88,11 @@ public class ImageDAOTest {
     }
 
     /**
-     * This test reads all image paths of an existing shooting in database.
+     * This test reads all images of an existing shooting in database.
      */
     @Test
-    public void getAllImagePaths() throws Throwable  {
-        shootingDAO.create(new Shooting(99,2,"/images/shooting99",true));
+    public void getAllImagesByExistingShootingID() throws Throwable  {
+        shootingDAO.create(new Shooting(1,"/images/shooting99",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
@@ -98,30 +102,20 @@ public class ImageDAOTest {
         assertThat(imageDAO.getAllImages(99).size(),is(1));
     }
 
-
+    /**
+     * This test reads the next possible image ID
+     */
     @Test
-    public void getAllImages() throws Throwable{
+    public void getNextImageID() throws Throwable  {
+        int nextid = imageDAO.getNextImageID();
 
         Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
         img.setAutoDate();
 
-        imageDAO.create(img);
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
+        img = imageDAO.create(img);
+
+        assertThat(img.getImageID(),is(nextid));
     }
-
-    @Test
-    public void deleteImage() throws Throwable{
-        Image img = new Image(3,"ddd",2,new Date());
-        img.setAutoDate();
-        imageDAO.create(img);
-
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
-        imageDAO.delet(img);
-
-        assertThat(imageDAO.getAllImages(99).size(),is(0));
-    }
-
-
 
 
 }

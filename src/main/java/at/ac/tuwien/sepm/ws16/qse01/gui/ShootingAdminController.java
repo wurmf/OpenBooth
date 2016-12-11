@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,8 +29,6 @@ import java.util.List;
  */
 @Component
 public class ShootingAdminController {
-    private SpringFXMLLoader springFXMLLoader;
-    private Stage primaryStage;
 
     @FXML
     private Label storageDirLabel;//storageDirLabel.setText();
@@ -40,22 +37,15 @@ public class ShootingAdminController {
 
     String path =null;
 
-    MainApplication mainApplication;
     ShootingService shootingService;
     ProfileService profileService;
+    WindowManager windowManager;
 
     @Autowired
-    public ShootingAdminController(SpringFXMLLoader springFXMLLoader, ProfileService profileService, ShootingService shootingService) throws Exception {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) throws Exception {
         this.shootingService = shootingService;
         this.profileService= profileService;
-        this.springFXMLLoader = springFXMLLoader;
-    }
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApplication){
-        this.primaryStage = primaryStage;
-        this.mainApplication = mainApplication;
+        this.windowManager = windowManager;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -129,7 +119,7 @@ public class ShootingAdminController {
              */
     public void onDemolitionPressed(ActionEvent actionEvent) {
     storageDirLabel.setText("");
-    primaryStage.close();
+    windowManager.showMainFrame();
     }
 
     /**
@@ -143,7 +133,8 @@ public class ShootingAdminController {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Speicherort wählen");
             //directoryChooser.in
-            File savefile =directoryChooser.showDialog(primaryStage);
+            //TODO: find way around
+            File savefile =directoryChooser.showDialog(windowManager.getStage());
 
                 storageDirLabel.setText(savefile.getPath());
                 path = savefile.getPath();
@@ -159,7 +150,7 @@ public class ShootingAdminController {
      *
      */
     public void onEditPressed(ActionEvent actionEvent) {
-       mainApplication.showProfileStage();
+       windowManager.showProfileScene();
     }
 
     /**
@@ -169,7 +160,8 @@ public class ShootingAdminController {
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
-        information.initOwner(primaryStage);
+        //TODO: remove
+        information.initOwner(windowManager.getStage());
         information.show();
     }
 
@@ -182,7 +174,8 @@ public class ShootingAdminController {
             shootingService.endShooting();
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");
-            information.initOwner(primaryStage);
+            //TODO: remove
+            information.initOwner(windowManager.getStage());
             information.show();
         } catch (ServiceException e) {
             showInformationDialog("Shooting konnte nicht beendet werden!");

@@ -1,13 +1,16 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,9 +20,18 @@ import org.springframework.stereotype.Service;
 public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
-    ShootingDAO sessionDAO;
-    public ShootingServiceImpl(JDBCShootingDAO jdbcShootingDAO) throws Exception {
-        sessionDAO = jdbcShootingDAO;
+    ShootingDAO shootingDAO;
+
+    public ShootingServiceImpl() throws ServiceException{
+        try {
+            this.shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error: "+e.getMessage());
+        }
+    }
+    @Autowired
+    public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) throws Exception {
+        shootingDAO = jdbcShootingDAO;
     }
     String getImageStorage(){
         //DAO.getImageStorage();
@@ -27,10 +39,10 @@ public class ShootingServiceImpl implements ShootingService {
         return imagePath;
     }
 
-    public void addShooting(Shooting shouting) throws ServiceException {
+    public void addShooting(Shooting shooting) throws ServiceException {
         try {
 
-            sessionDAO.create(shouting);
+            shootingDAO.create(shooting);
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
@@ -40,7 +52,7 @@ public class ShootingServiceImpl implements ShootingService {
     public Shooting searchIsActive() throws ServiceException {
 
         try {
-            return sessionDAO.searchIsActive();
+            return shootingDAO.searchIsActive();
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
@@ -49,7 +61,7 @@ public class ShootingServiceImpl implements ShootingService {
 
     public void endShooting() throws ServiceException {
         try {
-            sessionDAO.endShooting();
+            shootingDAO.endShooting();
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }

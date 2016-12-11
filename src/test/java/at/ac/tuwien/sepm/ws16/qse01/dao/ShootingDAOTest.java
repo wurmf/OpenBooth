@@ -1,4 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.junit.Before;
@@ -13,7 +14,7 @@ public class ShootingDAOTest {
 
     @Before
     public void before() throws Exception {
-        dao = new JDBCShootingDAO();
+        dao = new JDBCShootingDAO(H2Handler.getInstance());
     }
 
     /**

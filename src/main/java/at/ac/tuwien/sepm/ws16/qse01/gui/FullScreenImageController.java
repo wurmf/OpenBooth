@@ -2,24 +2,19 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -27,35 +22,44 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by Aniela on 03.12.2016.
+ * full screen image view
  */
 @Component
 public class FullScreenImageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
-    public Pane planetop;
-    public Pane planbottom;
-    public Button button5;
-    public Button button6;
-    public Button button9;
+    @FXML
+    private Pane planetop;
+    @FXML
+    private Pane planbottom;
+    @FXML
+    private Button button5;
+    @FXML
+    private Button button6;
+    @FXML
+    private Button button9;
+    @FXML
     public Button button7;
+    @FXML
     public Button button8;
+    @FXML
     public Button button3;
+    @FXML
     public Button button4;
+    @FXML
     public Button button1;
+    @FXML
     public Button button2;
+    
     public ImageView image4;
     public ImageView image3;
+    private WindowManager windowManager;
 
     private ImageView[]slide =new ImageView[3];
     private SpringFXMLLoader springFXMLLoader;
@@ -67,10 +71,11 @@ public class FullScreenImageController {
     ShootingService shootingService;
     int activ;
     @Autowired
-    public FullScreenImageController(SpringFXMLLoader springFXMLLoader, ShootingService shootingService, ImageService imageService) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager,SpringFXMLLoader springFXMLLoader, ShootingService shootingService, ImageService imageService) throws ServiceException {
         this.springFXMLLoader = springFXMLLoader;
         this.imageService=imageService;
         this.shootingService= shootingService;
+        this.windowManager=windowManager;
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -148,7 +153,7 @@ public class FullScreenImageController {
                 //delete
                 if(currentIndex+1<imageList.size()) {
                     slide[1] = slide[2];
-                    imageService.delet(imageList.get(currentIndex));
+                    imageService.delete(imageList.get(currentIndex).getImageID());
                     if (currentIndex+2<imageList.size()) {
                         at.ac.tuwien.sepm.ws16.qse01.entities.Image nextim = imageList.get(currentIndex + 2);
                         imageList = imageService.getAllImages(activ);
@@ -173,7 +178,7 @@ public class FullScreenImageController {
 
                 }else if(currentIndex-1>-1) {
                     slide[1] = slide[0];
-                    imageService.delet(imageList.get(currentIndex));
+                    imageService.delete(imageList.get(currentIndex).getImageID());
                     if (currentIndex-2>-1) {
                         at.ac.tuwien.sepm.ws16.qse01.entities.Image nextim = imageList.get(currentIndex - 2);
                         imageList = imageService.getAllImages(activ);
@@ -190,7 +195,7 @@ public class FullScreenImageController {
             }else {
                     slide = null;
                     ivfullscreenImage = null;
-                    imageService.delet(imageList.get(currentIndex));
+                    imageService.delete(imageList.get(currentIndex).getImageID());
                     primaryStage.close();
                 }
             }

@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;

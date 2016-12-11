@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import org.springframework.stereotype.Service;
 
 /**
  * Shooting Service
