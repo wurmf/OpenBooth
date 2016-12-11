@@ -2,6 +2,9 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
@@ -22,11 +25,15 @@ import java.util.List;
 public class JDBCProfileDAO implements ProfileDAO {
     private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
+    private PairCameraPositionDAO pairCameraPositionDAO;
+    private PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
 
     @Autowired
     public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRecangleDAO(H2Handler.getInstance());
     }
 
     @Override
@@ -67,6 +74,9 @@ public class JDBCProfileDAO implements ProfileDAO {
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
+            pairCameraPositionDAO.createAll(profile);
+            pairLogoRelativeRectangleDAO.createAll(profile);
+            LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
         catch (SQLException e) {
             throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);
@@ -97,7 +107,15 @@ public class JDBCProfileDAO implements ProfileDAO {
             stmt.setLong(5,profile.getId());
             stmt.executeUpdate();
             ResultSet rs = stmt.getResultSet();
-            if (rs.next()){return true;} else {return false;}
+
+            if (rs.next()){
+                pairCameraPositionDAO.deleteAll(profile);
+                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                pairCameraPositionDAO.createAll(profile);
+                pairLogoRelativeRectangleDAO.createAll(profile);
+                return true;
+            }
+            else {return false;}
         } catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
@@ -126,8 +144,8 @@ public class JDBCProfileDAO implements ProfileDAO {
             return new Profile(
                     rs.getLong("profileID"),
                     rs.getString("name"),
-                    null,
-                    null,
+                    pairCameraPositionDAO.readAll(id),
+                    pairLogoRelativeRectangleDAO.readAll(id),
                     rs.getBoolean("isPrintEnabled"),
                     rs.getBoolean("isFilterEnabled"),
                     rs.getBoolean("isGreenscreenEnabled"),
@@ -172,15 +190,20 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public boolean delete(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + profile);
-        String sqlString = "DELETE from profiles WHERE profileID = ? AND isDeleted = 'false';";
+        String sqlString = "UPDATE profiles SET isDeleted = 'true' WHERE profileID = ? AND isDeleted = 'false';";
         PreparedStatement stmt = null;
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setLong(1,profile.getId());
             stmt.executeUpdate();
+
             ResultSet rs = stmt.getResultSet();
-            if (rs.next()){return true;} else {return false;}
+            if (rs.next()){
+                pairCameraPositionDAO.deleteAll(profile);
+                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                return true;}
+            else {return false;}
         } catch (SQLException e) {
             throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
         }
