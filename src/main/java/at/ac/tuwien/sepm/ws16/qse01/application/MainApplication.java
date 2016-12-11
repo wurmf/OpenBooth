@@ -13,7 +13,6 @@ import java.io.IOException;
 
 /**
  * The starting point of the sample application.
- *
  */
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")

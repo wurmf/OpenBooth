@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
+import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -15,6 +14,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.print.PrinterException;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -60,36 +61,32 @@ public class FullScreenImageController {
     private ImageView image4;
     @FXML
     private ImageView image3;
-    private WindowManager windowManager;
+    @FXML
+    private ImageView ivfullscreenImage;
 
     private ImageView[]slide =new ImageView[3];
-    private SpringFXMLLoader springFXMLLoader;
     private Stage primaryStage;
-    private MainApplication mainApp;
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
-    int currentIndex;
-    ImageService imageService;
-    ShootingService shootingService;
-    int activ;
+    private int currentIndex;
+    private int activ;
+
+    private ImageService imageService;
+    private ShootingService shootingService;
+    private WindowManager windowManager;
+    private ImagePrinter imagePrinter;
+
     @Autowired
-    public FullScreenImageController(WindowManager windowManager,SpringFXMLLoader springFXMLLoader, ShootingService shootingService, ImageService imageService) throws ServiceException {
-        this.springFXMLLoader = springFXMLLoader;
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
+        this.imagePrinter=imagePrinter;
     }
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    public void setStageAndMain(Stage primaryStage, MainApplication mainApp){
-        this.primaryStage = primaryStage;
-        this.mainApp = mainApp;
-    }
-
-    @FXML
-    private ImageView ivfullscreenImage;
 
     /**
      * iniziaising full screen image view
@@ -105,7 +102,7 @@ public class FullScreenImageController {
                // currentIndex = imageList.indexOf(image);
                 currentIndex=0;
             }
-            if(currentIndex>=0&&imageList!=null) {
+            if(currentIndex>=0&&imageList!=null&&imageList.isEmpty()) {
 
                 Image imlast=null;
                 Image imnext=null;
@@ -129,11 +126,44 @@ public class FullScreenImageController {
                 //ivfullscreenImage = slide[1];
             }
         } catch (ServiceException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug("initialize - "+e);
            informationDialog("Bilder konnten nicht geladen werden");
         } catch (FileNotFoundException e) {
-            LOGGER.debug(e.getMessage());
-            informationDialog("Der Speicher Pfad konnte nicht gefunden werden");
+            LOGGER.debug("initialize - "+e);
+            informationDialog("Der Speicherpfad konnte nicht gefunden werden");
+        }
+    }
+
+    @FXML
+    public void onPrintPressed(){
+        LOGGER.debug("onPrintPressed() - print pressed");
+        Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
+                "Möchten Sie das Bild drucken?");
+        alert.setHeaderText("Bild drucken");
+        alert.initModality(Modality.WINDOW_MODAL);
+        alert.initOwner(primaryStage);
+        Optional<ButtonType> result =alert.showAndWait();
+        if(result.isPresent()&&result.get()==ButtonType.OK){
+            boolean failure=false;
+            try {
+                at.ac.tuwien.sepm.ws16.qse01.entities.Image img= new at.ac.tuwien.sepm.ws16.qse01.entities.Image();
+                if(!imageList.isEmpty()&&imageList.size()>currentIndex&&currentIndex>=0) {
+                    imagePrinter.print(img);
+                } else{
+                    LOGGER.error("onPrintPressed - Index out of bounds or list empty.");
+                    failure=true;
+                }
+            } catch (PrinterException e) {
+                LOGGER.error("onPrintPressed - "+ e);
+                failure=true;
+            }
+            if(failure){
+                Alert alertError= new Alert(Alert.AlertType.ERROR,
+                        "Während des Druckvorgangs ist ein Fehler aufgetreten. Leider kann das Foto nicht gedruckt werden.");
+                alertError.setHeaderText("Fehler beim Druckvorgang");
+                alertError.initOwner(primaryStage);
+                alertError.show();
+            }
         }
     }
 
@@ -296,7 +326,7 @@ public class FullScreenImageController {
             }
             //ivfullscreenImage.setImage(image);
         } catch (FileNotFoundException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug("onGetLastImage - "+e);
             informationDialog("Das Speicherfile konnte nicht gefunden werden");
         }
     }

@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
    <children>
       <ImageView fx:id="ivfullscreenImage" fitHeight="1079.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" smooth="true" />
       <BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: TRANSPARENT;">
@@ -28,6 +28,15 @@
                         <ImageView fitHeight="135.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/images/cross.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="button11" layoutX="250.0" mnemonicParsing="false" onAction="#onPrintPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                     <graphic>
+                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/print.png" />
                            </image>
                         </ImageView>
                      </graphic>

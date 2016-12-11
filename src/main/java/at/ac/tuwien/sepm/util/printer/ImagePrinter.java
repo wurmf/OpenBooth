@@ -30,6 +30,9 @@ public class ImagePrinter {
      * @throws PrinterException if an error occurs while printing.
      */
     public void print(Image image) throws PrinterException {
+        if(image==null||image.getImagepath()==null){
+            throw new PrinterException("Null or Empty Image-Object not allowed.");
+        }
         try {
             File imageFile=new File(image.getImagepath());
             print(ImageIO.read(imageFile));
@@ -45,9 +48,13 @@ public class ImagePrinter {
      * @throws PrinterException if an error occurs while printing.
      */
     public void print(BufferedImage image) throws PrinterException {
+        if(image==null){
+            throw new PrinterException("Null image not allowed.");
+        }
         PrinterJob job=PrinterJob.getPrinterJob();
         job.setPrintable(new PrintableImage(image));
         job.print();
+        LOGGER.debug("print - printing was succesful");
     }
 
     private class PrintableImage implements Printable{
@@ -60,8 +67,8 @@ public class ImagePrinter {
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
             if(pageIndex==0&&this.image!=null) {
                 Graphics2D g2d=(Graphics2D) graphics;
-                double pageWidth=pageFormat.getWidth();
-                double pageHeight=pageFormat.getHeight();
+                double pageWidth=pageFormat.getImageableWidth();
+                double pageHeight=pageFormat.getImageableHeight();
                 double imageWidth=image.getWidth();
                 double imageHeight=image.getHeight();
 
@@ -81,14 +88,14 @@ public class ImagePrinter {
                 double scaleWidth=pageWidth/imageWidth;
                 double scale;
 
-                int xInset=0;
-                int yInset=0;
+                int xInset=(int) Math.round((pageFormat.getWidth()-pageFormat.getImageableWidth())/4);
+                int yInset=(int) Math.round((pageFormat.getHeight()-pageFormat.getImageableHeight())/4);
                 if(scaleHeight<scaleWidth){
                     scale=scaleHeight;
-                    xInset=(int) Math.round((pageWidth-imageWidth*scale)/4);
+                    xInset=(int) Math.round((pageFormat.getWidth()-imageWidth*scale)/4);
                 } else{
                     scale=scaleWidth;
-                    yInset=(int) Math.round((pageHeight-imageHeight*scale)/4);
+                    yInset=(int) Math.round((pageFormat.getHeight()-imageHeight*scale)/4);
                 }
                 g2d.scale(scale,scale);
                 graphics.drawImage(image,xInset,yInset,null);
