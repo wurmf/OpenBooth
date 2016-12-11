@@ -116,6 +116,12 @@ public class Profile {
         private Position position;
         private boolean isGreenScreenReady;
 
+        public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
+            this.camera = camera;
+            this.position = position;
+            this.isGreenScreenReady = isGreenScreenReady;
+        }
+
         public Camera getCamera() {
             return camera;
         }
