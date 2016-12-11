@@ -102,7 +102,6 @@ public class CameraHandlerImpl implements CameraHandler {
         } finally {
             CameraUtils.closeQuietly(cl);
         }
-
         return null;
     }
 }
