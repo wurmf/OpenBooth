@@ -69,9 +69,9 @@ public class CameraHandlerThread  extends Thread{
                             LOGGER.error("error creating directory " + e.getMessage() + "\n");
                             throw new ServiceException("error creating directory " + e.getMessage() + "\n");
                         }
-                        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HH:mm:ss");
+                        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
                         Date date = new Date();
-                        String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date);
+                        String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
                         image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
                         image = imageService.create(image);
 

@@ -104,7 +104,7 @@ public class JDBCCameraDAO implements CameraDAO{
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                Camera c = new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMMER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
+                Camera c = new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
                 cameraList.add(c);
             }
 

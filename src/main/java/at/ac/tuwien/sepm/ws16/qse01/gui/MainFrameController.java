@@ -110,11 +110,6 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void onEndPressed(ActionEvent actionEvent) {
-        try {
-            cameraService.setAllCamerasInactive();
-        } catch (ServiceException e) {
-            LOGGER.error("Kameras konnten nicht inaktiv gesetzt werden!");
-        }
         windowManager.closeStages();
         //Platform.exit();
     }

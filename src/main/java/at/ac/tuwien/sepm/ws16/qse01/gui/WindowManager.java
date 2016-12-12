@@ -62,7 +62,7 @@ public class WindowManager {
         // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
-       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
+        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
 
@@ -98,10 +98,14 @@ public class WindowManager {
         try {
             CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
             cameraHandler.getCameras();
+            ShotFrameManager shotFrameManager= this.applicationContext.getBean(ShotFrameManager.class);
+            shotFrameManager.init();
             cameraHandler.getImages();
         } catch (Exception e) {
             LOGGER.info("start - Getting camera - "+e);
         }
+
+
 
         this.mainStage.setTitle("Fotostudio");
         this.mainStage.setScene(mainScene);

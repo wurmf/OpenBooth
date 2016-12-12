@@ -100,7 +100,6 @@ public class ShootingAdminController {
                     shootingService.addShooting(shouting);
 
                     windowManager.showMiniatureFrame();
-                    shotFrameManager.init();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
                     showInformationDialog("Es konnte keine Shooting erstellt werden.");

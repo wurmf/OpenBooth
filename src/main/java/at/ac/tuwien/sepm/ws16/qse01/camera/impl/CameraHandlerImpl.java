@@ -38,6 +38,7 @@ public class CameraHandlerImpl implements CameraHandler {
     List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
     List<String> cameraModelList = new ArrayList<>();
     List<String> cameraPortList = new ArrayList<>();
+    List<Camera> cameraList = new ArrayList<>();
 
     @Autowired
     public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService, CameraService cameraService)
@@ -55,18 +56,10 @@ public class CameraHandlerImpl implements CameraHandler {
      * */
     @Override
     public void getImages() throws CameraException {
-        shotFrameManager.init();
 
         Camera camera;
         for(int i=0;i<cameraGphotoList.size();i++) {
-            try{
-            camera= cameraService.createCamera(new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i));
-                cameraService.setCameraActive(camera.getId());
-            }
-            catch (ServiceException ex)
-            {
-                throw new CameraException(ex.getMessage(), -1);
-            }
+            camera=cameraList.get(i);
             CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
             cameraHandlerThread.setImageService(imageService);
             cameraHandlerThread.setShotFrameManager(shotFrameManager);
@@ -79,12 +72,18 @@ public class CameraHandlerImpl implements CameraHandler {
 
     @Override
     public List<Camera> getCameras() throws CameraException {
+        try {
+            cameraService.setAllCamerasInactive();
+        } catch (ServiceException e) {
+            LOGGER.debug("could not set cameras inactive");
+        }
         int count=0;
         final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
 
             count=cl.getCount();
+            Camera camera;
             for(int i=0;i<count;i++)
             {
                 cameraGphotoList.add(new CameraGphoto());
@@ -97,6 +96,16 @@ public class CameraHandlerImpl implements CameraHandler {
 
                 cameraGphotoList.get(i).initialize();
                 cameraGphotoList.get(i).ref();
+                try{
+                    camera= cameraService.createCamera(new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i));
+                    cameraService.setCameraActive(camera.getId());
+                    cameraList.add(camera);
+                }
+                catch (ServiceException ex)
+                {
+                    LOGGER.error("Could not create camera entity");
+                    throw new CameraException(ex.getMessage(), -1);
+                }
             }
 
         } finally {
