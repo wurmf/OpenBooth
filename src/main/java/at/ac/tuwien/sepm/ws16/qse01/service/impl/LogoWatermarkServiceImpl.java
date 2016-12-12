@@ -1,5 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -15,6 +17,7 @@ import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,13 +54,18 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         for(Logo logo : logos){
             //check if cached and cache if not
             //comparison with equals in logo entity
-            if(!cachedLogos.containsKey(logo)){
-                BufferedImage logoImage = ImageIO.read(logo.getPath());
-                cachedLogos.put(logo, logoImage);
+            try {
+                if(!cachedLogos.containsKey(logo)){
+                    BufferedImage logoImage = ImageIO.read(new File(logo.getPath()));
+                    cachedLogos.put(logo, logoImage);
+                }
+                //add current logo
+                RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfProfile(logo);
+                addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
+            } catch (IOException e) {
+                LOGGER.error("addLogosCreateNewImage - error during reading logo -" + e);
+                throw new ServiceException(e);
             }
-            //add current logo
-            RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfProfile(logo);
-            addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
         }
 
 
@@ -159,6 +167,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
                 double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
                 double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
+                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, observer);
                 this.wait();
             }else{
                 LOGGER.error("addLogoAtPosition - no valid logo width and height");
@@ -167,6 +176,8 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         } catch (InterruptedException e) {
             LOGGER.error("addLogoAtPosition -" + e);
             throw new ServiceException(e);
+        }finally {
+            g.finalize();
         }
     }
 
