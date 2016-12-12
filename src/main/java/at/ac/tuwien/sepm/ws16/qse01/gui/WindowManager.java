@@ -97,14 +97,7 @@ public class WindowManager {
         }
 
 
-        try {
-            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            cameraHandler.getCameras();
-            initShotFrameManager();
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
-        }
+
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
@@ -184,6 +177,13 @@ public class WindowManager {
     }
 
     public void initShotFrameManager(){
-        shotFrameManager.init();
+        try {
+            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
+            cameraHandler.getCameras();
+            shotFrameManager.init();
+            cameraHandler.getImages();
+        } catch (Exception e) {
+            LOGGER.info("start - Getting camera - "+e);
+        }
     }
 }
