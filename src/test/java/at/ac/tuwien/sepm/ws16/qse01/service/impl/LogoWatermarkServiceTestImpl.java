@@ -32,7 +32,7 @@ public class LogoWatermarkServiceTestImpl {
     protected String logoPath2 = System.getProperty("user.dir") + "/src/test/resources/logos/logofamp.jpg";
     protected String watermarkPath = null;
     protected String srcImgPath = System.getProperty("user.dir") + "/src/test/resources/images/img1.jpg";
-    protected String logoDestImgPath = System.getProperty("user.dir") + "src/test/resources/images/img1_with_logo.jpg";
+    protected String logoDestImgPath = System.getProperty("user.dir") + "/src/test/resources/images/img1_with_logo.jpg";
     protected String watermarkDestImgPath = "/images/img1_with_watermark.jpg";
 
     @Before
