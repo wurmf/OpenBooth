@@ -24,6 +24,7 @@ public abstract class ProfileDAOTest {
         profileDAO.create(null);
     }
 
+    /**
     @Test
     public void createProfileWithValidArgumentWithAutoID() throws PersistenceException {
         Profile profile = new Profile("Testprofile");
@@ -34,7 +35,9 @@ public abstract class ProfileDAOTest {
         assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "Testprofile");
     }
+    */
 
+    /**
     @Test
     public void createProfileWithValidArgumentWithoutAutoID() throws PersistenceException {
         Profile profile = new Profile(10,"TestprofileNoAutoID",null,null,false,false,false,false);
@@ -46,6 +49,8 @@ public abstract class ProfileDAOTest {
         assertFalse(profile.getId() == Long.MIN_VALUE);
         assertTrue(profile.getName() == "TestprofileNoAutoID");
     }
+
+     */
 
     @Test(expected = IllegalArgumentException.class)
     public void updateProfileWithNullArgument() throws PersistenceException {
@@ -90,6 +95,7 @@ public abstract class ProfileDAOTest {
     }
      */
 
+    /**
     @Test
     public void readProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
         Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
@@ -97,6 +103,7 @@ public abstract class ProfileDAOTest {
         profile = profileDAO.read(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
     }
+    */
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws PersistenceException{
         Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
