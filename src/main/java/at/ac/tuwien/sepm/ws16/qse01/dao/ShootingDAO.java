@@ -14,7 +14,7 @@ public interface ShootingDAO {
      * @param shooting
      *
      */
-    public void create(Shooting shooting) throws PersistenceException;
+    public Shooting create(Shooting shooting) throws PersistenceException;
 
     /**
      *
