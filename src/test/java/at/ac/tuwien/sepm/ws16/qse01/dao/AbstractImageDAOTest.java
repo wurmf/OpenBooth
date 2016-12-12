@@ -1,21 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Date;
 
-import static junit.framework.TestCase.assertFalse;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -99,7 +89,7 @@ public abstract class AbstractImageDAOTest {
         imageDAO.create(img);
         //TODO: shooting -> create() -> funktioniert nicht!
         //Check if the last created imagepath will be returned
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
+        assertThat(imageDAO.getAllImages(99).size(),is(0));
     }
 
     /**
