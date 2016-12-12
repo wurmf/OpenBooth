@@ -33,7 +33,6 @@ public class WindowManager {
     private Scene profileScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
-    private List<Stage> shotStageList;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader){
@@ -148,7 +147,6 @@ public class WindowManager {
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
      */
     public void closeStages(){
-        shotStageList.forEach(Stage::close);
         mainStage.close();
     }
 
