@@ -91,9 +91,7 @@ public class MainFrameController {
         alert.initOwner(primaryStage);
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
-
-            //verlinken auf Kunden interface
-            //yes
+            windowManager.notifyActiveShootingAvailable();
         } else {
             try {
                 shootingService.endShooting();

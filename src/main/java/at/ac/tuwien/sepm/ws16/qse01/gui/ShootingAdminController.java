@@ -39,13 +39,11 @@ public class ShootingAdminController {
     ShootingService shootingService;
     ProfileService profileService;
     WindowManager windowManager;
-    ShotFrameManager shotFrameManager;
     @Autowired
-    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, ShotFrameManager shotFrameManager, WindowManager windowManager) throws Exception {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) throws Exception {
         this.shootingService = shootingService;
         this.profileService= profileService;
         this.windowManager = windowManager;
-        this.shotFrameManager = shotFrameManager;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
