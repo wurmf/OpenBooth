@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
@@ -36,11 +37,13 @@ public class MainFrameController {
     private Stage primaryStage;
 
     ShootingService shootingService;
+    CameraService cameraService;
 
     @Autowired
-    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager) throws Exception {
+    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) throws Exception {
         this.shootingService = shootingService;
         this.windowManager = windowManager;
+        this.cameraService = cameraService;
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -107,6 +110,11 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void onEndPressed(ActionEvent actionEvent) {
+        try {
+            cameraService.setAllCamerasInactive();
+        } catch (ServiceException e) {
+            LOGGER.error("Kameras konnten nicht inaktiv gesetzt werden!");
+        }
         windowManager.closeStages();
         //Platform.exit();
     }

@@ -29,8 +29,9 @@ CREATE TABLE positions(positionID BIGINT DEFAULT positions_seq.nextval PRIMARY K
 CREATE TABLE cameras(cameraID BIGINT DEFAULT cameras_seq.nextval PRIMARY KEY,
                      label VARCHAR(50) NOT NULL,
                      modelName VARCHAR(50) NOT NULL,
-                     portNumber INT,
-                     serialNumber VARCHAR(50) NOT NULL);
+                     portNumber VARCHAR(50) NOT NULL,
+                     serialNumber VARCHAR(50) NOT NULL,
+                     isActive BOOLEAN DEFAULT false);
 
 CREATE TABLE profile_camera_positions(profileId BIGINT REFERENCES profiles(profileID) ON DELETE CASCADE,
                         cameraId BIGINT REFERENCES cameras(cameraId) ON DELETE CASCADE,

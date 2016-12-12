@@ -305,6 +305,8 @@ public interface GPhoto2Native extends Library {
 
     int gp_port_info_list_get_info(Pointer portInfoList, int n, PointerByReference portInfo);
 
+    int gp_port_info_list_lookup_path(Pointer portInfoList, Pointer path);
+
     int gp_camera_set_port_info(Pointer camera, Pointer portInfo);
 
     int gp_file_clean(Pointer cf);
