@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -26,6 +27,7 @@ public class WindowManager {
 
     private SpringFXMLLoader springFXMLLoader;
     private ApplicationContext applicationContext;
+    private ShotFrameManager shotFrameManager;
     private Stage mainStage;
     private Scene mainScene;
     private Scene shootingScene;
@@ -33,11 +35,11 @@ public class WindowManager {
     private Scene profileScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
-    private List<Stage> shotStageList;
 
     @Autowired
-    public WindowManager(SpringFXMLLoader springFXMLLoader){
+    public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
         this.springFXMLLoader=springFXMLLoader;
+        this.shotFrameManager = shotFrameManager;
     }
 
     /**
@@ -148,8 +150,8 @@ public class WindowManager {
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
      */
     public void closeStages(){
-        shotStageList.forEach(Stage::close);
         mainStage.close();
+        shotFrameManager.closeFrames();
     }
 
     public void showFullscreenImage(){

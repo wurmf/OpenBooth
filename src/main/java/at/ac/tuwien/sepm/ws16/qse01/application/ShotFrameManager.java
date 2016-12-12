@@ -27,6 +27,7 @@ import java.util.List;
 public class ShotFrameManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
     private List<ShotFrameController> shotframes;
+    private List<Stage> shotStages;
     @Resource
     private ProfileService profileService;
     @Resource
@@ -37,9 +38,9 @@ public class ShotFrameManager {
         this.profileService = profileService;
         this.shootingService = shootingService;
         shotframes = new ArrayList<>();
+        shotStages = new ArrayList<>();
     }
     public void init(){
-        //TODO: die aktive kameras aus der datenbank holen
 
          /* Creating shotFrame */
         int anz = 1;
@@ -69,6 +70,8 @@ public class ShotFrameManager {
             stage.setX(x);
             stage.show();
 
+            shotStages.add(stage);
+
             x += 200;
         }
     }
@@ -80,5 +83,9 @@ public class ShotFrameManager {
                 shotFrameController.refreshShot(imgPath);
             }
         }
+    }
+    public void closeFrames(){
+        for(Stage stage: shotStages)
+            stage.close();
     }
 }
