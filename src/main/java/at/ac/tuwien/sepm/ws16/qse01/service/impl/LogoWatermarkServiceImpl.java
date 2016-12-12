@@ -46,7 +46,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         try {
             img = ImageIO.read(new File(srcImgPath));
         } catch (IOException e) {
-            LOGGER.error("addLogosCreateNewImage - error loading given image" + e);
+            LOGGER.error("addLogosCreateNewImage - error loading {} " + e, srcImgPath);
             throw new ServiceException(e);
         }
 
@@ -107,7 +107,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         Graphics g = img.getGraphics();
 
-        g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), new LogoWatermarkServiceImageObserver(this));
+        g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), null);
         try {
             this.wait();
         } catch (InterruptedException e) {
@@ -127,7 +127,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     private void saveImage(BufferedImage img, String destImgPath) throws IOException{
-        String formatName = destImgPath.substring(destImgPath.lastIndexOf('.'));
+        String formatName = destImgPath.substring(destImgPath.lastIndexOf('.') + 1);
         File newImage = new File(destImgPath);
         ImageIO.write(img, formatName, newImage);
     }
@@ -146,52 +146,28 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         double relativeLogoWidth = position.getWidth();
         double relativeLogoHeight = position.getHeight();
 
-        LogoWatermarkServiceImageObserver observer = new LogoWatermarkServiceImageObserver(this);
 
         Graphics g = img.getGraphics();
 
-        try {
-            if(relativeLogoHeight == -1 && relativeLogoWidth == -1){
-                g.drawImage(logo, absoluteXPosition, absoluteYPosition, observer);
-                this.wait();
-            }else if(relativeLogoHeight == -1 && relativeLogoWidth > 0){
-                double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
-                double absoluteLogoHeight = relativeLogoHeight/relativeLogoWidth * absoluteLogoWidth;
-                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, observer);
-                this.wait();
-            }else if(relativeLogoHeight > 0 && relativeLogoWidth == -1){
-                double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
-                double absoluteLogoWidth = relativeLogoWidth / relativeLogoHeight * absoluteLogoHeigth;
-                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, observer);
-                this.wait();
-            }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
-                double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
-                double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
-                g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, observer);
-                this.wait();
-            }else{
-                LOGGER.error("addLogoAtPosition - no valid logo width and height");
-                throw new ServiceException("addLogoAtPosition - no valid logo width and heigh");
-            }
-        } catch (InterruptedException e) {
-            LOGGER.error("addLogoAtPosition -" + e);
-            throw new ServiceException(e);
-        }finally {
-            g.finalize();
-        }
-    }
-
-    private class LogoWatermarkServiceImageObserver implements ImageObserver{
-        private LogoWatermarkService instanceToNotify;
-
-        private LogoWatermarkServiceImageObserver(LogoWatermarkService instanceToNotify){
-            this.instanceToNotify = instanceToNotify;
+        if(relativeLogoHeight == -1 && relativeLogoWidth == -1){
+            g.drawImage(logo, absoluteXPosition, absoluteYPosition, null);
+        }else if(relativeLogoHeight == -1 && relativeLogoWidth > 0){
+            double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
+            double absoluteLogoHeight = relativeLogoHeight/relativeLogoWidth * absoluteLogoWidth;
+            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+        }else if(relativeLogoHeight > 0 && relativeLogoWidth == -1){
+            double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
+            double absoluteLogoWidth = relativeLogoWidth / relativeLogoHeight * absoluteLogoHeigth;
+            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, null);
+        }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
+            double absoluteLogoHeigth = relativeLogoHeight / (100d) * imgHeight;
+            double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
+            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeigth, null);
+        }else{
+            LOGGER.error("addLogoAtPosition - no valid logo width and height");
+            throw new ServiceException("addLogoAtPosition - no valid logo width and heigh");
         }
 
-        @Override
-        public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-            instanceToNotify.notify();
-            return false;
-        }
+        g.finalize();
     }
 }
