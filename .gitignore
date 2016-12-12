@@ -16,6 +16,7 @@
 *.iws
 /out/
 .idea_modules/
+ws16_sepm_qse_01.iml
 
 ### Java ###
 *.class
@@ -55,3 +56,4 @@ target/
 
 # Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
 !maven-wrapper.jar
+.idea/
