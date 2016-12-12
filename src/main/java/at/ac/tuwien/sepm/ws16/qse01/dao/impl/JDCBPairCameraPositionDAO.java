@@ -98,7 +98,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
             while (rs.next()) {
                 Profile.PairCameraPosition pairCameraPosition =
                         new Profile.PairCameraPosition(
-                                new Camera(rs.getInt("cameraId"),"",""),
+                                new Camera(rs.getInt("cameraId"),"","","",""),
                                 (new JDBCPositionDAO(H2Handler.getInstance()).read(rs.getInt("positionId"))),
                                 rs.getBoolean("isGreenscreenReady"));
                 returnList.add(pairCameraPosition);

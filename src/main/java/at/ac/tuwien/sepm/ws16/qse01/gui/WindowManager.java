@@ -35,11 +35,13 @@ public class WindowManager {
     private Scene profileScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
+    private boolean activeShootingAvailable;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
         this.springFXMLLoader=springFXMLLoader;
         this.shotFrameManager = shotFrameManager;
+        activeShootingAvailable=false;
     }
 
     /**
@@ -95,17 +97,15 @@ public class WindowManager {
         }
 
 
-        //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
-        try {
-            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            //CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl(), new ShootingServiceImpl());
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
-        }
+
 
         this.mainStage.setTitle("Fotostudio");
-        this.mainStage.setScene(mainScene);
+        if(activeShootingAvailable){
+            this.mainStage.setScene(miniaturScene);
+            initShotFrameManager();
+        } else {
+            this.mainStage.setScene(mainScene);
+        }
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
@@ -129,6 +129,7 @@ public class WindowManager {
      * Sets the mainScene as Scene in the mainStage.
      */
     public void showMainFrame(){
+        LOGGER.info("MainFrame set");
         mainStage.setScene(mainScene);
         mainStage.setFullScreen(true);
     }
@@ -143,6 +144,7 @@ public class WindowManager {
      * Sets the miniaturScene as Scene in the mainStage.
      */
     public void showMiniatureFrame(){
+        LOGGER.info("MiniatureFrame set");
         mainStage.setScene(miniaturScene);
         mainStage.setFullScreen(true);
     }
@@ -160,10 +162,28 @@ public class WindowManager {
     }
 
     /**
+     * If an active shooting is available on startup of the application, this method is called to notify the WindowManager of this fact.
+     */
+    public void notifyActiveShootingAvailable(){
+       activeShootingAvailable=true;
+    }
+
+    /**
      * Returns the mainStage.
      * @return the mainStage
      */
     public Stage getStage(){
         return this.mainStage;
+    }
+
+    public void initShotFrameManager(){
+        try {
+            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
+            cameraHandler.getCameras();
+            shotFrameManager.init();
+            cameraHandler.getImages();
+        } catch (Exception e) {
+            LOGGER.info("start - Getting camera - "+e);
+        }
     }
 }
