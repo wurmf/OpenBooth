@@ -2,7 +2,6 @@ INSERT INTO adminusers (adminname, password) VALUES ('admin','b6f8d434a847fb0f0c
 
 INSERT INTO profiles (profileID, name) VALUES (1,'Profile 1');
 INSERT INTO profiles (profileID, name) VALUES (2,'Profile 2');
-INSERT INTO profiles (profileID, name) VALUES (99,'Profile 99');
 
 INSERT INTO shootings (profileID,folderpath) VALUES (1,'/images/shooting1/');
 INSERT INTO shootings (profileID,folderpath, isActive) VALUES (2,'/images/shooting2/',FALSE);
@@ -28,3 +27,10 @@ INSERT INTO profile_camera_positions VALUES (1,2,2,false);
 INSERT INTO profile_logo_rpositions VALUES (1,1,85.0,95.0,80.0,90.0);
 INSERT INTO profile_logo_rpositions VALUES (1,2, 5.0,10.0,15.0,20.0);
 INSERT INTO profile_logo_rpositions VALUES (1,3, -1.0,-1.0,-1.0,-1.0);
+
+ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS images_seq RESTART WITH 5;
+ALTER SEQUENCE IF EXISTS positions_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS cameras_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS logos_seq RESTART WITH 4;
