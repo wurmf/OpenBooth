@@ -38,6 +38,28 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
+    public void calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException{
+        //TODO: IMPLEMENT
+    }
+
+    @Override
+    public void calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException{
+        //TODO: IMPLEMENT
+    }
+
+    @Override
+    public Image getPreviewForLogo(Logo logo, RelativeRectangle position, int imageWidth, int imageHeight) {
+        //TODO: IMPLEMENT
+        return null;
+    }
+
+    @Override
+    public Image getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) {
+        //TODO: IMPLEMENT
+        return null;
+    }
+
+    @Override
     public void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
 
         BufferedImage img;
@@ -139,6 +161,8 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         double relativeLogoWidth = position.getWidth();
         double relativeLogoHeight = position.getHeight();
 
+        double widthHeightRatio = (double)logo.getWidth() / (double)logo.getHeight();
+
 
         Graphics g = img.getGraphics();
 
@@ -146,11 +170,11 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             g.drawImage(logo, absoluteXPosition, absoluteYPosition, null);
         }else if((int)relativeLogoHeight == -1 && relativeLogoWidth > 0){
             double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
-            double absoluteLogoHeight = relativeLogoHeight/relativeLogoWidth * absoluteLogoWidth;
+            double absoluteLogoHeight =  absoluteLogoWidth / widthHeightRatio;
             g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
         }else if(relativeLogoHeight > 0 && (int)relativeLogoWidth == -1){
             double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
-            double absoluteLogoWidth = relativeLogoWidth / relativeLogoHeight * absoluteLogoHeight;
+            double absoluteLogoWidth = widthHeightRatio * absoluteLogoHeight;
             g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
         }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
             double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
