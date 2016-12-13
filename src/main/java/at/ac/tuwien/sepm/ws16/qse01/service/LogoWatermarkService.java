@@ -32,7 +32,7 @@ public interface LogoWatermarkService {
      * If srcImgPath = destImgPath, the image located at srcImgPath will be overwritten.
      * Example for destImgPath /home/fabian/shooting1/img1_with_watermark.jpg
      * @param srcImgPath specifies the image where the watermark should be added
-     * @param destImgPath spefies the path and filename of the resulting image
+     * @param destImgPath specifies the path and filename of the resulting image
      * @throws ServiceException if an error during the image processing, saving or opening occurs
      */
      void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException;
