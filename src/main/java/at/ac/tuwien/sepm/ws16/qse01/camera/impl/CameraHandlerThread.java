@@ -94,6 +94,7 @@ public class CameraHandlerThread  extends Thread{
             }
             if(shotFrameManager.isClosed())
             {
+                LOGGER.info("Kamerathread beendet");
                 return;
             }
             if(imageSaved)
