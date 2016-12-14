@@ -38,13 +38,15 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public void calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException{
+    public double calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException{
         //TODO: IMPLEMENT
+        return 0;
     }
 
     @Override
-    public void calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException{
+    public double calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException{
         //TODO: IMPLEMENT
+        return 0;
     }
 
     @Override
