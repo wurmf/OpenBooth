@@ -63,6 +63,20 @@ public class CameraServiceImpl implements CameraService {
     }
 
     @Override
+    public Camera cameraExists(Camera camera) throws ServiceException
+    {
+        try
+        {
+            return cameraDAO.exists(camera);
+        }
+        catch (PersistenceException ex)
+        {
+            LOGGER.error("cameraExists - Failure at searching given camera");
+            throw new ServiceException(ex);
+        }
+    }
+
+    @Override
     public void setCameraActive(int cameraID) throws ServiceException {
         try
         {
