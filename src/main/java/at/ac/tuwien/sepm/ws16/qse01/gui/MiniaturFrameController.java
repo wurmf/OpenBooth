@@ -73,7 +73,7 @@ public class MiniaturFrameController {
             hBox.setVisible(false);
             hBox.setStyle("-fx-background-color: #dddddd;");
 
-            ImageView fullscreen = new ImageView( getClass().getResource("/images/fullscreen2.png").toExternalForm());
+            ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
             fullscreen.setFitHeight(30);
             fullscreen.setFitWidth(30);
             fullscreen.setOnMouseClicked(mouseEvent -> {
