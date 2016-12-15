@@ -137,7 +137,7 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public Profile read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter profileid=" + id);
-        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted,watermark"
+        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted,watermark,isMobilEnabled"
                 + " FROM profiles WHERE profileID = ?;";
         PreparedStatement stmt = null;
 
