@@ -13,7 +13,7 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <Button fx:id="startButton" layoutX="1579.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStartShootingPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
+      <Button fx:id="startButton" layoutX="480.0" layoutY="220.0" mnemonicParsing="false" onAction="#onStartShootingPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
@@ -41,7 +41,7 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <Button fx:id="storage" layoutX="408.0" layoutY="383.0" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicher ort wählen" textFill="#3c3838">
+      <Button fx:id="storage" layoutX="408.0" layoutY="383.0" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicherort wählen" textFill="#3c3838">
          <font>
             <Font size="36.0" />
          </font>
