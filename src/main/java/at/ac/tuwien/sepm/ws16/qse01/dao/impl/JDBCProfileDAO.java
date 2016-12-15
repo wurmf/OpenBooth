@@ -47,7 +47,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             if(profile.getId()== Integer.MIN_VALUE)
             {
                 String sqlString = "INSERT INTO"
-                        + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,watermark)"
+                        + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
                         + " VALUES (?,?,?,?,?);";
 
 
@@ -56,7 +56,8 @@ public class JDBCProfileDAO implements ProfileDAO {
                 stmt.setBoolean(2,profile.isPrintEnabled());
                 stmt.setBoolean(3,profile.isFilerEnabled());
                 stmt.setBoolean(4,profile.isGreenscreenEnabled());
-                stmt.setString(5,profile.getWatermark());
+                stmt.setBoolean(5,profile.isMobilEnabled());
+                stmt.setString(6,profile.getWatermark());
 
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -98,7 +99,7 @@ public class JDBCProfileDAO implements ProfileDAO {
         LOGGER.debug("Entering update method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
         String sqlString = "UPDATE profiles"
-                + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?, watermark = ?"
+                + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?, isMobilEnabled = ?, watermark = ?"
                 + " WHERE profileID = ?;";
 
         PreparedStatement stmt = null;
@@ -109,8 +110,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             stmt.setBoolean(2,profile.isPrintEnabled());
             stmt.setBoolean(3,profile.isFilerEnabled());
             stmt.setBoolean(4,profile.isGreenscreenEnabled());
-            stmt.setString(5,profile.getWatermark());
-            stmt.setLong(6,profile.getId());
+            stmt.setBoolean(5,profile.isMobilEnabled());
+            stmt.setString(6,profile.getWatermark());
+            stmt.setLong(7,profile.getId());
             stmt.executeUpdate();
             ResultSet rs = stmt.getResultSet();
 
@@ -155,6 +157,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                     rs.getBoolean("isPrintEnabled"),
                     rs.getBoolean("isFilterEnabled"),
                     rs.getBoolean("isGreenscreenEnabled"),
+                    rs.getBoolean(("isMobilEnabled")),
                     rs.getBoolean("isDeleted")
                     );
             p.setWatermark(rs.getString("watermark"));

@@ -9,6 +9,7 @@ CREATE TABLE adminusers (adminname VARCHAR(20) PRIMARY KEY, password BINARY(32) 
 
 CREATE TABLE profiles (profileID BIGINT DEFAULT profiles_seq.nextval PRIMARY KEY,
                        name VARCHAR(50) NOT NULL,
+                       isMobilEnabled BOOLEAN DEFAULT false,
                        isPrintEnabled BOOLEAN DEFAULT false,
                        isFilterEnabled BOOLEAN DEFAULT false,
                        isGreenscreenEnabled BOOLEAN DEFAULT false,

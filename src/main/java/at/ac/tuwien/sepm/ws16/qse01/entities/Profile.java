@@ -10,6 +10,7 @@ public class Profile {
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private boolean isMobilEnabled;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
@@ -29,6 +30,7 @@ public class Profile {
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled,
                    boolean isDeleted
                    ) {
         this.id = id;
@@ -38,6 +40,7 @@ public class Profile {
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
         this.isDeleted = isDeleted;
         this.watermark = "/images/noimage.png";
     }
@@ -49,7 +52,7 @@ public class Profile {
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Integer.MIN_VALUE, name,null,null,false,false,false,false);
+        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,false);
     }
 
     public int getId() {
@@ -114,6 +117,14 @@ public class Profile {
 
     public void setWatermark(String watermark) {
         this.watermark = watermark;
+    }
+
+    public boolean isMobilEnabled() {
+        return isMobilEnabled;
+    }
+
+    public void setMobilEnabled(boolean mobilEnabled) {
+        isMobilEnabled = mobilEnabled;
     }
 
     public String toString(){return this.name;}

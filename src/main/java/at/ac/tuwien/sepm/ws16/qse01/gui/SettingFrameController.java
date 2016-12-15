@@ -135,7 +135,7 @@ public class SettingFrameController {
                         @Override
                         public TableCell<Profile, Boolean> call(TableColumn<Profile, Boolean> p) {
 
-                            return new ProfileCheckboxCell(pList,pservice);
+                            return new ProfileCheckboxCell(pList,pservice,"mobil");
                         }
 
                     });
@@ -160,7 +160,7 @@ public class SettingFrameController {
                         @Override
                         public TableCell<Profile, Boolean> call(TableColumn<Profile, Boolean> p) {
 
-                            return new ProfileCheckboxCell(pList,pservice);
+                            return new ProfileCheckboxCell(pList,pservice,"green");
                         }
 
                     });
@@ -183,7 +183,7 @@ public class SettingFrameController {
                         @Override
                         public TableCell<Profile, Boolean> call(TableColumn<Profile, Boolean> p) {
 
-                            return new ProfileCheckboxCell(pList,pservice);
+                            return new ProfileCheckboxCell(pList,pservice,"filter");
                         }
 
                     });
@@ -206,7 +206,7 @@ public class SettingFrameController {
                         @Override
                         public TableCell<Profile, Boolean> call(TableColumn<Profile, Boolean> p) {
 
-                            return new ProfileCheckboxCell(pList,pservice);
+                            return new ProfileCheckboxCell(pList,pservice,"drucken");
                         }
 
                     });
