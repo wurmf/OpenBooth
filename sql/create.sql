@@ -12,6 +12,7 @@ CREATE TABLE profiles (profileID BIGINT DEFAULT profiles_seq.nextval PRIMARY KEY
                        isPrintEnabled BOOLEAN DEFAULT false,
                        isFilterEnabled BOOLEAN DEFAULT false,
                        isGreenscreenEnabled BOOLEAN DEFAULT false,
+                       watermark VARCHAR(250) DEFAULT NULL,
                        isDeleted BOOLEAN DEFAULT false);
 
 CREATE TABLE shootings (shootingID BIGINT DEFAULT shootings_seq.nextval PRIMARY KEY,

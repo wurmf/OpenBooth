@@ -104,8 +104,7 @@ public class MiniaturFrameController {
 
 
                         tile.getChildren().remove(imageView.getParent());
-                        //TODO: das Foto ausm Filesystem löschen. -> FotoDAO->FIleSystem
-                        new File(String.valueOf(imageView.getUserData())).delete();
+
                     } catch (ServiceException e) {
                         LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
                     }

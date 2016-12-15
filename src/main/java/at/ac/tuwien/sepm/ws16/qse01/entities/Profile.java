@@ -13,6 +13,7 @@ public class Profile {
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
+    private String watermark;
     private boolean isDeleted;
 
     /**
@@ -38,6 +39,7 @@ public class Profile {
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
         this.isDeleted = isDeleted;
+        this.watermark = "/images/noimage.png";
     }
 
     /**
@@ -104,6 +106,14 @@ public class Profile {
 
     public void setGreenscreenEnabled(boolean greenscreenEnabled) {
         isGreenscreenEnabled = greenscreenEnabled;
+    }
+
+    public String getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(String watermark) {
+        this.watermark = watermark;
     }
 
     public String toString(){return this.name;}
