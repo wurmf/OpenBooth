@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +64,8 @@ public class FullScreenImageController {
     private ImageView ivfullscreenImage;
 
     private ImageView[]slide =new ImageView[3];
-    private Stage primaryStage;
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
-    private int currentIndex;
+    private int currentIndex=-1;
     private int activ;
 
     private ImageService imageService;
@@ -83,31 +81,30 @@ public class FullScreenImageController {
         this.imagePrinter=imagePrinter;
     }
 
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
-
     /**
      * iniziaising full screen image view
+     * if the List == null and there is an activ shooting avalible the imageList gets initialised
+     * if the list is not empty, the chosen image gets displayed
+     *
+     * catches ServiceException which can be thrown by all metodes requering an Service class
+     * catches FileNotFoundException which can be thrown by all FileInputStream´s
      */
     @FXML
     private void initialize(){
         try {
             if (imageList == null) {
-                activ=shootingService.searchIsActive().getId();
-                if(activ!=0){
+                if(shootingService.searchIsActive().getActive()){
+                    activ=shootingService.searchIsActive().getId();
                     imageList = imageService.getAllImages(activ);
                 }
-               // currentIndex = imageList.indexOf(image);
-                currentIndex=0;
+                //currentIndex=0;
             }
             if(currentIndex>=0&&imageList!=null&&!imageList.isEmpty()) {
 
                 Image imlast=null;
                 Image imnext=null;
-                //URL urlToImage = this.getClass().getResource(imageList.get(currentIndex).getImagepath());
-               Image imonscreen = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()));
+
+                Image imonscreen = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()));
                  slide[1] = new ImageView(imonscreen);
                 if (currentIndex != 0) {
                     imlast = new Image(new FileInputStream(imageList.get(currentIndex - 1).getImagepath()));
@@ -141,7 +138,7 @@ public class FullScreenImageController {
                 "Möchten Sie das Bild drucken?");
         alert.setHeaderText("Bild drucken");
         alert.initModality(Modality.WINDOW_MODAL);
-        alert.initOwner(primaryStage);
+        alert.initOwner(windowManager.getStage());
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
             boolean failure=false;
@@ -161,24 +158,31 @@ public class FullScreenImageController {
                 Alert alertError= new Alert(Alert.AlertType.ERROR,
                         "Während des Druckvorgangs ist ein Fehler aufgetreten. Leider kann das Foto nicht gedruckt werden.");
                 alertError.setHeaderText("Fehler beim Druckvorgang");
-                alertError.initOwner(primaryStage);
+                alertError.initOwner(windowManager.getStage());
                 alertError.show();
             }
         }
     }
 
     /**
-     * deletes the choosen image
-     * usests its id
-     * @param actionEvent
+     * deletes the chosen image and decides which image should be shown next
+     * in case the user deleted the last image there is no next image, so the last image will be shown
+     * in case the user deleted the first image it will do vice versa
+     * in case the user deleted the only image, the full screen image show will close
+     *
+     * catches ServiceException which can be drown by all service methodes
+     * catches FileNotFoundException witch can be drown by all file methodes
+     *
+     * @param actionEvent press action event
      */
+    @FXML
     public void onDeletePressed(ActionEvent actionEvent) {
         try {
             if(ivfullscreenImage!=null&&imageList!=null){
             Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                     "Möchten Sie das Bild tatsächlich löschen");
             alert.setHeaderText("Bild Löschen");
-            alert.initOwner(primaryStage);
+            alert.initOwner(windowManager.getStage());
             Optional<ButtonType> result =alert.showAndWait();
             if(result.isPresent()&&result.get()==ButtonType.OK){
                 //delete
@@ -232,58 +236,70 @@ public class FullScreenImageController {
             }
             }
         } catch (ServiceException e) {
+            LOGGER.debug("delete - "+e);
             informationDialog("Bild konnte nicht gelöscht werden.");
         } catch (FileNotFoundException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.debug("delete - "+e);
             informationDialog("Der Speicher Ort konnte nicht gefunden werden!");
         }
     }
 
     /**
      * closes full screen and opens miniatur sceen again
-     * @param actionEvent
+     * before doing so it sets currentIndex to -1 to overcome possible null pointer exeptions
+     *
+     * @param actionEvent press action event
      */
+    @FXML
     public void onClosePressed(ActionEvent actionEvent) {
+        currentIndex=-1;
         windowManager.showMiniatureFrame();
     }
 
+    @FXML
     public void onFilter4Pressed(ActionEvent actionEvent) {
 
     }
 
+    @FXML
     public void onFilter3Pressed(ActionEvent actionEvent) {
 
     }
 
+    @FXML
     public void onFilter5Pressed(ActionEvent actionEvent) {
 
     }
 
+    @FXML
     public void onFilter2Pressed(ActionEvent actionEvent) {
 
     }
 
+    @FXML
     public void onFilter1Pressed(ActionEvent actionEvent) {
 
     }
 
     /**
-     * information dialog
-     * @param info
+     * information dialog for error messages
+     *
+     * @param info String to be presented to the user as error message
      */
     public void informationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
-        information.initOwner(primaryStage);
+        information.initOwner(windowManager.getStage());
         information.show();
     }
 
     /**
-     * Initialising Transision
-     * @param imageView
-     * @param fromValue
-     * @param toValue
-     * @param durationInMilliseconds
+     * basic transition method to be used in both directions (in and out)
+     *
+     * @param imageView the imageView the transition is made on
+     * @param fromValue sets the from value of the translation
+     * @param toValue sets the to value of the translation
+     * @param durationInMilliseconds sets the time it takes
      * @return transision to be performed
      */
     public FadeTransition getFadeTransition(ImageView imageView, double fromValue, double toValue, int durationInMilliseconds) {
@@ -298,7 +314,11 @@ public class FullScreenImageController {
 
     /**
      * gets last image (image when swiped left)
-     * @param actionEvent
+     * there by using transitions for visual purpose
+     *
+     * catches FillNotFound exeption
+     *
+     * @param actionEvent swipe action event
      */
     public void onGetLastImage(ActionEvent actionEvent) {
         try {
@@ -333,7 +353,11 @@ public class FullScreenImageController {
 
     /**
      * get next image (image when deleted or swiped right)
-     * @param actionEvent
+     * there by using transitions for visual purpose
+     *
+     * catches FillNotFound exeption
+     *
+     * @param actionEvent swipe action event
      */
     public void onGetNextImage(ActionEvent actionEvent) {
         try {
@@ -368,7 +392,8 @@ public class FullScreenImageController {
     /**
      * to get an full screen image without buttons
      * and reload the buttons when pressed again
-     * @param actionEvent
+     * this is achieved by seting visiblety
+     * @param actionEvent press action event
      */
     public void onfullscreen1(ActionEvent actionEvent) {
 
@@ -405,7 +430,8 @@ public class FullScreenImageController {
     /**
      * to get an full screen image without buttons
      * and reload the buttons when pressed again
-     * @param actionEvent
+     * this is achieved by seting visiblety
+     * @param actionEvent press action event
      */
     public void onfullscreen2(ActionEvent actionEvent) {
         if(planbottom.isVisible()){

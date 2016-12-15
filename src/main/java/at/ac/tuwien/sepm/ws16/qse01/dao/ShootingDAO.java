@@ -11,24 +11,27 @@ public interface ShootingDAO {
      *
      * adds new shooting to database
      *
-     * @param shooting
+     * @throws PersistenceException caused by using sql
+     * @param shooting returnes the shooting thats created
      *
      */
-    public Shooting create(Shooting shooting) throws PersistenceException;
+     Shooting create(Shooting shooting) throws PersistenceException;
 
     /**
      *
      * search for active sessions and returns them
      * if null default with inactife gets passed
      *
-     * @return Shooting
-     *
+     * @throws PersistenceException caused by using sql
+     * @return Shooting that is active, if there is no active shooting available it returnes an defaulte false shooting
      */
-    public Shooting searchIsActive() throws PersistenceException;
+     Shooting searchIsActive() throws PersistenceException;
 
     /**
      * closes activ session
+     * by setting the session to false
      *
+     * @throws PersistenceException caused by using sql
      */
-    public void endShooting() throws PersistenceException;
+     void endShooting() throws PersistenceException;
 }

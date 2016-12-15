@@ -1,18 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,6 @@ import java.util.Optional;
 /**
  * The controller for the mainFrame.
  *
- * @author Dominik Moser
  */
 @Component
 public class MainFrameController {
@@ -34,7 +29,6 @@ public class MainFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
 
     private WindowManager windowManager;
-    private Stage primaryStage;
 
     ShootingService shootingService;
     CameraService cameraService;
@@ -46,14 +40,13 @@ public class MainFrameController {
         this.cameraService = cameraService;
     }
 
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
 
     /**
-     * inizialize Mainfraim
-     * tests whether there is still an session active
+     * inizialize Mainfraim by
+     * tests whether there is still an shooting active or not
+     * in case there is still an open shooting the RecoveryDialog will reload it
+     *
+     * catches ServiceException caused by all Service methodes
      */
     @FXML
     private void initialize(){
@@ -61,7 +54,7 @@ public class MainFrameController {
         try {
             activeShooting = shootingService.searchIsActive();
 
-            if(activeShooting.getActive()==true){
+            if(activeShooting.getActive()){
                 showRecoveryDialog();
             }
         } catch (ServiceException e) {
@@ -73,14 +66,18 @@ public class MainFrameController {
     /**
      * linkes to admin log in and followup options
      *
-     * @param actionEvent
+     * @param actionEvent press action event
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
         windowManager.showAdminLogin();
     }
 
     /**
-     * in case of brakdown
+     * in case of a breakdown the Recovery Dialog will tell the user about an still active
+     * shooting and gives them the option to continue to ether close or reloade this shooting
+     *in case of reload the user gets directly to the costumer interface
+     *
+     * caches ServiceException eventualy caused by endShooting
      *
      */
     public void showRecoveryDialog(){
@@ -88,7 +85,7 @@ public class MainFrameController {
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                 "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
         alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
-        alert.initOwner(primaryStage);
+        alert.initOwner(windowManager.getStage());
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
             windowManager.notifyActiveShootingAvailable();
@@ -97,28 +94,29 @@ public class MainFrameController {
                 shootingService.endShooting();
                 showInformationDialog("Shooting wurde beendet");
             } catch (ServiceException e) {
+                LOGGER.debug("recovery-"+e);
                 showInformationDialog("Shooting konnte nicht beendet werden!");
             }
         }
     }
 
     /**
-     * stop programm
+     * programm gets shot down
      *
-     * @param actionEvent
+     * @param actionEvent press action event
      */
     public void onEndPressed(ActionEvent actionEvent) {
         windowManager.closeStages();
-        //Platform.exit();
     }
 
     /**
-     * information dialog
-     * @param info
+     * information dialog to show user error messages
+     *
+     * @param info String that gives the usere an error message
      */
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
-        information.initOwner(primaryStage);
+        information.initOwner(windowManager.getStage());
         information.setHeaderText("Ein Fehler ist Aufgetreten");
 
     }
