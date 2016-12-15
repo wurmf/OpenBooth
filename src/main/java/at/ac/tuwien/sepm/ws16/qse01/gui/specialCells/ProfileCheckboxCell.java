@@ -8,11 +8,14 @@ import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.input.MouseEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by macdnz on 15.12.16.
  */
 public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
+    final static Logger LOGGER = LoggerFactory.getLogger(ProfileCheckboxCell.class);
     private  ObservableList<Profile> pList;
     private ProfileService pservice;
     private String checkboxTyp;
@@ -28,8 +31,8 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
             @Override
             public void handle(MouseEvent event) {
                 Profile currentProfile = (Profile) ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
+                LOGGER.info("Checkbox clicked...profil =>"+currentProfile.isFilerEnabled()+"_"+currentProfile.isGreenscreenEnabled()+"_"+currentProfile.isMobilEnabled()+"_"+currentProfile.isPrintEnabled());
 
-                //remove selected item from the table list
                 if(checkboxTyp.equals("mobil"))
                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
                 else if (checkboxTyp.equals("green"))
@@ -42,7 +45,7 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
                 try {
                     pservice.edit(currentProfile);
                 } catch (ServiceException e) {
-                    e.printStackTrace();
+                   LOGGER.debug("Error bei updating checkbox data "+e.getMessage());
                 }
 
 
