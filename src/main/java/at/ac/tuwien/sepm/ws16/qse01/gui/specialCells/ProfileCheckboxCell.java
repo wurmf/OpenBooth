@@ -2,9 +2,12 @@ package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
+import javafx.scene.input.MouseEvent;
 
 /**
  * Created by macdnz on 15.12.16.
@@ -19,6 +22,33 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
         this.pList = pList;
         this.pservice = pservice;
        this.checkboxTyp = checkboxTyp;
+
+        cellCheckbox.setOnMouseClicked(new EventHandler<MouseEvent>(){
+
+            @Override
+            public void handle(MouseEvent event) {
+                Profile currentProfile = (Profile) ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
+
+                //remove selected item from the table list
+                if(checkboxTyp.equals("mobil"))
+                   currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                else if (checkboxTyp.equals("green"))
+                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                else if (checkboxTyp.equals("filter"))
+                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                else if (checkboxTyp.equals("drucken"))
+                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+
+                try {
+                    pservice.edit(currentProfile);
+                } catch (ServiceException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        });
 
     }
 

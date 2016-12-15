@@ -42,7 +42,6 @@ public class Profile {
         this.isGreenscreenEnabled = isGreenscreenEnabled;
         this.isMobilEnabled = isMobilEnabled;
         this.isDeleted = isDeleted;
-        this.watermark = "/images/noimage.png";
     }
 
     /**
