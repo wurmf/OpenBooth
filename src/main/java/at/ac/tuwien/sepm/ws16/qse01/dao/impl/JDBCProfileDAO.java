@@ -48,7 +48,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             {
                 String sqlString = "INSERT INTO"
                         + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
-                        + " VALUES (?,?,?,?,?);";
+                        + " VALUES (?,?,?,?,?,?);";
 
 
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
