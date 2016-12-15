@@ -13,6 +13,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,17 +38,17 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
-    /*
+
     @FXML
     private Button storage;
-    */
+
     @FXML
     private Button startButton;
     @FXML
     private Button stopButton;
-    /*@FXML
+    @FXML
     private Label storageDirLabel;//storageDirLabel.setText();
-    */
+
     @FXML
     private ChoiceBox profileChoiceBox;
 
@@ -80,14 +82,22 @@ public class ShootingAdminController {
             if(shootingService.searchIsActive().getActive()){
                 startButton.setVisible(false);
                 stopButton.setVisible(true);
-                //storage.setVisible(false);
-                //storageDirLabel.setVisible(false);
+                storage.setVisible(false);
+                storageDirLabel.setVisible(false);
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
-                //storage.setVisible(true);
-                //storageDirLabel.setVisible(true);
+                storage.setVisible(true);
+                storageDirLabel.setVisible(true);
             }
+            String resource = System.getProperty("user.home");
+
+             /*if(mobiel) {
+                        storage = Paths.get(resource + "fotostudio/Mobil");
+            }else{*/
+            Path storagepath = Paths.get(resource+"/fotostudio/Studio");
+            // }
+            storageDirLabel.setText(storagepath.toString());
             List<Profile> prof = profileService.getAllProfiles();
             if(prof!=null&&!prof.isEmpty()) {
                 ObservableList<Profile> observableListProfile = FXCollections.observableList(prof);
@@ -104,7 +114,6 @@ public class ShootingAdminController {
         }
     }
 
-
     /**
      * when pressed an new shooting starts
      * to successfully start an new shooting an storage path gets selected and an profile must be selected
@@ -118,7 +127,8 @@ public class ShootingAdminController {
         if (profileChoiceBox.getValue() != null) {
                 try{
 
-                    Path storage = null;
+                    if(path!=null){
+                    Path storagepath = null;
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     String resource = System.getProperty("user.home");
@@ -126,11 +136,11 @@ public class ShootingAdminController {
                     /*if(mobiel) {
                         storage = Paths.get(resource + "fotostudio/Mobil");
                     }else{*/
-                        storage = Paths.get(resource+"fotostudio/Studio");
+                        storagepath = Paths.get(resource+"/fotostudio/Studio");
                    // }
-                    if(storage!=null) {
+                    if(storagepath!=null) {
                         try {
-                            Files.createDirectories(storage);
+                            Files.createDirectories(storagepath);
                         } catch (FileAlreadyExistsException e) {
                             LOGGER.info("shooting folder already exists" + e);
 
@@ -141,7 +151,7 @@ public class ShootingAdminController {
 
                         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
                         Date date = new Date();
-                        Path shootingstorage = Paths.get(storage + "/" + dateFormat.format(date));
+                        Path shootingstorage = Paths.get(storagepath + "/" + dateFormat.format(date));
 
                         try {
                             Files.createDirectories(shootingstorage);
@@ -153,8 +163,9 @@ public class ShootingAdminController {
                             LOGGER.error("creatin shooting folder file" + e);
                             showInformationDialog("Derspeicherort konnte nicht erstellt werden");
                         }
-
-                        Shooting shouting = new Shooting(0, (int) profile.getId(), shootingstorage.toString(), true);
+                        path=shootingstorage.toString();
+                    }
+                        Shooting shouting = new Shooting(0, (int) profile.getId(), path, true);
 
                         //storageDirLabel.setText("");
                         LOGGER.info("ShootingAdminController:", path);
@@ -185,13 +196,13 @@ public class ShootingAdminController {
         windowManager.showMainFrame();
     }
 
-    /**
+    /*
      * finds the directory of desire to save new project in
      *
      * catches NullPointer Exception that could be caused by empty files
      *
      * @param actionEvent press action event
-
+*/
     public void onChooseStorageDirPressed(ActionEvent actionEvent) {
 
         try{
@@ -205,7 +216,7 @@ public class ShootingAdminController {
         }catch (NullPointerException n){
             showInformationDialog("Kein Pfad gewählt");
         }
-    }*/
+    }
 
     /**
      *Opens Profile administration

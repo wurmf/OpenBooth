@@ -41,5 +41,15 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
+      <Button fx:id="storage" layoutX="408.0" layoutY="383.0" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicher ort wählen" textFill="#3c3838">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Button>
+      <Label fx:id="storageDirLabel" layoutX="806.0" layoutY="388.0" prefHeight="75.0" prefWidth="746.0">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
