@@ -13,7 +13,7 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <Button layoutX="1579.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStartShootingPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
+      <Button fx:id="startButton" layoutX="1579.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStartShootingPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
@@ -29,23 +29,14 @@
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Label>
-      <Button layoutX="410.0" layoutY="382.0" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Durchsuchen" textFill="WHITE">
-         <font>
-            <Font name="HP Simplified" size="43.0" />
-         </font>
-      </Button>
-      <Label fx:id="storageDirLabel" layoutX="753.0" layoutY="377.0" prefHeight="92.0" prefWidth="924.0" textFill="WHITE">
-         <font>
-            <Font size="35.0" />
-         </font>
-      </Label>
+
 
       <Button layoutX="410.0" layoutY="95.0" mnemonicParsing="false" onAction="#onEditPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Profilverwaltung" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
       </Button>
-      <Button layoutX="697.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStopShootingPressed" prefHeight="82.0" prefWidth="527.0" style="-fx-background-color: darkgray;" text="Aktives Shooting Beenden" textFill="WHITE">
+      <Button fx:id="stopButton" layoutX="697.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStopShootingPressed" prefHeight="82.0" prefWidth="527.0" style="-fx-background-color: darkgray;" text="Aktives Shooting Beenden" textFill="WHITE">
          <font>
             <Font name="HP Simplified" size="43.0" />
          </font>
