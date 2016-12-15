@@ -97,6 +97,7 @@ public class FullScreenImageController {
                     activ=shootingService.searchIsActive().getId();
                     imageList = imageService.getAllImages(activ);
                 }
+                //TODO give the index of the image
                 //currentIndex=0;
             }
             if(currentIndex>=0&&imageList!=null&&!imageList.isEmpty()) {

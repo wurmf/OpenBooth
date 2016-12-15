@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.application.MainApplication;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -20,6 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -114,26 +118,55 @@ public class ShootingAdminController {
         if (profileChoiceBox.getValue() != null) {
                 try{
 
+                    Path storage = null;
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
 
-                    //TODO creat and define an default ordner
-                    String defautfolderPath="";
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
-                    Date date = new Date();
-                    File file = new File(defautfolderPath+"/"+dateFormat.format(date));
+                    String resource = System.getProperty("user.home");
 
-                    path= file.getPath();
+                    /*if(mobiel) {
+                        storage = Paths.get(resource + "fotostudio/Mobil");
+                    }else{*/
+                        storage = Paths.get(resource+"fotostudio/Studio");
+                   // }
+                    if(storage!=null) {
+                        try {
+                            Files.createDirectories(storage);
+                        } catch (FileAlreadyExistsException e) {
+                            LOGGER.info("shooting folder already exists" + e);
 
-                    Shooting shouting = new Shooting(0,(int)profile.getId(), path, true);
+                        } catch (IOException e) {
+                            LOGGER.error("creatin initial folder" + e);
+                            showInformationDialog("Derspeicherort konnte nicht erstellt werden");
+                        }
 
-                    //storageDirLabel.setText("");
-                    LOGGER.info("ShootingAdminController:", path);
-                    path="";
+                        DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+                        Date date = new Date();
+                        Path shootingstorage = Paths.get(storage + "/" + dateFormat.format(date));
 
-                    shootingService.addShooting(shouting);
+                        try {
+                            Files.createDirectories(shootingstorage);
+                        } catch (FileAlreadyExistsException e) {
+                            showInformationDialog("Derspeicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
+                            LOGGER.info("shooting folder already exists" + e);
 
-                    windowManager.showMiniatureFrame();
-                    windowManager.initShotFrameManager();
+                        } catch (IOException e) {
+                            LOGGER.error("creatin shooting folder file" + e);
+                            showInformationDialog("Derspeicherort konnte nicht erstellt werden");
+                        }
+
+                        Shooting shouting = new Shooting(0, (int) profile.getId(), shootingstorage.toString(), true);
+
+                        //storageDirLabel.setText("");
+                        LOGGER.info("ShootingAdminController:", path);
+                        path = "";
+
+                        shootingService.addShooting(shouting);
+
+                        windowManager.showMiniatureFrame();
+                        windowManager.initShotFrameManager();
+                    }else {
+                        showInformationDialog("Fehler beim erstellen eines Speicherorts");
+                    }
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
                     showInformationDialog("Es konnte keine Shooting erstellt werden.");
@@ -191,8 +224,6 @@ public class ShootingAdminController {
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
-        //TODO: remove
-        information.initOwner(windowManager.getStage());
         information.show();
     }
 
@@ -211,8 +242,6 @@ public class ShootingAdminController {
             windowManager.showMainFrame();
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");
-            //TODO: remove
-            information.initOwner(windowManager.getStage());
             information.show();
         } catch (ServiceException e) {
             showInformationDialog("Shooting konnte nicht beendet werden!");
