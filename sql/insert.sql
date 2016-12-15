@@ -23,10 +23,13 @@ INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Ka
 
 INSERT INTO profile_camera_positions VALUES (1,1,1,false);
 INSERT INTO profile_camera_positions VALUES (1,2,2,false);
+INSERT INTO profile_camera_positions VALUES (2,2,1,false);
+INSERT INTO profile_camera_positions VALUES (2,1,2,false);
 
 INSERT INTO profile_logo_rpositions VALUES (1,1,85.0,95.0,80.0,90.0);
 INSERT INTO profile_logo_rpositions VALUES (1,2, 5.0,10.0,15.0,20.0);
-INSERT INTO profile_logo_rpositions VALUES (1,3, -1.0,-1.0,-1.0,-1.0);
+INSERT INTO profile_logo_rpositions VALUES (2,1,75.0,95.0,80.0,90.0);
+INSERT INTO profile_logo_rpositions VALUES (2,2, 15.0,20.0,25.0,30.0);
 
 ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
