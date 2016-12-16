@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -49,6 +47,7 @@ public class SettingFrameController {
     private final ObservableList<Position> posList = FXCollections.observableArrayList();
 
     private final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
+    private final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
     private final FileChooser fileChooser = new FileChooser();
 
@@ -112,12 +111,45 @@ public class SettingFrameController {
     /* BEGINN OF KameraPosition-Zuweisung Table Column FXML */
     @FXML
     private TableView tableKamPos;
-    @FXML
-    private TableColumn colKamPosID;
+
     @FXML
     private TableColumn colKamPosKamera;
     @FXML
     private TableColumn colKamPosPosition;
+
+    /* Beginn of Logo Table Column FXML */
+    @FXML
+    private TableView tableLogo;
+    @FXML
+    private TableColumn colLogoID;
+    @FXML
+    private TableColumn colLogoName;
+    @FXML
+    private TableColumn colLogoX;
+    @FXML
+    private TableColumn colLogoY;
+    @FXML
+    private TableColumn colLogoBreite;
+    @FXML
+    private TableColumn colLogoHoehe;
+    @FXML
+    private TableColumn colLogoLogo;
+    @FXML
+    private TableColumn colLogoAktion;
+
+    /* LOGO TextFIELDS */
+    @FXML
+    private TextField txLogoName;
+    @FXML
+    private TextField txLogoX;
+    @FXML
+    private TextField txLogoY;
+    @FXML
+    private TextField txLogoBreite;
+    @FXML
+    private TextField txLogoHoehe;
+    @FXML
+    private TextField txLogoLogo;
 
     @Autowired
     public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice, CameraService cameraService,WindowManager windowmanager) throws ServiceException {
@@ -128,32 +160,7 @@ public class SettingFrameController {
 
     }
 
-    private void refreshTableProfiles(List<Profile> profileList){
-        LOGGER.info("refreshing the profil table...");
-        profList.clear();
-        profList.addAll(profileList);
-        tableProfil.setItems(profList);
-    }
-    private void refreshTablePosition(List<Position> positionList){
-        LOGGER.info("refreshing the position table...");
-        posList.clear();
-        posList.addAll(positionList);
-        tablePosition.setItems(posList);
-    }
 
-    private void refreshTableKameraPosition(List<Camera> camList){
-        LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
-        this.kamPosList.clear();
-        for(Camera cam: camList){
-            try {
-                this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }
-        //this.kamPosList.addAll(kamPosList);
-        tablePosition.setItems(this.kamPosList);
-    }
 
     @FXML
     private void initialize(){
@@ -338,7 +345,8 @@ public class SettingFrameController {
                 public void changed(ObservableValue ov, Profile t, Profile selectedProfil) {
                     try {
                         refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfil));
-                      //  refreshTableKameraPosition(pservice.getAllCamerasOfProfile(selectedProfil));
+                        refreshTableKameraPosition(pservice.getAllCamerasOfProfile(selectedProfil),pservice.getAllPositionsOfProfile(selectedProfil));
+                        refreshTableLogo(pservice.getAllLogosOfProfile(selectedProfil));
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }
@@ -477,15 +485,276 @@ public class SettingFrameController {
 
                     });
 
+              /* ######################### */
+            /* INITIALIZING Logo TABLE */
+            /* ######################### */
+            tableLogo.setEditable(true);
+
+            colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("logoID"));
+
+            colLogoName.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, String>("logoLabel"));
+            colLogoName.setCellFactory(TextFieldTableCell.forTableColumn());
+            colLogoName.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, String>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, String> t) {
+                            try {
+                                Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (t.getNewValue().compareTo("") != 0) {
+                                   //TODO: LOGO Label hinzufügen!!
+                                    // p.setName(t.getNewValue());
+                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
+                                    //TODO: oder nur eine service.editRelativeRectangle methode
+                                    //pservice. editPairLogo  editPosition(p);
+                                } else {
+                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }
+
+                            }
+
+                        }
+                    });
+            /* Logo Xstart Column */
+            colLogoX.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("xstart"));
+            colLogoX.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("xstart")));
+            colLogoX.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
+                            try {
+                                Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (!t.getNewValue().isNaN()) {
+                                    //TODO: LOGO Label hinzufügen!!
+                                    // p.setName(t.getNewValue());
+                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
+                                    //TODO: oder nur eine service.editRelativeRectangle methode
+                                    //pservice. editPairLogo  editPosition(p);
+                                } else {
+                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }
+
+                            }
+
+                        }
+                    });
+
+              /* Logo Ystart Column */
+            colLogoY.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("ystart"));
+            colLogoY.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("ystart")));
+            colLogoY.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
+                            try {
+                                Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (!t.getNewValue().isNaN()) {
+                                    //TODO: LOGO Label hinzufügen!!
+                                    // p.setName(t.getNewValue());
+                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
+                                    //TODO: oder nur eine service.editRelativeRectangle methode
+                                    //pservice. editPairLogo  editPosition(p);
+                                } else {
+                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }
+
+                            }
+
+                        }
+                    });
+
+              /* Logo Xstart Column */
+            colLogoBreite.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("width"));
+            colLogoBreite.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("width")));
+            colLogoBreite.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
+                            try {
+                                Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (!t.getNewValue().isNaN()) {
+                                    //TODO: LOGO Label hinzufügen!!
+                                    // p.setName(t.getNewValue());
+                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
+                                    //TODO: oder nur eine service.editRelativeRectangle methode
+                                    //pservice. editPairLogo  editPosition(p);
+                                } else {
+                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }
+
+                            }
+
+                        }
+                    });
+              /* Logo Xstart Column */
+            colLogoHoehe.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("height"));
+            colLogoHoehe.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("height")));
+            colLogoHoehe.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
+                            try {
+                                Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (!t.getNewValue().isNaN()) {
+                                    //TODO: LOGO Label hinzufügen!!
+                                    // p.setName(t.getNewValue());
+                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
+                                    //TODO: oder nur eine service.editRelativeRectangle methode
+                                    //pservice. editPairLogo  editPosition(p);
+                                } else {
+                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }
+
+                            }
+
+                        }
+                    });
+             /* Logo Column */
+            colLogoLogo.setStyle("-fx-alignment: CENTER;");
+            colLogoLogo.setSortable(false);
+            colLogoLogo.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, String>("path"));
+            colLogoLogo.setCellFactory(new Callback<TableColumn, TableCell>() {
+                @Override
+                public TableCell call(TableColumn p) {
+
+                    return new LogoImgCell(logoList,pservice);
+
+                }
+            });
+            /* Aktion Column */
+            colLogoAktion.setStyle("-fx-alignment: CENTER;");
+            colLogoAktion.setSortable(false);
+            colLogoAktion.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Boolean>,
+                            ObservableValue<Boolean>>() {
+
+                        @Override
+                        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Boolean> p) {
+                            return new SimpleBooleanProperty(p.getValue() != null);
+                        }
+                    });
+
+            //Adding the X-Button to the cell
+            colLogoAktion.setCellFactory(
+                    new Callback<TableColumn<Profile.PairLogoRelativeRectangle, Boolean>, TableCell<Profile.PairLogoRelativeRectangle, Boolean>>() {
+
+                        @Override
+                        public TableCell<Profile.PairLogoRelativeRectangle, Boolean> call(TableColumn<Profile.PairLogoRelativeRectangle, Boolean> p) {
+
+                            return new LogoButtonCell(logoList,pservice,windowManager.getStage());
+                        }
+
+                    });
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
     }
+    private void refreshTableProfiles(List<Profile> profileList){
+        LOGGER.info("refreshing the profil table...");
+        profList.clear();
+        profList.addAll(profileList);
+        tableProfil.setItems(profList);
+    }
+    private void refreshTablePosition(List<Position> positionList){
+        LOGGER.info("refreshing the position table...");
+        posList.clear();
+        posList.addAll(positionList);
+        tablePosition.setItems(posList);
+    }
 
+    private void refreshTableKameraPosition(List<Camera> camList, List<Position> posList){
+        LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
+        this.kamPosList.clear();
+        this.kamPosList.add(new Profile.PairCameraPosition(new Camera(1,"camera1","22","asdf","asdf"),new Position("Oben"),true));
+        this.kamPosList.add(new Profile.PairCameraPosition(new Camera(2,"camera2","22","asdf","asdf"),new Position("Unten"),true));
+       /* for(Camera cam: camList){
+            LOGGER.debug("kamera => "+cam.getLable());
+            try {
+                this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            }
+        }*/
+        //this.kamPosList.addAll(kamPosList);
+        tableKamPos.setItems(this.kamPosList);
+    }
+    private void refreshTableLogo(List<Logo> logoList){
+        LOGGER.info("refreshing the Logo table...");
+        this.logoList.clear();
+        this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("logo1","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
+        this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("Logo2","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
+       /* for(Camera cam: camList){
+            LOGGER.debug("kamera => "+cam.getLable());
+            try {
+                this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            }
+        }*/
+        //this.kamPosList.addAll(kamPosList);
+        tableLogo.setItems(this.logoList);
+    }
 
     @FXML
     private void logoUpload(){
-        //TODO
+        fileChooser.setTitle("Logo Hochladen...");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        fileChooser.getExtensionFilters().addAll(
+                //  new FileChooser.ExtensionFilter("All Images", "*.*")
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            txLogoLogo.setText(file.getAbsolutePath());
+        }
     }
     @FXML
     private void watermarkUpload(){

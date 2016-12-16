@@ -84,7 +84,6 @@
                               <Button layoutX="338.0" layoutY="239.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" prefWidth="27.0" text="+" />
                               <TableView fx:id="tableKamPos" layoutX="538.0" layoutY="41.0" prefHeight="199.0" prefWidth="453.0">
                                  <columns>
-                                    <TableColumn fx:id="colKamPosID" prefWidth="44.74237585067749" text="ID" />
                                     <TableColumn fx:id="colKamPosKamera" prefWidth="185.41546630859375" text="Kamera" />
                                     <TableColumn fx:id="colKamPosPosition" minWidth="0.0" prefWidth="202.0" text="Position" />
                                  </columns>

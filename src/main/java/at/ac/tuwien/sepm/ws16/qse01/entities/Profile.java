@@ -163,6 +163,14 @@ public class Profile {
             this.isGreenScreenReady = isGreenScreenReady;
         }
 
+        public String getCameraLabel() {
+            return cameraLabel;
+        }
+
+        public void setCameraLabel(String cameraLabel) {
+            this.cameraLabel = cameraLabel;
+        }
+
         public Camera getCamera() {
             return camera;
         }
@@ -193,7 +201,9 @@ public class Profile {
      */
     public static class PairLogoRelativeRectangle {
         private Logo logo;
+
         private RelativeRectangle relativeRectangle;
+
 
         public Logo getLogo() {
             return logo;
@@ -214,6 +224,55 @@ public class Profile {
 
         public void setRelativeRectangle(RelativeRectangle relativeRectangle) {
             this.relativeRectangle = relativeRectangle;
+        }
+
+        public int getLogoID(){
+            return this.logo.getId();
+        }
+        public String getPath(){
+            return this.logo.getPath();
+        }
+        public void setPath(String path){
+            this.logo.setPath(path);
+        }
+        public String getLogoLabel() {
+            return this.logo.getLabel();
+        }
+
+        public void setLogoLabel(String logoLabel) {
+            this.logo.setLabel(logoLabel);
+        }
+
+        public double getXstart() {
+            return this.relativeRectangle.getX();
+        }
+
+        public void setXstart(double xstart) {
+            this.relativeRectangle.setX(xstart);
+        }
+
+        public double getYstart() {
+            return this.relativeRectangle.getY();
+        }
+
+        public void setYstart(double ystart) {
+            this.relativeRectangle.setY(ystart);
+        }
+
+        public double getHeight() {
+            return this.relativeRectangle.getHeight();
+        }
+
+        public void setHeight(double height) {
+            this.relativeRectangle.setHeight(height);
+        }
+
+        public double getWidth() {
+            return this.relativeRectangle.getWidth();
+        }
+
+        public void setWidth(double width) {
+            this.relativeRectangle.setWidth(width);
         }
     }
 }
