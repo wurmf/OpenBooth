@@ -42,6 +42,7 @@ CREATE TABLE profile_camera_positions(profileId BIGINT REFERENCES profiles(profi
                         PRIMARY KEY (profileId, cameraId,positionId));
 
 CREATE TABLE logos(logoID BIGINT DEFAULT logos_seq.nextval PRIMARY KEY,
+                        label VARCHAR(50) NOT NULL,
                         path VARCHAR(250) DEFAULT NULL,
                         isDeleted BOOLEAN DEFAULT false);
 

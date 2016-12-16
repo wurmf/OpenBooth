@@ -14,9 +14,8 @@ INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img2.jp
 INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-1','/images/position/pos1.jpg',FALSE);
 INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-2','/images/position/pos2.jpg',FALSE);
 
-INSERT INTO logos(path) VALUES ('/images/logos/logo1.jpg');
-INSERT INTO logos(path) VALUES ('/images/logos/logo2.jpg');
-INSERT INTO logos(path) VALUES ('/images/logos/watermark1.jpg');
+INSERT INTO logos(label, path) VALUES ('Logo 1', '/images/logos/logo1.jpg');
+INSERT INTO logos(label, path) VALUES ('Logo 2', '/images/logos/logo2.jpg');
 
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
