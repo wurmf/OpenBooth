@@ -68,14 +68,16 @@ public class JDBCProfileDAO implements ProfileDAO {
             else
                 {
                 String sqlString = "INSERT INTO"
-                    + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
-                    + " VALUES (?,?,?,?,?);";
+                    + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
+                    + " VALUES (?,?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());
                 stmt.setBoolean(3,profile.isPrintEnabled());
                 stmt.setBoolean(4,profile.isFilerEnabled());
                 stmt.setBoolean(5,profile.isGreenscreenEnabled());
+                    stmt.setBoolean(6,profile.isMobilEnabled());
+                    stmt.setString(7,profile.getWatermark());
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }

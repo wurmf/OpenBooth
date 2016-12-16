@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -17,20 +17,20 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Created by macdnz on 15.12.16.
+ * Created by macdnz on 16.12.16.
  */
-public class ProfileButtonCell extends TableCell<Profile, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(ProfileButtonCell.class);
+public class PositionButtonCell extends TableCell<Position, Boolean> {
+    final static Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
 
-    private  ObservableList<Profile> pList;
+    private  ObservableList<Position> posList;
     private ProfileService pservice;
 
     private final Button cellButton = new Button("X");
 
-    public ProfileButtonCell(ObservableList<Profile> pList, ProfileService pservice,Stage primaryStage) {
-        this.pList = pList;
+    public PositionButtonCell(ObservableList<Position> posList, ProfileService pservice,Stage primaryStage) {
+        this.posList = posList;
         this.pservice = pservice;
-  
+
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
@@ -38,21 +38,21 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Dieses Profil wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie dieses Profil mit den zugehörigen Daten löschen wollen?");
-               alert.initOwner(primaryStage);
+                alert.setHeaderText("Diese Position wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie diese Position mit den zugehörigen Daten löschen wollen?");
+                alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");
                 alert.getButtonTypes().setAll(butJa,butNein);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile currentProfile = (Profile) ProfileButtonCell.this.getTableView().getItems().get(ProfileButtonCell.this.getIndex());
+                    Position currentPosition = (Position) PositionButtonCell.this.getTableView().getItems().get(PositionButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    pList.remove(currentProfile);
+                    posList.remove(currentPosition);
                     try {
-                        pservice.erase(currentProfile);
+                        pservice.erasePosition(currentPosition);
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }

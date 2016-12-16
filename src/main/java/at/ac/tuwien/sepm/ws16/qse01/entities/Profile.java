@@ -18,6 +18,25 @@ public class Profile {
     private boolean isDeleted;
 
     /**
+     * Constructor with unknown ID and other information about profile
+     *
+     * @param name - no empty profile name
+     */
+    public Profile(String name,
+                   boolean isPrintEnabled,
+                   boolean isFilterEnabled,
+                   boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled
+    ) {
+        this.id = Integer.MIN_VALUE;
+        this.name = name;
+        this.isPrintEnabled = isPrintEnabled;
+        this.isFilerEnabled = isFilterEnabled;
+        this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
+    }
+
+    /**
      * Constructor with known ID
      *
      * @param id - positive profile id
@@ -133,11 +152,13 @@ public class Profile {
      */
     public static class PairCameraPosition {
         private Camera camera;
+        private String cameraLabel;
         private Position position;
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
             this.camera = camera;
+            this.cameraLabel = camera.getLable();
             this.position = position;
             this.isGreenScreenReady = isGreenScreenReady;
         }
