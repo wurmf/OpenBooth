@@ -10,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.print.PrinterException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -437,4 +437,18 @@ public class FullScreenImageController {
 
 
     }
+    public void changeImage(int imgID){
+        try {
+            if(new File(imageService.read(imgID).getImagepath()).isFile())
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            else
+                ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + imageService.read(imgID).getImagepath()),  ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+
+        } catch (FileNotFoundException e) {
+               LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
+        } catch (ServiceException e){
+            LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
+        }
+    }
+
 }

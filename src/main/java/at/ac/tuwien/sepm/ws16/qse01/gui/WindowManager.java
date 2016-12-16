@@ -36,6 +36,7 @@ public class WindowManager {
     private Scene miniaturScene;
     private Scene pictureFullScene;
     private boolean activeShootingAvailable;
+    private FullScreenImageController pictureController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
@@ -67,6 +68,7 @@ public class WindowManager {
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
+        this.pictureController = pictureWrapper.getController();
 
         //Creating Main-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
@@ -160,9 +162,10 @@ public class WindowManager {
         shotFrameManager.closeFrames();
     }
 
-    public void showFullscreenImage(){
+    public void showFullscreenImage(int imgID){
         mainStage.setScene(pictureFullScene);
         mainStage.setFullScreen(true);
+        pictureController.changeImage(imgID);
     }
 
     /**
