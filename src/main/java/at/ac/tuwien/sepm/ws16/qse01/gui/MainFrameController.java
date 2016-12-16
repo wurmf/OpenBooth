@@ -73,7 +73,7 @@ public class MainFrameController {
      * @param actionEvent
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        windowManager.showAdminLogin();
+        windowManager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE);
     }
 
     /**

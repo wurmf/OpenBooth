@@ -4,6 +4,8 @@ import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
+import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
+import at.ac.tuwien.sepm.ws16.qse01.gui.model.impl.UniversalModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,21 +27,29 @@ import java.util.List;
 public class WindowManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WindowManager.class);
 
+    public static final int SHOW_MAINSCENE=1;
+    public static final int SHOW_SHOOTINGSCENE=2;
+    public static final int SHOW_PROFILESCENE=3;
+    public static final int SHOW_MINIATURESCENE=4;
+    public static final int SHOW_PICTUREFULLSCENE=5;
+
     private SpringFXMLLoader springFXMLLoader;
     private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
+    private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
+    private Scene adminLoginScene;
     private Scene mainScene;
     private Scene shootingScene;
-    private Scene adminLoginScene;
     private Scene profileScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
 
     @Autowired
-    public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
+    public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
         this.springFXMLLoader=springFXMLLoader;
         this.shotFrameManager = shotFrameManager;
+        this.loginRedirectorModel = loginRedirectorModel;
     }
 
     /**
@@ -105,8 +115,7 @@ public class WindowManager {
         }
 
         this.mainStage.setTitle("Fotostudio");
-        this.mainStage.setScene(mainScene);
-        this.mainStage.setFullScreen(true);
+        showAdminLogin(SHOW_MAINSCENE);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
     }
@@ -114,37 +123,53 @@ public class WindowManager {
     /**
      * Sets the adminLoginScene as Scene in the mainStage.
      */
-    public void showAdminLogin(){
+    public void showAdminLogin(int sceneToShow){
+        loginRedirectorModel.setNextScene(sceneToShow);
         mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
+
     /**
-     * Sets the shootingScene as Scene in the mainStage.
+     * Sets the scene specified by the given integer. For use in combination with static integers provided by WindowManager for identification of the scenes.
+     * If a number is given that is not assigned as number for a scene the mainScene will be set.
+     * @param sceneToShow the number of the scene that shall be set.
      */
-    public void showShootingAdministration(){
-        mainStage.setScene(shootingScene);
+    public void showScene(int sceneToShow){
+        switch (sceneToShow){
+            case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
+                break;
+            case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
+                break;
+            case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
+                break;
+            case SHOW_PICTUREFULLSCENE: mainStage.setScene(pictureFullScene);
+                break;
+            default: mainStage.setScene(mainScene);
+                break;
+        }
         mainStage.setFullScreen(true);
     }
     /**
      * Sets the mainScene as Scene in the mainStage.
      */
     public void showMainFrame(){
-        mainStage.setScene(mainScene);
-        mainStage.setFullScreen(true);
+        showScene(SHOW_MAINSCENE);
     }
     /**
      * Sets the profileScene as Scene in the mainStage.
      */
     public void showProfileScene(){
-        mainStage.setScene(profileScene);
-        mainStage.setFullScreen(true);
+        showScene(SHOW_PROFILESCENE);
     }
     /**
      * Sets the miniaturScene as Scene in the mainStage.
      */
     public void showMiniatureFrame(){
-        mainStage.setScene(miniaturScene);
-        mainStage.setFullScreen(true);
+        showScene(SHOW_MINIATURESCENE);
+    }
+
+    public void showFullscreenImage(){
+        showScene(SHOW_PICTUREFULLSCENE);
     }
     /**
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
@@ -154,10 +179,6 @@ public class WindowManager {
         shotFrameManager.closeFrames();
     }
 
-    public void showFullscreenImage(){
-        mainStage.setScene(pictureFullScene);
-        mainStage.setFullScreen(true);
-    }
 
     /**
      * Returns the mainStage.

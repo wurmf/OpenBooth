@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
@@ -20,6 +21,7 @@ public class LoginFrameController {
 
     private WindowManager windowManager;
     private AdminUserService adminUserService;
+    private LoginRedirectorModel loginRedirectorModel;
     @FXML
     private TextField adminField;
     @FXML
@@ -29,9 +31,10 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
+    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
+        this.loginRedirectorModel=loginRedirectorModel;
     }
 
     /**
@@ -44,7 +47,7 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                windowManager.showShootingAdministration();
+                windowManager.showScene(loginRedirectorModel.getNextScene());
                 resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
@@ -60,11 +63,11 @@ public class LoginFrameController {
     @FXML
     public void closeLogin(){
         resetValues();
-        windowManager.showMainFrame();
+        windowManager.showScene(WindowManager.SHOW_MAINSCENE);
     }
 
     /**
-     * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible.
+     * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible and sets the scene.
      */
     private void resetValues(){
         wrongCredentialsLabel.setVisible(false);
