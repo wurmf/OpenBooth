@@ -120,14 +120,14 @@ public class CameraGphoto implements Closeable {
         }
     }
 
-    public CameraFile waitForImage()
+    public CameraFile waitForImage() throws CameraException
     {
         checkNotClosed();
         PointerByReference event = new PointerByReference();
         try {
             //LOGGER.debug("wait for Event from camera");
             final PointerByReference event_data = new PointerByReference();
-            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 1000000 , event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
+            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 0, event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
 
             if(event.getPointer().getInt(0)==GP_EVENT_FILE_ADDED)
             {
@@ -145,8 +145,7 @@ public class CameraGphoto implements Closeable {
         catch(CameraException ex)
         {
             LOGGER.error("wait for image failed");
-
-            return null;
+            throw new CameraException(ex.getMessage(), ex.getResult());
         }
 
     }

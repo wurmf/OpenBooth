@@ -14,6 +14,8 @@ public interface CameraService {
 
     public List<Camera> getActiveCameras() throws ServiceException;
 
+    public Camera cameraExists(Camera camera) throws ServiceException;
+
     public void setCameraActive(int cameraID) throws ServiceException;
 
     public void setCameraInactive(int cameraID) throws ServiceException;

@@ -66,7 +66,7 @@ public class ShootingAdminController {
             // profileChoiceBox.setCellFactory(new PropertyValueFactory<Profile,String>("name"));
 
 
-            if(profileChoiceBox !=null){
+            if(profileChoiceBox !=null&&!observableListProfile.isEmpty()){
                 profileChoiceBox.setValue(observableListProfile.get(0));
             }
         } catch (ServiceException e) {

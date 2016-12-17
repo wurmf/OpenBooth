@@ -42,10 +42,6 @@ public class CameraHandlerThread  extends Thread{
     {
         int i = 1;
         boolean imageSaved = false;
-        // Anmerkung: Manueller Test
-      /*  shotFrameManager.refreshShot(1,"/images/shooting1/img1.jpg");
-        shotFrameManager.refreshShot(2,"/images/shooting1/img2.jpg");
-        System.out.println("ende refreshing..");*/
 
         while (i == 1)
         {
@@ -64,9 +60,9 @@ public class CameraHandlerThread  extends Thread{
                             Files.createDirectory(storageDir);
                             LOGGER.info("directory created \n {} \n", storageDir);
                         } catch (FileAlreadyExistsException e) {
-                            LOGGER.info("Directory " + e.getMessage() + " already exists \n");
+                            LOGGER.info("Directory " + e + " already exists \n");
                         } catch (IOException e){
-                            LOGGER.error("error creating directory " + e.getMessage() + "\n");
+                            LOGGER.error("error creating directory " + e + "\n");
                             throw new ServiceException("error creating directory " + e.getMessage() + "\n");
                         }
                         DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
@@ -83,23 +79,29 @@ public class CameraHandlerThread  extends Thread{
                         LOGGER.debug(image.getImageID() + "");
                         LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
                     }else{
-                        LOGGER.debug("no active shooting during capture");
+                        LOGGER.error("no active shooting during capture");
                     }
                     cf.close();
 
                 }
 
+
             } catch (CameraException ex) {
-                LOGGER.debug("waitForImage Timeout");
-                //throw new CameraException(ex.getMessage(), ex.getResult());
+                LOGGER.debug("waitForImage failed" + ex);
+                return;
             } catch (ServiceException ex) {
-                LOGGER.debug("Exception in service: {}", ex.getMessage());
+                LOGGER.debug("Exception in service: {}", ex);
+            }
+            if(shotFrameManager.isClosed())
+            {
+                LOGGER.info("Kamerathread beendet");
+                return;
             }
             if(imageSaved)
             {
                 shotFrameManager.refreshShot(camera.getId(), image.getImagepath());
+                imageSaved=false;
             }
-            imageSaved=false;
         }
         CameraUtils.closeQuietly(cameraGphoto);
     }

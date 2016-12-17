@@ -14,19 +14,21 @@ INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img2.jp
 INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-1','/images/position/pos1.jpg',FALSE);
 INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-2','/images/position/pos2.jpg',FALSE);
 
-INSERT INTO logos(path) VALUES ('/images/logos/logo1.jpg');
-INSERT INTO logos(path) VALUES ('/images/logos/logo2.jpg');
-INSERT INTO logos(path) VALUES ('/images/logos/watermark1.jpg');
+INSERT INTO logos(label, path) VALUES ('Logo 1', '/images/logos/logo1.jpg');
+INSERT INTO logos(label, path) VALUES ('Logo 2', '/images/logos/logo2.jpg');
 
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
 
 INSERT INTO profile_camera_positions VALUES (1,1,1,false);
 INSERT INTO profile_camera_positions VALUES (1,2,2,false);
+INSERT INTO profile_camera_positions VALUES (2,2,1,false);
+INSERT INTO profile_camera_positions VALUES (2,1,2,false);
 
 INSERT INTO profile_logo_rpositions VALUES (1,1,85.0,95.0,80.0,90.0);
 INSERT INTO profile_logo_rpositions VALUES (1,2, 5.0,10.0,15.0,20.0);
-INSERT INTO profile_logo_rpositions VALUES (1,3, -1.0,-1.0,-1.0,-1.0);
+INSERT INTO profile_logo_rpositions VALUES (2,1,75.0,95.0,80.0,90.0);
+INSERT INTO profile_logo_rpositions VALUES (2,2, 15.0,20.0,25.0,30.0);
 
 ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;

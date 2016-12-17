@@ -18,4 +18,6 @@ public interface CameraDAO {
     public void setInactive(int cameraID) throws PersistenceException;
 
     public void setAllInactive() throws PersistenceException;
+
+    public Camera exists(Camera camera) throws PersistenceException;
 }

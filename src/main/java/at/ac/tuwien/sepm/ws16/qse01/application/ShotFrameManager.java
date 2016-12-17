@@ -30,12 +30,14 @@ public class ShotFrameManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
     private List<ShotFrameController> shotframes;
     private List<Stage> shotStages;
+    private boolean isClosed=false;
     @Resource
     private ProfileService profileService;
     @Resource
     private ShootingService shootingService;
     @Resource
     private CameraService cameraService;
+
 
     @Autowired
     public ShotFrameManager(ProfileService profileService, ShootingService shootingService, CameraService cameraService) throws ServiceException {
@@ -92,7 +94,12 @@ public class ShotFrameManager {
         }
     }
     public void closeFrames(){
+        isClosed=true;
         for(Stage stage: shotStages)
             stage.close();
+    }
+
+    public boolean isClosed() {
+        return isClosed;
     }
 }

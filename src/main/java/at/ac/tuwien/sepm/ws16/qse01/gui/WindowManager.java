@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * A class that will control stages and serves as a means of communication between all controllers.
@@ -33,9 +32,11 @@ public class WindowManager {
     private Scene shootingScene;
     private Scene adminLoginScene;
     private Scene profileScene;
+    private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
     private boolean activeShootingAvailable;
+    private FullScreenImageController pictureController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
@@ -67,6 +68,7 @@ public class WindowManager {
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
+        this.pictureController = pictureWrapper.getController();
 
         //Creating Main-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
@@ -80,6 +82,10 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
         this.profileScene = new Scene((Parent) profileWrapper.getLoadedObject(),screenWidth,screenHeight);
+        //Creating Setting-Scene
+        SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
+        this.settingScene = new Scene((Parent) settingWrapper.getLoadedObject(),screenWidth,screenHeight);
 
         //Creating Login-Scene
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
@@ -137,7 +143,7 @@ public class WindowManager {
      * Sets the profileScene as Scene in the mainStage.
      */
     public void showProfileScene(){
-        mainStage.setScene(profileScene);
+        mainStage.setScene(settingScene);
         mainStage.setFullScreen(true);
     }
     /**
@@ -156,9 +162,10 @@ public class WindowManager {
         shotFrameManager.closeFrames();
     }
 
-    public void showFullscreenImage(){
+    public void showFullscreenImage(int imgID){
         mainStage.setScene(pictureFullScene);
         mainStage.setFullScreen(true);
+        pictureController.changeImage(imgID);
     }
 
     /**
@@ -184,6 +191,8 @@ public class WindowManager {
             cameraHandler.getImages();
         } catch (Exception e) {
             LOGGER.info("start - Getting camera - "+e);
+        } catch (UnsatisfiedLinkError e){
+            LOGGER.error("initshotFrameManager-> Error "+e.getMessage());
         }
     }
 }

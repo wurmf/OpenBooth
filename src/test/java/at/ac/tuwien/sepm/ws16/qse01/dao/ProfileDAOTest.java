@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
@@ -106,14 +105,14 @@ public abstract class ProfileDAOTest {
     */
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
         profileDAO.create(profile);
         profile = profileDAO.read(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
         profileDAO.create(profile);
         profile = profileDAO.read(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);

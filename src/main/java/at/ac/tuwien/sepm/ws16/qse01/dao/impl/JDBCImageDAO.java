@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.io.File;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -177,10 +178,23 @@ public class JDBCImageDAO implements ImageDAO {
 
     @Override
     public void delete(int imageID) throws PersistenceException {
+        LOGGER.debug("Entering delete method in DAO with imageID ="+imageID);
         String sql = "DELETE FROM Images WHERE  IMAGEID=?";
         PreparedStatement stmt = null;
 
         try{
+            //delete image from filesystem
+            Image img = read(imageID);
+            if(new File(img.getImagepath()).isFile()) {
+                new File(img.getImagepath()).delete();
+                LOGGER.debug("image deleted from filesystem!");
+            }else if(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).isFile()) {
+                new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).delete();
+                LOGGER.debug("image deleted from filesystem!");
+            }else{
+                LOGGER.debug("This image does not exist in filesystem!");
+            }
+
             stmt= con.prepareStatement(sql);
             stmt.setInt(1,imageID);
             stmt.execute();
