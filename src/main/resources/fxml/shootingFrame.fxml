@@ -3,53 +3,67 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ShootingAdminController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+      <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="20.0" />
+      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
+      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="40.0" />
+    <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+      <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+  </rowConstraints>
    <children>
-      <Button layoutX="89.0" layoutY="912.0" mnemonicParsing="false" onAction="#onDemolitionPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Abbrechen" textFill="WHITE">
+      <Button mnemonicParsing="false" onAction="#onDemolitionPressed" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Button>
-      <Button fx:id="startButton" layoutX="480.0" layoutY="220.0" mnemonicParsing="false" onAction="#onStartShootingPressed" prefHeight="81.0" prefWidth="292.0" style="-fx-background-color: darkgray;" text="Start" textFill="WHITE">
+      <Button fx:id="startButton" mnemonicParsing="false" onAction="#onStartShootingPressed" text="Start" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Button>
-      <ChoiceBox fx:id="profileChoiceBox" layoutX="753.0" layoutY="95.0" prefHeight="82.0" prefWidth="999.0" />
-      <Label layoutX="268.0" layoutY="110.0" prefHeight="52.0" prefWidth="114.0" text="Profil:" textFill="WHITE">
+      <ChoiceBox fx:id="profileChoiceBox" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <Label text="Profil:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Label>
-      <Label layoutX="118.0" layoutY="397.0" prefHeight="52.0" prefWidth="235.0" text="Speicherort:" textFill="WHITE">
+      <Label text="Speicherort:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Label>
-
-
-      <Button layoutX="410.0" layoutY="95.0" mnemonicParsing="false" onAction="#onEditPressed" prefHeight="82.0" prefWidth="333.0" style="-fx-background-color: darkgray;" text="Profilverwaltung" textFill="WHITE">
+      <Button mnemonicParsing="false" onAction="#onEditPressed" text="Profilverwaltung" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Button>
-      <Button fx:id="stopButton" layoutX="697.0" layoutY="912.0" mnemonicParsing="false" onAction="#onStopShootingPressed" prefHeight="82.0" prefWidth="527.0" style="-fx-background-color: darkgray;" text="Aktives Shooting Beenden" textFill="WHITE">
+      <Button fx:id="stopButton" mnemonicParsing="false" onAction="#onStopShootingPressed" text="Aktives Shooting Beenden" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3">
          <font>
-            <Font name="HP Simplified" size="43.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Button>
-      <Button fx:id="storage" layoutX="408.0" layoutY="383.0" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicherort wählen" textFill="#3c3838">
+      <Button fx:id="storage" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicherort wählen" textFill="#3c3838" GridPane.columnIndex="2" GridPane.rowIndex="2">
          <font>
-            <Font size="36.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Button>
-      <Label fx:id="storageDirLabel" layoutX="806.0" layoutY="388.0" prefHeight="75.0" prefWidth="746.0">
+      <Label fx:id="storageDirLabel" GridPane.columnIndex="3" GridPane.rowIndex="2">
          <font>
-            <Font size="36.0" />
+            <Font name="HP Simplified" size="16.0" />
          </font>
       </Label>
    </children>
-</AnchorPane>
+</GridPane>

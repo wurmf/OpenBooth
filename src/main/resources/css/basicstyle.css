@@ -1,0 +1,20 @@
+.root{
+  -fx-background-color: dimgray;
+}
+.button {
+-fx-background-color: darkgray;
+   -fx-text-fill: white;
+   -fx-font-family: HP Simplified;
+   -fx-pref-width: 15em;
+   -fx-pref-height:2em;
+}
+.label{
+  -fx-text-fill: white;
+  -fx-font-family: HP Simplified;
+}
+#wrongCredentialsLabel{
+  -fx-text-fill: red;
+}
+#profileChoiceBox{
+  -fx-pref-width: 30em;
+}
