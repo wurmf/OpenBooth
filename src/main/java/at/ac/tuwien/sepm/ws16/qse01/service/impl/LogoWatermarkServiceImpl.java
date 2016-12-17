@@ -164,6 +164,11 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         double relativeLogoWidth = calculatedPosition.getWidth();
         double relativeLogoHeight = calculatedPosition.getHeight();
 
+        if(relativeLogoWidth <= 0 || relativeLogoHeight <= 0){
+            LOGGER.error("addLogoAtPosition- no valid logo width and height");
+            throw new ServiceException("no valid logo width and height");
+        }
+
         double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
         double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
 
@@ -198,9 +203,6 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
             relativeLogoWidth = widthHeightRatio * relativeLogoHeight;
 
-        }else{
-            LOGGER.error("calculatePosition - no valid logo width and height");
-            throw new ServiceException("addLogoAtPosition - no valid logo width and height");
         }
 
         position.setHeight(relativeLogoHeight);
