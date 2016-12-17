@@ -53,7 +53,7 @@ public class CameraServiceImpl implements CameraService {
     public List<Camera> getActiveCameras() throws ServiceException {
         try
         {
-            return cameraDAO.getActive();
+            return cameraDAO.readActive();
         }
         catch (PersistenceException ex)
         {

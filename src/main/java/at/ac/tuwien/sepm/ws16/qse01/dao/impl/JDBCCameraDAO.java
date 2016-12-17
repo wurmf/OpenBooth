@@ -93,7 +93,7 @@ public class JDBCCameraDAO implements CameraDAO{
     }
 
     @Override
-    public List<Camera> getActive() throws PersistenceException {
+    public List<Camera> readActive() throws PersistenceException {
         List<Camera> cameraList = new ArrayList<>();
         PreparedStatement stmt = null;
         String query = "select * from cameras where ISACTIVE = TRUE ;";
@@ -117,7 +117,7 @@ public class JDBCCameraDAO implements CameraDAO{
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing getActive failed: " + e.getMessage());
+                    LOGGER.debug("Closing readActive failed: " + e.getMessage());
                 }
             }
         }

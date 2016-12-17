@@ -9,11 +9,19 @@ import java.util.List;
 public interface CameraHandler {
 
     /**
-     * Saves image in images folder and in database.
-     * Also tells the Shot monitor to refresh the image.
+     * Detects all connected cameras and saves for them in the Database or sets them active if they are already saved.
      *
+     *
+     * @throws CameraException if something goes wrong during the start of the Threads
      * */
     public void getImages() throws CameraException;
 
+
+    /**
+     * Saves image in images folder and in database.
+     * Also tells the Shot monitor to refresh the image.
+     *
+     * @throws CameraException if something goes wrong during the detecting of the cameras
+     * */
     public List<Camera> getCameras() throws CameraException;
 }
