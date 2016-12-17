@@ -32,7 +32,7 @@ public class Logo {
      * @param path - no empty logo path
      */
     public Logo(String label, String path){
-        this(Integer.MIN_VALUE, label,path,false);
+        this(Integer.MIN_VALUE, label, path,false);
     }
 
     public int getId() {
@@ -65,5 +65,21 @@ public class Logo {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Logo
+                && ((Logo) object).getId()==this.getId()
+                && ((Logo) object).getLabel()==this.getLabel()
+                && ((Logo) object).getPath()==this.getPath()
+                && ((Logo) object).isDeleted()==this.isDeleted()
+                )
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

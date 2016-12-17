@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JDBCProfileDAOTest class to extend all abstract test classes
+ * class to extend all abstract test classes
  * is used to set up and at end to tear down concrete H2-DB test environment
  */
 public class ProfileServiceTestImpl extends ProfileServiceTest {

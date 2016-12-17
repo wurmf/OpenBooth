@@ -95,17 +95,21 @@ public class JDBCLogoDAO implements LogoDAO {
             stmt.setString(2,logo.getPath());
             stmt.setBoolean(3,logo.isDeleted());
             stmt.setInt(4,logo.getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
-            // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
+            int returnUpdateCount = stmt.executeUpdate();
+
+            // Check, if object has been updated and return suitable boolean value or throw Exception
+            if (returnUpdateCount == 1){
                 LOGGER.debug("Persisted object update has been successfully(return value true)");
                 return true;
                 }
-                else {
+            else if (returnUpdateCount == 0){
                 LOGGER.debug("Provided object has been not updated, since it doesn't exist in persistence data store(return value false)");
                 return false;}
-        } catch (SQLException e) {
+            else {
+                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is brocken!This should not happend!");
+            }
+        }
+        catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
         finally {
@@ -124,7 +128,7 @@ public class JDBCLogoDAO implements LogoDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "SELECT * FROM logos WHERE logoID = ?;";
+        sqlString = "SELECT * FROM logos WHERE logoID = ? AND isDeleted = 'false';";
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,id);
@@ -184,26 +188,30 @@ public class JDBCLogoDAO implements LogoDAO {
     @Override
     public boolean delete(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + logo);
-        ResultSet rs;
-        String sqlString;
+        if (logo==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
         PreparedStatement stmt = null;
-
+        String sqlString;
         sqlString = "UPDATE logos SET isDeleted = 'true' WHERE logoID = ? AND isDeleted = 'false' ;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,logo.getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
+            int returnUpdateCount  = stmt.executeUpdate();
+
             // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
+            if (returnUpdateCount == 1){
                 LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
                 return true;
             }
-            else {
+            else if (returnUpdateCount == 0){
                 LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
                 return false;
             }
+            else {
+                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is brocken!This should not happend!");
+            }
+
         } catch (SQLException e) {
             throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
         }
