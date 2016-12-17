@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAOTest;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.Test;
@@ -14,7 +13,7 @@ import static junit.framework.TestCase.assertTrue;
  * ProfileService Tester
  */
 public abstract class ProfileServiceTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAOTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceTest.class);
     @Autowired
     private ProfileService profileService;
     protected void setProfileService(ProfileService profileService){

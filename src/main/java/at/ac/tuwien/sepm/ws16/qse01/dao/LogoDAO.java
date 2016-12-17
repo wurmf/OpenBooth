@@ -10,10 +10,10 @@ import java.util.List;
  */
 public interface LogoDAO {
     /**
-     * Persists a given logo object with or without known id(in case, if id = Long.MIN_VALUE)
+     * Persists a given logo object with or without known id(in case, if id = Integer.MIN_VALUE)
      * In case id is unknown an unique id will be autoassigned
      * @param logo - logo object to be persisted, must not be null
-     * @return persisted logo object with possible autoassigned id(in case, if id = Long.MIN_VALUE)
+     * @return persisted logo object with possible autoassigned id(in case, if id = Integer.MIN_VALUE)
      * @throws PersistenceException if persistence data store can not be accessed
      */
     Logo create(Logo logo) throws PersistenceException;
