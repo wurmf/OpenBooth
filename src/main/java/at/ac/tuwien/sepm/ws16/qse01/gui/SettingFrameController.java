@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
+import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -11,11 +12,13 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -40,6 +43,8 @@ public class SettingFrameController {
     @Resource
     private ProfileService pservice;
     @Resource
+    private LogoWatermarkService logoService;
+    @Resource
     private CameraService cameraService;
 
     private final ObservableList<Profile> profList = FXCollections.observableArrayList();
@@ -50,6 +55,7 @@ public class SettingFrameController {
     private final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
     private final FileChooser fileChooser = new FileChooser();
+
 
     /* BEGINN OF PROFILE Table Column FXML */
     @FXML
@@ -151,13 +157,22 @@ public class SettingFrameController {
     @FXML
     private TextField txLogoLogo;
 
+    /* Vorschau FXML */
+    @FXML
+    private TextField txPreviewWidth;
+    @FXML
+    private TextField txPreviewHeight;
+    @FXML
+    private ImageView previewLogo;
+
+
     @Autowired
-    public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice, CameraService cameraService,WindowManager windowmanager) throws ServiceException {
+    public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice,LogoWatermarkService logoService,CameraService cameraService,WindowManager windowmanager) throws ServiceException {
         this.springFXMLLoader = springFXMLLoader;
         this.pservice = pservice;
         this.cameraService = cameraService;
         this.windowManager = windowmanager;
-
+        this.logoService = logoService;
     }
 
 
@@ -165,6 +180,7 @@ public class SettingFrameController {
     @FXML
     private void initialize(){
         LOGGER.debug("Initializing profil frame ...");
+
         try {
             /* ######################### */
             /* INITIALIZING PROFIL TABLE */
@@ -690,6 +706,29 @@ public class SettingFrameController {
 
                     });
 
+            /* ###################
+             *   Vorschau Teil
+             *####################*/
+            tableLogo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                if (newSelection != null) {
+                    Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
+                    LOGGER.info("Logo row selected..."+selectedLogo.getPath());
+                    if (!selectedLogo.getPath().isEmpty() && !selectedLogo.getPath().equals("/images/noimage.png")) {
+                        try {
+                            int width = Integer.parseInt(txPreviewWidth.getText());
+                            int height = Integer.parseInt(txPreviewHeight.getText());
+                            javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                            previewLogo.setImage(image);
+                        } catch (NumberFormatException e) {
+                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                        } catch (ServiceException e) {
+                            e.printStackTrace();
+                        }
+                    }else
+                        LOGGER.info("No Logo is uploaded...");
+                }
+            });
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -852,6 +891,10 @@ public class SettingFrameController {
         }
     }
 
-
+    @FXML
+    public void openMainFrame(){
+        LOGGER.info("backButton clicked...");
+        windowManager.showShootingAdministration();
+    }
 
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -9,6 +10,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -22,11 +24,12 @@
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="573.0" minWidth="0.0" prefWidth="0.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="292.74580574035645" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="505.25419425964355" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="75.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="531.0" minHeight="10.0" prefHeight="262.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="743.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TitledPane animated="false" text="Profilverwaltung">
+      <TitledPane animated="false" prefHeight="268.0" prefWidth="1024.0" text="Profilverwaltung" GridPane.rowIndex="1">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="254.0" prefWidth="753.0">
                <children>
@@ -50,14 +53,15 @@
                   <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="214.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
                   <Button layoutX="726.0" layoutY="216.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
                   <Button layoutX="678.0" layoutY="212.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" prefWidth="27.0" text="+" />
+                  <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
         </content>
          <padding>
-            <Insets left="20.0" top="20.0" />
+            <Insets left="20.0" />
          </padding>
       </TitledPane>
-      <TitledPane animated="false" prefHeight="769.0" prefWidth="1024.0" text="Kamera- &amp; Logoverwaltung" GridPane.rowIndex="1">
+      <TitledPane animated="false" prefHeight="769.0" prefWidth="1024.0" text="Kamera- &amp; Logoverwaltung" GridPane.rowIndex="2">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
                <children>
@@ -122,8 +126,8 @@
                               <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="256.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoHoehe" layoutX="409.0" layoutY="256.0" prefHeight="27.0" prefWidth="52.0" />
                               <ImageView fx:id="previewLogo" fitHeight="268.0" fitWidth="292.0" layoutX="707.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
-                              <TextField fx:id="txPreviewWidth" layoutX="707.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024 px" />
-                              <TextField fx:id="txPreviewHeight" layoutX="794.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800 px" />
+                              <TextField fx:id="txPreviewWidth" layoutX="707.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
+                              <TextField fx:id="txPreviewHeight" layoutX="794.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />
                            </children>
                         </AnchorPane>
                     </content>
@@ -136,5 +140,24 @@
             <Insets left="20.0" />
          </padding>
       </TitledPane>
+      <Label text="Einstellungen" textFill="#362d2d">
+         <padding>
+            <Insets left="100.0" />
+         </padding>
+         <font>
+            <Font name="System Bold" size="31.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="backButton" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openMainFrame" onMousePressed="#openMainFrame" onTouchPressed="#openMainFrame" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@/images/back.png" />
+         </image>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <viewport>
+            <Rectangle2D />
+         </viewport>
+      </ImageView>
    </children>
 </GridPane>

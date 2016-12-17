@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 
@@ -67,7 +68,7 @@ public interface LogoWatermarkService {
      * @return the preview where the logo is added at the specified position
      * @throws ServiceException if an error during the image processing or opening of the logo image occurs
      * */
-    Image getPreviewForLogo(Logo logo, RelativeRectangle position, int imageWidth, int imageHeight) throws ServiceException;
+    BufferedImage getPreviewForLogo(Logo logo, RelativeRectangle position, int imageWidth, int imageHeight) throws ServiceException;
 
     /*
     precondition:   all logos must specify valid images,
