@@ -39,7 +39,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public double calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException{
-        BufferedImage logoImage = getImageFromLogo(logo);
+        BufferedImage logoImage = openImageFromLogo(logo);
 
 
         double widthHeightRatio = (double)logoImage.getWidth() / (double)logoImage.getHeight();
@@ -50,7 +50,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     @Override
     public double calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException{
 
-        BufferedImage logoImage = getImageFromLogo(logo);
+        BufferedImage logoImage = openImageFromLogo(logo);
 
 
         double heightWidthRatio = (double)logoImage.getHeight() / (double)logoImage.getWidth();
@@ -60,23 +60,10 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public Image getPreviewForLogo(Logo logo, RelativeRectangle position, int imageWidth, int imageHeight) throws ServiceException{
-        if(imageHeight <= 0 || imageWidth <= 0){
-            LOGGER.error("getPreviewForLogo - imageWidth or imageHeight <= 0");
-            throw new ServiceException("imageWidth or imageHeight <= 0");
-        }
 
-        if(position == null){
-            LOGGER.error("getPreviewForLogo - RelativeRectangle is null");
-            throw new ServiceException("RelativeRectangle is null");
-        }
+        BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
-        //Fill Previewimage with color
-        BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = img.createGraphics();
-        g.setPaint(new Color(160, 160, 160));
-        g.fillRect(0, 0, img.getWidth(), img.getHeight());
-
-        BufferedImage logoImage = getImageFromLogo(logo);
+        BufferedImage logoImage = openImageFromLogo(logo);
 
         addLogoAtPosition(img, logoImage, position);
 
@@ -85,29 +72,17 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public Image getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
-        if(imageHeight <= 0 || imageWidth <= 0){
-            LOGGER.error("getPreviewForMultipleLogos - imageWidth or imageHeight <= 0");
-            throw new ServiceException("imageWidth or imageHeight <= 0");
-        }
 
         if(logos.size() != positions.size()){
             LOGGER.error("getPreviewForMultipleLogos - logo list and position list have different length");
             throw new ServiceException("logo list and position list have different length");
         }
 
-        //Fill Previewimage with color
-        BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g = img.createGraphics();
-        g.setPaint(new Color(160, 160, 160));
-        g.fillRect(0, 0, img.getWidth(), img.getHeight());
+        BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
         //iterate through logos
         for(int i=0; i<logos.size(); i++){
-            if(positions.get(i) == null){
-                LOGGER.error("getPreviewForMultipleLogos - RelativeRectangle at position {} is null", i);
-                throw new ServiceException("RelativeRectangle is null");
-            }
-            BufferedImage logoImage = getImageFromLogo(logos.get(i));
+            BufferedImage logoImage = openImageFromLogo(logos.get(i));
             addLogoAtPosition(img, logoImage, positions.get(i));
         }
 
@@ -130,7 +105,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             //comparison with equals in logo entity
 
             if(!cachedLogos.containsKey(logo)){
-                BufferedImage logoImage = getImageFromLogo(logo);
+                BufferedImage logoImage = openImageFromLogo(logo);
                 cachedLogos.put(logo, logoImage);
             }
             //add current logo
@@ -156,7 +131,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         //check if cached and cache if not
         if(!newWatermarkPath.equals(currentWatermarkPath)){
             currentWatermarkPath = newWatermarkPath;
-            cachedWatermark = getImageFromLogo(watermark);
+            cachedWatermark = openImageFromLogo(watermark);
         }
 
         BufferedImage img = openImage(srcImgPath);
@@ -173,7 +148,6 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
 
     private void addLogoAtPosition(BufferedImage img, BufferedImage logo, RelativeRectangle position) throws ServiceException{
-
         double imgWidth = img.getWidth();
         double imgHeight = img.getHeight();
 
@@ -183,51 +157,87 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         int absoluteXPosition = (int)(imgWidth * relativeXPosition / (100d));
         int absoluteYPosition = (int)(imgHeight * relativeYPosition / (100d));
 
-        double relativeLogoWidth = position.getWidth();
-        double relativeLogoHeight = position.getHeight();
 
-        double widthHeightRatio = (double)logo.getWidth() / (double)logo.getHeight();
 
+        RelativeRectangle calculatedPosition = calculatePosition(position, imgWidth, imgHeight, logo.getWidth(), logo.getHeight());
+
+        double relativeLogoWidth = calculatedPosition.getWidth();
+        double relativeLogoHeight = calculatedPosition.getHeight();
+
+        double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
+        double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
 
         Graphics2D g = img.createGraphics();
 
+        g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+    }
+
+    private RelativeRectangle calculatePosition(RelativeRectangle position, double imageWidth, double imageHeight, double logoWidth, double logoHeight) throws ServiceException{
+
+        if(position == null){
+            LOGGER.error("calculatePosition - RelativeRectangle is null");
+            throw new ServiceException("RelativeRectangle is null");
+        }
+
+        double relativeLogoWidth = position.getWidth();
+        double relativeLogoHeight = position.getHeight();
+
+        double widthHeightRatio = logoWidth / logoHeight;
+
+        //use absolute pixel values if both height and width are set to -1
         if((int)relativeLogoHeight == -1 && (int)relativeLogoWidth == -1){
-            g.drawImage(logo, absoluteXPosition, absoluteYPosition, null);
+
+            relativeLogoWidth = logoWidth / imageWidth * (100D);
+            relativeLogoHeight = logoHeight / imageHeight * (100D);
+
         }else if((int)relativeLogoHeight == -1 && relativeLogoWidth > 0){
-            double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
-            double absoluteLogoHeight =  absoluteLogoWidth / widthHeightRatio;
-            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+
+            relativeLogoHeight =  relativeLogoWidth / widthHeightRatio;
+
         }else if(relativeLogoHeight > 0 && (int)relativeLogoWidth == -1){
-            double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
-            double absoluteLogoWidth = widthHeightRatio * absoluteLogoHeight;
-            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
-        }else if(relativeLogoHeight > 0 && relativeLogoWidth > 0){
-            double absoluteLogoHeight = relativeLogoHeight / (100d) * imgHeight;
-            double absoluteLogoWidth = relativeLogoWidth / (100d) * imgWidth;
-            g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+
+            relativeLogoWidth = widthHeightRatio * relativeLogoHeight;
+
         }else{
-            LOGGER.error("addLogoAtPosition - no valid logo width and height");
+            LOGGER.error("calculatePosition - no valid logo width and height");
             throw new ServiceException("addLogoAtPosition - no valid logo width and height");
         }
 
+        position.setHeight(relativeLogoHeight);
+        position.setWidth(relativeLogoWidth);
+
+        return position;
     }
 
-    private BufferedImage getImageFromLogo(Logo logo) throws ServiceException{
-        if(logo == null || logo.getPath()== null){
-            LOGGER.error("getImageFromLogo - Logo or Logopath is null");
-            throw new ServiceException("Logo or logopath is null");
+    private BufferedImage createPreviewImage(int imageWidth, int imageHeight) throws ServiceException{
+        if(imageHeight <= 0 || imageWidth <= 0){
+            LOGGER.error("createPreviewImage - imageWidth or imageHeight <= 0");
+            throw new ServiceException("imageWidth or imageHeight <= 0");
         }
 
-        BufferedImage logoImage;
+
+        //Fill Previewimage with color
+        BufferedImage img = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = img.createGraphics();
+        g.setPaint(new Color(160, 160, 160));
+        g.fillRect(0, 0, img.getWidth(), img.getHeight());
+
+        return img;
+    }
+
+    private BufferedImage openImageFromLogo(Logo logo) throws ServiceException{
+        if(logo == null || logo.getPath() == null || logo.getPath().isEmpty()){
+            LOGGER.error("openImageFromLogo - Logo or Logopath is null");
+            throw new ServiceException("Logo or logopath is null or empty");
+        }
 
         try {
-            logoImage = ImageIO.read(new File(logo.getPath()));
+            return  ImageIO.read(new File(logo.getPath()));
         } catch (IOException e) {
-            LOGGER.error("getImageFromLogo - error loading {} " + e, logo.getPath());
+            LOGGER.error("openImageFromLogo - error loading {} " + e, logo.getPath());
             throw new ServiceException(e);
         }
 
-        return logoImage;
     }
 
     private void saveImage(BufferedImage img, String destImgPath) throws ServiceException{
