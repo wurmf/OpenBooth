@@ -5,6 +5,7 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  */
 public class Logo {
     private int id;
+    private String label;
     private String path;
     private boolean isDeleted;
 
@@ -13,13 +14,15 @@ public class Logo {
      *
      * @param id - positive logo id
      * @param path - no empty logo path
+     * @param label - no empty logo label
      * @param isDeleted - mark this logo with true value as deleted
      */
-    public Logo(int id, String path, boolean isDeleted){
+
+    public Logo(int id, String label, String path, boolean isDeleted){
         this.id = id;
+        this.label = label;
         this.path = path;
         this.isDeleted = isDeleted;
-
     }
 
     /**
@@ -28,8 +31,8 @@ public class Logo {
      *
      * @param path - no empty logo path
      */
-    public Logo(String path){
-        this(Integer.MIN_VALUE, path,false);
+    public Logo(String label, String path){
+        this(Integer.MIN_VALUE, label,path,false);
     }
 
     public int getId() {
@@ -38,6 +41,14 @@ public class Logo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 
     public String getPath() {

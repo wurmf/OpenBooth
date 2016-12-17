@@ -10,6 +10,17 @@ public class Position {
     private boolean isDeleted;
 
     /**
+     * Constructor with unknown ID
+     *
+     * @param name - no empty position name
+     */
+    public Position(String name){
+        this.id = Integer.MIN_VALUE;
+        this.name = name;
+        this.isDeleted = false;
+    }
+
+    /**
      * Constructor with known ID
      *
      * @param id - positive position id

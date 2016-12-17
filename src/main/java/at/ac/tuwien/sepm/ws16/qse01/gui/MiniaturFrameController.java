@@ -77,8 +77,10 @@ public class MiniaturFrameController {
             fullscreen.setFitHeight(30);
             fullscreen.setFitWidth(30);
             fullscreen.setOnMouseClicked(mouseEvent -> {
-                LOGGER.debug("fullscreen clicked...");
-                windowManager.showFullscreenImage();
+                ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
+                LOGGER.debug("fullscreen clicked...imageID = "+imageView.getId());
+
+                windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
             });
 
             ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
@@ -104,8 +106,7 @@ public class MiniaturFrameController {
 
 
                         tile.getChildren().remove(imageView.getParent());
-                        //TODO: das Foto ausm Filesystem löschen. -> FotoDAO->FIleSystem
-                        new File(String.valueOf(imageView.getUserData())).delete();
+
                     } catch (ServiceException e) {
                         LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
                     }

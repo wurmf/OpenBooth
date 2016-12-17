@@ -9,9 +9,11 @@ CREATE TABLE adminusers (adminname VARCHAR(20) PRIMARY KEY, password BINARY(32) 
 
 CREATE TABLE profiles (profileID BIGINT DEFAULT profiles_seq.nextval PRIMARY KEY,
                        name VARCHAR(50) NOT NULL,
+                       isMobilEnabled BOOLEAN DEFAULT false,
                        isPrintEnabled BOOLEAN DEFAULT false,
                        isFilterEnabled BOOLEAN DEFAULT false,
                        isGreenscreenEnabled BOOLEAN DEFAULT false,
+                       watermark VARCHAR(250) DEFAULT NULL,
                        isDeleted BOOLEAN DEFAULT false);
 
 CREATE TABLE shootings (shootingID BIGINT DEFAULT shootings_seq.nextval PRIMARY KEY,
@@ -40,6 +42,7 @@ CREATE TABLE profile_camera_positions(profileId BIGINT REFERENCES profiles(profi
                         PRIMARY KEY (profileId, cameraId,positionId));
 
 CREATE TABLE logos(logoID BIGINT DEFAULT logos_seq.nextval PRIMARY KEY,
+                        label VARCHAR(50) NOT NULL,
                         path VARCHAR(250) DEFAULT NULL,
                         isDeleted BOOLEAN DEFAULT false);
 

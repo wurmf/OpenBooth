@@ -45,32 +45,39 @@ public class JDBCProfileDAO implements ProfileDAO {
         try {
             //AutoID
             if(profile.getId()== Integer.MIN_VALUE)
-                {
+            {
                 String sqlString = "INSERT INTO"
-                        + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
-                        + " VALUES (?,?,?,?);";
+                        + " profiles (name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
+                        + " VALUES (?,?,?,?,?,?);";
+
+
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
                 stmt.setString(1,profile.getName());
                 stmt.setBoolean(2,profile.isPrintEnabled());
                 stmt.setBoolean(3,profile.isFilerEnabled());
                 stmt.setBoolean(4,profile.isGreenscreenEnabled());
+                stmt.setBoolean(5,profile.isMobilEnabled());
+                stmt.setString(6,profile.getWatermark());
+
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();
                 if (rs.next()){profile.setId(rs.getInt(1));}
                 LOGGER.debug("Persisted Profile successfully with AutoID:" + profile.getId());
-                }
+            }
             //NoAutoID
             else
                 {
                 String sqlString = "INSERT INTO"
-                    + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled)"
-                    + " VALUES (?,?,?,?,?);";
+                    + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
+                    + " VALUES (?,?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());
                 stmt.setBoolean(3,profile.isPrintEnabled());
                 stmt.setBoolean(4,profile.isFilerEnabled());
                 stmt.setBoolean(5,profile.isGreenscreenEnabled());
+                    stmt.setBoolean(6,profile.isMobilEnabled());
+                    stmt.setString(7,profile.getWatermark());
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
@@ -94,8 +101,9 @@ public class JDBCProfileDAO implements ProfileDAO {
         LOGGER.debug("Entering update method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
         String sqlString = "UPDATE profiles"
-                + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?"
+                + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?, isMobilEnabled = ?, watermark = ?"
                 + " WHERE profileID = ?;";
+
         PreparedStatement stmt = null;
 
         try {
@@ -104,11 +112,13 @@ public class JDBCProfileDAO implements ProfileDAO {
             stmt.setBoolean(2,profile.isPrintEnabled());
             stmt.setBoolean(3,profile.isFilerEnabled());
             stmt.setBoolean(4,profile.isGreenscreenEnabled());
-            stmt.setLong(5,profile.getId());
+            stmt.setBoolean(5,profile.isMobilEnabled());
+            stmt.setString(6,profile.getWatermark());
+            stmt.setLong(7,profile.getId());
             stmt.executeUpdate();
             ResultSet rs = stmt.getResultSet();
 
-            if (rs.next()){
+            if (rs.next()){ //TODO: Sobald ein watermark upgedated wird, bekommt man hier ein NULLPOINTEREXCEPTION
                 pairCameraPositionDAO.deleteAll(profile);
                 pairLogoRelativeRectangleDAO.deleteAll(profile);
                 pairCameraPositionDAO.createAll(profile);
@@ -129,7 +139,7 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public Profile read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter profileid=" + id);
-        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted"
+        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted,watermark,isMobilEnabled"
                 + " FROM profiles WHERE profileID = ?;";
         PreparedStatement stmt = null;
 
@@ -141,7 +151,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 return null;
                 /*new PersistenceException("No data existing to read: Profile with " + id + " isn't persisted yet!");*/
             }
-            return new Profile(
+            Profile p= new Profile(
                     rs.getInt("profileID"),
                     rs.getString("name"),
                     pairCameraPositionDAO.readAll(id),
@@ -149,8 +159,11 @@ public class JDBCProfileDAO implements ProfileDAO {
                     rs.getBoolean("isPrintEnabled"),
                     rs.getBoolean("isFilterEnabled"),
                     rs.getBoolean("isGreenscreenEnabled"),
+                    rs.getBoolean(("isMobilEnabled")),
                     rs.getBoolean("isDeleted")
                     );
+            p.setWatermark(rs.getString("watermark"));
+            return p;
         } catch (SQLException e) {
             throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
         }

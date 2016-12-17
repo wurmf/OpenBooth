@@ -41,7 +41,7 @@ public class JDBCPositionDAO implements PositionDAO{
 
         try {
             //AutoID
-            if(position.getId()== Long.MIN_VALUE)
+            if(position.getId()== Integer.MIN_VALUE)
             {
                 sqlString = "INSERT INTO positions(name,buttonImagePath) VALUES (?,?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);

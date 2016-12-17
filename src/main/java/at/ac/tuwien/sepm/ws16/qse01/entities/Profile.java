@@ -10,10 +10,31 @@ public class Profile {
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private boolean isMobilEnabled;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
+    private String watermark;
     private boolean isDeleted;
+
+    /**
+     * Constructor with unknown ID and other information about profile
+     *
+     * @param name - no empty profile name
+     */
+    public Profile(String name,
+                   boolean isPrintEnabled,
+                   boolean isFilterEnabled,
+                   boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled
+    ) {
+        this.id = Integer.MIN_VALUE;
+        this.name = name;
+        this.isPrintEnabled = isPrintEnabled;
+        this.isFilerEnabled = isFilterEnabled;
+        this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
+    }
 
     /**
      * Constructor with known ID
@@ -28,6 +49,7 @@ public class Profile {
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled,
                    boolean isDeleted
                    ) {
         this.id = id;
@@ -37,6 +59,7 @@ public class Profile {
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
         this.isDeleted = isDeleted;
     }
 
@@ -47,7 +70,7 @@ public class Profile {
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Integer.MIN_VALUE, name,null,null,false,false,false,false);
+        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,false);
     }
 
     public int getId() {
@@ -106,6 +129,22 @@ public class Profile {
         isGreenscreenEnabled = greenscreenEnabled;
     }
 
+    public String getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(String watermark) {
+        this.watermark = watermark;
+    }
+
+    public boolean isMobilEnabled() {
+        return isMobilEnabled;
+    }
+
+    public void setMobilEnabled(boolean mobilEnabled) {
+        isMobilEnabled = mobilEnabled;
+    }
+
     public String toString(){return this.name;}
 
     /**
@@ -113,13 +152,23 @@ public class Profile {
      */
     public static class PairCameraPosition {
         private Camera camera;
+        private String cameraLabel;
         private Position position;
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
             this.camera = camera;
+            this.cameraLabel = camera.getLable();
             this.position = position;
             this.isGreenScreenReady = isGreenScreenReady;
+        }
+
+        public String getCameraLabel() {
+            return cameraLabel;
+        }
+
+        public void setCameraLabel(String cameraLabel) {
+            this.cameraLabel = cameraLabel;
         }
 
         public Camera getCamera() {
@@ -152,7 +201,9 @@ public class Profile {
      */
     public static class PairLogoRelativeRectangle {
         private Logo logo;
+
         private RelativeRectangle relativeRectangle;
+
 
         public Logo getLogo() {
             return logo;
@@ -173,6 +224,55 @@ public class Profile {
 
         public void setRelativeRectangle(RelativeRectangle relativeRectangle) {
             this.relativeRectangle = relativeRectangle;
+        }
+
+        public int getLogoID(){
+            return this.logo.getId();
+        }
+        public String getPath(){
+            return this.logo.getPath();
+        }
+        public void setPath(String path){
+            this.logo.setPath(path);
+        }
+        public String getLogoLabel() {
+            return this.logo.getLabel();
+        }
+
+        public void setLogoLabel(String logoLabel) {
+            this.logo.setLabel(logoLabel);
+        }
+
+        public double getXstart() {
+            return this.relativeRectangle.getX();
+        }
+
+        public void setXstart(double xstart) {
+            this.relativeRectangle.setX(xstart);
+        }
+
+        public double getYstart() {
+            return this.relativeRectangle.getY();
+        }
+
+        public void setYstart(double ystart) {
+            this.relativeRectangle.setY(ystart);
+        }
+
+        public double getHeight() {
+            return this.relativeRectangle.getHeight();
+        }
+
+        public void setHeight(double height) {
+            this.relativeRectangle.setHeight(height);
+        }
+
+        public double getWidth() {
+            return this.relativeRectangle.getWidth();
+        }
+
+        public void setWidth(double width) {
+            this.relativeRectangle.setWidth(width);
         }
     }
 }
