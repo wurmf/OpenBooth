@@ -105,10 +105,8 @@ public class WindowManager {
         }
 
 
-        //springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController().refreshShot();
         try {
             CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            //CameraHandlerImpl cameraHandler= new CameraHandlerImpl(springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class).getController(),new ImageServiceImpl(), new ShootingServiceImpl());
             cameraHandler.getImages();
         } catch (Exception e) {
             LOGGER.info("start - Getting camera - "+e);
