@@ -58,4 +58,14 @@ public class RelativeRectangle {
         else
             {return false;}
     }
+
+    @Override
+    public String toString() {
+        return "RelativeRectangle{" +
+                "x=" + x +
+                ", y=" + y +
+                ", height=" + height +
+                ", width=" + width +
+                '}';
+    }
 }

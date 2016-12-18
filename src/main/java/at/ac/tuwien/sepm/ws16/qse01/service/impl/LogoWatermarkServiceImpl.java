@@ -60,6 +60,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public BufferedImage getPreviewForLogo(Logo logo, RelativeRectangle position, int imageWidth, int imageHeight) throws ServiceException{
+        LOGGER.debug("Entering getPreviewForLogo method");
 
         BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
@@ -72,6 +73,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public Image getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
+        LOGGER.debug("Entering getPreviewFroMultipleLogos method");
 
         if(logos.size() != positions.size()){
             LOGGER.error("getPreviewForMultipleLogos - logo list and position list have different length");
@@ -91,6 +93,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
+        LOGGER.debug("Entering addLogosCreateNewImgage methdod");
         BufferedImage img = openImage(srcImgPath);
 
         List<Logo> logos = profileService.getAllLogosOfProfile();
@@ -175,6 +178,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         Graphics2D g = img.createGraphics();
 
         g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+        LOGGER.debug("logo with width {} and height {} added at X: {} Y: {} | Imagewidth: {} Imageheight: {}", absoluteLogoWidth, absoluteLogoHeight, absoluteXPosition, absoluteYPosition, imgWidth, imgHeight);
     }
 
     private RelativeRectangle calculatePosition(RelativeRectangle position, double imageWidth, double imageHeight, double logoWidth, double logoHeight) throws ServiceException{
@@ -205,8 +209,12 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         }
 
+        LOGGER.debug("given logo position and dimension {}", position);
+
         position.setHeight(relativeLogoHeight);
         position.setWidth(relativeLogoWidth);
+
+        LOGGER.debug("calculated logo position and dimension: {} ", position);
 
         return position;
     }
@@ -224,6 +232,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         g.setPaint(new Color(160, 160, 160));
         g.fillRect(0, 0, img.getWidth(), img.getHeight());
 
+        LOGGER.debug("Previewimage background with {}px width and {}px height created", imageWidth, imageHeight);
         return img;
     }
 
@@ -233,13 +242,17 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             throw new ServiceException("Logo or logopath is null or empty");
         }
 
+        BufferedImage img;
+
         try {
-            return  ImageIO.read(new File(logo.getPath()));
+             img = ImageIO.read(new File(logo.getPath()));
         } catch (IOException e) {
             LOGGER.error("openImageFromLogo - error loading {} " + e, logo.getPath());
             throw new ServiceException(e);
         }
 
+        LOGGER.debug("Image from Logo {} opened", logo);
+        return img;
     }
 
     private void saveImage(BufferedImage img, String destImgPath) throws ServiceException{
@@ -257,6 +270,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             throw new ServiceException(e);
         }
 
+        LOGGER.debug("Image saved to {}", destImgPath);
     }
 
     private BufferedImage openImage(String srcImgPath) throws ServiceException{
@@ -264,11 +278,16 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             LOGGER.error("openImage - srcImgPath is null or empty");
             throw new ServiceException("srcImgPath is null or empty");
         }
+
+        BufferedImage img;
+
         try {
-            return ImageIO.read(new File(srcImgPath));
+            img = ImageIO.read(new File(srcImgPath));
         } catch (IOException e) {
             LOGGER.error("openImage - error loading given image" + e);
             throw new ServiceException(e);
         }
+        LOGGER.debug("Image at {} opened", srcImgPath);
+        return img;
     }
 }

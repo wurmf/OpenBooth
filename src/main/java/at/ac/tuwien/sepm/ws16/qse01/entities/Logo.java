@@ -82,4 +82,14 @@ public class Logo {
             return false;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Logo{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", path='" + path + '\'' +
+                ", isDeleted=" + isDeleted +
+                '}';
+    }
 }
