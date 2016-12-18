@@ -30,8 +30,8 @@ public class Position {
     public Position(int id, String name, String buttonImagePath, boolean isDeleted){
         this.id = id;
         this.name = name;
-        this.isDeleted = isDeleted;
         this.buttonImagePath = buttonImagePath;
+        this.isDeleted = isDeleted;
     }
 
     /**
@@ -41,7 +41,7 @@ public class Position {
      * @param name - no empty position name
      */
     public Position(String name, String buttonImagePath){
-        this(Integer.MIN_VALUE, buttonImagePath, name,false);
+        this(Integer.MIN_VALUE, name,buttonImagePath, false);
     }
 
     public int getId() {
@@ -70,5 +70,14 @@ public class Position {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        return object instanceof Position
+                && ((Position) object).getId() == this.getId()
+                && ((Position) object).getName() == this.getName()
+                && ((Position) object).getButtonImagePath() == this.getButtonImagePath()
+                && ((Position) object).isDeleted() == this.isDeleted();
     }
 }

@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import java.util.List;
  */
 @Repository
 public class JDBCPositionDAO implements PositionDAO{
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCPositionDAO.class);
     private Connection con;
 
     @Autowired
@@ -51,18 +50,19 @@ public class JDBCPositionDAO implements PositionDAO{
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
                 if (rs.next()){position.setId(rs.getInt(1));}
-                LOGGER.debug("Persisted object creation successfully with AutoID:" + position.getId());
+                LOGGER.debug("Create successfully with AutoID:" + position.getId());
             }
             //NoAutoID
             else
             {
-                sqlString = "INSERT INTO positions(positionID,name,isDeleted) VALUES (?,?,?);";
+                sqlString = "INSERT INTO positions(positionID,name,buttonImagePath,isDeleted) VALUES (?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,position.getId());
                 stmt.setString(2,position.getName());
-                stmt.setBoolean(3,position.isDeleted());
+                stmt.setString(3,position.getButtonImagePath());
+                stmt.setBoolean(4,position.isDeleted());
                 stmt.executeUpdate();
-                LOGGER.debug("Persisted objected creation successfully without AutoID:" + position.getId());
+                LOGGER.debug("Create successfully without AutoID:" + position.getId());
             }
         }
         catch (SQLException e) {
@@ -97,17 +97,22 @@ public class JDBCPositionDAO implements PositionDAO{
             stmt.setBoolean(3,position.isDeleted());
             stmt.setInt(4,position.getId());
             stmt.executeUpdate();
-            rs = stmt.getResultSet();
-            // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
-                LOGGER.debug("Persisted object update has been successfully(return value true)");
+            int returnUpdateCount = stmt.executeUpdate();
+
+            // Check, if object has been updated and return suitable boolean value or throw Exception
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Update has been successfully(return value true)");
                 return true;
                 }
-            else {
-                LOGGER.debug("Provided object has been not updated, since it doesn't exist in persistence data store(return value false)");
+            else if (returnUpdateCount == 0) {
+                LOGGER.debug("Updated nothing , since it doesn't exist in persistence data store(return value false)");
                 return false;}
-        } catch (SQLException e) {
-            throw new PersistenceException("Error! Updating object in persistence layer has failed.:" + e);
+            else {
+                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Update in persistence layer has failed.:" + e);
         }
         finally {
             // Return resources
@@ -125,7 +130,7 @@ public class JDBCPositionDAO implements PositionDAO{
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "SELECT * FROM positions WHERE positionID = ?;";
+        sqlString = "SELECT * FROM positions WHERE positionID = ? AND isDeleted = 'false';";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
@@ -133,16 +138,16 @@ public class JDBCPositionDAO implements PositionDAO{
             rs = stmt.executeQuery();
             if(rs.next()) {
                 Position position = new Position(rs.getInt("positionID"), rs.getString("name"), rs.getString("buttonImagePath"), rs.getBoolean("isDeleted"));
-                LOGGER.debug("Persisted object reading has been successfully. " + position);
+                LOGGER.debug("Read has been successfully. " + position);
                 return position;
             }
             else {
-                LOGGER.debug("Persisted object reading has been not successfully, since it doesn't exist in persistence data store(return null)");
+                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
                 return null;
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Reading object in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Read in persistence layer has failed.:" + e);
         }
         finally {
             // Return resources
@@ -170,10 +175,10 @@ public class JDBCPositionDAO implements PositionDAO{
                 Position position = this.read(rs.getInt("positionID"));
                 returnList.add(position);
             }
-            LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
+            LOGGER.debug("ReadAll has been successfully. " + returnList);
             return returnList;
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Reading all objects in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! ReadAll in persistence layer has failed.:" + e);
         }
         finally {
             // Return resources
@@ -186,7 +191,8 @@ public class JDBCPositionDAO implements PositionDAO{
     @Override
     public boolean delete(Position position) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + position);
-
+        if (position==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
         ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
@@ -196,19 +202,23 @@ public class JDBCPositionDAO implements PositionDAO{
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,position.getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
+            int returnUpdateCount  = stmt.executeUpdate();
+
             // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
-                LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Delete has been successfully(returned value true)");
                 return true;
             }
-            else {
-                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+            else if (returnUpdateCount == 0){
+                LOGGER.debug("Deleted nothing, since it didn't exist in persistence data store(returned value false)");
                 return false;
             }
-        } catch (SQLException e) {
-            throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
+            else {
+                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is broken!This should not happen!");
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
         }
         finally {
             // Return resources
