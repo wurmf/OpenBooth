@@ -20,19 +20,21 @@ INSERT INTO logos(label, path) VALUES ('Logo 2', '/images/logos/logo2.jpg');
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
 
-INSERT INTO profile_camera_positions VALUES (1,1,1,false);
-INSERT INTO profile_camera_positions VALUES (1,2,2,false);
-INSERT INTO profile_camera_positions VALUES (2,2,1,false);
-INSERT INTO profile_camera_positions VALUES (2,1,2,false);
+INSERT INTO profile_camera_positions VALUES (1,1,1,1,false);
+INSERT INTO profile_camera_positions VALUES (2,1,2,2,false);
+INSERT INTO profile_camera_positions VALUES (3,2,2,1,false);
+INSERT INTO profile_camera_positions VALUES (4,2,1,2,false);
 
-INSERT INTO profile_logo_rpositions VALUES (1,1,85.0,95.0,80.0,90.0);
-INSERT INTO profile_logo_rpositions VALUES (1,2, 5.0,10.0,15.0,20.0);
-INSERT INTO profile_logo_rpositions VALUES (2,1,75.0,95.0,80.0,90.0);
-INSERT INTO profile_logo_rpositions VALUES (2,2, 15.0,20.0,25.0,30.0);
+INSERT INTO profile_logo_relativeRectangles VALUES (1, 1, 1, 85.0, 95.0, 80.0, 90.0);
+INSERT INTO profile_logo_relativeRectangles VALUES (2, 1, 2,  5.0, 10.0, 15.0, 20.0);
+INSERT INTO profile_logo_relativeRectangles VALUES (3, 2, 1, 75.0, 95.0, 80.0, 90.0);
+INSERT INTO profile_logo_relativeRectangles VALUES (4, 2, 2, 15.0, 20.0, 25.0, 30.0);
 
 ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS images_seq RESTART WITH 5;
 ALTER SEQUENCE IF EXISTS positions_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS cameras_seq RESTART WITH 3;
-ALTER SEQUENCE IF EXISTS logos_seq RESTART WITH 4;
+ALTER SEQUENCE IF EXISTS logos_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS profile_logo_relativeRectangles_seq RESTART WITH 5;
+ALTER SEQUENCE IF EXISTS profile_camera_positions_seq RESTART WITH 5;
