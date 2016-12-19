@@ -217,15 +217,6 @@ public class ShootingAdminController {
     }
 
     /**
-     *Opens Profile administration
-     *
-     * @param actionEvent press action event
-     */
-    public void onEditPressed(ActionEvent actionEvent) {
-        windowManager.showProfileScene();
-    }
-
-    /**
      * information dialog
      *
      * @param info String to be shown as error message to the user

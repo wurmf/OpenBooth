@@ -109,6 +109,15 @@ public class MainFrameController {
     }
 
     /**
+     *Opens Profile administration
+     *
+     * @param actionEvent press action event
+     */
+    public void onEditPressed(ActionEvent actionEvent) {
+        windowManager.showProfileScene();
+    }
+
+    /**
      * information dialog to show user error messages
      *
      * @param info String that gives the usere an error message
