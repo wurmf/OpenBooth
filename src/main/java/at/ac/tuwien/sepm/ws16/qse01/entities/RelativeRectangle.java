@@ -9,14 +9,15 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
 public class RelativeRectangle {
     private double x;
     private double y;
-    private double height;
     private double width;
+    private double height;
 
-    public RelativeRectangle(double x, double y, double height, double width) {
+
+    public RelativeRectangle(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
-        this.height = height;
         this.width = width;
+        this.height = height;
     }
 
     public double getX() {
@@ -51,11 +52,11 @@ public class RelativeRectangle {
         this.width = width;
     }
 
-    public boolean equals(RelativeRectangle relativeRectangle){
-        if(this.x == relativeRectangle.getX() && this.y == relativeRectangle.getY()
-                && this.width == relativeRectangle.getWidth() && this.getHeight() == relativeRectangle.getHeight())
-            {return true;}
-        else
-            {return false;}
+    public boolean equals(Object object){
+        return object instanceof RelativeRectangle
+                && this.x == ((RelativeRectangle) object).getX()
+                && this.y == ((RelativeRectangle) object).getY()
+                && this.width == ((RelativeRectangle) object).getWidth()
+                && this.getHeight() == ((RelativeRectangle) object).getHeight();
     }
 }

@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -28,24 +30,31 @@ public class ShotFrameManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
     private List<ShotFrameController> shotframes;
     private List<Stage> shotStages;
+    private boolean isClosed=false;
     @Resource
     private ProfileService profileService;
     @Resource
     private ShootingService shootingService;
+    @Resource
+    private CameraService cameraService;
+
 
     @Autowired
-    public ShotFrameManager(ProfileService profileService, ShootingService shootingService) throws ServiceException {
+    public ShotFrameManager(ProfileService profileService, ShootingService shootingService, CameraService cameraService) throws ServiceException {
         this.profileService = profileService;
         this.shootingService = shootingService;
+        this.cameraService = cameraService;
         shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
     }
     public void init(){
 
          /* Creating shotFrame */
+        List<Camera> cameraList=null;
         int anz = 1;
         try {
-            anz += profileService.getAllCamerasOfProfile(profileService.get(shootingService.searchIsActive().getProfileid())).size();
+             cameraList=cameraService.getActiveCameras();
+            anz += cameraList.size();
         } catch (ServiceException e) {
            LOGGER.debug("Fehler: die anzahl der kameras konnte nicht gelesen werden");
         }
@@ -59,7 +68,7 @@ public class ShotFrameManager {
                         "/fxml/shotFrame.fxml"));
                 Parent root = loader.load();
                 ShotFrameController shotFrameController = loader.getController();
-                shotFrameController.initShotFrame(i);
+                shotFrameController.initShotFrame(cameraList.get(i-1).getId());
                 shotframes.add(shotFrameController);
 
                 stage.setScene(new Scene(root ,400,400));
@@ -80,12 +89,17 @@ public class ShotFrameManager {
         LOGGER.debug("ShotFrameManager->refershhot with cameraID="+cameraID+", imgPath="+imgPath);
         for(ShotFrameController shotFrameController: shotframes){
             if(shotFrameController.getFrameID()==cameraID){
-                shotFrameController.refreshShot(imgPath);
+                shotFrameController.refreshShot("file:" + imgPath);
             }
         }
     }
     public void closeFrames(){
+        isClosed=true;
         for(Stage stage: shotStages)
             stage.close();
+    }
+
+    public boolean isClosed() {
+        return isClosed;
     }
 }

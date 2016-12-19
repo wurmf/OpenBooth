@@ -1,22 +1,30 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
  * ProfileDAO Tester
  */
-public abstract class ProfileDAOTest {
+public class ProfileDAOTest extends TestEnvironment{
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileDAOTest.class);
-    private ProfileDAO profileDAO;
-    protected void setProfileDAO(ProfileDAO profileDAO){
-        this.profileDAO=profileDAO;
+
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
+
+    @After
+    public void tearDown() throws PersistenceException {
+        super.tearDown();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,14 +114,14 @@ public abstract class ProfileDAOTest {
     */
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
         profileDAO.create(profile);
         profile = profileDAO.read(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
         profileDAO.create(profile);
         profile = profileDAO.read(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);

@@ -28,7 +28,7 @@ public class JDBCShootingDAO implements ShootingDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
     @Override
-    public void create(Shooting shouting) throws PersistenceException {
+    public Shooting create(Shooting shouting) throws PersistenceException {
         PreparedStatement stmt = null;
         try {
             String sql="insert into Shootings(profileId,  FOLDERPATH, isactive) values(?,?,?)";
@@ -39,6 +39,8 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.setString(2,shouting.getStorageDir());
             stmt.setBoolean(3,shouting.getActive());
             stmt.executeUpdate();
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()){shouting.setId(rs.getInt(1));}
 
         } catch (SQLException e) {
             LOGGER.info("Shooting",e.getMessage());
@@ -52,6 +54,7 @@ public class JDBCShootingDAO implements ShootingDAO {
                 }
             }
         }
+        return shouting;
     }
 
     @Override

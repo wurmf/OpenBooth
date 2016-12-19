@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCProfileDAOTest;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.Test;
@@ -8,14 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 
 /**
  * ProfileService Tester
  */
 public abstract class ProfileServiceTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAOTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileServiceTest.class);
     @Autowired
     private ProfileService profileService;
     protected void setProfileService(ProfileService profileService){
@@ -108,14 +106,14 @@ public abstract class ProfileServiceTest {
 
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,false);
         profileService.add(profile);
         profile = profileService.get(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,false);
         profileService.add(profile);
         profile = profileService.get(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);

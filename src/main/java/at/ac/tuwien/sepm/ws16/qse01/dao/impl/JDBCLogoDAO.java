@@ -43,9 +43,10 @@ public class JDBCLogoDAO implements LogoDAO {
             //AutoID
             if(logo.getId()==Integer.MIN_VALUE)
             {
-                sqlString = "INSERT INTO logos(path) VALUES (?);";
+                sqlString = "INSERT INTO logos(label,path) VALUES (?,?);";
                 stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-                stmt.setString(1,logo.getPath());
+                stmt.setString(1,logo.getLabel());
+                stmt.setString(2,logo.getPath());
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
@@ -54,11 +55,12 @@ public class JDBCLogoDAO implements LogoDAO {
             }
             //No AutoID
             else {
-                sqlString = "INSERT INTO logos(logoID,path,isDeleted) VALUES (?,?,?);";
+                sqlString = "INSERT INTO logos(logoID,label, path,isDeleted) VALUES (?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,logo.getId());
-                stmt.setString(2,logo.getPath());
-                stmt.setBoolean(3,logo.isDeleted());
+                stmt.setString(2,logo.getLabel());
+                stmt.setString(3,logo.getPath());
+                stmt.setBoolean(4,logo.isDeleted());
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted object creation successfully without AutoID:" + logo.getId());
             }
@@ -86,23 +88,28 @@ public class JDBCLogoDAO implements LogoDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "UPDATE logos SET path = ?, isDeleted = ? WHERE logoId = ?;";
+        sqlString = "UPDATE logos SET label = ?, path = ?, isDeleted = ? WHERE logoId = ?;";
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setString(1,logo.getPath());
-            stmt.setBoolean(2,logo.isDeleted());
-            stmt.setInt(3,logo.getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
-            // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
+            stmt.setString(1,logo.getLabel());
+            stmt.setString(2,logo.getPath());
+            stmt.setBoolean(3,logo.isDeleted());
+            stmt.setInt(4,logo.getId());
+            int returnUpdateCount = stmt.executeUpdate();
+
+            // Check, if object has been updated and return suitable boolean value or throw Exception
+            if (returnUpdateCount == 1){
                 LOGGER.debug("Persisted object update has been successfully(return value true)");
                 return true;
                 }
-                else {
+            else if (returnUpdateCount == 0){
                 LOGGER.debug("Provided object has been not updated, since it doesn't exist in persistence data store(return value false)");
                 return false;}
-        } catch (SQLException e) {
+            else {
+                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is brocken!This should not happend!");
+            }
+        }
+        catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
         finally {
@@ -121,13 +128,13 @@ public class JDBCLogoDAO implements LogoDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "SELECT * FROM logos WHERE logoID = ?;";
+        sqlString = "SELECT * FROM logos WHERE logoID = ? AND isDeleted = 'false';";
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,id);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                Logo logo = new Logo(rs.getInt("logoID"),rs.getString("path"),rs.getBoolean("isDeleted"));
+                Logo logo = new Logo(rs.getInt("logoID"),rs.getString("label"),rs.getString("path"),rs.getBoolean("isDeleted"));
                 LOGGER.debug("Persisted object reading has been successfully. " + logo);
                 return logo;
             }
@@ -181,26 +188,30 @@ public class JDBCLogoDAO implements LogoDAO {
     @Override
     public boolean delete(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + logo);
-        ResultSet rs;
-        String sqlString;
+        if (logo==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
         PreparedStatement stmt = null;
-
+        String sqlString;
         sqlString = "UPDATE logos SET isDeleted = 'true' WHERE logoID = ? AND isDeleted = 'false' ;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,logo.getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
+            int returnUpdateCount  = stmt.executeUpdate();
+
             // Check, if object has been updated and return suitable boolean value
-            if (rs.next()){
+            if (returnUpdateCount == 1){
                 LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
                 return true;
             }
-            else {
+            else if (returnUpdateCount == 0){
                 LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
                 return false;
             }
+            else {
+                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is brocken!This should not happend!");
+            }
+
         } catch (SQLException e) {
             throw new PersistenceException("Error! Deleting object in persistence layer has failed.:" + e);
         }

@@ -5,13 +5,25 @@ import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.xml.ws.handler.PortInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Component
@@ -22,72 +34,89 @@ public class CameraHandlerImpl implements CameraHandler {
     private SpringFXMLLoader springFXMLLoader;
     ImageService imageService;
     ShootingService shootingService;
+    CameraService cameraService;
+    List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
+    List<String> cameraModelList = new ArrayList<>();
+    List<String> cameraPortList = new ArrayList<>();
+    List<Camera> cameraList = new ArrayList<>();
 
     @Autowired
-    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService)
+    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService, CameraService cameraService)
     {
         this.shotFrameManager=shotFrameManager;
         this.imageService= imageService;
         this.shootingService= shootingService;
+        this.cameraService=cameraService;
     }
 
     /**
      * Saves image in images folder and in database.
      * Also tells the Shot monitor to refresh the image.
      *
-     * TODO: get Imageservice and Sessionservice
-     *
-     * @return
-     *
      * */
+    @Override
     public void getImages() throws CameraException {
 
-       /* final CameraList cl = new CameraList();
+        Camera camera;
+        for(int i=0;i<cameraGphotoList.size();i++) {
+            camera=cameraList.get(i);
+            CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
+            cameraHandlerThread.setImageService(imageService);
+            cameraHandlerThread.setShotFrameManager(shotFrameManager);
+            cameraHandlerThread.setShootingService(shootingService);
+            cameraHandlerThread.setCameraGphoto(cameraGphotoList.get(i));
+            cameraHandlerThread.setCamera(camera);
+            cameraHandlerThread.start();
+        }
+    }
+
+    @Override
+    public List<Camera> getCameras() throws CameraException {
+        try {
+            cameraService.setAllCamerasInactive();
+        } catch (ServiceException e) {
+            LOGGER.debug("could not set cameras inactive");
+        }
+        int count=0;
+        final CameraList cl = new CameraList();
         try {
             LOGGER.debug("Cameras: " + cl);
+
+            count=cl.getCount();
+            Camera camera;
+            for(int i=0;i<count;i++)
+            {
+                cameraGphotoList.add(new CameraGphoto());
+                Pointer pInfo=cl.getPortInfo(i);
+                cameraPortList.add(cl.getPort(i));
+                cameraModelList.add(cl.getModel(i));
+                LOGGER.debug(pInfo.toString());
+
+                cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
+
+                cameraGphotoList.get(i).initialize();
+                cameraGphotoList.get(i).ref();
+                try{
+                    camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
+                    camera=cameraService.cameraExists(camera);
+                    if(camera==null)
+                    {
+                        camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
+                        cameraService.createCamera(camera);
+                    }
+                    cameraService.setCameraActive(camera.getId());
+                    cameraList.add(camera);
+                }
+                catch (ServiceException ex)
+                {
+                    LOGGER.error("Could not create camera entity");
+                    throw new CameraException(ex.getMessage(), -1);
+                }
+            }
+
         } finally {
             CameraUtils.closeQuietly(cl);
         }
-        final CameraGphoto c = new CameraGphoto();
-        int i = 1;
-        boolean imageSaved = false;
-        while (i == 1)
-        {
-            try {
-                c.initialize();
-                final CameraFile cf = c.waitForImage();
-                if (cf != null) {
-                    int shootngID = 1;
-                    String imagePath = "/images/shooting1/img" + id++ + ".jpg";
-                    Image image = new Image(0, imagePath, shootngID, new Date());
-                    Image image2 = imageService.create(image);
-
-                    cf.save(new File(System.getProperty("user.dir") + "/src/main/resources/images/shooting1/img" + image2.getImageID() + ".jpg").getAbsolutePath());       //TODO: get imageID aus der Datenbank
-                    CameraUtils.closeQuietly(cf);
-                    imageSaved=true;
-                    LOGGER.debug(image2.getImageID() + "");
-                    LOGGER.debug(imageService.getLastImgPath(shootngID));
-                }
-
-            } catch (CameraException ex) {
-                LOGGER.debug("waitForImage Timeout");
-                CameraUtils.closeQuietly(c);
-                //throw new CameraException(ex.getMessage(), ex.getResult());
-            }
-            if(imageSaved)
-            {
-                shotFrameController.refreshShot();
-            }
-            imageSaved=false;
-        }
-        CameraUtils.closeQuietly(c);*/
-
-
-        CameraHandlerThread cameraHandlerThread = new CameraHandlerThread();
-        cameraHandlerThread.setImageService(imageService);
-        cameraHandlerThread.setShotFrameManager(shotFrameManager);
-        cameraHandlerThread.setShootingService(shootingService);
-        cameraHandlerThread.start();
+        return null;
     }
-
 }

@@ -10,10 +10,31 @@ public class Profile {
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private boolean isMobilEnabled;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
     private boolean isGreenscreenEnabled;
+    private String watermark;
     private boolean isDeleted;
+
+    /**
+     * Constructor with unknown ID and other information about profile
+     *
+     * @param name - no empty profile name
+     */
+    public Profile(String name,
+                   boolean isPrintEnabled,
+                   boolean isFilterEnabled,
+                   boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled
+    ) {
+        this.id = Integer.MIN_VALUE;
+        this.name = name;
+        this.isPrintEnabled = isPrintEnabled;
+        this.isFilerEnabled = isFilterEnabled;
+        this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
+    }
 
     /**
      * Constructor with known ID
@@ -28,6 +49,7 @@ public class Profile {
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
+                   boolean isMobilEnabled,
                    boolean isDeleted
                    ) {
         this.id = id;
@@ -37,17 +59,18 @@ public class Profile {
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
+        this.isMobilEnabled = isMobilEnabled;
         this.isDeleted = isDeleted;
     }
 
     /**
-     * Constructor with unknown id will set id to Long.MIN_VALUE and persistence layer has
+     * Constructor with unknown id will set id to Integer.MIN_VALUE and persistence layer has
      * to provide a valid id
      *
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Integer.MIN_VALUE, name,null,null,false,false,false,false);
+        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,false);
     }
 
     public int getId() {
@@ -106,20 +129,64 @@ public class Profile {
         isGreenscreenEnabled = greenscreenEnabled;
     }
 
+    public String getWatermark() {
+        return watermark;
+    }
+
+    public void setWatermark(String watermark) {
+        this.watermark = watermark;
+    }
+
+    public boolean isMobilEnabled() {
+        return isMobilEnabled;
+    }
+
+    public void setMobilEnabled(boolean mobilEnabled) {
+        isMobilEnabled = mobilEnabled;
+    }
+
     public String toString(){return this.name;}
 
     /**
      * Camera-Position Pair Entity
      */
     public static class PairCameraPosition {
+        private int id;
+        private int profileId;
         private Camera camera;
         private Position position;
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
+            this(Integer.MIN_VALUE,Integer.MIN_VALUE,camera, position,isGreenScreenReady);
+        }
+
+        public PairCameraPosition(int id,
+                                  int profileId,
+                                  Camera camera,
+                                  Position position,
+                                  boolean isGreenScreenReady){
+            this.id = id;
+            this.profileId = profileId;
             this.camera = camera;
             this.position = position;
             this.isGreenScreenReady = isGreenScreenReady;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getProfileId() {
+            return profileId;
+        }
+
+        public void setProfileId(int profileId) {
+            this.profileId = profileId;
         }
 
         public Camera getCamera() {
@@ -151,8 +218,46 @@ public class Profile {
      * Logo-RelativeRectangle Pair Entity
      */
     public static class PairLogoRelativeRectangle {
+        private int id;
+        private int profileId;
         private Logo logo;
         private RelativeRectangle relativeRectangle;
+
+        public PairLogoRelativeRectangle(int id,
+                                         int profileId,
+                                         Logo logo,
+                                         RelativeRectangle relativeRectangle) {
+            this.id = id;
+            this.profileId = profileId;
+            this.logo = logo;
+            this.relativeRectangle = relativeRectangle;
+        }
+
+        public PairLogoRelativeRectangle(int profileId,
+                                         Logo logo,
+                                         RelativeRectangle relativeRectangle) {
+            this(Integer.MIN_VALUE, profileId, logo, relativeRectangle);
+        }
+
+        public PairLogoRelativeRectangle(Logo logo, RelativeRectangle relativeRectangle) {
+            this(Integer.MIN_VALUE, Integer.MIN_VALUE, logo, relativeRectangle);
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getProfileId() {
+            return profileId;
+        }
+
+        public void setProfileId(int profileId) {
+            this.profileId = profileId;
+        }
 
         public Logo getLogo() {
             return logo;
@@ -162,17 +267,61 @@ public class Profile {
             this.logo = logo;
         }
 
-        public PairLogoRelativeRectangle(Logo logo, RelativeRectangle relativeRectangle) {
-            this.logo = logo;
-            this.relativeRectangle = relativeRectangle;
-        }
-
         public RelativeRectangle getRelativeRectangle() {
             return relativeRectangle;
         }
 
         public void setRelativeRectangle(RelativeRectangle relativeRectangle) {
             this.relativeRectangle = relativeRectangle;
+        }
+
+        public int getLogoID(){
+            return this.logo.getId();
+        }
+        public String getPath(){
+            return this.logo.getPath();
+        }
+        public void setPath(String path){
+            this.logo.setPath(path);
+        }
+        public String getLogoLabel() {
+            return this.logo.getLabel();
+        }
+
+        public void setLogoLabel(String logoLabel) {
+            this.logo.setLabel(logoLabel);
+        }
+
+        public double getXstart() {
+            return this.relativeRectangle.getX();
+        }
+
+        public void setXstart(double xstart) {
+            this.relativeRectangle.setX(xstart);
+        }
+
+        public double getYstart() {
+            return this.relativeRectangle.getY();
+        }
+
+        public void setYstart(double ystart) {
+            this.relativeRectangle.setY(ystart);
+        }
+
+        public double getHeight() {
+            return this.relativeRectangle.getHeight();
+        }
+
+        public void setHeight(double height) {
+            this.relativeRectangle.setHeight(height);
+        }
+
+        public double getWidth() {
+            return this.relativeRectangle.getWidth();
+        }
+
+        public void setWidth(double width) {
+            this.relativeRectangle.setWidth(width);
         }
     }
 }

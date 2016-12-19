@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -42,14 +43,20 @@ public class WindowManager {
     private Scene mainScene;
     private Scene shootingScene;
     private Scene profileScene;
+    private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
+    private boolean activeShootingAvailable;
+    private int fontSize;
+    private FullScreenImageController pictureController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
         this.springFXMLLoader=springFXMLLoader;
         this.shotFrameManager = shotFrameManager;
         this.loginRedirectorModel = loginRedirectorModel;
+        activeShootingAvailable=false;
+        fontSize =0;
     }
 
     /**
@@ -65,6 +72,11 @@ public class WindowManager {
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
 
+        setFontSize(screenWidth,screenHeight);
+        if(fontSize ==0){
+            LOGGER.debug("font sice - non fitting screen sice");
+            fontSize =16;
+        }
 
 
         //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
@@ -75,22 +87,44 @@ public class WindowManager {
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
+        this.pictureController = pictureWrapper.getController();
 
         //Creating Main-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
-        this.mainScene=new Scene((Parent) mfWrapper.getLoadedObject(),screenWidth,screenHeight);
+        Parent parentmain = (Parent) mfWrapper.getLoadedObject();
+        URL css= this.getClass().getResource("/css/main.css");
+        LOGGER.info("CSSM -"+css);
+        int sice = (int)(fontSize *3);
+        parentmain.setStyle("-fx-font-size:"+sice+"px;");
+        parentmain.getStylesheets().add(css.toExternalForm());
+        this.mainScene=new Scene(parentmain,screenWidth,screenHeight);
 
         //Creating Shooting-Scene
         SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper = springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
-        this.shootingScene=new Scene((Parent) shootingWrapper.getLoadedObject(),screenWidth,screenHeight);
+        Parent parentsf = (Parent) shootingWrapper.getLoadedObject();
+        URL csssf= this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSSF -"+csssf);
+        parentsf.setStyle("-fx-font-size:"+fontSize+"px;");
+        parentsf.getStylesheets().add(csssf.toExternalForm());
+        this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
 
         //Creating Profile-Scene
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
         this.profileScene = new Scene((Parent) profileWrapper.getLoadedObject(),screenWidth,screenHeight);
 
+        //Creating Setting-Scene
+        SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
+        this.settingScene = new Scene((Parent) settingWrapper.getLoadedObject(),screenWidth,screenHeight);
+
         //Creating Login-Scene
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
+        Parent parentad = (Parent) adminLoginWrapper.getLoadedObject();
+        URL cssad= this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSAD -"+cssad);
+        parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentad.getStylesheets().add(cssad.toExternalForm());
         this.adminLoginScene = new Scene((Parent) adminLoginWrapper.getLoadedObject(),screenWidth,screenHeight);
 
         //Creating Miniatur-Scene
@@ -105,6 +139,7 @@ public class WindowManager {
         }
 
 
+        //TODO: only one of the following should be here
         try {
             CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
             cameraHandler.getImages();
@@ -113,7 +148,13 @@ public class WindowManager {
         }
 
         this.mainStage.setTitle("Fotostudio");
-        showAdminLogin(SHOW_MAINSCENE);
+        if(activeShootingAvailable){
+            this.mainStage.setScene(miniaturScene);
+            //initShotFrameManager();
+        } else {
+            showAdminLogin(SHOW_MAINSCENE);
+        }
+        this.mainStage.setFullScreen(true);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
     }
@@ -177,6 +218,18 @@ public class WindowManager {
         shotFrameManager.closeFrames();
     }
 
+    public void showFullscreenImage(int imgID){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
+        pictureController.changeImage(imgID);
+    }
+
+    /**
+     * If an active shooting is available on startup of the application, this method is called to notify the WindowManager of this fact.
+     */
+    public void notifyActiveShootingAvailable(){
+       activeShootingAvailable=true;
+    }
 
     /**
      * Returns the mainStage.
@@ -185,4 +238,36 @@ public class WindowManager {
     public Stage getStage(){
         return this.mainStage;
     }
+
+    public void initShotFrameManager(){
+        try {
+            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
+            cameraHandler.getCameras();
+            shotFrameManager.init();
+            cameraHandler.getImages();
+        } catch (Exception e) {
+            LOGGER.info("start - Getting camera - "+e);
+        } catch (UnsatisfiedLinkError e){
+            LOGGER.error("initshotFrameManager-> Error "+e.getMessage());
+        }
+    }
+
+    /**
+     * sets the initial font size depending on the screen Width and high
+     * using percentages of screen differences to the initial screen size (1280x800)
+     *
+     * @param screenWidth the width bound of the current monitor
+     * @param screenHeight the height bound of the current monitor
+     */
+    public void setFontSize(double screenWidth, double screenHeight){
+        int initialsize = 16;
+        if(screenWidth>=1920.0 && screenHeight>=1080.0){
+            fontSize =(int)(initialsize*1.29);
+        }else if(screenWidth>=1366.0 && screenHeight>=768.0){
+            fontSize =(int)(initialsize*1.07);
+        }else if(screenWidth>=1280.0 && screenHeight>=800.0){
+            fontSize = initialsize;
+        }
+    }
+
 }

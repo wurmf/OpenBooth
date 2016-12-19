@@ -40,6 +40,7 @@ public class CameraList implements Closeable {
 	}
     }
     private final Pointer list;
+	private Pointer portInfoList;
 
     /**
      * Enumerates connected cameras.
@@ -65,7 +66,7 @@ public class CameraList implements Closeable {
 	    try {
 		final PointerByReference ref2 = new PointerByReference();
 		CameraUtils.check(GPhoto2Native.INSTANCE.gp_port_info_list_new(ref2), "gp_port_info_list_new");
-		final Pointer portInfoList = ref2.getValue();
+		portInfoList = ref2.getValue();
 		try {
 		    CameraUtils.check(GPhoto2Native.INSTANCE.gp_port_info_list_load(portInfoList), "gp_port_info_list_load");
 		    CameraUtils.check(GPhoto2Native.INSTANCE.gp_abilities_list_load(cameraAbilitiesList, CONTEXT), "gp_abilities_list_load");
@@ -83,7 +84,7 @@ public class CameraList implements Closeable {
 			}
 		    }
 		} finally {
-		    GPhoto2Native.INSTANCE.gp_port_info_list_free(portInfoList);
+		   // GPhoto2Native.INSTANCE.gp_port_info_list_free(portInfoList);
 		}
 	    } finally {
 		GPhoto2Native.INSTANCE.gp_abilities_list_free(cameraAbilitiesList);
@@ -115,6 +116,17 @@ public class CameraList implements Closeable {
 	return pvalue.getValue().getString(0);
     }
 
+	/**
+	 * Returns a displayable name of the port to which the camera is connected.
+	 * @param i the camera index, must be 0 .. {@link #getCount()} - 1.
+	 * @return the displayable camera name, never null, for example usb:002,019
+	 */
+	public Pointer getPort(int i, boolean string ){
+		final PointerByReference pvalue = new PointerByReference();
+		CameraUtils.check(GPhoto2Native.INSTANCE.gp_list_get_value(list, i, pvalue), "gp_list_get_value");
+		return pvalue.getValue();
+	}
+
     /**
      * Returns connected camera count.
      * @return connected camera count.
@@ -135,12 +147,18 @@ public class CameraList implements Closeable {
     }
 
     public void close() {
-	CameraUtils.check(GPhoto2Native.INSTANCE.gp_list_free(list), "gp_list_free");
+		CameraUtils.check(GPhoto2Native.INSTANCE.gp_list_free(list), "gp_list_free");
     }
     
     public Pointer getPortInfo(int index) {
         final PointerByReference result = new PointerByReference();
-        CameraUtils.check(GPhoto2Native.INSTANCE.gp_port_info_list_get_info(list, index, result), "gp_port_info_list_get_info");
+        CameraUtils.check(GPhoto2Native.INSTANCE.gp_port_info_list_get_info(portInfoList, index, result), "gp_port_info_list_get_info");
         return result.getValue();
     }
+
+    public Pointer getPortPath(Pointer port) {
+		final PointerByReference result = new PointerByReference();
+		int p=GPhoto2Native.INSTANCE.gp_port_info_list_lookup_path(portInfoList, port);
+		return getPortInfo(p);
+	}
 }

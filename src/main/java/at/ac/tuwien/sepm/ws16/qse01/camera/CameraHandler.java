@@ -1,20 +1,27 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 
-/**
- * Created by osboxes on 28.11.16.
- */
+import java.util.List;
+
+
 public interface CameraHandler {
+
+    /**
+     * Detects all connected cameras and saves for them in the Database or sets them active if they are already saved.
+     *
+     *
+     * @throws CameraException if something goes wrong during the start of the Threads
+     * */
+    public void getImages() throws CameraException;
+
 
     /**
      * Saves image in images folder and in database.
      * Also tells the Shot monitor to refresh the image.
      *
-     * TODO: get Imageservice and Sessionservice
-     *
-     * @return
-     *
+     * @throws CameraException if something goes wrong during the detecting of the cameras
      * */
-    public void getImages() throws CameraException;
+    public List<Camera> getCameras() throws CameraException;
 }
