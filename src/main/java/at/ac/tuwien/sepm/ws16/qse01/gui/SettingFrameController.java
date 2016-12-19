@@ -894,7 +894,7 @@ public class SettingFrameController {
     @FXML
     public void openMainFrame(){
         LOGGER.info("backButton clicked...");
-        windowManager.showShootingAdministration();
+        windowManager.showAdminLogin(WindowManager.SHOW_MAINSCENE);
     }
 
 }
