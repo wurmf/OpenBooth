@@ -833,12 +833,7 @@ public class SettingFrameController {
         String name = txProfilName.getText();
         if(name.trim().compareTo("") == 0){
             LOGGER.debug("in error");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Ungültige Eingabe");
-            alert.setContentText("Sie müssen einen Namen eingeben!");
-            alert.initModality(Modality.WINDOW_MODAL);
-            alert.initOwner(windowManager.getStage());
-           alert.show();
+            showError("Sie müssen einen Namen eingeben!");
         }else {
             Profile p = new Profile(name,txProfilDrucken.isSelected(),txProfilFilter.isSelected(),txProfilGreen.isSelected(),txProfilMobil.isSelected());
 
@@ -859,19 +854,43 @@ public class SettingFrameController {
     }
     @FXML
     private void saveLogo(){
-        //TODO
+        LOGGER.debug("Logo Add Button has been clicked");
+        String name = txLogoName.getText();
+        if(name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0){
+            LOGGER.debug("in error");
+            showError("Sie müssen einen Namen eingeben und ein Logo hochladen!");
+        }else {
+            try {
+                Logo newLogo = new Logo(name,txLogoLogo.getText());
+                RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()), Double.valueOf(txLogoHoehe.getText()),Double.valueOf(txLogoBreite.getText()));
+
+                Profile.PairLogoRelativeRectangle p = new Profile.PairLogoRelativeRectangle(newLogo,newPosition);
+
+
+                LOGGER.info("adding the new pairLogo to tableView...");
+                //TODO: Nachdem profildao methode  keine exception wirft, profList.add nach pservice.add ausführen.
+                logoList.add(p);
+
+                //TODO: service methode für pairlogo hinzufügen erstellen.
+               // pservice.addPairLogo(p);
+
+                /*   profList.add(p);
+            } catch (ServiceException e) {
+                LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+           */ } catch (NumberFormatException e){
+                showError("Bitte in Position Eingabefelder (Xstart,>Ystart,Breite,Höhe) nur Zahlen eingeben.");
+                LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
+                //TODO: Dialogfenster öffnen.
+            }
+        }
     }
+
     @FXML
     private void savePosition(){
         LOGGER.debug("Position Add Button has been clicked");
         String name = txPositionName.getText();
         if(name.trim().compareTo("") == 0){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("Ungültige Eingabe");
-            alert.setContentText("Sie müssen einen Namen eingeben!");
-            alert.initModality(Modality.WINDOW_MODAL);
-            alert.initOwner(windowManager.getStage());
-            alert.show();
+            showError("Sie müssen einen Namen eingeben!");
         }else {
             Position p = new Position(name);
 
@@ -895,6 +914,14 @@ public class SettingFrameController {
     public void openMainFrame(){
         LOGGER.info("backButton clicked...");
         windowManager.showShootingAdministration();
+    }
+    public void showError(String msg){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Ungültige Eingabe");
+        alert.setContentText(msg);
+        alert.initModality(Modality.WINDOW_MODAL);
+        alert.initOwner(windowManager.getStage());
+        alert.show();
     }
 
 }
