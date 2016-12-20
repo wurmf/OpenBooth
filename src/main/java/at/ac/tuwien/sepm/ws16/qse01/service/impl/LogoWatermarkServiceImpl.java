@@ -93,7 +93,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
-        LOGGER.debug("Entering addLogosCreateNewImgage methdod");
+        LOGGER.debug("Entering addLogosCreateNewImage method");
         BufferedImage img = openImage(srcImgPath);
 
         List<Logo> logos = profileService.getAllLogosOfProfile();
