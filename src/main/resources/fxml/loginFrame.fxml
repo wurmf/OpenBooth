@@ -45,13 +45,13 @@
           <RowConstraints percentHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField fx:id="adminField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Benutzername" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" GridPane.rowIndex="4" />
+            <Label text="Passwort" GridPane.rowIndex="2" />
+            <TextField fx:id="adminField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label fx:id="wrongCredentialsLabel" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Passwort" GridPane.rowIndex="2" />
             <Button mnemonicParsing="false" onAction="#checkLogin" text="Bestätigen" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>
