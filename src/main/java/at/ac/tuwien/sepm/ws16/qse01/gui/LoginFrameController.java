@@ -2,10 +2,13 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +57,12 @@ public class LoginFrameController {
         }
     }
 
+    @FXML
+    public void onEnter(KeyEvent keyEvent){
+        if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            checkLogin();
+        }
+    }
     /**
      * Closes the login-frame and sets back all the values possibly changed during the time it was open.
      */
