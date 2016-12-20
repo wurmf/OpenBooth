@@ -65,7 +65,7 @@
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
                <children>
-                  <TitledPane animated="false" layoutX="5.0" layoutY="66.0" prefHeight="310.0" prefWidth="1015.0" text="Kameraverwaltung">
+                  <TitledPane animated="false" layoutX="5.0" layoutY="44.0" prefHeight="310.0" prefWidth="1015.0" text="Kameraverwaltung">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefWidth="200.0">
                            <children>
@@ -101,7 +101,7 @@
                         </AnchorPane>
                     </content>
                   </TitledPane>
-                  <TitledPane animated="false" layoutX="5.0" layoutY="400.0" prefHeight="350.0" prefWidth="1020.0" text="Logoverwaltung">
+                  <TitledPane animated="false" layoutX="5.0" layoutY="366.0" prefHeight="350.0" prefWidth="1020.0" text="Logoverwaltung">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -132,7 +132,7 @@
                         </AnchorPane>
                     </content>
                   </TitledPane>
-                  <ComboBox fx:id="profilList" layoutX="8.0" layoutY="22.0" prefWidth="150.0" promptText="Profil auswählen" />
+                  <ComboBox fx:id="profilList" layoutX="8.0" layoutY="6.0" prefWidth="150.0" promptText="Profil auswählen" />
                </children>
             </AnchorPane>
          </content>
