@@ -263,9 +263,7 @@ public class Profile {
             return logo;
         }
 
-        public void setLogo(Logo logo) {
-            this.logo = logo;
-        }
+        public void setLogo(Logo logo) {this.logo = logo;}
 
         public RelativeRectangle getRelativeRectangle() {
             return relativeRectangle;
@@ -275,53 +273,17 @@ public class Profile {
             this.relativeRectangle = relativeRectangle;
         }
 
-        public int getLogoID(){
-            return this.logo.getId();
-        }
         public String getPath(){
             return this.logo.getPath();
         }
-        public void setPath(String path){
-            this.logo.setPath(path);
-        }
-        public String getLogoLabel() {
-            return this.logo.getLabel();
-        }
 
-        public void setLogoLabel(String logoLabel) {
-            this.logo.setLabel(logoLabel);
-        }
-
-        public double getXstart() {
-            return this.relativeRectangle.getX();
-        }
-
-        public void setXstart(double xstart) {
-            this.relativeRectangle.setX(xstart);
-        }
-
-        public double getYstart() {
-            return this.relativeRectangle.getY();
-        }
-
-        public void setYstart(double ystart) {
-            this.relativeRectangle.setY(ystart);
-        }
-
-        public double getHeight() {
-            return this.relativeRectangle.getHeight();
-        }
-
-        public void setHeight(double height) {
-            this.relativeRectangle.setHeight(height);
-        }
-
-        public double getWidth() {
-            return this.relativeRectangle.getWidth();
-        }
-
-        public void setWidth(double width) {
-            this.relativeRectangle.setWidth(width);
+        @Override
+        public boolean equals(Object object){
+            return object instanceof PairLogoRelativeRectangle
+                    && ((PairLogoRelativeRectangle) object).getId() == this.getId()
+                    && ((PairLogoRelativeRectangle) object).getProfileId() == this.getProfileId()
+                    && ((PairLogoRelativeRectangle) object).getLogo().equals(this.getLogo())
+                    && ((PairLogoRelativeRectangle) object).getRelativeRectangle().equals(this.getRelativeRectangle());
         }
     }
 }

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.LogoDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
@@ -35,6 +36,9 @@ public class TestEnvironment {
     protected PositionDAO positionDAO;
     protected PositionDAO mockPositionDAO;
 
+    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
+    protected PairLogoRelativeRectangleDAO mockPairLogoRelativeRectangleDAO;
+
     protected ProfileDAO profileDAO;
     protected ProfileDAO mockProfileDAO;
     protected Connection con;
@@ -63,14 +67,16 @@ public class TestEnvironment {
 
         mockLogoDAO = new JDBCLogoDAO(mockH2Handler);
         mockPositionDAO = new JDBCPositionDAO(mockH2Handler);
+        mockPairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(mockH2Handler);
         mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
 
         /* Setup DAOs for all testing
          */
+        this.con = H2Handler.getInstance().getConnection();
         logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
         positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
         profileDAO = new JDBCProfileDAO(H2Handler.getInstance());
-        this.con = H2Handler.getInstance().getConnection();
         try {
             con.setAutoCommit(false);
             LOGGER.debug("Turn off AutoCommit before beginning testing");

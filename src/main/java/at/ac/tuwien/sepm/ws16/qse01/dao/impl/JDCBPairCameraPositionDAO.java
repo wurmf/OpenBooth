@@ -70,7 +70,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
     @Override
     public List<Profile.PairCameraPosition> createAll(Profile profile) throws PersistenceException {
-        LOGGER.debug("Entering creatAll method");
+        LOGGER.debug("Entering createAll method");
         List<Profile.PairCameraPosition> pairCameraPositions = new ArrayList<>();
         for (Profile.PairCameraPosition pairCameraPosition : profile.getCameraPositions()) {
             pairCameraPositions.add(this.create(profile.getId(), pairCameraPosition));
