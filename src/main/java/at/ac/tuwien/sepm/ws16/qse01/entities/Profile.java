@@ -64,7 +64,7 @@ public class Profile {
     }
 
     /**
-     * Constructor with unknown id will set id to Long.MIN_VALUE and persistence layer has
+     * Constructor with unknown id will set id to Integer.MIN_VALUE and persistence layer has
      * to provide a valid id
      *
      * @param name - no empty profile name
@@ -151,24 +151,42 @@ public class Profile {
      * Camera-Position Pair Entity
      */
     public static class PairCameraPosition {
+        private int id;
+        private int profileId;
         private Camera camera;
-        private String cameraLabel;
         private Position position;
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
+            this(Integer.MIN_VALUE,Integer.MIN_VALUE,camera, position,isGreenScreenReady);
+        }
+
+        public PairCameraPosition(int id,
+                                  int profileId,
+                                  Camera camera,
+                                  Position position,
+                                  boolean isGreenScreenReady){
+            this.id = id;
+            this.profileId = profileId;
             this.camera = camera;
-            this.cameraLabel = camera.getLable();
             this.position = position;
             this.isGreenScreenReady = isGreenScreenReady;
         }
 
-        public String getCameraLabel() {
-            return cameraLabel;
+        public int getId() {
+            return id;
         }
 
-        public void setCameraLabel(String cameraLabel) {
-            this.cameraLabel = cameraLabel;
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getProfileId() {
+            return profileId;
+        }
+
+        public void setProfileId(int profileId) {
+            this.profileId = profileId;
         }
 
         public Camera getCamera() {
@@ -200,10 +218,46 @@ public class Profile {
      * Logo-RelativeRectangle Pair Entity
      */
     public static class PairLogoRelativeRectangle {
+        private int id;
+        private int profileId;
         private Logo logo;
-
         private RelativeRectangle relativeRectangle;
 
+        public PairLogoRelativeRectangle(int id,
+                                         int profileId,
+                                         Logo logo,
+                                         RelativeRectangle relativeRectangle) {
+            this.id = id;
+            this.profileId = profileId;
+            this.logo = logo;
+            this.relativeRectangle = relativeRectangle;
+        }
+
+        public PairLogoRelativeRectangle(int profileId,
+                                         Logo logo,
+                                         RelativeRectangle relativeRectangle) {
+            this(Integer.MIN_VALUE, profileId, logo, relativeRectangle);
+        }
+
+        public PairLogoRelativeRectangle(Logo logo, RelativeRectangle relativeRectangle) {
+            this(Integer.MIN_VALUE, Integer.MIN_VALUE, logo, relativeRectangle);
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getProfileId() {
+            return profileId;
+        }
+
+        public void setProfileId(int profileId) {
+            this.profileId = profileId;
+        }
 
         public Logo getLogo() {
             return logo;
@@ -211,11 +265,6 @@ public class Profile {
 
         public void setLogo(Logo logo) {
             this.logo = logo;
-        }
-
-        public PairLogoRelativeRectangle(Logo logo, RelativeRectangle relativeRectangle) {
-            this.logo = logo;
-            this.relativeRectangle = relativeRectangle;
         }
 
         public RelativeRectangle getRelativeRectangle() {

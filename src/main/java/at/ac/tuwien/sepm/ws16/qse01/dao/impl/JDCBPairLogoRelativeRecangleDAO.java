@@ -44,7 +44,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
         ResultSet rs;
         String sqlString;
 
-        sqlString = "INSERT INTO profile_logo_rpositions(profileId,logoId,x1,y1,x2,y2) VALUES (?,?,?,?,?,?);";
+        sqlString = "INSERT INTO profile_logo_relativeRectangles(profileId,logoId,x1,y1,x2,y2) VALUES (?,?,?,?,?,?);";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
@@ -72,7 +72,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
 
     @Override
     public List<Profile.PairLogoRelativeRectangle> createAll(Profile profile) throws PersistenceException {
-        LOGGER.debug("Entering creatAll method");
+        LOGGER.debug("Entering createAll method");
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = new ArrayList<>();
         for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             pairLogoRelativeRectangles.add(this.create(profile.getId(), pairLogoRelativeRectangle));
@@ -89,7 +89,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
         ResultSet rs;
         String sqlString;
 
-        sqlString = "SELECT * FROM profile_logo_rpositions where profileId = ?;";
+        sqlString = "SELECT * FROM profile_logo_relativeRectangles where profileId = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
@@ -102,10 +102,10 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
                         new Profile.PairLogoRelativeRectangle(
                                 (new JDBCLogoDAO(H2Handler.getInstance()).read(rs.getInt("logoId"))),
                                 new RelativeRectangle(
-                                        rs.getDouble("x1"),
-                                        rs.getDouble("y1"),
-                                        rs.getDouble("y2"),
-                                        rs.getDouble("x2"))
+                                        rs.getDouble("x"),
+                                        rs.getDouble("y"),
+                                        rs.getDouble("width"),
+                                        rs.getDouble("height"))
                                 );
                 returnList.add(pairLogoRelativeRectangle);
             }
@@ -131,8 +131,8 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "DELETE FROM profile_logo_rpositions"
-                + " WHERE profileId = ? AND x1 = ? AND y1 = ? AND x2 = ? AND y2 = 2;";
+        sqlString = "DELETE FROM profile_logo_relativeRectangles"
+                + " WHERE profileId = ? AND x = ? AND y = ? AND width = ? AND height = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
@@ -170,7 +170,7 @@ public class JDCBPairLogoRelativeRecangleDAO implements PairLogoRelativeRectangl
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "DELETE FROM profile_logo_rpositions"
+        sqlString = "DELETE FROM profile_logo_relativeRectangles"
                 + " WHERE profileId = ?;";
 
         try {
