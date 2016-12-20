@@ -13,6 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Shooting service impl
  */
@@ -65,5 +74,46 @@ public class ShootingServiceImpl implements ShootingService {
         } catch (PersistenceException e) {
             throw new ServiceException(e.getMessage());
         }
+    }
+
+    @Override
+    public String createPath() throws ServiceException {
+        String path=null;
+        Path storagepath = null;
+
+        String resource = System.getProperty("user.home");
+
+                        /*if(mobiel) {
+                            storage = Paths.get(resource + "fotostudio/Mobil");
+                        }else{*/
+        storagepath = Paths.get(resource + "/fotostudio/Studio");
+        // }
+        if (storagepath != null) {
+            try {
+                Files.createDirectories(storagepath);
+            }  catch (IOException e) {
+                LOGGER.error("creatin initial folder" + e);
+                throw new ServiceException("Derspeicherort konnte nicht erstellt werden");
+            }
+                            /*catch (FileAlreadyExistsException e) {
+                                LOGGER.info("shooting folder already exists" + e);
+
+                            }*/
+            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
+            Date date = new Date();
+            Path shootingstorage = Paths.get(storagepath + "/" + dateFormat.format(date));
+
+            try {
+                Files.createDirectories(shootingstorage);
+            } catch (FileAlreadyExistsException e) {
+                LOGGER.info("shooting folder already exists" + e);
+                throw new ServiceException("Derspeicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
+            } catch (IOException e) {
+                LOGGER.error("creatin shooting folder file" + e);
+                throw new ServiceException("Derspeicherort konnte nicht erstellt werden");
+            }
+            path = shootingstorage.toString();
+        }
+        return path;
     }
 }

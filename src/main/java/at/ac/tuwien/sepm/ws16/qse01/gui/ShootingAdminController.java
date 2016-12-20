@@ -129,41 +129,10 @@ public class ShootingAdminController {
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
-                        Path storagepath = null;
-
-                        String resource = System.getProperty("user.home");
-
-                        /*if(mobiel) {
-                            storage = Paths.get(resource + "fotostudio/Mobil");
-                        }else{*/
-                        storagepath = Paths.get(resource + "/fotostudio/Studio");
-                        // }
-                        if (storagepath != null) {
-                            try {
-                                Files.createDirectories(storagepath);
-                            }  catch (IOException e) {
-                                LOGGER.error("creatin initial folder" + e);
-                                showInformationDialog("Derspeicherort konnte nicht erstellt werden");
-                            }
-                            /*catch (FileAlreadyExistsException e) {
-                                LOGGER.info("shooting folder already exists" + e);
-
-                            }*/
-                            DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
-                            Date date = new Date();
-                            Path shootingstorage = Paths.get(storagepath + "/" + dateFormat.format(date));
-
-                            try {
-                                Files.createDirectories(shootingstorage);
-                            } catch (FileAlreadyExistsException e) {
-                                showInformationDialog("Derspeicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
-                                LOGGER.info("shooting folder already exists" + e);
-
-                            } catch (IOException e) {
-                                LOGGER.error("creatin shooting folder file" + e);
-                                showInformationDialog("Derspeicherort konnte nicht erstellt werden");
-                            }
-                            path = shootingstorage.toString();
+                        try {
+                            path = shootingService.createPath();
+                        }catch (ServiceException s){
+                            showInformationDialog(s.getMessage());
                         }
                     }
                         Shooting shouting = new Shooting(0, (int) profile.getId(), path, true);
@@ -208,12 +177,12 @@ public class ShootingAdminController {
             directoryChooser.setTitle("Speicherort wählen");
             //directoryChooser.in
             File savefile =directoryChooser.showDialog(windowManager.getStage());
-
-            storageDirLabel.setText(savefile.getPath());
             path = savefile.getPath();
+            storageDirLabel.setText(savefile.getPath());
         }catch (NullPointerException n){
-            showInformationDialog("Kein Pfad gewählt");
+            showInformationDialog("Default Pfad ausgewählt");
         }
+
     }
 
     /**
