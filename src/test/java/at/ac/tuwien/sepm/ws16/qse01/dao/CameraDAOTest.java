@@ -36,6 +36,7 @@ public class CameraDAOTest {
      * This test creates an image with valid data.
      * DAO should save it in database.
      */
+    /*
     @Test
     public void createValidCamera() throws Throwable  {
         Camera camera = new Camera(-1, "", "", "", "");
@@ -45,6 +46,7 @@ public class CameraDAOTest {
         assertThat(cameraDAO.exists(camera).getId()==camera.getId(), is(true));
 
     }
+    */
 
     /**
      * This test sets an existing camera to active.
