@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,30 +33,56 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     private String currentWatermarkPath = null;
     private BufferedImage cachedWatermark = null;
 
+    private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
+
     @Autowired
     public LogoWatermarkServiceImpl(ProfileService profileService){
         this.profileService = profileService;
     }
 
     @Override
-    public double calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException{
+    public double calculateRelativeWidth(double relativeHeight, Logo logo, double imageWidth, double imageHeight) throws ServiceException{
         BufferedImage logoImage = openImageFromLogo(logo);
 
+        if(relativeHeight <= 0){
+            LOGGER.error("calculateRelativeWidth - relativeHeight must be > 0");
+            throw new ServiceException("relativeHeight must be > 0");
+        }
+
+        if(imageHeight <= 0 || imageWidth <= 0){
+            LOGGER.error("calculateRelativeWidth - imageWidth or imageHeight <= 0");
+            throw new ServiceException("imageWidth or imageHeight is <= 0");
+        }
 
         double widthHeightRatio = (double)logoImage.getWidth() / (double)logoImage.getHeight();
 
-        return relativeHeight * widthHeightRatio;
+        double absoluteHeight = relativeHeight / (100D) * imageHeight;
+        double absoluteWidth = absoluteHeight * widthHeightRatio;
+
+        return absoluteWidth / imageWidth * (100D);
     }
 
     @Override
-    public double calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException{
+    public double calculateRelativeHeight(double relativeWidth, Logo logo, double imageWidth, double imageHeight) throws ServiceException{
 
         BufferedImage logoImage = openImageFromLogo(logo);
 
+        if(relativeWidth <= 0){
+            LOGGER.error("calculateRelativeHeight - relativeWidth must be > 0");
+            throw new ServiceException("relativeWidth must be > 0");
+        }
+
+        if(imageHeight <= 0 || imageWidth <= 0){
+            LOGGER.error("calculateRelativeHeight - imageWidth or imageHeight <= 0");
+            throw new ServiceException("imageWidth or imageHeight <= 0");
+        }
 
         double heightWidthRatio = (double)logoImage.getHeight() / (double)logoImage.getWidth();
 
-        return relativeWidth * heightWidthRatio;
+        double absoluteWidth = relativeWidth / (100D) * imageWidth;
+        double absoluteHeight = absoluteWidth * heightWidthRatio;
+
+        return absoluteHeight / imageHeight * (100D);
     }
 
     @Override
@@ -72,7 +99,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public Image getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
+    public BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
         LOGGER.debug("Entering getPreviewFroMultipleLogos method");
 
         if(logos.size() != positions.size()){
@@ -193,21 +220,27 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         double widthHeightRatio = logoWidth / logoHeight;
 
+        double absoluteCalculatedLogoWidth = relativeLogoWidth / (100D) * imageWidth;
+        double absoluteCalculatedLogoHeight = relativeLogoHeight / (100D) * imageHeight;
+
         //use absolute pixel values if both height and width are set to -1
         if((int)relativeLogoHeight == -1 && (int)relativeLogoWidth == -1){
 
-            relativeLogoWidth = logoWidth / imageWidth * (100D);
-            relativeLogoHeight = logoHeight / imageHeight * (100D);
+            absoluteCalculatedLogoWidth = logoWidth;
+            absoluteCalculatedLogoHeight = logoHeight;
 
         }else if((int)relativeLogoHeight == -1 && relativeLogoWidth > 0){
 
-            relativeLogoHeight =  relativeLogoWidth / widthHeightRatio;
+            absoluteCalculatedLogoHeight =  absoluteCalculatedLogoWidth / widthHeightRatio;
 
         }else if(relativeLogoHeight > 0 && (int)relativeLogoWidth == -1){
 
-            relativeLogoWidth = widthHeightRatio * relativeLogoHeight;
+            absoluteCalculatedLogoWidth = widthHeightRatio * absoluteCalculatedLogoHeight;
 
         }
+
+        relativeLogoWidth = absoluteCalculatedLogoWidth / imageWidth * (100D);
+        relativeLogoHeight = absoluteCalculatedLogoHeight / imageHeight * (100D);
 
         LOGGER.debug("given logo position and dimension {}", position);
 
@@ -263,10 +296,14 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         try {
             String formatName = destImgPath.substring(destImgPath.lastIndexOf('.') + 1);
+            if(!supportedImageFormats.contains(formatName)){
+                LOGGER.error("Image format {} not supported", formatName);
+                throw new ServiceException("Image format not supported");
+            }
             File newImage = new File(destImgPath);
             ImageIO.write(img, formatName, newImage);
         } catch (IOException e) {
-            LOGGER.error("saveImage - error during saving image" + e);
+            LOGGER.error("saveImage - error during saving image " + e);
             throw new ServiceException(e);
         }
 
@@ -284,7 +321,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         try {
             img = ImageIO.read(new File(srcImgPath));
         } catch (IOException e) {
-            LOGGER.error("openImage - error loading given image" + e);
+            LOGGER.error("openImage - error loading given image " + e);
             throw new ServiceException(e);
         }
         LOGGER.debug("Image at {} opened", srcImgPath);
