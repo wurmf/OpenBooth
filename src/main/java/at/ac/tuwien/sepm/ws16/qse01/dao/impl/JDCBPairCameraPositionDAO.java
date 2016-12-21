@@ -2,7 +2,9 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.ws16.qse01.dao.CameraDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
@@ -27,16 +29,20 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(JDCBPairCameraPositionDAO.class);
     private Connection con;
+    private CameraDAO cameraDAO;
+    private PositionDAO positionDAO;
 
     @Autowired
     public JDCBPairCameraPositionDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
+        cameraDAO = new JDBCCameraDAO(H2Handler.getInstance());
+        positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
     }
 
     @Override
-    public Profile.PairCameraPosition create(int profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
-        LOGGER.debug("Entering create methode with parameter " + pairCameraPosition);
+    public Profile.PairCameraPosition create(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
+        LOGGER.debug("Entering create method with parameter " + pairCameraPosition);
 
         if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
@@ -45,18 +51,37 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         ResultSet rs;
         String sqlString;
 
-        sqlString = "INSERT INTO profile_camera_positions(profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?);";
         try {
-            stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,profileId);
-            stmt.setInt(2,pairCameraPosition.getCamera().getId());
-            stmt.setInt(3,pairCameraPosition.getPosition().getId());
-            stmt.setBoolean(4,pairCameraPosition.isGreenScreenReady());
-            stmt.executeUpdate();
-            LOGGER.debug("Persisted object creation successfully");
+            //AutoID
+            if (pairCameraPosition.getId() == Integer.MIN_VALUE) {
+                sqlString = "INSERT INTO profile_camera_positions(profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?);";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1,pairCameraPosition.getProfileId());
+                stmt.setInt(2, pairCameraPosition.getCamera().getId());
+                stmt.setInt(3, pairCameraPosition.getPosition().getId());
+                stmt.setBoolean(4, pairCameraPosition.isGreenScreenReady());
+                stmt.executeUpdate();
+                //Get autoassigned id
+                rs = stmt.getGeneratedKeys();
+                if (rs.next()){pairCameraPosition.setId(rs.getInt(1));}
+                LOGGER.debug("Create successfully with AutoID:" + pairCameraPosition.getId());
+            }
+            //NoAutoID
+            else
+            {
+                sqlString = "INSERT INTO profile_camera_positions(profile_camera_positions_id,profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?,?);";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1,pairCameraPosition.getId());
+                stmt.setInt(2,pairCameraPosition.getProfileId());
+                stmt.setInt(3, pairCameraPosition.getCamera().getId());
+                stmt.setInt(4, pairCameraPosition.getPosition().getId());
+                stmt.setBoolean(5, pairCameraPosition.isGreenScreenReady());
+                stmt.executeUpdate();
+                LOGGER.debug("Create successfully with AutoID:" + pairCameraPosition.getId());
+            }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Creating pairCameraPosition object in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Creating object in persistence layer has failed.:" + e);
         }
         finally{
             // Return resources
@@ -69,14 +94,24 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public List<Profile.PairCameraPosition> createAll(Profile profile) throws PersistenceException {
+    public List<Profile.PairCameraPosition> createAll(List<Profile.PairCameraPosition> pairCameraPositions) throws PersistenceException {
         LOGGER.debug("Entering createAll method");
-        List<Profile.PairCameraPosition> pairCameraPositions = new ArrayList<>();
-        for (Profile.PairCameraPosition pairCameraPosition : profile.getCameraPositions()) {
-            pairCameraPositions.add(this.create(profile.getId(), pairCameraPosition));
+        List<Profile.PairCameraPosition> returnValue = new ArrayList<>();
+        for (Profile.PairCameraPosition pairCameraPosition : pairCameraPositions) {
+            try {
+                returnValue.add(this.create(pairCameraPosition));
+            }
+            catch (PersistenceException e) {
+                throw new PersistenceException("Error! CreateAll objects in persistence layer has failed.:" + e);
+            }
         }
         LOGGER.debug("Persisted createAll method has completed successfully " + pairCameraPositions);
-        return  pairCameraPositions;
+        return  returnValue;
+    }
+
+    @Override
+    public boolean update(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+        return false;
     }
 
     @Override

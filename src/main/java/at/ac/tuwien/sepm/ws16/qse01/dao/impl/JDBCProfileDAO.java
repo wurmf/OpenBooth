@@ -81,7 +81,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
-            pairCameraPositionDAO.createAll(profile);
+            //pairCameraPositionDAO.createAll(profile);
             //pairLogoRelativeRectangleDAO.createAll(profile);
             LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
@@ -119,9 +119,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             ResultSet rs = stmt.getResultSet();
 
             if (rs.next()){ //TODO: Sobald ein watermark upgedated wird, bekommt man hier ein NULLPOINTEREXCEPTION
-                pairCameraPositionDAO.deleteAll(profile);
+                //pairCameraPositionDAO.deleteAll(profile);
                 //pairLogoRelativeRectangleDAO.deleteAll(profile);
-                pairCameraPositionDAO.createAll(profile);
+                //pairCameraPositionDAO.createAll(profile);
                 //pairLogoRelativeRectangleDAO.createAll(profile);
                 return true;
             }
