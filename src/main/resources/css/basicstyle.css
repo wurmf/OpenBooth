@@ -16,5 +16,6 @@
   -fx-text-fill: red;
 }
 #profileChoiceBox{
+  -fx-background-color: darkgray;
   -fx-pref-width: 30em;
 }

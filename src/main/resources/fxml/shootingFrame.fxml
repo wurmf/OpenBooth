@@ -12,8 +12,7 @@
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
       <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="20.0" />
-      <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
-      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="40.0" />
+      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="60.0" />
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
   </columnConstraints>
   <rowConstraints>
@@ -24,17 +23,8 @@
     <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button mnemonicParsing="false" onAction="#onDemolitionPressed" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="startButton" mnemonicParsing="false" onAction="#onStartShootingPressed" text="Start" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Button>
-      <ChoiceBox fx:id="profileChoiceBox" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <Button mnemonicParsing="false" onAction="#onDemolitionPressed" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <ChoiceBox fx:id="profileChoiceBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <Label text="Profil:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>
             <Font name="HP Simplified" size="16.0" />
@@ -45,25 +35,34 @@
             <Font name="HP Simplified" size="16.0" />
          </font>
       </Label>
-      <Button mnemonicParsing="false" onAction="#onEditPressed" text="Profilverwaltung" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="stopButton" mnemonicParsing="false" onAction="#onStopShootingPressed" text="Aktives Shooting Beenden" textFill="WHITE" GridPane.columnIndex="3" GridPane.rowIndex="3">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Button>
-      <Button fx:id="storage" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicherort wählen" textFill="#3c3838" GridPane.columnIndex="2" GridPane.rowIndex="2">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Button>
-      <Label fx:id="storageDirLabel" GridPane.columnIndex="3" GridPane.rowIndex="2">
-         <font>
-            <Font name="HP Simplified" size="16.0" />
-         </font>
-      </Label>
+      <GridPane GridPane.columnIndex="2" GridPane.rowIndex="2">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="storage" mnemonicParsing="false" onAction="#onChooseStorageDirPressed" text="Speicherort wählen" textFill="WHITE" />
+            <Label fx:id="storageDirLabel" GridPane.columnIndex="1">
+               <font>
+                  <Font name="HP Simplified" size="16.0" />
+               </font>
+            </Label>
+         </children>
+      </GridPane>
+      <GridPane GridPane.columnIndex="2" GridPane.rowIndex="3">
+        <columnConstraints>
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="startButton" mnemonicParsing="false" onAction="#onStartShootingPressed" text="Start" textFill="WHITE" />
+            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#onStopShootingPressed" text="Shooting Beenden" textFill="WHITE" />
+         </children>
+      </GridPane>
    </children>
 </GridPane>

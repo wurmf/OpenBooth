@@ -2,49 +2,42 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.CameraDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.LogoDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * H2 database-Specific PairCameraPositionDAO Implementation
+ * H2 database-Specific PairLogoRelativeRectangleDAO Implementation
  */
 @Repository
-public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
+public class JDCBPairLogoRelativeRectangleDAO implements PairLogoRelativeRectangleDAO {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDCBPairCameraPositionDAO.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JDCBPairLogoRelativeRectangleDAO.class);
     private Connection con;
-    private CameraDAO cameraDAO;
-    private PositionDAO positionDAO;
+    private LogoDAO logoDAO;
 
     @Autowired
-    public JDCBPairCameraPositionDAO(DBHandler handler) throws PersistenceException {
+    public JDCBPairLogoRelativeRectangleDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
-        cameraDAO = new JDBCCameraDAO(H2Handler.getInstance());
-        positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
+        logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
     }
 
     @Override
-    public Profile.PairCameraPosition create(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
-        LOGGER.debug("Entering create method with parameter " + pairCameraPosition);
+    public Profile.PairLogoRelativeRectangle create(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+        LOGGER.debug("Entering create method with parameter " + pairLogoRelativeRectangle);
 
-        if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if (pairLogoRelativeRectangle==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
@@ -53,31 +46,34 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
         try {
             //AutoID
-            if (pairCameraPosition.getId() == Integer.MIN_VALUE) {
-                sqlString = "INSERT INTO profile_camera_positions(profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?);";
-                stmt = this.con.prepareStatement(sqlString);
-                stmt.setInt(1,pairCameraPosition.getProfileId());
-                stmt.setInt(2, pairCameraPosition.getCamera().getId());
-                stmt.setInt(3, pairCameraPosition.getPosition().getId());
-                stmt.setBoolean(4, pairCameraPosition.isGreenScreenReady());
+            if(pairLogoRelativeRectangle.getId()==Integer.MIN_VALUE) {
+                sqlString = "INSERT INTO profile_logo_relativeRectangles(profileId,logoId,x,y,width,height) VALUES (?,?,?,?,?,?);";
+                stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
+                stmt.setInt(1, pairLogoRelativeRectangle.getProfileId());
+                stmt.setInt(2, pairLogoRelativeRectangle.getLogo().getId());
+                stmt.setDouble(3, pairLogoRelativeRectangle.getRelativeRectangle().getX());
+                stmt.setDouble(4, pairLogoRelativeRectangle.getRelativeRectangle().getY());
+                stmt.setDouble(5, pairLogoRelativeRectangle.getRelativeRectangle().getWidth());
+                stmt.setDouble(6, pairLogoRelativeRectangle.getRelativeRectangle().getHeight());
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){pairCameraPosition.setId(rs.getInt(1));}
-                LOGGER.debug("Create successfully with AutoID:" + pairCameraPosition.getId());
+                if (rs.next()){pairLogoRelativeRectangle.setId(rs.getInt(1));}
+                LOGGER.debug("Create successfully with AutoID:" + pairLogoRelativeRectangle.getId());
             }
             //NoAutoID
-            else
-            {
-                sqlString = "INSERT INTO profile_camera_positions(profile_camera_positions_id,profileId,cameraId,positionId,isGreenscreenReady) VALUES (?,?,?,?,?);";
+            else {
+                sqlString = "INSERT INTO profile_logo_relativeRectangles(profile_logo_relativeRectangles_id,profileId,logoId,x,y,width,height) VALUES (?,?,?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
-                stmt.setInt(1,pairCameraPosition.getId());
-                stmt.setInt(2,pairCameraPosition.getProfileId());
-                stmt.setInt(3, pairCameraPosition.getCamera().getId());
-                stmt.setInt(4, pairCameraPosition.getPosition().getId());
-                stmt.setBoolean(5, pairCameraPosition.isGreenScreenReady());
+                stmt.setInt(1, pairLogoRelativeRectangle.getId());
+                stmt.setInt(2, pairLogoRelativeRectangle.getProfileId());
+                stmt.setInt(3, pairLogoRelativeRectangle.getLogo().getId());
+                stmt.setDouble(4, pairLogoRelativeRectangle.getRelativeRectangle().getX());
+                stmt.setDouble(5, pairLogoRelativeRectangle.getRelativeRectangle().getY());
+                stmt.setDouble(6, pairLogoRelativeRectangle.getRelativeRectangle().getWidth());
+                stmt.setDouble(7, pairLogoRelativeRectangle.getRelativeRectangle().getHeight());
                 stmt.executeUpdate();
-                LOGGER.debug("Create successfully with AutoID:" + pairCameraPosition.getId());
+                LOGGER.debug("Create successfully without AutoID:" + pairLogoRelativeRectangle.getId());
             }
         }
         catch (SQLException e) {
@@ -90,44 +86,46 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
         // Return persisted object
-        return pairCameraPosition;
+        return pairLogoRelativeRectangle;
     }
 
     @Override
-    public List<Profile.PairCameraPosition> createAll(List<Profile.PairCameraPosition> pairCameraPositions) throws PersistenceException {
+    public List<Profile.PairLogoRelativeRectangle> createAll(List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles) throws PersistenceException {
         LOGGER.debug("Entering createAll method");
-        List<Profile.PairCameraPosition> returnValue = new ArrayList<>();
-        for (Profile.PairCameraPosition pairCameraPosition : pairCameraPositions) {
+        List<Profile.PairLogoRelativeRectangle> returnValue = new ArrayList<>();
+        for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : pairLogoRelativeRectangles) {
             try {
-                returnValue.add(this.create(pairCameraPosition));
+                returnValue.add(this.create(pairLogoRelativeRectangle));
             }
             catch (PersistenceException e) {
                 throw new PersistenceException("Error! CreateAll objects in persistence layer has failed.:" + e);
+                }
             }
-        }
-        LOGGER.debug("Persisted createAll method has completed successfully " + pairCameraPositions);
-        return  returnValue;
+        LOGGER.debug("Persisted createAll method has completed successfully " + pairLogoRelativeRectangles);
+        return returnValue;
     }
 
     @Override
-    public boolean update(Profile.PairCameraPosition pairCameraPosition)throws PersistenceException {
-        LOGGER.debug("Entering update method with parameters " + pairCameraPosition);
-        if(pairCameraPosition==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+    public boolean update(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+        LOGGER.debug("Entering update method with parameters " + pairLogoRelativeRectangle);
+        if(pairLogoRelativeRectangle==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
         ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "UPDATE profile_camera_positions SET profileId = ?,cameraId = ?,positionId = ?,isGreenscreenReady = ? WHERE profile_camera_positions_id = ?;";
+        sqlString = "UPDATE profile_logo_relativeRectangles SET profileId = ?,logoId = ?,x = ?,y = ?,width = ?,height = ? WHERE profile_logo_relativeRectangles_id = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,pairCameraPosition.getProfileId());
-            stmt.setInt(2,pairCameraPosition.getCamera().getId());
-            stmt.setInt(3,pairCameraPosition.getPosition().getId());
-            stmt.setBoolean(4,pairCameraPosition.isGreenScreenReady());
-            stmt.setInt(5,pairCameraPosition.getId());
+            stmt.setInt(1,pairLogoRelativeRectangle.getProfileId());
+            stmt.setInt(2,pairLogoRelativeRectangle.getLogo().getId());
+            stmt.setDouble(3,pairLogoRelativeRectangle.getRelativeRectangle().getX());
+            stmt.setDouble(4,pairLogoRelativeRectangle.getRelativeRectangle().getY());
+            stmt.setDouble(5,pairLogoRelativeRectangle.getRelativeRectangle().getWidth());
+            stmt.setDouble(6,pairLogoRelativeRectangle.getRelativeRectangle().getHeight());
+            stmt.setInt(7,pairLogoRelativeRectangle.getId());
             stmt.executeUpdate();
             int returnUpdateCount = stmt.executeUpdate();
 
@@ -155,30 +153,33 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public Profile.PairCameraPosition read(int id) throws PersistenceException {
+    public Profile.PairLogoRelativeRectangle read(int id) throws PersistenceException{
         LOGGER.debug("Entering read method with parameter id=" + id);
 
         ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "SELECT * FROM profile_camera_positions WHERE profile_camera_positions_id = ?;";
+        sqlString = "SELECT * FROM profile_logo_relativeRectangles WHERE profile_logo_relativeRectangles_id = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,id);
             rs = stmt.executeQuery();
             if(rs.next()) {
-                Profile.PairCameraPosition pairCameraPosition
-                        = new Profile.PairCameraPosition(
-                        rs.getInt("profile_camera_positions_id"),
-                        rs.getInt("profileId"),
-                        cameraDAO.read(rs.getInt("cameraID")),
-                        positionDAO.read(rs.getInt("positionID")),
-                        rs.getBoolean("isGreenscreenReady")
+                Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle
+                        = new Profile.PairLogoRelativeRectangle(
+                                rs.getInt("profile_logo_relativeRectangles_id"),
+                                rs.getInt("profileId"),
+                                logoDAO.read(rs.getInt("logoId")),
+                                new RelativeRectangle(
+                                        rs.getDouble("x"),
+                                        rs.getDouble("y"),
+                                        rs.getDouble("width"),
+                                        rs.getDouble("height"))
                 );
-                LOGGER.debug("Read has been successfully. " + pairCameraPosition);
-                return pairCameraPosition;
+                LOGGER.debug("Read has been successfully. " + pairLogoRelativeRectangle);
+                return pairLogoRelativeRectangle;
             }
             else {
                 LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
@@ -197,25 +198,25 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public List<Profile.PairCameraPosition> readAllWithProfileID(int profileId) throws PersistenceException {
+    public List<Profile.PairLogoRelativeRectangle> readAllWithProfileID(int profileId) throws PersistenceException {
         LOGGER.debug("Entering readAll method");
 
         PreparedStatement stmt = null;
         ResultSet rs;
         String sqlString;
 
-        sqlString = "SELECT * FROM profile_camera_positions where profileId = ?;";
+        sqlString = "SELECT * FROM profile_logo_relativeRectangles where profileId = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,profileId);
             rs = stmt.executeQuery();
-            List<Profile.PairCameraPosition> returnList = new ArrayList<>();
+            List<Profile.PairLogoRelativeRectangle> returnList = new ArrayList<>();
 
             while (rs.next()) {
-                Profile.PairCameraPosition pairCameraPosition =
-                        this.read(rs.getInt("profile_camera_positions_id"));
-                returnList.add(pairCameraPosition);
+                Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle =
+                        this.read(rs.getInt("profile_logo_relativeRectangles_id"));
+                returnList.add(pairLogoRelativeRectangle);
             }
             LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
             return returnList;
@@ -232,21 +233,21 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public boolean delete(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
-        LOGGER.debug("Entering delete method with parameters " + pairCameraPosition);
+    public boolean delete(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
+        LOGGER.debug("Entering delete method with parameters " + pairLogoRelativeRectangle);
 
-        if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (pairLogoRelativeRectangle==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
 
         ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "DELETE FROM profile_camera_positions"
-                + " WHERE profile_camera_positions_id = ?;";
+        sqlString = "DELETE FROM profile_logo_relativeRectangles"
+                + " WHERE profile_logo_relativeRectangles_id = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1, pairCameraPosition.getId());
+            stmt.setInt(1, pairLogoRelativeRectangle.getId());
             int returnUpdateCount  = stmt.executeUpdate();
 
             // Check, if row has been deleted and return suitable boolean value
@@ -280,7 +281,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "DELETE FROM profile_camera_positions"
+        sqlString = "DELETE FROM profile_logo_relativeRectangles"
                 + " WHERE profileId = ?;";
 
         try {
@@ -293,12 +294,12 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
                 LOGGER.debug("DeleteAllWithProfileID has been successfully(returned value true)");
                 return true;
             } else {
-                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+                LOGGER.debug("Provided object(s) has/have been not deleted, since it/they do(es)n't exist in persistence data store(returned value false)");
                 return false;
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Deleting objects in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! Deleting object(s) in persistence layer has failed.:" + e);
         }
         finally {
             // Return resources

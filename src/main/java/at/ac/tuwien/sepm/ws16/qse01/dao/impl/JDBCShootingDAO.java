@@ -30,6 +30,10 @@ public class JDBCShootingDAO implements ShootingDAO {
     @Override
     public Shooting create(Shooting shouting) throws PersistenceException {
         PreparedStatement stmt = null;
+        if(shouting==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        LOGGER.debug("caught nullpointerShooting");
+
+
         try {
             String sql="insert into Shootings(profileId,  FOLDERPATH, isactive) values(?,?,?)";
 
@@ -43,9 +47,15 @@ public class JDBCShootingDAO implements ShootingDAO {
             if (rs.next()){shouting.setId(rs.getInt(1));}
 
         } catch (SQLException e) {
-            LOGGER.info("Shooting",e.getMessage());
+            LOGGER.info("ShootingDAO",e.getMessage());
             throw new PersistenceException(e);
-        } finally {
+        } catch(IllegalArgumentException i) {
+            LOGGER.error("ShootingDAO",i.getMessage());
+            throw new PersistenceException(i);
+        } catch(AssertionError i) {
+            LOGGER.error("ShootingDAO",i.getMessage());
+            throw new PersistenceException("Ein Unerwarteter Fehler ist aufgetretten");
+        } finally{
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -98,7 +108,10 @@ public class JDBCShootingDAO implements ShootingDAO {
         } catch (SQLException e) {
             LOGGER.info("ShootingDAO", e.getMessage());
             throw new PersistenceException(e.getMessage());
-        } finally {
+        } catch(AssertionError i) {
+            LOGGER.error("ShootingDAO",i.getMessage());
+            throw new PersistenceException("No Activ Shooting Found");
+        }finally {
             if (stmt != null) {
                 try {
                     stmt.close();

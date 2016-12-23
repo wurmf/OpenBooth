@@ -1,72 +1,104 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
 
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * Tests if everything reacts so as required.
+ * Tests possible cases for ImageDAO
  */
-public class ImageDAOTest {
-    private ImageDAO imageDAO;
-    private ShootingDAO shootingDAO;
-    @Before
-    public void before() throws Exception {
-        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
-        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+public class ImageDAOTest extends TestEnvironment {
+    private Image img = new Image(99,"/images/validImage.jpg",2,new Date());
+    private int id = 1;
+
+    @Before public void setUp() throws Exception {
+        super.setUp();
     }
+
+    @After public void tearDown() throws PersistenceException {
+        super.tearDown();
+    }
+
 
     /**
      * This test creates a null-image.
      * DAO should throw IllegalArgumentException.
      */
+
     @Test(expected = IllegalArgumentException.class)
     public void createNullImage() throws Throwable  {
-        imageDAO.create(null);
+        mockImageDAO.create(null);
     }
+
 
     /**
      * This test creates an image with valid data.
      * DAO should save it in database.
      */
+
     @Test
     public void createValidImage() throws Throwable  {
-        Image img = new Image(99,"/images/validImage.jpg",2,new Date());
-        img.setAutoDate();
-
-        //There is no image in database with ID = 99
-        assertThat(String.valueOf(imageDAO.read(99)),is("null"));
-
         Image createdImg = imageDAO.create(img);
 
-        //Check if the created image saved.
-        assertThat(imageDAO.read(createdImg.getImageID()).getImagepath(),is(img.getImagepath()));
+        assertTrue(createdImg.getImageID()>0);
+        assertTrue(createdImg.getImagepath().equals(img.getImagepath()));
+        assertTrue(createdImg.getShootingid()==img.getShootingid());
+        assertTrue(createdImg.getDate() == img.getDate());
+    }
+
+    @Test
+    public void mockCreateValidImage() throws Throwable{
+
+        when(mockResultSet.next()).thenReturn(Boolean.TRUE);
+        when(mockResultSet.getInt(1)).thenReturn(id);
+        Image returnvalue = mockImageDAO.create(img);
+        verify(mockPreparedStatement).executeUpdate();
+        assertTrue(returnvalue.getImageID() == 1);
+        assertTrue(returnvalue.getImagepath() == "/images/validImage.jpg");
+        assertTrue(returnvalue.getShootingid() == 2);
     }
 
     /**
      * This test reads an existing image from database.
      */
+
     @Test
     public void readExistingImageFromDatabase() throws Throwable  {
         Image img = new Image(99,"/images/existingImage.jpg",2,new Date());
-        img.setAutoDate();
 
         Image createdImg = imageDAO.create(img);
 
         //Check if read function returns the saved image.
-        assertThat(imageDAO.read(createdImg.getImageID()).getImagepath(),is("/images/existingImage.jpg"));
+        assertTrue(createdImg.getImageID()>0);
+        assertTrue(createdImg.getImagepath().equals(img.getImagepath()));
+        assertTrue(createdImg.getShootingid()==img.getShootingid());
+        assertTrue(createdImg.getDate() == img.getDate());
+    }
+
+
+
+    /**
+     * This test reads all images of an existing shooting in database.
+     */
+
+    @Test
+    public void getAllImagesByExistingShootingID() throws Throwable  {
+        Shooting shooting = shootingDAO.create(new Shooting(9999,1,"/asdf/",true));
+        Image img = new Image(99,"/images/lastCreatedImage.jpg",shooting.getId(),new Date());
+
+        imageDAO.create(img);
+
+        assertTrue(imageDAO.getAllImages(shooting.getId()).size()==1);
     }
 
     /**
@@ -74,51 +106,25 @@ public class ImageDAOTest {
      */
     @Test
     public void getLastCreatedImagePath() throws Throwable  {
-        Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
-        img.setAutoDate();
 
         imageDAO.create(img);
 
         //Check if the last created imagepath will be returned
-        assertThat(imageDAO.getLastImgPath(2),is("/images/lastCreatedImage.jpg"));
+        assertTrue(imageDAO.getLastImgPath(img.getShootingid()) == img.getImagepath());
     }
 
     /**
-     * This test reads all image paths of an existing shooting in database.
+     * This test reads the next possible image ID
      */
-    @Test
-    public void getAllImagePaths() throws Throwable  {
-        shootingDAO.create(new Shooting(99,2,"/images/shooting99",true));
-        Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
-        img.setAutoDate();
-
-        imageDAO.create(img);
-        //TODO: shooting -> create() -> funktioniert nicht!
-        //Check if the last created imagepath will be returned
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
-    }
-
 
     @Test
-    public void getAllImages() throws Throwable{
+    public void getNextImageID() throws Throwable  {
+        when(mockResultSet.next()).thenReturn(Boolean.TRUE);
+        when(mockResultSet.getInt(1)).thenReturn(id);
 
-        Image img = new Image(99,"/images/lastCreatedImage.jpg",2,new Date());
-        img.setAutoDate();
-
-        imageDAO.create(img);
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
-    }
-
-    @Test
-    public void deleteImage() throws Throwable{
-        Image img = new Image(3,"ddd",2,new Date());
-        img.setAutoDate();
-        img=imageDAO.create(img);
-
-        assertThat(imageDAO.getAllImages(99).size(),is(1));
-        imageDAO.delete(img.getImageID());
-
-        assertThat(imageDAO.getAllImages(99).size(),is(0));
+        int nextid = mockImageDAO.getNextImageID();
+        verify(mockPreparedStatement).executeQuery();
+        assertTrue(nextid==id);
     }
 
 
