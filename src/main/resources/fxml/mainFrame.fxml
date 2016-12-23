@@ -21,7 +21,7 @@
       <RowConstraints percentHeight="15.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button fx:id="startbutton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onStartShootingPressed" snapToPixel="false" text="Starte Shooting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Button fx:id="startbutton" mnemonicParsing="false" onAction="#onStartShootingPressed" snapToPixel="false" text="Starte Shooting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <font>
             <Font />
          </font>
@@ -38,6 +38,6 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="edit" mnemonicParsing="false" onAction="#onEditPressed" text="Profieleverwalten" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Button fx:id="edit" mnemonicParsing="false" onAction="#onEditPressed" text="Einstellungen" GridPane.columnIndex="1" GridPane.rowIndex="1" />
    </children>
 </GridPane>
