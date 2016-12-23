@@ -1,5 +1,3 @@
-INSERT INTO adminusers (adminname, password) VALUES ('admin','b6f8d434a847fb0f0c1a8d9b936b8ca952e224f205a55f4ba9b2c20f88fdc9e7');
-
 INSERT INTO profiles (profileID, name) VALUES (1,'Profile 1');
 INSERT INTO profiles (profileID, name) VALUES (2,'Profile 2');
 INSERT INTO profiles (profileID, name) VALUES (3,'Profile 3');
