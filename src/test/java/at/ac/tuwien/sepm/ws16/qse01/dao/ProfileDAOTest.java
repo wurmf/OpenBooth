@@ -114,14 +114,14 @@ public class ProfileDAOTest extends TestEnvironment{
     */
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,"",false);
         profileDAO.create(profile);
         profile = profileDAO.read(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,"",false);
         profileDAO.create(profile);
         profile = profileDAO.read(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);

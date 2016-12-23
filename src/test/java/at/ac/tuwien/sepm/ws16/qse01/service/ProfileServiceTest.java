@@ -106,14 +106,14 @@ public abstract class ProfileServiceTest {
 
 
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,"",false);
         profileService.add(profile);
         profile = profileService.get(101);
         assertTrue(profile == null);
     }
 
     public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,false);
+        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false,"",false);
         profileService.add(profile);
         profile = profileService.get(100);
         assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
