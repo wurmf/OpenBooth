@@ -69,7 +69,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 {
                 String sqlString = "INSERT INTO"
                     + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
-                    + " VALUES (?,?,?,?,?,?,?);";
+                    + " VALUES (?,?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());

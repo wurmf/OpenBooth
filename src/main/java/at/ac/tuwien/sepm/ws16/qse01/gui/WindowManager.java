@@ -139,17 +139,11 @@ public class WindowManager {
         }
 
 
-        //TODO: only one of the following should be here
-        try {
-            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
-        }
+
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            this.mainStage.setScene(miniaturScene);
+            showAdminLogin(WindowManager.SHOW_MINIATURESCENE);
             //initShotFrameManager();
         } else {
             showAdminLogin(SHOW_MAINSCENE);
