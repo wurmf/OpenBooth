@@ -110,12 +110,94 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public boolean update(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException {
-        return false;
+    public boolean update(Profile.PairCameraPosition pairCameraPosition)throws PersistenceException {
+        LOGGER.debug("Entering update method with parameters " + pairCameraPosition);
+        if(pairCameraPosition==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        LOGGER.debug("Passed:Checking parameters according to specification.");
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "UPDATE profile_camera_positions SET profileId = ?,cameraId = ?,positionId = ?,isGreenscreenReady = ? WHERE profile_camera_positions_id = ?;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setInt(1,pairCameraPosition.getProfileId());
+            stmt.setInt(2,pairCameraPosition.getCamera().getId());
+            stmt.setInt(3,pairCameraPosition.getPosition().getId());
+            stmt.setBoolean(4,pairCameraPosition.isGreenScreenReady());
+            stmt.setInt(5,pairCameraPosition.getId());
+            stmt.executeUpdate();
+            int returnUpdateCount = stmt.executeUpdate();
+
+            // Check, if object has been updated and return suitable boolean value or throw Exception
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Update has been successfully(return value true)");
+                return true;
+            }
+            else if (returnUpdateCount == 0) {
+                LOGGER.debug("Updated nothing , since it doesn't exist in persistence data store(return value false)");
+                return false;}
+            else {
+                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Update in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
+        }
     }
 
     @Override
-    public List<Profile.PairCameraPosition> readAll(int profileId) throws PersistenceException {
+    public Profile.PairCameraPosition read(int id) throws PersistenceException {
+        LOGGER.debug("Entering read method with parameter id=" + id);
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM profile_camera_positions WHERE profile_camera_positions_id = ?;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setInt(1,id);
+            rs = stmt.executeQuery();
+            if(rs.next()) {
+                Profile.PairCameraPosition pairCameraPosition
+                        = new Profile.PairCameraPosition(
+                        rs.getInt("profile_camera_positions_id"),
+                        rs.getInt("profileId"),
+                        cameraDAO.read(rs.getInt("cameraID")),
+                        positionDAO.read(rs.getInt("positionID")),
+                        rs.getBoolean("isGreenscreenReady")
+                );
+                LOGGER.debug("Read has been successfully. " + pairCameraPosition);
+                return pairCameraPosition;
+            }
+            else {
+                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Read in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
+        }
+    }
+
+    @Override
+    public List<Profile.PairCameraPosition> readAllWithProfileID(int profileId) throws PersistenceException {
         LOGGER.debug("Entering readAll method");
 
         PreparedStatement stmt = null;
@@ -132,10 +214,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
             while (rs.next()) {
                 Profile.PairCameraPosition pairCameraPosition =
-                        new Profile.PairCameraPosition(
-                                new Camera(rs.getInt("cameraId"),"","","",""),
-                                (new JDBCPositionDAO(H2Handler.getInstance()).read(rs.getInt("positionId"))),
-                                rs.getBoolean("isGreenscreenReady"));
+                        this.read(rs.getInt("profile_camera_positions_id"));
                 returnList.add(pairCameraPosition);
             }
             LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
@@ -153,30 +232,34 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public boolean delete(int profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
+    public boolean delete(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + pairCameraPosition);
+
+        if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
 
         ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
         sqlString = "DELETE FROM profile_camera_positions"
-                + " WHERE profileId = ? AND cameraId = ? AND positionId = ?;";
+                + " WHERE profile_camera_positions_id = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1, profileId);
-            stmt.setInt(2, pairCameraPosition.getCamera().getId());
-            stmt.setInt(3, pairCameraPosition.getPosition().getId());
-            stmt.executeUpdate();
-            rs = stmt.getResultSet();
-            // Check, if object has been deleted and return suitable boolean value
-            if (rs.next()) {
-                LOGGER.debug("Persisted object deletion has been successfully(returned value true)");
+            stmt.setInt(1, pairCameraPosition.getId());
+            int returnUpdateCount  = stmt.executeUpdate();
+
+            // Check, if row has been deleted and return suitable boolean value
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Delete has been successfully(returned value true)");
                 return true;
-            } else {
-                LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
+            }
+            else if (returnUpdateCount == 0){
+                LOGGER.debug("Deleted nothing, since it didn't exist in persistence data store(returned value false)");
                 return false;
+            }
+            else {
+                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
             }
         }
         catch (SQLException e) {
@@ -191,7 +274,7 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     }
 
     @Override
-    public boolean deleteAll(Profile profile) throws PersistenceException {
+    public boolean deleteAllWithProfileID(int profileId) throws PersistenceException {
         LOGGER.debug("Entering deleteAll method");
         ResultSet rs;
         String sqlString;
@@ -202,24 +285,27 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1, profile.getId());
+            stmt.setInt(1, profileId);
             stmt.executeUpdate();
             rs = stmt.getResultSet();
             // Check, if objects have been deleted and return suitable boolean value
             if (rs.next()) {
-                LOGGER.debug("Persisted objects deletion has been successfully(returned value true)");
+                LOGGER.debug("DeleteAllWithProfileID has been successfully(returned value true)");
                 return true;
             } else {
                 LOGGER.debug("Provided object has been not deleted, since it doesn't exist in persistence data store(returned value false)");
                 return false;
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new PersistenceException("Error! Deleting objects in persistence layer has failed.:" + e);
-        } finally {
+        }
+        finally {
             // Return resources
             try {
                 if (stmt != null) stmt.close();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);
             }
         }

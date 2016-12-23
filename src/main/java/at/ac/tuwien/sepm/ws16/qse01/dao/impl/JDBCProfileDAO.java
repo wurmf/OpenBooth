@@ -154,7 +154,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             Profile p= new Profile(
                     rs.getInt("profileID"),
                     rs.getString("name"),
-                    pairCameraPositionDAO.readAll(id),
+                    pairCameraPositionDAO.readAllWithProfileID(id),
                     pairLogoRelativeRectangleDAO.readAllWithProfileID(id),
                     rs.getBoolean("isPrintEnabled"),
                     rs.getBoolean("isFilterEnabled"),
@@ -213,7 +213,7 @@ public class JDBCProfileDAO implements ProfileDAO {
 
             ResultSet rs = stmt.getResultSet();
             if (rs.next()){
-                pairCameraPositionDAO.deleteAll(profile);
+                //pairCameraPositionDAO.deleteAll(profile);
                 //pairLogoRelativeRectangleDAO.deleteAll(profile);
                 return true;}
             else {return false;}

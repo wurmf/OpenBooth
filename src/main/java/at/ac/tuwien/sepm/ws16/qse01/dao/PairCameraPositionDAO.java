@@ -13,9 +13,13 @@ public interface PairCameraPositionDAO {
 
     List<Profile.PairCameraPosition> createAll(List<Profile.PairCameraPosition> pairCameraPositions) throws PersistenceException;
 
-    boolean update(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)throws PersistenceException;
+    boolean update(Profile.PairCameraPosition pairCameraPosition)throws PersistenceException;
 
-    List<Profile.PairCameraPosition> readAll(int profileId) throws PersistenceException;
-    boolean delete(int profileId,Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
-    boolean deleteAll(Profile profile) throws PersistenceException;
+    Profile.PairCameraPosition read(int id) throws PersistenceException;
+
+    List<Profile.PairCameraPosition> readAllWithProfileID(int profileId) throws PersistenceException;
+
+    boolean delete(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException;
+
+    boolean deleteAllWithProfileID(int profileId) throws PersistenceException;
 }
