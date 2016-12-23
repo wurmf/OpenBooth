@@ -26,7 +26,8 @@ public class Profile {
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
-                   boolean isMobilEnabled
+                   boolean isMobilEnabled,
+                   String watermark
     ) {
         this.id = Integer.MIN_VALUE;
         this.name = name;
@@ -34,6 +35,7 @@ public class Profile {
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
         this.isMobilEnabled = isMobilEnabled;
+        this.watermark = watermark;
     }
 
     /**
@@ -50,6 +52,7 @@ public class Profile {
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
                    boolean isMobilEnabled,
+                   String watermark,
                    boolean isDeleted
                    ) {
         this.id = id;
@@ -60,6 +63,7 @@ public class Profile {
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
         this.isMobilEnabled = isMobilEnabled;
+        this.watermark = watermark;
         this.isDeleted = isDeleted;
     }
 
@@ -70,7 +74,7 @@ public class Profile {
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,false);
+        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,"",false);
     }
 
     public int getId() {
@@ -225,13 +229,8 @@ public class Profile {
         @Override
         public boolean equals(Object object){
             return object instanceof PairCameraPosition
-                    && ((PairCameraPosition) object).getId() == this.getId()
-                    && ((PairCameraPosition) object).getProfileId() == this.getProfileId()
-                    && ((PairCameraPosition) object).getCamera().equals(this.getCamera())
-                    && ((PairCameraPosition) object).getPosition().equals(this.getPosition())
-                    && ((PairCameraPosition) object).isGreenScreenReady() == this.isGreenScreenReady();
+                    && ((PairCameraPosition) object).getId() == this.getId();
         }
-
     }
 
     /**
@@ -300,10 +299,7 @@ public class Profile {
         @Override
         public boolean equals(Object object){
             return object instanceof PairLogoRelativeRectangle
-                    && ((PairLogoRelativeRectangle) object).getId() == this.getId()
-                    && ((PairLogoRelativeRectangle) object).getProfileId() == this.getProfileId()
-                    && ((PairLogoRelativeRectangle) object).getLogo().equals(this.getLogo())
-                    && ((PairLogoRelativeRectangle) object).getRelativeRectangle().equals(this.getRelativeRectangle());
+                    && ((PairLogoRelativeRectangle) object).getId() == this.getId();
         }
     }
 }

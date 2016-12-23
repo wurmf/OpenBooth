@@ -76,13 +76,27 @@ public class JDBCProfileDAO implements ProfileDAO {
                 stmt.setBoolean(3,profile.isPrintEnabled());
                 stmt.setBoolean(4,profile.isFilerEnabled());
                 stmt.setBoolean(5,profile.isGreenscreenEnabled());
-                    stmt.setBoolean(6,profile.isMobilEnabled());
-                    stmt.setString(7,profile.getWatermark());
+                stmt.setBoolean(6,profile.isMobilEnabled());
+                stmt.setString(7,profile.getWatermark());
                 stmt.executeUpdate();
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
-            //pairCameraPositionDAO.createAll(profile);
-            //pairLogoRelativeRectangleDAO.createAll(profile);
+
+            List<Profile.PairCameraPosition> returnPairCameraPositionList = new ArrayList<>();
+            for (Profile.PairCameraPosition pairCameraPosition : profile.getCameraPositions())
+            {
+                pairCameraPosition.setProfileId(profile.getId());
+                returnPairCameraPositionList.add(pairCameraPositionDAO.create(pairCameraPosition));
+            }
+
+            List<Profile.PairLogoRelativeRectangle> returnPairLogoRelativeRectangleList = new ArrayList<>();
+            for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles())
+            {
+                pairLogoRelativeRectangle.setProfileId(profile.getId());
+                returnPairLogoRelativeRectangleList.add(pairLogoRelativeRectangleDAO.create(pairLogoRelativeRectangle));
+            }
+            profile.setCameraPositions(returnPairCameraPositionList);
+            profile.setPairLogoRelativeRectangles(returnPairLogoRelativeRectangleList);
             LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
         catch (SQLException e) {
@@ -100,11 +114,15 @@ public class JDBCProfileDAO implements ProfileDAO {
     public boolean update(Profile profile) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + profile);
         if(profile==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
-        String sqlString = "UPDATE profiles"
+        LOGGER.debug("Passed:Checking parameters according to specification.");
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "UPDATE profiles"
                 + " SET name = ?, isPrintEnabled = ?, isFilterEnabled = ?, isGreenscreenEnabled = ?, isMobilEnabled = ?, watermark = ?"
                 + " WHERE profileID = ?;";
-
-        PreparedStatement stmt = null;
 
         try {
             stmt = this.con.prepareStatement(sqlString);
@@ -116,20 +134,68 @@ public class JDBCProfileDAO implements ProfileDAO {
             stmt.setString(6,profile.getWatermark());
             stmt.setLong(7,profile.getId());
             stmt.executeUpdate();
-            ResultSet rs = stmt.getResultSet();
+            int returnUpdateCount = stmt.executeUpdate();
 
-            if (rs.next()){ //TODO: Sobald ein watermark upgedated wird, bekommt man hier ein NULLPOINTEREXCEPTION
-                //pairCameraPositionDAO.deleteAll(profile);
-                //pairLogoRelativeRectangleDAO.deleteAll(profile);
-                //pairCameraPositionDAO.createAll(profile);
-                //pairLogoRelativeRectangleDAO.createAll(profile);
+            // Check, if object has been updated and return suitable boolean value or throw Exception
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Update has been successfully(return value true)");
+
+                // updating pairCameraPositionList
+                List<Profile.PairCameraPosition> newPairCameraPositions
+                        = profile.getCameraPositions();
+                List<Profile.PairCameraPosition> oldPairCameraPositions
+                        = pairCameraPositionDAO.readAllWithProfileID(profile.getId());
+                for (Profile.PairCameraPosition pairCameraPosition : newPairCameraPositions)
+                    {
+                        if(oldPairCameraPositions.contains(pairCameraPosition)){
+                            pairCameraPositionDAO.update(pairCameraPosition);
+                        }
+                        else {
+                            pairCameraPosition.setProfileId(profile.getId());
+                            pairCameraPositionDAO.create(pairCameraPosition);
+                        }
+                    }
+                for (Profile.PairCameraPosition pairCameraPosition : oldPairCameraPositions)
+                    {
+                        if(!newPairCameraPositions.contains(pairCameraPosition)){
+                            pairCameraPositionDAO.delete(pairCameraPosition);
+                        }
+                    }
+
+                // updating pairLogoRelativeRectangleList
+                List<Profile.PairLogoRelativeRectangle> newPairLogoRelativeRectangles
+                        = profile.getPairLogoRelativeRectangles();
+                List<Profile.PairLogoRelativeRectangle> oldPairLogoRelativeRectangles
+                        = pairLogoRelativeRectangleDAO.readAllWithProfileID(profile.getId());
+                for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : newPairLogoRelativeRectangles)
+                    {
+                        if(oldPairLogoRelativeRectangles.contains(pairLogoRelativeRectangle)){
+                            pairLogoRelativeRectangleDAO.update(pairLogoRelativeRectangle);
+                        }
+                        else{
+                            pairLogoRelativeRectangle.setProfileId(profile.getId());
+                            pairLogoRelativeRectangleDAO.create(pairLogoRelativeRectangle);
+                        }
+                    }
+                for (Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : oldPairLogoRelativeRectangles)
+                    {
+                        if(!newPairLogoRelativeRectangles.contains(pairLogoRelativeRectangle)){
+                            pairLogoRelativeRectangleDAO.delete(pairLogoRelativeRectangle);
+                        }
+                    }
                 return true;
             }
-            else {return false;}
+            else if (returnUpdateCount == 0) {
+                LOGGER.debug("Updated nothing , since it doesn't exist in persistence data store(return value false)");
+                return false;}
+            else {
+                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+            }
         } catch (SQLException e) {
             throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
         }
         finally {
+            // Return resources
             try {if (stmt != null) stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
@@ -138,33 +204,39 @@ public class JDBCProfileDAO implements ProfileDAO {
 
     @Override
     public Profile read(int id) throws PersistenceException{
-        LOGGER.debug("Entering read method with parameter profileid=" + id);
-        String sqlString = "SELECT profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isDeleted,watermark,isMobilEnabled"
-                + " FROM profiles WHERE profileID = ?;";
+        LOGGER.debug("Entering read method with parameter id=" + id);
+
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM profiles WHERE profileID = ?;";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1,id);
-            ResultSet rs = stmt.executeQuery();
-            if(!rs.next()) {
-                return null;
-                /*new PersistenceException("No data existing to read: Profile with " + id + " isn't persisted yet!");*/
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                Profile profile = new Profile(
+                        rs.getInt("profileID"),
+                        rs.getString("name"),
+                        pairCameraPositionDAO.readAllWithProfileID(id),
+                        pairLogoRelativeRectangleDAO.readAllWithProfileID(id),
+                        rs.getBoolean("isPrintEnabled"),
+                        rs.getBoolean("isFilterEnabled"),
+                        rs.getBoolean("isGreenscreenEnabled"),
+                        rs.getBoolean("isMobilEnabled"),
+                        rs.getString("watermark"),
+                        rs.getBoolean("isDeleted")
+            );
+            return profile;
             }
-            Profile p= new Profile(
-                    rs.getInt("profileID"),
-                    rs.getString("name"),
-                    pairCameraPositionDAO.readAllWithProfileID(id),
-                    pairLogoRelativeRectangleDAO.readAllWithProfileID(id),
-                    rs.getBoolean("isPrintEnabled"),
-                    rs.getBoolean("isFilterEnabled"),
-                    rs.getBoolean("isGreenscreenEnabled"),
-                    rs.getBoolean(("isMobilEnabled")),
-                    rs.getBoolean("isDeleted")
-                    );
-            p.setWatermark(rs.getString("watermark"));
-            return p;
-        } catch (SQLException e) {
+            else {
+                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
+                return null;
+            }
+        }
+        catch (SQLException e) {
             throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
         }
         finally {
@@ -183,15 +255,16 @@ public class JDBCProfileDAO implements ProfileDAO {
         try {
             stmt = this.con.prepareStatement(sqlString);
             ResultSet rs = stmt.executeQuery();
-            List<Profile> pList = new ArrayList<>();
+            List<Profile> returnList = new ArrayList<>();
 
             while (rs.next()) {
                 Profile profile = this.read(rs.getInt("profileID"));
-                pList.add(profile);
+                returnList.add(profile);
             }
-            return pList;
+            LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
+            return returnList;
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Reading all profiles in persistence layer has failed.:" + e);
+            throw new PersistenceException("Error! ReadAll objects in persistence layer has failed.:" + e);
         }
         finally {
             try {if (stmt != null) stmt.close();}
@@ -203,21 +276,34 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public boolean delete(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + profile);
-        String sqlString = "UPDATE profiles SET isDeleted = 'true' WHERE profileID = ? AND isDeleted = 'false';";
+
+        if (profile==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+
+        ResultSet rs;
+        String sqlString;
         PreparedStatement stmt = null;
+
+        sqlString = "UPDATE profiles SET isDeleted = 'true' WHERE profileID = ? AND isDeleted = 'false';";
 
         try {
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,profile.getId());
-            stmt.executeUpdate();
+            int returnUpdateCount  = stmt.executeUpdate();
 
-            ResultSet rs = stmt.getResultSet();
-            if (rs.next()){
-                //pairCameraPositionDAO.deleteAll(profile);
-                //pairLogoRelativeRectangleDAO.deleteAll(profile);
-                return true;}
-            else {return false;}
-        } catch (SQLException e) {
+            // Check, if row has been deleted and return suitable boolean value
+            if (returnUpdateCount == 1){
+                LOGGER.debug("Delete has been successfully(returned value true)");
+                return true;
+            }
+            else if (returnUpdateCount == 0){
+                LOGGER.debug("Deleted nothing, since it didn't exist in persistence data store(returned value false)");
+                return false;
+            }
+            else {
+                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+            }
+        }
+        catch (SQLException e) {
             throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
         }
         finally {

@@ -835,7 +835,8 @@ public class SettingFrameController {
             LOGGER.debug("in error");
             showError("Sie müssen einen Namen eingeben!");
         }else {
-            Profile p = new Profile(name,txProfilDrucken.isSelected(),txProfilFilter.isSelected(),txProfilGreen.isSelected(),txProfilMobil.isSelected());
+
+            Profile p = new Profile(name,txProfilDrucken.isSelected(),txProfilFilter.isSelected(),txProfilGreen.isSelected(),txProfilMobil.isSelected(),txProfilWatermark.getText());
 
             if (txProfilWatermark.getText().compareTo("Hochladen...") != 0) // wenn ein watermark ausgewählt ist
                 p.setWatermark(txProfilWatermark.getText());
