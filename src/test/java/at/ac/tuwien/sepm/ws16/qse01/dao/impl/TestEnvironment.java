@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,11 +31,17 @@ public class TestEnvironment {
     protected LogoDAO logoDAO;
     protected LogoDAO mockLogoDAO;
 
+    protected CameraDAO cameraDAO;
+    protected CameraDAO mockCameraDAO;
+
     protected PositionDAO positionDAO;
     protected PositionDAO mockPositionDAO;
 
     protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
     protected PairLogoRelativeRectangleDAO mockPairLogoRelativeRectangleDAO;
+
+    protected PairCameraPositionDAO pairCameraPositionDAO;
+    protected PairCameraPositionDAO mockPairCameraPositionDAO;
 
     protected ProfileDAO profileDAO;
     protected ProfileDAO mockProfileDAO;
@@ -70,8 +77,10 @@ public class TestEnvironment {
         when(mockResultSet.next()).thenReturn(Boolean.TRUE,Boolean.FALSE);
 
         mockLogoDAO = new JDBCLogoDAO(mockH2Handler);
+        mockCameraDAO = new JDBCCameraDAO(mockH2Handler);
         mockPositionDAO = new JDBCPositionDAO(mockH2Handler);
         mockPairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(mockH2Handler);
+        mockPairCameraPositionDAO = new JDCBPairCameraPositionDAO(mockH2Handler);
         mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
         mockImageDAO = new JDBCImageDAO(mockH2Handler);
         mockShootingDAO = new JDBCShootingDAO(mockH2Handler);
@@ -81,8 +90,10 @@ public class TestEnvironment {
          */
         this.con = H2Handler.getInstance().getConnection();
         logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
+        cameraDAO = new JDBCCameraDAO(H2Handler.getInstance());
         positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
         pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
         profileDAO = new JDBCProfileDAO(H2Handler.getInstance());
         imageDAO = new JDBCImageDAO(H2Handler.getInstance());
         shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());

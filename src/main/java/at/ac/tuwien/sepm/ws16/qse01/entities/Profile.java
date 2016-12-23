@@ -157,10 +157,6 @@ public class Profile {
         private Position position;
         private boolean isGreenScreenReady;
 
-        public PairCameraPosition(Camera camera, Position position, boolean isGreenScreenReady) {
-            this(Integer.MIN_VALUE,Integer.MIN_VALUE,camera, position,isGreenScreenReady);
-        }
-
         public PairCameraPosition(int id,
                                   int profileId,
                                   Camera camera,
@@ -171,6 +167,19 @@ public class Profile {
             this.camera = camera;
             this.position = position;
             this.isGreenScreenReady = isGreenScreenReady;
+        }
+
+        public PairCameraPosition(int profileId,
+                                  Camera camera,
+                                  Position position,
+                                  boolean isGreenScreenReady){
+            this(Integer.MIN_VALUE,profileId,camera, position,isGreenScreenReady);
+        }
+
+        public PairCameraPosition(Camera camera,
+                                  Position position,
+                                  boolean isGreenScreenReady) {
+            this(Integer.MIN_VALUE,Integer.MIN_VALUE,camera, position,isGreenScreenReady);
         }
 
         public int getId() {
@@ -212,6 +221,17 @@ public class Profile {
         public void setGreenScreenReady(boolean greenScreenReady) {
             isGreenScreenReady = greenScreenReady;
         }
+
+        @Override
+        public boolean equals(Object object){
+            return object instanceof PairCameraPosition
+                    && ((PairCameraPosition) object).getId() == this.getId()
+                    && ((PairCameraPosition) object).getProfileId() == this.getProfileId()
+                    && ((PairCameraPosition) object).getCamera().equals(this.getCamera())
+                    && ((PairCameraPosition) object).getPosition().equals(this.getPosition())
+                    && ((PairCameraPosition) object).isGreenScreenReady() == this.isGreenScreenReady();
+        }
+
     }
 
     /**

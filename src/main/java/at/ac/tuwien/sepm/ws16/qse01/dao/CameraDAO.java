@@ -24,6 +24,14 @@ public interface CameraDAO {
     public void delete(int cameraID) throws PersistenceException;
 
     /**
+     * Retrieve a Camera entity identified by id from the persistence store (independent from its activity status)
+     * @param id - id of the camera that is looked for
+     * @return camera that has been looked for, if a camera with given id doesn't
+     * exist in persistence store, null will be returned
+     */
+    Camera read(int id) throws PersistenceException;
+
+    /**
      * Retrueve a list of all active cameras
      * @return list of camera objects that are set active
      * @throws PersistenceException if persistence data store can not be accessed
