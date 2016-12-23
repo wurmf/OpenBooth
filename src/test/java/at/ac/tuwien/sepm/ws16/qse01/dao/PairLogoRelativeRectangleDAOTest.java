@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.dao;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import org.junit.After;
@@ -23,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * PositionDAO Tester
+ * PairLogoRelativeRectangleDAO Tester
  */
 public class PairLogoRelativeRectangleDAOTest extends TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(PairLogoRelativeRectangleDAOTest.class);

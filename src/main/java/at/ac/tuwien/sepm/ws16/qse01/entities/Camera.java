@@ -56,4 +56,21 @@ public class Camera {
     public void setSerialnumber(String serialnumber) {
         this.serialnumber = serialnumber;
     }
+
+    @Override
+    public boolean equals(Object object){
+        if(object instanceof Camera
+                && ((Camera) object).getId()==this.getId()
+                && ((Camera) object).getLable()==this.getLable()
+                && ((Camera) object).getPort()==this.getPort()
+                && ((Camera) object).getModel()==this.getModel()
+                && ((Camera) object).getSerialnumber()==this.getSerialnumber()
+                )
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

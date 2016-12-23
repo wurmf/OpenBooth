@@ -2,6 +2,8 @@ INSERT INTO adminusers (adminname, password) VALUES ('admin','b6f8d434a847fb0f0c
 
 INSERT INTO profiles (profileID, name) VALUES (1,'Profile 1');
 INSERT INTO profiles (profileID, name) VALUES (2,'Profile 2');
+INSERT INTO profiles (profileID, name) VALUES (3,'Profile 3');
+INSERT INTO profiles (profileID, name) VALUES (4,'Profile 4');
 
 INSERT INTO shootings (profileID,folderpath) VALUES (1,'/images/shooting1/');
 INSERT INTO shootings (profileID,folderpath, isActive) VALUES (2,'/images/shooting2/',FALSE);

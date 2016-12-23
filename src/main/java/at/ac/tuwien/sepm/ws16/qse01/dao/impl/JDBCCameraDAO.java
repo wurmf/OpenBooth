@@ -93,6 +93,45 @@ public class JDBCCameraDAO implements CameraDAO{
     }
 
     @Override
+    public Camera read(int id) throws PersistenceException {
+        LOGGER.debug("Entering read method with parameter id=" + id);
+
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "SELECT * FROM cameras WHERE cameraID = ?;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setInt(1,id);
+            rs = stmt.executeQuery();
+            if(rs.next()) {
+                Camera camera = new Camera(rs.getInt("cameraID"),
+                        rs.getString("label"),
+                        rs.getString("portNumber"),
+                        rs.getString("modelName"),
+                        rs.getString("serialNumber"));
+                LOGGER.debug("Read has been successfully. " + camera);
+                return camera;
+            }
+            else {
+                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
+                return null;
+            }
+        }
+        catch (SQLException e) {
+            throw new PersistenceException("Error! Read in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try {if (stmt != null) stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
+        }
+    }
+
+    @Override
     public List<Camera> readActive() throws PersistenceException {
         List<Camera> cameraList = new ArrayList<>();
         PreparedStatement stmt = null;
