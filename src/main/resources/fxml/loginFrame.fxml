@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.LoginFrameController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.LoginFrameController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
@@ -45,13 +45,13 @@
           <RowConstraints percentHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField fx:id="adminField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Benutzername" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" GridPane.rowIndex="4" />
-            <PasswordField fx:id="passwordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label fx:id="wrongCredentialsLabel" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="Passwort" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" onAction="#checkLogin" text="Bestätigen" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="adminField" onKeyReleased="#onEnter" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordField" onKeyReleased="#onEnter" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label fx:id="wrongCredentialsLabel" text="Benutzername oder Passwort falsch" textFill="RED" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button mnemonicParsing="false" onAction="#checkLogin" onKeyReleased="#onEnter" text="Bestätigen" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#closeLogin" text="Abbrechen" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>

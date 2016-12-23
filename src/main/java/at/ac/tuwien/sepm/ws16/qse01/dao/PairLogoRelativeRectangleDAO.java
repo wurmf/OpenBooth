@@ -9,13 +9,18 @@ import java.util.List;
  * Profile.LogoRelativeRectangle DAO
  */
 public interface PairLogoRelativeRectangleDAO {
-    Profile.PairLogoRelativeRectangle create(int profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
 
-    List<Profile.PairLogoRelativeRectangle> createAll(Profile profile) throws PersistenceException;
+    Profile.PairLogoRelativeRectangle create(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
 
-    List<Profile.PairLogoRelativeRectangle> readAll(int profileId) throws PersistenceException;
+    List<Profile.PairLogoRelativeRectangle> createAll(List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles) throws PersistenceException;
 
-    boolean delete(int profileId,Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
+    boolean update(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)throws PersistenceException;
 
-    boolean deleteAll(Profile profile) throws PersistenceException;
+    Profile.PairLogoRelativeRectangle read(int id) throws PersistenceException;
+
+    List<Profile.PairLogoRelativeRectangle> readAllWithProfileID(int profileId) throws PersistenceException;
+
+    boolean delete(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws PersistenceException;
+
+    boolean deleteAllWithProfileID(int profileId) throws PersistenceException;
 }

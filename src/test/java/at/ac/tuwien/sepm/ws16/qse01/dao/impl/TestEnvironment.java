@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.LogoDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import org.junit.After;
 import org.junit.Before;
@@ -35,8 +33,17 @@ public class TestEnvironment {
     protected PositionDAO positionDAO;
     protected PositionDAO mockPositionDAO;
 
+    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
+    protected PairLogoRelativeRectangleDAO mockPairLogoRelativeRectangleDAO;
+
     protected ProfileDAO profileDAO;
     protected ProfileDAO mockProfileDAO;
+
+    protected ImageDAO imageDAO;
+    protected ImageDAO mockImageDAO;
+
+    protected ShootingDAO shootingDAO;
+
     protected Connection con;
 
     @Mock protected H2Handler mockH2Handler;
@@ -63,14 +70,21 @@ public class TestEnvironment {
 
         mockLogoDAO = new JDBCLogoDAO(mockH2Handler);
         mockPositionDAO = new JDBCPositionDAO(mockH2Handler);
+        mockPairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(mockH2Handler);
         mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
+        mockImageDAO = new JDBCImageDAO(mockH2Handler);
+
 
         /* Setup DAOs for all testing
          */
+        this.con = H2Handler.getInstance().getConnection();
         logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
         positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
         profileDAO = new JDBCProfileDAO(H2Handler.getInstance());
-        this.con = H2Handler.getInstance().getConnection();
+        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
+        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+
         try {
             con.setAutoCommit(false);
             LOGGER.debug("Turn off AutoCommit before beginning testing");

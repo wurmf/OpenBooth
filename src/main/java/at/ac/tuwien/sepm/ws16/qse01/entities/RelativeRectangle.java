@@ -59,4 +59,14 @@ public class RelativeRectangle {
                 && this.width == ((RelativeRectangle) object).getWidth()
                 && this.getHeight() == ((RelativeRectangle) object).getHeight();
     }
+
+    @Override
+    public String toString() {
+        return "RelativeRectangle{" +
+                "x=" + x +
+                ", y=" + y +
+                ", height=" + height +
+                ", width=" + width +
+                '}';
+    }
 }

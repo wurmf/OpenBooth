@@ -16,33 +16,43 @@ public interface LogoWatermarkService {
 
     /*
     precondition:   the logo must specify a valid image
-                    0 < relativeHeight <= 100
+                    0 < relativeHeight
+                    imageWidth and ImageHeight must be > 0
 
-    postcondition: 0 < return value < 100
+    postcondition: 0 < return value
      */
     /**
-     * Calculates the relative width by multiplying the given relative width with the aspect ratio of the given logo
-     * @param relativeHeight the given relative height
+     * Calculates the relative width by calculating the absolute height (through the gives imageHeight) and multiplying it
+     * with the aspect ratio of the given logo and then converting
+     * it back to the relative value(through the given imageWidth).
+     * @param relativeHeight the given relative height in %
      * @param logo the given logo
-     * @return the calculated relative width
+     * @param imageWidth the given imageWidth
+     * @param imageHeight the give imageHeight
+     * @return the calculated relative width in %
      * @throws ServiceException if any error during the calculation occurs
      */
-    double calculateRelativeWidth(double relativeHeight, Logo logo) throws ServiceException;
+    double calculateRelativeWidth(double relativeHeight, Logo logo, double imageWidth, double imageHeight) throws ServiceException;
 
     /*
     precondition:   the logo must specify a valid image
-                    0 < relativeHeight <= 100
+                    0 < relativeHeight
+                    imageWidth and ImageHeight must be > 0
 
-    postcondition: 0 < return value < 100
+    postcondition: 0 < return value
     */
     /**
-     * Calculates the relative height by multiplying the given relative width with the aspect ratio of the given logo
-     * @param relativeWidth the given relative width
+     * Calculates the relative height by calculating the absolute width (through the gives imageWidth) and multiplying it
+     * with the aspect ratio of the given logo and then converting
+     * it back to the relative value(through the given imageHeight).
+     * @param relativeWidth the given relative width in %
      * @param logo the given logo
-     * @return the calculated relative height
+     * @param imageWidth the given imageWidth
+     * @param imageHeight the give imageHeight
+     * @return the calculated relative height in %
      * @throws ServiceException if any error during the calculation occurs
-     * */
-    double calculateRelativeHeight(double relativeWidth, Logo logo) throws ServiceException;
+     */
+    double calculateRelativeHeight(double relativeWidth, Logo logo, double imageWidth, double imageHeight) throws ServiceException;
 
     /*
     precondition:   the logo must specify a valid image,
@@ -97,7 +107,7 @@ public interface LogoWatermarkService {
      * @return the preview where all logos are added at the specified positions
      * @throws ServiceException if an error during the image processing or opening one of the logo images occurs
      */
-    Image getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException;
+    BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException;
 
     /*
      precondition:  a valid image at srcImgPath exists, all logos must be a valid images,

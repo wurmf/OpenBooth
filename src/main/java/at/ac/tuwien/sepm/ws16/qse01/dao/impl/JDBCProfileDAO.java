@@ -33,7 +33,7 @@ public class JDBCProfileDAO implements ProfileDAO {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
         pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRecangleDAO(H2Handler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 LOGGER.debug("Persisted Profile successfully without AutoID:" + profile.getId());
                 }
             pairCameraPositionDAO.createAll(profile);
-            pairLogoRelativeRectangleDAO.createAll(profile);
+            //pairLogoRelativeRectangleDAO.createAll(profile);
             LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
         catch (SQLException e) {
@@ -120,9 +120,9 @@ public class JDBCProfileDAO implements ProfileDAO {
 
             if (rs.next()){ //TODO: Sobald ein watermark upgedated wird, bekommt man hier ein NULLPOINTEREXCEPTION
                 pairCameraPositionDAO.deleteAll(profile);
-                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                //pairLogoRelativeRectangleDAO.deleteAll(profile);
                 pairCameraPositionDAO.createAll(profile);
-                pairLogoRelativeRectangleDAO.createAll(profile);
+                //pairLogoRelativeRectangleDAO.createAll(profile);
                 return true;
             }
             else {return false;}
@@ -145,7 +145,7 @@ public class JDBCProfileDAO implements ProfileDAO {
 
         try {
             stmt = this.con.prepareStatement(sqlString);
-            stmt.setLong(1,id);
+            stmt.setInt(1,id);
             ResultSet rs = stmt.executeQuery();
             if(!rs.next()) {
                 return null;
@@ -155,7 +155,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                     rs.getInt("profileID"),
                     rs.getString("name"),
                     pairCameraPositionDAO.readAll(id),
-                    pairLogoRelativeRectangleDAO.readAll(id),
+                    pairLogoRelativeRectangleDAO.readAllWithProfileID(id),
                     rs.getBoolean("isPrintEnabled"),
                     rs.getBoolean("isFilterEnabled"),
                     rs.getBoolean("isGreenscreenEnabled"),
@@ -214,7 +214,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             ResultSet rs = stmt.getResultSet();
             if (rs.next()){
                 pairCameraPositionDAO.deleteAll(profile);
-                pairLogoRelativeRectangleDAO.deleteAll(profile);
+                //pairLogoRelativeRectangleDAO.deleteAll(profile);
                 return true;}
             else {return false;}
         } catch (SQLException e) {

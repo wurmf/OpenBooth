@@ -156,7 +156,7 @@ public class JDBCImageDAO implements ImageDAO {
 
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
                 nextImageID = rs.getInt("current_value")+1;
             }
 
