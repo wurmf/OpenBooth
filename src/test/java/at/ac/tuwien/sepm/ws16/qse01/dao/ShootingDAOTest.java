@@ -42,7 +42,7 @@ public class ShootingDAOTest extends TestEnvironment {
     }
 
     @Test(expected = AssertionError.class)
-    public void create_withPersistenceExeption() throws Exception {
+    public void create_withExeption() throws Exception {
         assertTrue(shooting3.getId() == 3);
         assertTrue(shooting3.getProfileid() == 1);
         assertTrue(shooting3.getStorageDir().equals("home/foto/shooting3"));
@@ -103,6 +103,8 @@ public class ShootingDAOTest extends TestEnvironment {
 
     @Test(expected = AssertionError.class)
     public void endShootingwithInValideArguments() throws Throwable {
+
+        shootingDAO.endShooting();
         shootingDAO.create(shooting4);
         assertTrue(shootingDAO.searchIsActive().getActive());
 
