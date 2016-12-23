@@ -43,6 +43,7 @@ public class TestEnvironment {
     protected ImageDAO mockImageDAO;
 
     protected ShootingDAO shootingDAO;
+    protected ShootingDAO mockShootingDAO;
 
     protected Connection con;
 
@@ -73,6 +74,7 @@ public class TestEnvironment {
         mockPairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(mockH2Handler);
         mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
         mockImageDAO = new JDBCImageDAO(mockH2Handler);
+        mockShootingDAO = new JDBCShootingDAO(mockH2Handler);
 
 
         /* Setup DAOs for all testing
