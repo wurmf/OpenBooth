@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,14 +29,16 @@ public class Profile {
                    boolean isGreenscreenEnabled,
                    boolean isMobilEnabled,
                    String watermark
-    ) {
-        this.id = Integer.MIN_VALUE;
-        this.name = name;
-        this.isPrintEnabled = isPrintEnabled;
-        this.isFilerEnabled = isFilterEnabled;
-        this.isGreenscreenEnabled = isGreenscreenEnabled;
-        this.isMobilEnabled = isMobilEnabled;
-        this.watermark = watermark;
+    ) {this(Integer.MIN_VALUE,
+            name,
+            new ArrayList<PairCameraPosition>(),
+            new ArrayList<PairLogoRelativeRectangle>(),
+            isPrintEnabled,
+            isFilterEnabled,
+            isGreenscreenEnabled,
+            isMobilEnabled,
+            watermark,
+            false);
     }
 
     /**
@@ -74,7 +77,16 @@ public class Profile {
      * @param name - no empty profile name
      */
     public Profile(String name) {
-        this(Integer.MIN_VALUE, name,null,null,false,false,false,false,"",false);
+        this(Integer.MIN_VALUE,
+                name,
+                new ArrayList<PairCameraPosition>(),
+                new ArrayList<PairLogoRelativeRectangle>(),
+                false,
+                false,
+                false,
+                false,
+                "",
+                false);
     }
 
     public int getId() {

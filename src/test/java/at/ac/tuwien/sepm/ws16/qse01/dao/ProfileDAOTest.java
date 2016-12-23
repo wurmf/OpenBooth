@@ -9,17 +9,24 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
+
 import static junit.framework.TestCase.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.when;
 
 /**
  * ProfileDAO Tester
  */
 public class ProfileDAOTest extends TestEnvironment{
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileDAOTest.class);
+    private Profile profileA;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        profileA = new Profile("Profile A");
     }
 
     @After
@@ -27,9 +34,21 @@ public class ProfileDAOTest extends TestEnvironment{
         super.tearDown();
     }
 
+    /**
+     *
+     *TESTING method: Profile create(Profile profile)
+     * throws PersistenceException;
+     */
+
     @Test(expected = IllegalArgumentException.class)
-    public void createProfileWithNullArgument() throws PersistenceException {
-        profileDAO.create(null);
+    public void testmock_create_withNullArguments_Fail() throws Exception{
+        mockProfileDAO.create(null);
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void testmock_create_withPersistenceTroubles_Fail() throws Exception{
+        when(mockConnection.prepareStatement(anyString(),anyInt())).thenThrow(SQLException.class);
+        mockProfileDAO.create(this.profileA);
     }
 
     /**
