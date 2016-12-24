@@ -210,7 +210,7 @@ public class JDBCProfileDAO implements ProfileDAO {
         String sqlString;
         PreparedStatement stmt = null;
 
-        sqlString = "SELECT * FROM profiles WHERE profileID = ?;";
+        sqlString = "SELECT * FROM profiles WHERE profileID = ? AND isDeleted = 'false';";
 
         try {
             stmt = this.con.prepareStatement(sqlString);

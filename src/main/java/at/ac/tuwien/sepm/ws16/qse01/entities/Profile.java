@@ -169,6 +169,12 @@ public class Profile {
         isDeleted = deleted;
     }
 
+    @Override
+    public boolean equals(Object object){
+        return object instanceof Profile
+                && ((Position) object).getId() == this.getId();
+    }
+
     public String toString(){return this.name;}
 
     /**

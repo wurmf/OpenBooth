@@ -13,7 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
@@ -27,7 +28,11 @@ public class ProfileDAOTest extends TestEnvironment{
     private Profile profileB;
     private Profile profileC;
     private List<Profile.PairCameraPosition> pairCameraPositions;
+    private Profile.PairCameraPosition pairCameraPositionA;
+    private Profile.PairCameraPosition pairCameraPositionB;
     private List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
+    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
     private Camera camera1;
     private Camera camera2;
     private Position position1;
@@ -57,11 +62,15 @@ public class ProfileDAOTest extends TestEnvironment{
         relativeRectangleA = new RelativeRectangle(10.1,10.2, 30.3,30.4);
         relativeRectangleB = new RelativeRectangle(80.1,80.2,10.3,10.4);
         pairCameraPositions = new ArrayList<>();
-        pairCameraPositions.add(new Profile.PairCameraPosition(camera1, position1,true));
-        pairCameraPositions.add(new Profile.PairCameraPosition(camera2, position2, false));
+        pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1,true);
+        pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
+        pairCameraPositions.add(pairCameraPositionA);
+        pairCameraPositions.add(pairCameraPositionB);
         pairLogoRelativeRectangles = new ArrayList<>();
-        pairLogoRelativeRectangles.add(new Profile.PairLogoRelativeRectangle(logo1,relativeRectangleA));
-        pairLogoRelativeRectangles.add(new Profile.PairLogoRelativeRectangle(logo2,relativeRectangleB));
+        pairLogoRelativeRectangleA = new Profile.PairLogoRelativeRectangle(logo1,relativeRectangleA);
+        pairLogoRelativeRectangleB = new Profile.PairLogoRelativeRectangle(logo2,relativeRectangleB);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
 
         profileC = new Profile(20,
                 "Profile C",
@@ -146,7 +155,11 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(profileC.getId() == 20);
         assertTrue(profileC.getName() == "Profile C");
         assertTrue(profileC.getPairCameraPositions().size() == 2);
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
         assertTrue(profileC.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
         assertTrue(profileC.isPrintEnabled());
         assertTrue(profileC.isFilerEnabled());
         assertTrue(profileC.isGreenscreenEnabled());
@@ -157,99 +170,181 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(returnValue3.getId() == 20);
         assertTrue(returnValue3.getName() == "Profile C");
         assertTrue(returnValue3.getPairCameraPositions().size() == 2);
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
         assertTrue(returnValue3.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
         assertTrue(returnValue3.isPrintEnabled());
         assertTrue(returnValue3.isFilerEnabled());
         assertTrue(returnValue3.isGreenscreenEnabled());
         assertTrue(returnValue3.isMobilEnabled());
         assertTrue(returnValue3.getWatermark().equals("/dev/null/watermarkC.jpg"));
         assertTrue(!returnValue3.isDeleted());
+    }
 
+    @Test(expected = PersistenceException.class)
+    public void test_create_withAlreadyExistingInputparameter_fail() throws Exception{
+        Profile returnValue = profileDAO.create(profileA);
+        Profile returnValue2 = profileDAO.create(returnValue);
     }
 
     /**
-    @Test
-    public void createProfileWithValidArgumentWithoutAutoID() throws PersistenceException {
-        Profile profile = new Profile(10,"TestprofileNoAutoID",null,null,false,false,false,false);
-        assertTrue(profile.getId() == 10);
-        assertTrue(profile.getName() == "TestprofileNoAutoID");
-
-        profileDAO.create(profile);
-        assertTrue(profile.getId()==10);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "TestprofileNoAutoID");
-    }
-
+     *
+     *TESTING method: boolean update(Profile profile)
+     * throws PersistenceException;
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateProfileWithNullArgument() throws PersistenceException {
-        profileDAO.update(null);
+    public void testmock_update_withNullArguments_Fail() throws Exception{
+        mockProfileDAO.update(null);
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void testmock_update_withPersistenceTroubles_Fail() throws Exception{
+        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
+        mockProfileDAO.update(this.profileA);
+    }
+
+    @Test
+    public void test_update_withValidInputParameter()throws Exception{
+        assertTrue(profileC.getId() == 20);
+        assertTrue(profileC.getName() == "Profile C");
+        assertTrue(profileC.getPairCameraPositions().size() == 2);
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
+        assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
+        assertTrue(profileC.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
+        assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
+        assertTrue(profileC.isPrintEnabled());
+        assertTrue(profileC.isFilerEnabled());
+        assertTrue(profileC.isGreenscreenEnabled());
+        assertTrue(profileC.isMobilEnabled());
+        assertTrue(profileC.getWatermark().equals("/dev/null/watermarkC.jpg"));
+        assertTrue(!profileC.isDeleted());
+        Profile returnValue = profileDAO.create(profileC);
+        assertTrue(returnValue.getId() == 20);
+        assertTrue(returnValue.getName() == "Profile C");
+        assertTrue(returnValue.getPairCameraPositions().size() == 2);
+        assertTrue(returnValue.getPairCameraPositions().contains(pairCameraPositionA));
+        assertTrue(returnValue.getPairCameraPositions().contains(pairCameraPositionB));
+        assertTrue(returnValue.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(returnValue.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
+        assertTrue(returnValue.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
+        assertTrue(returnValue.isPrintEnabled());
+        assertTrue(returnValue.isFilerEnabled());
+        assertTrue(returnValue.isGreenscreenEnabled());
+        assertTrue(returnValue.isMobilEnabled());
+        assertTrue(returnValue.getWatermark().equals("/dev/null/watermarkC.jpg"));
+        assertTrue(!returnValue.isDeleted());
+        returnValue.setName("Profile C+");
+        returnValue.setPairCameraPositions(new ArrayList<>());
+        returnValue.setPairLogoRelativeRectangles(new ArrayList<>());
+        returnValue.setPrintEnabled(false);
+        returnValue.setFilerEnabled(false);
+        returnValue.setGreenscreenEnabled(false);
+        returnValue.setMobilEnabled(false);
+        returnValue.setWatermark("");
+        assertTrue(profileDAO.update(returnValue));
+    }
+
+    @Test
+    public void test_update_WithNotExisting()throws Exception{
+        Profile returnValue = profileDAO.create(profileC);
+        returnValue.setId(returnValue.getId()+1);
+        returnValue.setName("Profile C+");
+        returnValue.setPairCameraPositions(new ArrayList<>());
+        returnValue.setPairLogoRelativeRectangles(new ArrayList<>());
+        returnValue.setPrintEnabled(false);
+        returnValue.setFilerEnabled(false);
+        returnValue.setGreenscreenEnabled(false);
+        returnValue.setMobilEnabled(false);
+        returnValue.setWatermark("");
+        assertTrue(!profileDAO.update(returnValue));
     }
 
     /**
-    @Test
-    public void updateProfileWithValidArgument() throws PersistenceException {
-        Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profileDAO.create(profile);
-        assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profile.setName("Testprofile2");
-
-        profileDAO.update(profile);
-        long id = profile.getId();
-        profile = profileDAO.read(id);
-        assertTrue(profile.getName() == "Testprofile2");
-    }
-    */
-
-    /**
-    @Test
-    public void updateProfileWithValidValidArgumentButDoesNotExistInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profileDAO.create(profile);
-        assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profile.setName("Testprofile2");
-        profile.setId(profile.getId()+1);
-        profileDAO.update(profile);
-        long id = profile.getId();
-        profile = profileDAO.read(id-1);
-        assertFalse(profile.getName()=="Testprofile2");
-    }
+     *
+     *TESTING method: Profile read(int id)
+     * throws PersistenceException;
      */
 
-    /**
     @Test
-    public void readProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false);
-        profileDAO.create(profile);
-        profile = profileDAO.read(100);
-        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
+    public void test_read_withValidInt() throws PersistenceException{
+        Profile returnValue = profileDAO.create(profileC);
+        Profile returnValue2 = profileDAO.read(returnValue.getId());
+        assertTrue(returnValue2.getName() == "Profile C");
+        assertTrue(returnValue2.getPairCameraPositions().size() == 2);
+        assertTrue(returnValue2.getPairCameraPositions().contains(pairCameraPositionA));
+        assertTrue(returnValue2.getPairCameraPositions().contains(pairCameraPositionB));
+        assertTrue(returnValue2.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(returnValue2.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
+        assertTrue(returnValue2.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
+        assertTrue(returnValue2.isPrintEnabled());
+        assertTrue(returnValue2.isFilerEnabled());
+        assertTrue(returnValue2.isGreenscreenEnabled());
+        assertTrue(returnValue2.isMobilEnabled());
+        assertTrue(returnValue2.getWatermark().equals("/dev/null/watermarkC.jpg"));
+        assertTrue(!returnValue2.isDeleted());
     }
-    */
 
-    public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,"",false);
-        profileDAO.create(profile);
-        profile = profileDAO.read(101);
-        assertTrue(profile == null);
+    @Test
+    public void test_read_NotExisting() throws Exception{
+        Profile returnValue = profileDAO.create(profileC);
+        assertTrue(profileDAO.read(returnValue.getId() + 1) == null);
     }
 
-    public void deleteProfileWithValidArgumentThatExistsInPersistenceStore() throws PersistenceException{
-        Profile profile = new Profile(100, "Testprofile100",null,null,false,false,false,false,"",false);
-        profileDAO.create(profile);
-        profile = profileDAO.read(100);
-        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
-        profileDAO.delete(profile);
-        profile = profileDAO.read(100);
-        assertTrue(profile == null);
+    /**
+     *
+     *TESTING method: List<Profile> readAll()
+     * throws PersistenceException;
+     */
+
+    public void test_readAll_withNonEmptyReturnList() throws Exception{
+        Profile returnValue1 = profileDAO.create(profileA);
+        Profile returnValue2 = profileDAO.create(profileB);
+        Profile returnValue3 = profileDAO.create(profileC);
+        List<Profile> returnList = profileDAO.readAll();
+        assertTrue(returnList.contains(returnValue1)
+                && returnList.contains(returnValue2)
+                && returnList.contains(returnValue3));
+    }
+
+    /**
+     *
+     *TESTING method: boolean delete(Profile profile)
+     * throws PersistenceException;
+     */
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testmock_delete_withNullArguments_Fail() throws Exception{
+        mockProfileDAO.delete(null);
+    }
+
+    @Test(expected = PersistenceException.class)
+    public void testmock_delete_withPersistenceTroubles_Fail() throws Exception{
+        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
+        mockProfileDAO.delete(this.profileA);
+    }
+
+    @Test
+    public void test_delete_withValidInputArguments() throws Exception {
+        Profile returnValue1 = profileDAO.create(profileA);
+        Profile returnValue2 = profileDAO.create(profileB);
+        Profile returnValue3 = profileDAO.create(profileC);
+        assertTrue(profileDAO.delete(returnValue1));
+        assertTrue(profileDAO.read(returnValue1.getId())== null);
+        assertTrue(profileDAO.delete(returnValue2));
+        assertTrue(profileDAO.read(returnValue2.getId())== null);
+        assertTrue(profileDAO.delete(returnValue3));
+        assertTrue(profileDAO.read(returnValue3.getId())== null);
+    }
+
+    @Test
+    public void test_delete_withNotExistingInputparameter_fail() throws Exception{
+        Profile returnValue = profileDAO.create(profileA);
+        assertTrue(profileDAO.delete(returnValue));
+        assertFalse(profileDAO.delete(returnValue));
     }
 
 }
