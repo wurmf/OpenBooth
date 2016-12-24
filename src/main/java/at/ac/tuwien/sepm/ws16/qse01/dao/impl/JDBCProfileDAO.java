@@ -69,7 +69,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 {
                 String sqlString = "INSERT INTO"
                     + " profiles (profileID,name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled,isMobilEnabled,watermark)"
-                    + " VALUES (?,?,?,?,?,?);";
+                    + " VALUES (?,?,?,?,?,?,?);";
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1,profile.getId());
                 stmt.setString(2,profile.getName());
@@ -83,7 +83,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 }
 
             List<Profile.PairCameraPosition> returnPairCameraPositionList = new ArrayList<>();
-            for (Profile.PairCameraPosition pairCameraPosition : profile.getCameraPositions())
+            for (Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions())
             {
                 pairCameraPosition.setProfileId(profile.getId());
                 returnPairCameraPositionList.add(pairCameraPositionDAO.create(pairCameraPosition));
@@ -95,7 +95,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 pairLogoRelativeRectangle.setProfileId(profile.getId());
                 returnPairLogoRelativeRectangleList.add(pairLogoRelativeRectangleDAO.create(pairLogoRelativeRectangle));
             }
-            profile.setCameraPositions(returnPairCameraPositionList);
+            profile.setPairCameraPositions(returnPairCameraPositionList);
             profile.setPairLogoRelativeRectangles(returnPairLogoRelativeRectangleList);
             LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
@@ -142,7 +142,7 @@ public class JDBCProfileDAO implements ProfileDAO {
 
                 // updating pairCameraPositionList
                 List<Profile.PairCameraPosition> newPairCameraPositions
-                        = profile.getCameraPositions();
+                        = profile.getPairCameraPositions();
                 List<Profile.PairCameraPosition> oldPairCameraPositions
                         = pairCameraPositionDAO.readAllWithProfileID(profile.getId());
                 for (Profile.PairCameraPosition pairCameraPosition : newPairCameraPositions)

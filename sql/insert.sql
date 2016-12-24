@@ -30,7 +30,7 @@ INSERT INTO profile_logo_relativeRectangles VALUES (2, 1, 2,  5.0, 10.0, 15.0, 2
 INSERT INTO profile_logo_relativeRectangles VALUES (3, 2, 1, 75.0, 95.0, 80.0, 90.0);
 INSERT INTO profile_logo_relativeRectangles VALUES (4, 2, 2, 15.0, 20.0, 25.0, 30.0);
 
-ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 3;
+ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 5;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS images_seq RESTART WITH 5;
 ALTER SEQUENCE IF EXISTS positions_seq RESTART WITH 3;

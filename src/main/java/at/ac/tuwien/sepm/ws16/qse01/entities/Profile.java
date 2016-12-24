@@ -105,11 +105,11 @@ public class Profile {
         this.name = name;
     }
 
-    public List<PairCameraPosition> getCameraPositions() {
+    public List<PairCameraPosition> getPairCameraPositions() {
         return pairCameraPositions;
     }
 
-    public void setCameraPositions(List<PairCameraPosition> pairCameraPositions) {
+    public void setPairCameraPositions(List<PairCameraPosition> pairCameraPositions) {
         this.pairCameraPositions = pairCameraPositions;
     }
 
@@ -159,6 +159,14 @@ public class Profile {
 
     public void setMobilEnabled(boolean mobilEnabled) {
         isMobilEnabled = mobilEnabled;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public String toString(){return this.name;}
