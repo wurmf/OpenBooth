@@ -172,7 +172,7 @@ public class Profile {
     @Override
     public boolean equals(Object object){
         return object instanceof Profile
-                && ((Position) object).getId() == this.getId();
+                && ((Profile) object).getId() == this.getId();
     }
 
     public String toString(){return this.name;}
