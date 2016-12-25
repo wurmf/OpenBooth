@@ -59,10 +59,17 @@ public class FullScreenImageController {
     @FXML
     private ImageView image4;
     @FXML
+    private ImageView image2;
+    @FXML
+    private ImageView image5;
+    @FXML
     private ImageView image3;
+    @FXML
+    private ImageView image1;
     @FXML
     private ImageView ivfullscreenImage;
 
+    private at.ac.tuwien.sepm.ws16.qse01.entities.Image firstImage;
     private ImageView[]slide =new ImageView[3];
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
     private int currentIndex=-1;
@@ -97,8 +104,9 @@ public class FullScreenImageController {
                     activ=shootingService.searchIsActive().getId();
                     imageList = imageService.getAllImages(activ);
                 }
-                //TODO give the index of the image
-                //currentIndex=0;
+                if(imageList!=null){
+                    currentIndex = imageList.indexOf(firstImage);
+                }
             }
             if(currentIndex>=0&&imageList!=null&&!imageList.isEmpty()) {
 
@@ -321,18 +329,18 @@ public class FullScreenImageController {
      *
      * @param actionEvent swipe action event
      */
-    public void onGetLastImage(ActionEvent actionEvent) {
+    public void onLastImagePressed(ActionEvent actionEvent) {
         try {
             if(slide[0]!=null) {
-                FadeTransition fadeIn = getFadeTransition(slide[0], 0.0, 1.0, 2000);
+               /* FadeTransition fadeIn = getFadeTransition(slide[0], 0.0, 1.0, 2000);
                 fadeIn.play();
                 //  FadeTransition fadeOut = getFadeTransition(slide[1], 1.0, 0.0, 2000);
                 ivfullscreenImage.setImage(slide[0].getImage());
                 currentIndex--;
-                LOGGER.debug("Last1",currentIndex+"");
+                LOGGER.debug("Last1",currentIndex+"");*/
 
                 if(currentIndex>0){
-                    Image image = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 150, 0, true, true);
+                    Image image = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 100, 100, true, true);
                     slide[2] = slide[1];
                     slide[1] = slide[0];
                     slide[0] = new ImageView(image);
@@ -360,7 +368,7 @@ public class FullScreenImageController {
      *
      * @param actionEvent swipe action event
      */
-    public void onGetNextImage(ActionEvent actionEvent) {
+    public void onNextImage(ActionEvent actionEvent) {
         try {
             if(slide[2]!=null) {
                 FadeTransition fadeOut = getFadeTransition(slide[2], 1.0, 0.0, 2000);
@@ -396,7 +404,7 @@ public class FullScreenImageController {
      * this is achieved by seting visiblety
      * @param actionEvent press action event
      */
-    public void onfullscreen1(ActionEvent actionEvent) {
+    public void onfullScreenPressed (ActionEvent actionEvent) {
 
         if(planbottom.isVisible()){
             planbottom.setVisible(false);
@@ -405,6 +413,9 @@ public class FullScreenImageController {
             button2.setVisible(false);
             image3.setVisible(false);
             image4.setVisible(false);
+            image2.setVisible(false);
+            image5.setVisible(false);
+            image1.setVisible(false);
             button5.setVisible(false);
             button6.setVisible(false);
             button7.setVisible(false);
@@ -418,6 +429,9 @@ public class FullScreenImageController {
             button2.setVisible(true);
             image4.setVisible(true);
             image3.setVisible(true);
+            image1.setVisible(true);
+            image2.setVisible(true);
+            image5.setVisible(true);
             button5.setVisible(true);
             button6.setVisible(true);
             button7.setVisible(true);
@@ -428,47 +442,13 @@ public class FullScreenImageController {
 
     }
 
-    /**
-     * to get an full screen image without buttons
-     * and reload the buttons when pressed again
-     * this is achieved by seting visiblety
-     * @param actionEvent press action event
-     */
-    public void onfullscreen2(ActionEvent actionEvent) {
-        if(planbottom.isVisible()){
-            planbottom.setVisible(false);
-            planetop.setVisible(false);
-            button1.setVisible(false);
-            button2.setVisible(false);
-            image3.setVisible(false);
-            image4.setVisible(false);
-            button5.setVisible(false);
-            button6.setVisible(false);
-            button7.setVisible(false);
-            button8.setVisible(false);
-            button9.setVisible(false);
-        } else {
-
-            planbottom.setVisible(true);
-            planetop.setVisible(true);
-            button1.setVisible(true);
-            button2.setVisible(true);
-            image4.setVisible(true);
-            image3.setVisible(true);
-            button5.setVisible(true);
-            button6.setVisible(true);
-            button7.setVisible(true);
-            button8.setVisible(true);
-            button9.setVisible(true);
-        }
-
-
-    }
     public void changeImage(int imgID){
         try {
-            if(new File(imageService.read(imgID).getImagepath()).isFile())
+            if(new File(imageService.read(imgID).getImagepath()).isFile()) {
+                firstImage = imageService.read(imgID);
                 ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
-            else
+               //100,100
+            }else
                 ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + imageService.read(imgID).getImagepath()),  ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
 
         } catch (FileNotFoundException e) {

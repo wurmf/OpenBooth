@@ -1,0 +1,11 @@
+
+.button {
+   -fx-background-color: TRANSPARENT;
+   -fx-pref-width: 20em;
+   -fx-pref-height:3em;
+}
+
+#fullscreen{
+ -fx-pref-width: MAX_VALUE;
+ -fx-pref-height:MAX_VALUE;
+}
