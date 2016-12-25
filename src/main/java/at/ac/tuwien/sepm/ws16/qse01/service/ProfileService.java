@@ -340,4 +340,131 @@ public interface ProfileService {
      */
     Profile getActiveProfile() throws ServiceException;
 
+    /**
+     * Get all Camera-position pairs of given profile
+     * @param profileId - id of given profile
+     * @return List<Profile.PairCameraPosition> - List of all Camera-position pairs of given profile
+     * may return an empty list, but never a null
+     */
+    List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile(int profileId) throws ServiceException;
+
+    /**
+     * Get all Camera-position pairs of currently active profile
+     * @return List<Profile.PairCameraPosition> - List of all Camera-position pairs of currently profile
+     * may return an empty list, but never a null
+     */
+    List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile() throws ServiceException;
+
+    /**
+     * Add a combination of camera and position to a given profile(and also tell, if it is greeenscreenready
+     * @param profileId - id of a profile where to add this combination
+     * @param cameraId - id of camera that has to be part of this combination
+     * @param positionId - id of position that has to be paer of this combination
+     * @param isGreenScreenReady - true, if this combination has to be greenscreenready
+     * @return true, if adding has been successfull,
+     * false, if adding is not possible, because given camera has been been already assigned a position
+     * in the given profile
+     */
+    boolean addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady)
+            throws ServiceException;
+
+    /**
+     * Add a combination of camera and position of currently active profile(and also tell, if it is greeenscreenready
+     * @param cameraId - id of camera that has to be part of this combination
+     * @param positionId - id of position that has to be paer of this combination
+     * @param isGreenScreenReady - true, if this combination has to be greenscreenready
+     * @return true, if adding has been successfull,
+     * false, if adding is not possible, because given camera has been been already assigned a position
+     * in currently active profile
+     */
+    boolean addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady)
+            throws ServiceException;
+
+    /**
+     * Edit given pairCameraPosition object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairCameraPosition - PairCameraPosition object to be edited
+     * @param newCameraId - id of Camera object to replace current one
+     *        if id is negative or zero, previous already assigned object will be kept,
+     *        if positive id does not exist, previous already assigned object will be kept
+     * @param newPositionId - id of position object to replace current one
+     *        if id is negative or zero, previous already assigned object will be kept,
+     *        if positive id does not exist, previous already assigned object will be kept
+     * @param invertIsGreenScreenReadySwitch - true, if you want to invert current greenscreenready setting
+     *        false, if you want to keep current greenscreenready setting unchanged
+     * @return true, if editing of given pairCameraPosition object has been successful
+     */
+    boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition, int newCameraId, int newPositionId, boolean invertIsGreenScreenReadySwitch)
+            throws ServiceException;
+
+    /**
+     * Erase given paraCameraPostion
+     * @param pairCameraPosition - given PairCameraPosition object
+     * @return true, if erasing has been successful
+     */
+    boolean erasePairCameraPosition(Profile.PairCameraPosition pairCameraPosition)
+            throws ServiceException;
+
+    /**
+     * Get all logo-relative rectangle pairs of given profile
+     * @param profileId - id of given profile
+     * @return List<Profile.PairLogoRelativeRectangle> - List of all logo-relative rectangle pairs of given profile
+     * may return an empty list, but never a null
+     */
+    List<Profile.PairLogoRelativeRectangle> getAllPairLogoRelativeRectangle(int profileId)
+            throws ServiceException;
+
+    /**
+     * Get all logo-relative rectangle pairs of currently active profile
+     * @return List<Profile.PairLogoRelativeRectangle> - List of all logo-relative rectangle pairs of given profile
+     * may return an empty list, but never a null
+     */
+    List<Profile.PairLogoRelativeRectangle> getAllPairLogoRelativeRectangle()
+            throws ServiceException;
+
+    /**
+     * Add a combination of logo and its (relative rectangle) position to a given profile
+     * @param logoId - id of logo that has to be part of this combination
+     * @param relativeRectangle RelativeRectangle object that has to be part of this combination
+     * @return true, if adding has been successfull,
+     * false, if adding is not possible
+     */
+    boolean addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle)
+            throws ServiceException;
+
+    /**
+     * Add a combination of logo and its (relative rectangle) position to currently active profile
+     * @param logoId - id of logo that has to be part of this combination
+     * @param relativeRectangle RelativeRectangle object that has to be part of this combination
+     * @return true, if adding has been successfull,
+     * false, if adding is not possible
+     */
+    boolean addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle)
+            throws ServiceException;
+
+    /**
+     * Edit given pairLogoRelativeRectangle object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairLogoRelativeRectangle - PairLogoRelativeRectangle object to be edited
+     * @param newLogoId - id of Logo object to replace current one
+     *        if id is negative or zero, previous already assigned object will be kept,
+     *        if positive id does not exist, previous already assigned object will be kept
+     * @param newRelativeRectangle - RelativeRectangle object to set new position of the paired logo object
+     *        if an attribute of the newRelativeRectangle object is set to a negative value, the current value
+     *        will stay unchanged
+     *        if an attribute of the newRelativeRectangle object is set to a zero or positive value, the current value
+     *        will be replaced by it
+     * @return true, if editing of given pairLogoRelativeRectangle object has been successful
+     */
+    boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle)
+            throws ServiceException;
+
+    /**
+     * Erase given pairLogoRelativeRectangle
+     * @param pairLogoRelativeRectangle - given PairLogoRelativeRectangle object
+     * @return true, if erasing has been successful
+     */
+    boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)
+            throws ServiceException;
+
 }
