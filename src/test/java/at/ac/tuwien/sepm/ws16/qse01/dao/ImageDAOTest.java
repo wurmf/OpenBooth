@@ -25,7 +25,7 @@ public class ImageDAOTest extends TestEnvironment {
         super.setUp();
     }
 
-    @After public void tearDown() throws PersistenceException {
+    @After public void tearDown() throws Exception {
         super.tearDown();
     }
 

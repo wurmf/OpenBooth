@@ -35,7 +35,7 @@ public class ProfileServiceImpl implements ProfileService{
     private List<Position> positionList = new ArrayList<>();
     private List<Logo> logoList = new ArrayList<>();
     @Autowired
-    private ProfileServiceImpl(ProfileDAO profileDAO,
+    public ProfileServiceImpl(ProfileDAO profileDAO,
                               PositionDAO positionDAO,
                               LogoDAO logoDAO,
                               ShootingService shootingService

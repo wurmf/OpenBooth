@@ -31,7 +31,7 @@ public class LogoDAOTest extends TestEnvironment{
         super.setUp();
     }
 
-    @After public void tearDown() throws PersistenceException {
+    @After public void tearDown() throws Exception {
         super.tearDown();
     }
 
@@ -85,12 +85,12 @@ public class LogoDAOTest extends TestEnvironment{
         assertTrue(logo1000000.getId() == 1000000);
         assertTrue(logo1000000.getLabel() == "Logo 1000000");
         assertTrue(logo1000000.getPath() == "/dev/null/logo1000000.jpg");
-        assertTrue(logo1000000.isDeleted() == false);
+        assertTrue(!logo1000000.isDeleted());
         Logo returnValue = logoDAO.create(logo1000000);
         assertTrue(logo1000000.getId() == 1000000);
         assertTrue(logo1000000.getLabel() == "Logo 1000000");
         assertTrue(logo1000000.getPath() == "/dev/null/logo1000000.jpg");
-        assertTrue(logo1000000.isDeleted() == false);
+        assertTrue(!logo1000000.isDeleted());
         Logo returnValue2 = logoDAO.create(logo1000000);
     }
 
