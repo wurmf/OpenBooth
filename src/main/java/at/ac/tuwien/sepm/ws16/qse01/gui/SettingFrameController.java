@@ -361,7 +361,7 @@ public class SettingFrameController {
                 public void changed(ObservableValue ov, Profile t, Profile selectedProfil) {
                     try {
                         refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfil));
-                        refreshTableKameraPosition(pservice.getAllCamerasOfProfile(selectedProfil),pservice.getAllPositionsOfProfile(selectedProfil));
+                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
                         refreshTableLogo(pservice.getAllLogosOfProfile(selectedProfil));
                     } catch (ServiceException e) {
                         e.printStackTrace();
@@ -449,7 +449,7 @@ public class SettingFrameController {
             /* INITIALIZING KameraPosition Zuweisung TABLE */
             /* ######################### */
             tableKamPos.setEditable(true);
-            colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLabel"));
+            colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLable"));
            /* colKamPosKamera.setCellFactory(TextFieldTableCell.forTableColumn());
             colKamPosKamera.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Position, String>>() {
@@ -489,7 +489,7 @@ public class SettingFrameController {
                             return new SimpleBooleanProperty(p.getValue() != null);
                         }
                     });
-            //Adding the checkbox to the cell
+            //Adding the combobox to the cell
             colKamPosPosition.setCellFactory(
                     new Callback<TableColumn<Profile.PairCameraPosition, Boolean>, TableCell<Profile.PairCameraPosition, Boolean>>() {
 
@@ -746,12 +746,16 @@ public class SettingFrameController {
         tablePosition.setItems(posList);
     }
 
-    private void refreshTableKameraPosition(List<Camera> camList, List<Position> posList){
+    private void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
         LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
         this.kamPosList.clear();
-        this.kamPosList.add(new Profile.PairCameraPosition(new Camera(1,"camera1","22","asdf","asdf"),new Position("Oben"),true));
+        for(Profile.PairCameraPosition cp: camposList){
+            System.out.println("Kamera->"+cp.getCamera()+"_pos->"+cp.getPosition().getName());
+        }
+       /* this.kamPosList.add(new Profile.PairCameraPosition(new Camera(1,"camera1","22","asdf","asdf"),new Position("Oben"),true));
         this.kamPosList.add(new Profile.PairCameraPosition(new Camera(2,"camera2","22","asdf","asdf"),new Position("Unten"),true));
-       /* for(Camera cam: camList){
+       pservice.get*/
+        /* for(Camera cam: camList){
             LOGGER.debug("kamera => "+cam.getLable());
             try {
                 this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
@@ -759,7 +763,7 @@ public class SettingFrameController {
                 e.printStackTrace();
             }
         }*/
-        //this.kamPosList.addAll(kamPosList);
+        this.kamPosList.addAll(camposList);
         tableKamPos.setItems(this.kamPosList);
     }
     private void refreshTableLogo(List<Logo> logoList){

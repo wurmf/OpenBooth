@@ -33,8 +33,12 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
             public void changed(ObservableValue ov, Profile.PairCameraPosition t, Profile.PairCameraPosition selectedCamPos) {
                 Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
                 currentCamPos.setPosition(selectedCamPos.getPosition());
-                //TODO -> ich brauche eine methode um die ausgewählte position für jeweiligen camera in db zu speichern.
-                //TODO -> pservice.editCameraPosition(currentCamPos);
+                try {
+                    pservice.editPairCameraPosition(currentCamPos,currentCamPos.getCamera().getId(),currentCamPos.getPosition().getId(),false);
+                } catch (ServiceException e) {
+                    LOGGER.debug("Error->"+e.getMessage());
+                }
+
             }
         });
 
