@@ -414,4 +414,72 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean isProfileGreenscreenEnabled() throws ServiceException {
         return isProfileGreenscreenEnabled(this.getActiveProfile());
     }
+
+    @Override
+    public List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile(int profileId) throws ServiceException {
+        try {
+            return profileDAO.read(profileId).getPairCameraPositions();
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! getting objects in service layer has failed.:" + e);
+        }
+    }
+
+    @Override
+    public List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile() throws ServiceException {
+        return getAllPairCameraPositionOfProfile(this.getActiveProfile().getId());
+    }
+
+    @Override
+    public boolean addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition, int newCameraId, int newPositionId, boolean invertIsGreenScreenReadySwitch) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean erasePairCameraPosition(Profile.PairCameraPosition pairCameraPosition) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public List<Profile.PairLogoRelativeRectangle> getAllPairLogoRelativeRectangle(int profileId) throws ServiceException {
+        try {
+            return profileDAO.read(profileId).getPairLogoRelativeRectangles();
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! getting objects in service layer has failed.:" + e);
+        }
+    }
+
+    @Override
+    public List<Profile.PairLogoRelativeRectangle> getAllPairLogoRelativeRectangle() throws ServiceException {
+        return getAllPairLogoRelativeRectangle(this.getActiveProfile().getId());
+    }
+
+    @Override
+    public boolean addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
+        return false;
+    }
 }

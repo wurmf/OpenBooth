@@ -184,6 +184,7 @@ public class Profile {
         private int id;
         private int profileId;
         private Camera camera;
+        //private String cameraLable;
         private Position position;
         private boolean isGreenScreenReady;
 
@@ -215,7 +216,7 @@ public class Profile {
         public int getId() {
             return id;
         }
-
+        public String getCameraLable(){ return this.camera.getLable();}
         public void setId(int id) {
             this.id = id;
         }

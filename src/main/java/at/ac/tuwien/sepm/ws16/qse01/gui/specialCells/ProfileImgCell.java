@@ -66,11 +66,12 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
                         p.setWatermark(file.getAbsolutePath());
 
+                        pservice.edit(p);
 
                         pList.removeAll(pList);
                         pList.addAll(pservice.getAllProfiles());
 
-                        pservice.edit(p);
+
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }

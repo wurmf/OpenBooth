@@ -26,7 +26,7 @@ public class ShootingDAOTest extends TestEnvironment {
     }
 
     @After
-    public void tearDown() throws PersistenceException {
+    public void tearDown() throws Exception {
         super.tearDown();
     }
 
