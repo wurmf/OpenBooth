@@ -1,119 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: rgb(0.7,0.7,0.7,1);" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <ImageView fx:id="ivfullscreenImage" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
       <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints percentHeight="15.0" vgrow="SOMETIMES" />
-          <RowConstraints percentHeight="70.0" vgrow="SOMETIMES" />
-          <RowConstraints percentHeight="15.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+         <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-            <GridPane fx:id="planetop" style="-fx-background-color: rgba(50,50, 50, 0.5);">
+            <GridPane>
               <columnConstraints>
-                <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="20.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="30.0" />
-                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="50.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints percentHeight="100.0" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="80.0" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="button1" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onDeletePressed" snapToPixel="false">
-                     <graphic>
-                        <ImageView fx:id="image3" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/trashcan.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="button11" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onPrintPressed" GridPane.columnIndex="1">
-                     <graphic>
-                        <ImageView fx:id="image4" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/printer.png" />
-                           </image></ImageView>
-                     </graphic>
-                  </Button>
-                  <Button fx:id="button2" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#onClosePressed" snapToPixel="false" GridPane.columnIndex="2">
-                     <graphic>
-                        <ImageView fx:id="image1" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/backarrow.png" />
-                           </image>
-                        </ImageView>
-                     </graphic>
-                  </Button>
-               </children>
-            </GridPane>
-            <GridPane fx:id="planbottom" style="-fx-background-color: rgba(50,50, 50, 0.5);" GridPane.rowIndex="2">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
-                <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button fx:id="button5" mnemonicParsing="false" onAction="#onFilter4Pressed" GridPane.columnIndex="5" />
-                  <Button fx:id="button6" mnemonicParsing="false" onAction="#onFilter3Pressed" GridPane.columnIndex="1" />
-                  <Button fx:id="button9" mnemonicParsing="false" onAction="#onFilter5Pressed" GridPane.columnIndex="2" />
-                  <Button fx:id="button7" mnemonicParsing="false" onAction="#onFilter2Pressed" GridPane.columnIndex="3" />
-                  <Button fx:id="button8" mnemonicParsing="false" onAction="#onFilter1Pressed" GridPane.columnIndex="4" />
-                  <Button mnemonicParsing="false" GridPane.columnIndex="6" />
-               </children>
-            </GridPane>
-            <GridPane GridPane.rowIndex="1">
-              <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Button fx:id="fullscreen" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onfullScreenPressed">
+                  <GridPane fx:id="planetop" style="-fx-background-color: rgba(50,50, 50, 0.5);">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="20.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="30.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="50.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100.0" valignment="TOP" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" snapToPixel="false" style="-fx-background-image: url('/images/trashcan.png');" />
+                        <Button fx:id="button11" mnemonicParsing="false" onAction="#onPrintPressed" style="-fx-background-image: url('/images/printer.png');" GridPane.columnIndex="1" />
+                        <Button fx:id="button2" mnemonicParsing="false" onAction="#onClosePressed" snapToPixel="false" style="-fx-background-image: url('/images/backarrow.png');" GridPane.columnIndex="2" />
+                     </children>
+                  </GridPane>
+                  <GridPane fx:id="planbottom" style="-fx-background-color: rgba(50,50, 50, 0.5);" GridPane.rowIndex="2">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="15.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="5.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Button fx:id="button5" mnemonicParsing="false" onAction="#onFilter4Pressed" GridPane.columnIndex="5" />
+                        <Button fx:id="button6" mnemonicParsing="false" onAction="#onFilter3Pressed" GridPane.columnIndex="1" />
+                        <Button fx:id="button9" mnemonicParsing="false" onAction="#onFilter5Pressed" GridPane.columnIndex="2" />
+                        <Button fx:id="button7" mnemonicParsing="false" onAction="#onFilter2Pressed" GridPane.columnIndex="3" />
+                        <Button fx:id="button8" mnemonicParsing="false" onAction="#onFilter1Pressed" GridPane.columnIndex="4" />
+                        <Button mnemonicParsing="false" GridPane.columnIndex="6" />
+                     </children>
+                  </GridPane>
+                  <Button fx:id="fullscreen" mnemonicParsing="false" onAction="#onfullScreenPressed" GridPane.rowIndex="1">
                      <graphic>
                         <GridPane>
-                          <columnConstraints>
-                            <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
-                            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="50.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints percentHeight="33.3" vgrow="SOMETIMES" />
-                            <RowConstraints percentHeight="33.3" valignment="CENTER" vgrow="SOMETIMES" />
-                            <RowConstraints percentHeight="33.3" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="50.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="50.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints percentHeight="33.3" vgrow="SOMETIMES" />
+                              <RowConstraints percentHeight="33.3" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints percentHeight="33.3" vgrow="SOMETIMES" />
+                           </rowConstraints>
                            <children>
-                              <Button fx:id="leftbutton" mnemonicParsing="false" onAction="#onLastImagePressed" GridPane.rowIndex="1">
+                              <Button fx:id="button4" mnemonicParsing="false" onAction="#onLastImagePressed" style="-fx-background-image: url('/images/arrowleft.png');" GridPane.rowIndex="1">
                                  <graphic>
                                     <ImageView fx:id="image2" pickOnBounds="true" preserveRatio="true" />
                                  </graphic>
                               </Button>
-                              <Button fx:id="rightbutton" mnemonicParsing="false" onAction="#onNextImage" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                              <Button fx:id="button3" mnemonicParsing="false" onAction="#onNextImage" style="-fx-background-image: url('/images/arrowright.png');" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <graphic>
                                     <ImageView fx:id="image5" pickOnBounds="true" preserveRatio="true" />
                                  </graphic>
