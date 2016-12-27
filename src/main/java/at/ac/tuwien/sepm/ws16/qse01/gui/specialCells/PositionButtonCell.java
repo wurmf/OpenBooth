@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -27,7 +28,7 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
     private final Button cellButton = new Button("X");
 
-    public PositionButtonCell(ObservableList<Position> posList, ProfileService pservice,Stage primaryStage) {
+    public PositionButtonCell(ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList,int selectedProfilID, ProfileService pservice, Stage primaryStage) {
         this.posList = posList;
         this.pservice = pservice;
 
@@ -53,6 +54,11 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
                     posList.remove(currentPosition);
                     try {
                         pservice.erasePosition(currentPosition);
+
+                        // refreshing kamPos TableView;
+                        kamPosList.clear();
+                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }

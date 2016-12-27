@@ -360,8 +360,12 @@ public class SettingFrameController {
                 @Override
                 public void changed(ObservableValue ov, Profile t, Profile selectedProfil) {
                     try {
-                        refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfil));
-                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
+                        refreshTablePosition(pservice.getAllPositions());
+                     //   refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
+                        int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                        kamPosList.removeAll(kamPosList);
+                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+                        tableKamPos.setItems(kamPosList);
                         refreshTableLogo(pservice.getAllLogosOfProfile(selectedProfil));
                     } catch (ServiceException e) {
                         e.printStackTrace();
@@ -390,6 +394,11 @@ public class SettingFrameController {
                                 if (t.getNewValue().compareTo("") != 0) {
                                     p.setName(t.getNewValue());
                                     pservice.editPosition(p);
+
+                                    int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                                    kamPosList.removeAll(kamPosList);
+                                    kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+                                   // refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
                                 } else {
                                     //new EntityException("Vorname", "Vorname darf nicht leer sein.");
                                     refreshTablePosition(pservice.getAllPositionsOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
@@ -437,8 +446,8 @@ public class SettingFrameController {
 
                         @Override
                         public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-
-                            return new PositionButtonCell(posList,pservice,windowManager.getStage());
+                            int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                            return new PositionButtonCell(posList,kamPosList,selectedProfilID,pservice,windowManager.getStage());
                         }
 
                     });
@@ -748,7 +757,7 @@ public class SettingFrameController {
 
     private void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
         LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
-        this.kamPosList.clear();
+        this.kamPosList.removeAll(kamPosList);
         for(Profile.PairCameraPosition cp: camposList){
             System.out.println("Kamera->"+cp.getCamera()+"_pos->"+cp.getPosition().getName());
         }
@@ -907,6 +916,10 @@ public class SettingFrameController {
                 //TODO: Nachdem profildao methode  keine exception wirft, posList.add nach pservice.add ausführen.
                 posList.add(p);
                 pservice.addPosition(p);
+
+                int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                kamPosList.clear();
+                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
 
                 //   posList.add(p);
             } catch (ServiceException e) {
