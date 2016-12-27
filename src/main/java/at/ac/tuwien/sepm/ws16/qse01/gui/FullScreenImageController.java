@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
@@ -35,6 +36,9 @@ import java.util.Optional;
 public class FullScreenImageController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FullScreenImageController.class);
+
+    @FXML
+    private GridPane base;
     @FXML
     private Pane planetop;
     @FXML
@@ -290,7 +294,7 @@ public class FullScreenImageController {
                     b3=true;
                     button3.setVisible(true);
                 }
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), base.getWidth(), base.getHeight(), true, true));
             } else {
                 windowManager.showMiniatureFrame();
             }
@@ -324,7 +328,7 @@ public class FullScreenImageController {
                     b4=true;
                     button4.setVisible(true);
                 }
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
             } else {
                 windowManager.showMiniatureFrame();
             }
@@ -390,7 +394,7 @@ public class FullScreenImageController {
                     button3.setVisible(false);
                 }
 
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), base.getWidth(), base.getHeight(), true, true));
 
             } else {
                 windowManager.showMiniatureFrame();
