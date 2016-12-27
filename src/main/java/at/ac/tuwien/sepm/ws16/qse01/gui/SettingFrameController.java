@@ -1,12 +1,16 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.entities.*;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -15,6 +19,8 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -165,6 +171,7 @@ public class SettingFrameController {
     @FXML
     private ImageView previewLogo;
 
+    private Profile.PairLogoRelativeRectangle selectedLogo = null;
 
     @Autowired
     public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice,LogoWatermarkService logoService,CameraService cameraService,WindowManager windowmanager) throws ServiceException {
@@ -366,7 +373,7 @@ public class SettingFrameController {
                         kamPosList.removeAll(kamPosList);
                         kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
                         tableKamPos.setItems(kamPosList);
-                        refreshTableLogo(pservice.getAllLogosOfProfile(selectedProfil));
+                        refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfilID));
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }
@@ -515,9 +522,14 @@ public class SettingFrameController {
             /* ######################### */
             tableLogo.setEditable(true);
 
-            colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("logoID"));
+            colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("id"));
 
-            colLogoName.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, String>("logoLabel"));
+            colLogoName.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Logo>("logo"));
+            colLogoName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String>, ObservableValue<String>>() {
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getLogo().getLabel());
+                }
+            });
             colLogoName.setCellFactory(TextFieldTableCell.forTableColumn());
             colLogoName.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, String>>() {
@@ -528,13 +540,13 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (t.getNewValue().compareTo("") != 0) {
-                                   //TODO: LOGO Label hinzufügen!!
-                                    // p.setName(t.getNewValue());
+
+                                    p.getLogo().setLabel(t.getNewValue());
                                     //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //TODO: oder nur eine service.editRelativeRectangle methode
-                                    //pservice. editPairLogo  editPosition(p);
+
+                                  //  pservice.editPairLogoRelativeRectangle(p)
                                 } else {
-                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                    refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
 
                             } catch (ServiceException e) {
@@ -549,7 +561,11 @@ public class SettingFrameController {
                         }
                     });
             /* Logo Xstart Column */
-            colLogoX.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("xstart"));
+           colLogoX.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double>, ObservableValue<Double>>() {
+                public ObservableValue<Double> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getX());
+                }
+            });
             colLogoX.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("xstart")));
             colLogoX.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
@@ -560,13 +576,12 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (!t.getNewValue().isNaN()) {
-                                    //TODO: LOGO Label hinzufügen!!
-                                    // p.setName(t.getNewValue());
+
+                                     p.getRelativeRectangle().setX(t.getNewValue());
                                     //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //TODO: oder nur eine service.editRelativeRectangle methode
                                     //pservice. editPairLogo  editPosition(p);
                                 } else {
-                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                    refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
 
                             } catch (ServiceException e) {
@@ -582,7 +597,11 @@ public class SettingFrameController {
                     });
 
               /* Logo Ystart Column */
-            colLogoY.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("ystart"));
+            colLogoY.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double>, ObservableValue<Double>>() {
+                public ObservableValue<Double> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getY());
+                }
+            });
             colLogoY.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("ystart")));
             colLogoY.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
@@ -593,13 +612,12 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (!t.getNewValue().isNaN()) {
-                                    //TODO: LOGO Label hinzufügen!!
-                                    // p.setName(t.getNewValue());
+
+                                     p.getRelativeRectangle().setY(t.getNewValue());
                                     //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //TODO: oder nur eine service.editRelativeRectangle methode
-                                    //pservice. editPairLogo  editPosition(p);
+                                   //pservice. editPairLogo  editPosition(p);
                                 } else {
-                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                    refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
 
                             } catch (ServiceException e) {
@@ -615,7 +633,11 @@ public class SettingFrameController {
                     });
 
               /* Logo Xstart Column */
-            colLogoBreite.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("width"));
+            colLogoBreite.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double>, ObservableValue<Double>>() {
+                public ObservableValue<Double> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getWidth());
+                }
+            });
             colLogoBreite.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("width")));
             colLogoBreite.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
@@ -626,13 +648,11 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (!t.getNewValue().isNaN()) {
-                                    //TODO: LOGO Label hinzufügen!!
-                                    // p.setName(t.getNewValue());
+                                    p.getRelativeRectangle().setWidth(t.getNewValue());
                                     //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //TODO: oder nur eine service.editRelativeRectangle methode
                                     //pservice. editPairLogo  editPosition(p);
                                 } else {
-                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                    refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
 
                             } catch (ServiceException e) {
@@ -647,7 +667,11 @@ public class SettingFrameController {
                         }
                     });
               /* Logo Xstart Column */
-            colLogoHoehe.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Double>("height"));
+            colLogoHoehe.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double>, ObservableValue<Double>>() {
+                public ObservableValue<Double> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, Double> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getHeight());
+                }
+            });
             colLogoHoehe.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("height")));
             colLogoHoehe.setOnEditCommit(
                     new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
@@ -658,13 +682,11 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (!t.getNewValue().isNaN()) {
-                                    //TODO: LOGO Label hinzufügen!!
-                                    // p.setName(t.getNewValue());
+                                    p.getRelativeRectangle().setHeight(t.getNewValue());
                                     //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //TODO: oder nur eine service.editRelativeRectangle methode
                                     //pservice. editPairLogo  editPosition(p);
                                 } else {
-                                    refreshTableLogo(pservice.getAllLogosOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                    refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
 
                             } catch (ServiceException e) {
@@ -681,7 +703,11 @@ public class SettingFrameController {
              /* Logo Column */
             colLogoLogo.setStyle("-fx-alignment: CENTER;");
             colLogoLogo.setSortable(false);
-            colLogoLogo.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, String>("path"));
+            colLogoLogo.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String>, ObservableValue<String>>() {
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String> p) {
+                    return new ReadOnlyObjectWrapper(p.getValue().getLogo().getPath());
+                }
+            });
             colLogoLogo.setCellFactory(new Callback<TableColumn, TableCell>() {
                 @Override
                 public TableCell call(TableColumn p) {
@@ -721,8 +747,10 @@ public class SettingFrameController {
             tableLogo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
                     Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
-                    LOGGER.info("Logo row selected..."+selectedLogo.getPath());
-                    if (!selectedLogo.getPath().isEmpty() && !selectedLogo.getPath().equals("/images/noimage.png")) {
+                    LOGGER.info("Logo row selected..."+selectedLogo.getLogo().getPath());
+
+                    this.selectedLogo = selectedLogo;
+                    if (!selectedLogo.getLogo().getPath().isEmpty() && !selectedLogo.getLogo().getPath().equals("/images/noimage.png") && new File(selectedLogo.getLogo().getPath()).isFile()) {
                         try {
                             int width = Integer.parseInt(txPreviewWidth.getText());
                             int height = Integer.parseInt(txPreviewHeight.getText());
@@ -735,6 +763,35 @@ public class SettingFrameController {
                         }
                     }else
                         LOGGER.info("No Logo is uploaded...");
+                }
+            });
+
+            txPreviewHeight.textProperty().addListener((observable, oldValue, newValue) -> {
+                if(selectedLogo!=null){
+                    try {
+                        int height = Integer.parseInt(newValue);
+                        int width = Integer.parseInt(txPreviewWidth.getText());
+                        javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                        previewLogo.setImage(image);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                    } catch (ServiceException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            txPreviewWidth.textProperty().addListener((observable, oldValue, newValue) -> {
+                if(selectedLogo!=null){
+                    try {
+                        int width = Integer.parseInt(newValue);
+                        int height = Integer.parseInt(txPreviewHeight.getText());
+                        javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                        previewLogo.setImage(image);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                    } catch (ServiceException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
@@ -758,9 +815,9 @@ public class SettingFrameController {
     private void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
         LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
         this.kamPosList.removeAll(kamPosList);
-        for(Profile.PairCameraPosition cp: camposList){
+      /*  for(Profile.PairCameraPosition cp: camposList){
             System.out.println("Kamera->"+cp.getCamera()+"_pos->"+cp.getPosition().getName());
-        }
+        }*/
        /* this.kamPosList.add(new Profile.PairCameraPosition(new Camera(1,"camera1","22","asdf","asdf"),new Position("Oben"),true));
         this.kamPosList.add(new Profile.PairCameraPosition(new Camera(2,"camera2","22","asdf","asdf"),new Position("Unten"),true));
        pservice.get*/
@@ -775,11 +832,11 @@ public class SettingFrameController {
         this.kamPosList.addAll(camposList);
         tableKamPos.setItems(this.kamPosList);
     }
-    private void refreshTableLogo(List<Logo> logoList){
+    private void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList){
         LOGGER.info("refreshing the Logo table...");
         this.logoList.clear();
-        this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("logo1","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
-        this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("Logo2","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
+       // this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("logo1","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
+       // this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("Logo2","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
        /* for(Camera cam: camList){
             LOGGER.debug("kamera => "+cam.getLable());
             try {
@@ -788,7 +845,7 @@ public class SettingFrameController {
                 e.printStackTrace();
             }
         }*/
-        //this.kamPosList.addAll(kamPosList);
+        this.logoList.addAll(logoList);
         tableLogo.setItems(this.logoList);
     }
 
@@ -940,6 +997,35 @@ public class SettingFrameController {
         alert.initModality(Modality.WINDOW_MODAL);
         alert.initOwner(windowManager.getStage());
         alert.show();
+    }
+
+    @FXML
+    public void fullScreenPreview(){
+       // try {
+            Stage previewStage = new Stage();
+            Group root = new Group();
+            Scene scene = new Scene(root);
+
+          /*  HBox box = new HBox();
+            box.getChildren().add(iv1);
+            box.getChildren().add(iv2);
+            box.getChildren().add(iv3);*/
+            ImageView prevView = new ImageView(previewLogo.getImage());
+            prevView.setFitHeight(prevView.getImage().getHeight());
+            prevView.setFitWidth(prevView.getImage().getWidth());
+            root.getChildren().add(prevView);
+
+            previewStage.setTitle("Preview Logo");
+            previewStage.setWidth(prevView.getImage().getWidth());
+            previewStage.setHeight(prevView.getImage().getHeight());
+            previewStage.setScene(scene);
+        previewStage.setFullScreen(false);
+        previewStage.initOwner(windowManager.getStage());
+            previewStage.show();
+            //Desktop.getDesktop().open(new File(System.getProperty("user.dir")+"/preview.jpg"));
+      /*  } catch (IOException e) {
+            LOGGER.error("fullscreenPreview ->"+e.getMessage());
+        }*/
     }
 
 }
