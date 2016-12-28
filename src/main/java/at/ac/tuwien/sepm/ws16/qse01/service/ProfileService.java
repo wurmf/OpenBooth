@@ -123,6 +123,14 @@ public interface ProfileService {
     boolean eraseLogo(Logo logo) throws ServiceException;
 
     /**
+     * Get a certain camera by its id
+     * @param id - camera id
+     * @return camera object with given id
+     * @throws ServiceException if getting is not possible
+     */
+    Camera getCamera(int id) throws ServiceException;
+
+    /**
      * Get all positions of given profile
      * @param profile - given profile
      * @return List<Position> list of positions of given profile

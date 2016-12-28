@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.ws16.qse01.dao.CameraDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.LogoDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
@@ -30,25 +31,30 @@ public class ProfileServiceImpl implements ProfileService{
     @Resource
     private LogoDAO logoDAO;
     @Resource
+    private CameraDAO cameraDAO;
+    @Resource
     private ShootingService shootingService;
     private List<Profile> profileList = new ArrayList<>();
     private List<Position> positionList = new ArrayList<>();
     private List<Logo> logoList = new ArrayList<>();
+    private List<Camera> cameraList = new ArrayList<>();
     @Autowired
     public ProfileServiceImpl(ProfileDAO profileDAO,
                               PositionDAO positionDAO,
                               LogoDAO logoDAO,
-                              ShootingService shootingService
+                              CameraDAO cameraDAO, ShootingService shootingService
     ) throws ServiceException {
     //public ProfileServiceImpl() throws ServiceException {
         this.profileDAO = profileDAO;
         this.positionDAO = positionDAO;
         this.logoDAO = logoDAO;
+        this.cameraDAO = cameraDAO;
 
         try {
             profileList.addAll(profileDAO.readAll());
             positionList.addAll(positionDAO.readAll());
             logoList.addAll(logoDAO.readAll());
+            cameraList.addAll(cameraDAO.readActive());
         }
         catch (PersistenceException e) {
             throw new ServiceException("Error! Initializing service layer has failed.:" + e);
@@ -222,6 +228,16 @@ public class ProfileServiceImpl implements ProfileService{
             return returnvalue;
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Erasing object in service layer has failed.:" + e);
+        }
+    }
+
+    @Override
+    public Camera getCamera(int id) throws ServiceException {
+        LOGGER.debug("Entering get method with parameter id = " + id);
+        try {
+            return cameraDAO.read(id);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! Getting object in service layer has failed.:" + e);
         }
     }
 

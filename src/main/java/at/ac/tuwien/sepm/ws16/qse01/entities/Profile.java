@@ -46,6 +46,9 @@ public class Profile {
      *
      * @param id - positive profile id
      * @param name - no empty profile name
+     * @param pairCameraPositions - no null, but maybe an empty list
+     * @param pairLogoRelativeRectangles - no null, but maybe an empty list
+     * @param watermark - String up to 250 chars, no null, but maybe an empty string
      */
     public Profile(int id,
                    String name,
@@ -60,13 +63,22 @@ public class Profile {
                    ) {
         this.id = id;
         this.name = name;
-        this.pairCameraPositions = pairCameraPositions;
-        this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;
+        if (pairCameraPositions != null)
+            {this.pairCameraPositions = pairCameraPositions;}
+        else
+            {this.pairCameraPositions = new ArrayList<PairCameraPosition>();}
+        if (pairLogoRelativeRectangles != null)
+            {this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;}
+        else
+            {this.pairLogoRelativeRectangles = new ArrayList<PairLogoRelativeRectangle>();}
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
         this.isMobilEnabled = isMobilEnabled;
-        this.watermark = watermark;
+        if (watermark != null)
+            {this.watermark = watermark;}
+        else
+            {this.watermark = "";}
         this.isDeleted = isDeleted;
     }
 
