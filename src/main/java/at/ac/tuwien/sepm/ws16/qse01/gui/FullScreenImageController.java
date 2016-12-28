@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -15,15 +16,28 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,23 +53,25 @@ public class FullScreenImageController {
     @FXML
     private Pane planbottom;
     @FXML
-    private Button button5;
+    private Button button1;
     @FXML
-    private Button button6;
+    private Button button11;
     @FXML
-    private Button button9;
-    @FXML
-    private Button button7;
-    @FXML
-    private Button button8;
+    private Button button2;
     @FXML
     private Button button3;
     @FXML
+    private ImageView filterView1;
+    @FXML
+    private ImageView filterView2;
+    @FXML
+    private ImageView filterView3;
+    @FXML
+    private ImageView filterView4;
+    @FXML
+    private ImageView filterView5;
+    @FXML
     private Button button4;
-    @FXML
-    private Button button1;
-    @FXML
-    private Button button2;
     @FXML
     private ImageView image4;
     @FXML
@@ -67,6 +83,8 @@ public class FullScreenImageController {
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
     private int currentIndex=-1;
     private int activ;
+    private String storageDir;
+    private Shooting activeShooting;
 
     private ImageService imageService;
     private ShootingService shootingService;
@@ -79,6 +97,8 @@ public class FullScreenImageController {
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
+        this.activeShooting = shootingService.searchIsActive();
+        storageDir = activeShooting.getStorageDir();
     }
 
     /**
@@ -257,30 +277,6 @@ public class FullScreenImageController {
         windowManager.showMiniatureFrame();
     }
 
-    @FXML
-    public void onFilter4Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter3Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter5Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter2Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter1Pressed(ActionEvent actionEvent) {
-
-    }
 
     /**
      * information dialog for error messages
@@ -328,6 +324,7 @@ public class FullScreenImageController {
                 fadeIn.play();
                 //  FadeTransition fadeOut = getFadeTransition(slide[1], 1.0, 0.0, 2000);
                 ivfullscreenImage.setImage(slide[0].getImage());
+
                 currentIndex--;
                 LOGGER.debug("Last1",currentIndex+"");
 
@@ -405,11 +402,11 @@ public class FullScreenImageController {
             button2.setVisible(false);
             image3.setVisible(false);
             image4.setVisible(false);
-            button5.setVisible(false);
-            button6.setVisible(false);
-            button7.setVisible(false);
-            button8.setVisible(false);
-            button9.setVisible(false);
+            filterView1.setVisible(false);
+            filterView2.setVisible(false);
+            filterView3.setVisible(false);
+            filterView4.setVisible(false);
+            filterView5.setVisible(false);
         } else {
 
             planbottom.setVisible(true);
@@ -418,11 +415,11 @@ public class FullScreenImageController {
             button2.setVisible(true);
             image4.setVisible(true);
             image3.setVisible(true);
-            button5.setVisible(true);
-            button6.setVisible(true);
-            button7.setVisible(true);
-            button8.setVisible(true);
-            button9.setVisible(true);
+            filterView1.setVisible(true);
+            filterView2.setVisible(true);
+            filterView3.setVisible(true);
+            filterView4.setVisible(true);
+            filterView5.setVisible(true);
         }
 
 
@@ -442,11 +439,11 @@ public class FullScreenImageController {
             button2.setVisible(false);
             image3.setVisible(false);
             image4.setVisible(false);
-            button5.setVisible(false);
-            button6.setVisible(false);
-            button7.setVisible(false);
-            button8.setVisible(false);
-            button9.setVisible(false);
+            filterView1.setVisible(false);
+            filterView2.setVisible(false);
+            filterView3.setVisible(false);
+            filterView4.setVisible(false);
+            filterView5.setVisible(false);
         } else {
 
             planbottom.setVisible(true);
@@ -455,27 +452,292 @@ public class FullScreenImageController {
             button2.setVisible(true);
             image4.setVisible(true);
             image3.setVisible(true);
-            button5.setVisible(true);
-            button6.setVisible(true);
-            button7.setVisible(true);
-            button8.setVisible(true);
-            button9.setVisible(true);
+            filterView1.setVisible(true);
+            filterView2.setVisible(true);
+            filterView3.setVisible(true);
+            filterView4.setVisible(true);
+            filterView5.setVisible(true);
         }
 
 
     }
     public void changeImage(int imgID){
         try {
-            if(new File(imageService.read(imgID).getImagepath()).isFile())
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
-            else
-                ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + imageService.read(imgID).getImagepath()),  ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image img = imageService.read(imgID);
 
+            if(new File(img.getImagepath()).isFile()) {
+                ivfullscreenImage.setImage(new Image(new FileInputStream(img.getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setId(img.getImagepath());
+            } else {
+                ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setId(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath());
+            }
+
+
+            checkStorageDir();
+
+            makePreviewFilter(img.getImagepath());
         } catch (FileNotFoundException e) {
                LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
         } catch (ServiceException e){
             LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
         }
     }
+    public void makePreviewFilter(String imgOriginalPath){
+        //Image img = ivfullscreenImage.getImage();
+        try {
+          //  java.lang.System.setProperty("java.library.path", "/usr/local/Cellar/opencv3/HEAD/share/OpenCV/java");
+            System.out.println(System.getProperty("java.library.path"));
+
+           // System.loadLibrary(Core.NATIVE_LIBRARY_NAME); = opencv_300
+
+            System.load("/usr/local/Cellar/opencv3/HEAD/share/OpenCV/java/libopencv_java320.dylib");
+            String imgPath = resize(imgOriginalPath,100,150);
+
+            filterView1.setImage(new Image(new FileInputStream(filterGaussian(imgPath)),100,150,false,false));
+            filterView2.setImage(new Image(new FileInputStream(filterGrayScale(imgPath)),100,150,false,false));
+            filterView3.setImage(new Image(new FileInputStream(filterColorSpace(imgPath)),100,150,false,false));
+            filterView4.setImage(new Image(new FileInputStream(filterThreshZero(imgPath)),100,150,false,false));
+            filterView5.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(imgPath)),100,150,false,false));
+
+            //filterView2.set
+
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+    public String resize(String imgPath,int width,int height){
+        Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath,
+                Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat resizeimage = new Mat();
+        Size sz = new Size(width,height);
+        Imgproc.resize( source, resizeimage, sz );
+
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
+
+        System.out.println(storageDir+imgFilterName);
+        Imgcodecs.imwrite(storageDir+imgFilterName, resizeimage);
+
+        return storageDir+imgFilterName;
+
+    }
+    public String filterGaussian(String imgPath){
+       Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
+
+    //    Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+
+        Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        //Gaussian kernel size -> 45 - 45 -> sigmaX = 0
+        Imgproc.GaussianBlur(source, destination,new Size(15,15), 0);
+
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_1.jpg");
+
+        System.out.println(storageDir+imgFilterName);
+        Imgcodecs.imwrite(storageDir+imgFilterName, destination);
+        return storageDir+imgFilterName;
+      /*  // If not preview then save it in DB!
+        if(!preview){
+            try {
+                imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(storageDir+imgFilterName,activeShooting.getId()));
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            }
+        }*/
+     //   return filteredImg;
+    }
+    public String filterGrayScale(String imgPath){
+        try {
+            File input = new File(imgPath);
+            BufferedImage image = ImageIO.read(input);
+
+            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
+            mat.put(0, 0, data);
+
+            Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC1);
+            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+
+            byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int) (mat1.elemSize())];
+            mat1.get(0, 0, data1);
+            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+
+            //exporting image name from imagePath
+            String[] parts = imgPath.split("/");
+            String imgFilterName = parts[parts.length-1].replace(".jpg","_2.jpg");
+
+            File output = new File(storageDir+imgFilterName);
+            ImageIO.write(image1, "jpg", output);
+
+            return storageDir+imgFilterName;
+        } catch (Exception e) {
+            LOGGER.error("GrayScaleFilter -> : " + e.getMessage());
+        }
+        return null;
+    }
+    public String filterColorSpace(String imgPath){
+        try {
+            File input = new File(imgPath);
+            BufferedImage image = ImageIO.read(input);
+            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+            Mat mat = new Mat(image.getHeight(),image.getWidth(), CvType.CV_8UC3);
+            mat.put(0, 0, data);
+
+            Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
+            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
+
+            byte[] data1 = new byte[mat1.rows()*mat1.cols()*(int)(mat1.elemSize())];
+            mat1.get(0, 0, data1);
+            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), 5);
+            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+
+            //exporting image name from imagePath
+            String[] parts = imgPath.split("/");
+            String imgFilterName = parts[parts.length-1].replace(".jpg","_3.jpg");
+
+            File output = new File(storageDir+imgFilterName);
+            ImageIO.write(image1, "jpg", output);
+
+            return storageDir+imgFilterName;
+
+        } catch (Exception e) {
+            LOGGER.error("ColorSpace -> : " + e.getMessage());
+        }
+        return null;
+    }
+    public String filterSobel(String imgPath){
+        int kernelSize = 9;
+     //   Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
+
+        Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Mat kernel = new Mat(kernelSize,kernelSize, CvType.CV_32F){
+            {
+                put(0,0,-1);
+                put(0,1,0);
+                put(0,2,1);
+
+                put(1,0-2);
+                put(1,1,0);
+                put(1,2,2);
+
+                put(2,0,-1);
+                put(2,1,0);
+                put(2,2,1);
+            }
+        };
+
+        Imgproc.filter2D(source, destination, -1, kernel);
+
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_4.jpg");
+
+        System.out.println(storageDir+imgFilterName);
+        Imgcodecs.imwrite(storageDir+imgFilterName, destination);
+
+        return storageDir+imgFilterName;
+    }
+    public String filterThreshZero(String imgPath){
+        int kernelSize = 9;
+   //     Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
+      //  Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Mat destination = source;
+        Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
+
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_5.jpg");
+
+        System.out.println(storageDir+imgFilterName);
+        Imgcodecs.imwrite(storageDir+imgFilterName, destination);
+
+        return storageDir+imgFilterName;
+    }
+    public String filterThreshBinaryInvert(String imgPath){
+        int kernelSize = 9;
+ //       Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        //Mat destination = new Mat(source.rows(),source.cols(),source.type());
+        Mat destination = source;
+        Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
+
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_6.jpg");
+
+        System.out.println(storageDir+imgFilterName);
+        Imgcodecs.imwrite(storageDir+imgFilterName, destination);
+
+        return storageDir+imgFilterName;
+    }
+
+
+    public void checkStorageDir(){
+       // String directoryPath = storageDir + "/shooting" + activeShooting.getId() + "/";
+        //Note: temporary workaround
+        storageDir = System.getProperty("user.dir")+ "/shooting" + activeShooting.getId() + "/";
+        Path storageDir = Paths.get(this.storageDir);
+        try {
+            Files.createDirectory(storageDir);
+            LOGGER.info("directory created \n {} \n", storageDir);
+        } catch (FileAlreadyExistsException e) {
+            LOGGER.info("Directory " + e + " already exists \n");
+        } catch (IOException e){
+            LOGGER.error("error creating directory " + e + "\n");
+        }
+    }
+
+
+    @FXML
+    public void onFilter1Pressed() {
+        try {
+            ivfullscreenImage.setImage(new Image(new FileInputStream(filterGaussian(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+
+    }
+    @FXML
+    public void onFilter2Pressed() {
+        try {
+            ivfullscreenImage.setImage(new Image(new FileInputStream(filterGrayScale(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+    }
+
+
+    @FXML
+    public void onFilter3Pressed() {
+        try {
+            ivfullscreenImage.setImage(new Image(new FileInputStream(filterColorSpace(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+    }
+    @FXML
+    public void onFilter4Pressed() {
+        try {
+            ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshZero(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+    }
+
+    @FXML
+    public void onFilter5Pressed() {
+        try {
+            ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+    }
+
 
 }

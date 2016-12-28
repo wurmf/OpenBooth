@@ -70,7 +70,7 @@ public class MiniaturFrameController {
 
         LOGGER.info("Active Shooting ->"+shootingService.searchIsActive().getId());
 
-        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());
+        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(1);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
 

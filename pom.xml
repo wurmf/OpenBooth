@@ -27,7 +27,12 @@
         <mockito-all.version>2.0.2-beta</mockito-all.version>
         <logback.version>1.1.7</logback.version>
     </properties>
-
+    <repositories>
+        <repository>
+            <id>javaopencvbook</id>
+            <url>https://raw.github.com/JavaOpenCVBook/code/maven2/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <!-- compile -->
         <dependency>
@@ -113,6 +118,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.21</version>
+        </dependency>
+        <dependency>
+            <groupId>org.javaopencvbook</groupId>
+            <artifactId>opencvjar</artifactId>
+            <version>3.0.0</version>
         </dependency>
     </dependencies>
 
