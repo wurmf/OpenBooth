@@ -31,16 +31,17 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
             @Override
             public void handle(MouseEvent event) {
                 Profile currentProfile = (Profile) ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
-                LOGGER.info("Checkbox clicked...profil =>"+currentProfile.isFilerEnabled()+"_"+currentProfile.isGreenscreenEnabled()+"_"+currentProfile.isMobilEnabled()+"_"+currentProfile.isPrintEnabled());
 
                 if(checkboxTyp.equals("mobil"))
                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
                 else if (checkboxTyp.equals("green"))
-                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                    currentProfile.setGreenscreenEnabled(cellCheckbox.isSelected());
                 else if (checkboxTyp.equals("filter"))
-                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                    currentProfile.setFilerEnabled(cellCheckbox.isSelected());
                 else if (checkboxTyp.equals("drucken"))
-                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
+                    currentProfile.setPrintEnabled(cellCheckbox.isSelected());
+
+                LOGGER.info("Checkbox "+checkboxTyp+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+currentProfile.getName()+"_=>=>"+currentProfile.isFilerEnabled()+"_"+currentProfile.isGreenscreenEnabled()+"_"+currentProfile.isMobilEnabled()+"_"+currentProfile.isPrintEnabled());
 
                 try {
                     pservice.edit(currentProfile);

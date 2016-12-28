@@ -125,7 +125,7 @@
                               <TextField fx:id="txLogoY" layoutX="290.0" layoutY="256.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="256.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoHoehe" layoutX="409.0" layoutY="256.0" prefHeight="27.0" prefWidth="52.0" />
-                              <ImageView fx:id="previewLogo" fitHeight="268.0" fitWidth="292.0" layoutX="707.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="previewLogo" fitHeight="268.0" fitWidth="292.0" layoutX="707.0" layoutY="47.0" onMouseClicked="#fullScreenPreview" pickOnBounds="true" preserveRatio="true" />
                               <TextField fx:id="txPreviewWidth" layoutX="707.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
                               <TextField fx:id="txPreviewHeight" layoutX="794.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />
                            </children>

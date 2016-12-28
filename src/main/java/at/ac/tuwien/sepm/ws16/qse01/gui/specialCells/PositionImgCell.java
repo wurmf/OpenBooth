@@ -9,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -47,7 +48,7 @@ public class PositionImgCell extends TableCell<Position, String> {
 
             @Override
             public void handle(ActionEvent t) {
-                // System.out.println("img changed..");
+
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Bild Hochladen...");
                 fileChooser.setInitialDirectory(
@@ -107,10 +108,10 @@ public class PositionImgCell extends TableCell<Position, String> {
         });
     }
 
-    public javafx.scene.image.Image getImage(String path) {
-        javafx.scene.image.Image img = null;
+    public Image getImage(String path) {
+        Image img = null;
         if(path == null) {
-            return new javafx.scene.image.Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
+            return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
         }else
             return new javafx.scene.image.Image("file:"+path,true);
 

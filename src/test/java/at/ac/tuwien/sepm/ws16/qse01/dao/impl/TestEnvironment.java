@@ -4,6 +4,9 @@ import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -52,6 +55,8 @@ public class TestEnvironment {
     protected ShootingDAO shootingDAO;
     protected ShootingDAO mockShootingDAO;
 
+    protected ProfileService profileService;
+
     protected Connection con;
 
     @Mock protected H2Handler mockH2Handler;
@@ -98,6 +103,15 @@ public class TestEnvironment {
         imageDAO = new JDBCImageDAO(H2Handler.getInstance());
         shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
 
+        /*
+        * Setup Services for all testing
+         */
+        profileService = new ProfileServiceImpl(
+                new JDBCProfileDAO(H2Handler.getInstance()),
+                new JDBCPositionDAO(H2Handler.getInstance()),
+                new JDBCLogoDAO(H2Handler.getInstance()),
+                new ShootingServiceImpl());
+
         try {
             con.setAutoCommit(false);
             LOGGER.debug("Turn off AutoCommit before beginning testing");
@@ -107,7 +121,7 @@ public class TestEnvironment {
         }
     }
 
-    @After public void tearDown() throws PersistenceException {
+    @After public void tearDown() throws Exception {
         // Good tests clean up their environment and reset to initial condition
         // Therefore a database session rollback is performed
         try {
