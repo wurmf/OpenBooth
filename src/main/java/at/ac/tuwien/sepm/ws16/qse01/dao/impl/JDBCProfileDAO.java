@@ -229,6 +229,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                         rs.getString("watermark"),
                         rs.getBoolean("isDeleted")
             );
+            if(profile.getWatermark() == null){profile.setWatermark("");}
             return profile;
             }
             else {

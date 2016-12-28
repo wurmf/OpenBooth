@@ -15,7 +15,7 @@ CREATE TABLE profiles (profileID BIGINT DEFAULT profiles_seq.nextval PRIMARY KEY
                        isPrintEnabled BOOLEAN DEFAULT false,
                        isFilterEnabled BOOLEAN DEFAULT false,
                        isGreenscreenEnabled BOOLEAN DEFAULT false,
-                       watermark VARCHAR(250) DEFAULT NULL,
+                       watermark VARCHAR(250) NOT NULL DEFAULT '',
                        isDeleted BOOLEAN DEFAULT false);
 
 CREATE TABLE shootings (shootingID BIGINT DEFAULT shootings_seq.nextval PRIMARY KEY,
@@ -47,7 +47,7 @@ CREATE TABLE profile_camera_positions(profile_camera_positions_id BIGINT DEFAULT
 
 CREATE TABLE logos(logoID BIGINT DEFAULT logos_seq.nextval PRIMARY KEY,
                         label VARCHAR(50) NOT NULL,
-                        path VARCHAR(250) DEFAULT NULL,
+                        path VARCHAR(250) NOT NULL DEFAULT '',
                         isDeleted BOOLEAN DEFAULT false);
 
 CREATE TABLE profile_logo_relativeRectangles(
