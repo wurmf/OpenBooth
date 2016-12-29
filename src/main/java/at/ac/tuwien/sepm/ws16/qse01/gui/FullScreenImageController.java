@@ -85,11 +85,13 @@ public class FullScreenImageController {
     private int activ;
     private String storageDir;
     private Shooting activeShooting;
+    private ImageView activeFilterImageView;
 
     private ImageService imageService;
     private ShootingService shootingService;
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
+
 
     @Autowired
     public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
@@ -490,15 +492,22 @@ public class FullScreenImageController {
             System.out.println(System.getProperty("java.library.path"));
 
            // System.loadLibrary(Core.NATIVE_LIBRARY_NAME); = opencv_300
+            String lib= "/libopencv_java320.dylib";
+            if(com.sun.javafx.PlatformUtil.isWindows())
+                lib = "/opencv_java320.dll";
+            if(com.sun.javafx.PlatformUtil.isLinux())
+                lib = "/opencv_java320.so"; //TODO lib-file for linux must be saved in proj_ws16
 
-            System.load("/usr/local/Cellar/opencv3/HEAD/share/OpenCV/java/libopencv_java320.dylib");
+            System.load(System.getProperty("user.dir")+lib);
+
             String imgPath = resize(imgOriginalPath,100,150);
 
-            filterView1.setImage(new Image(new FileInputStream(filterGaussian(imgPath)),100,150,false,false));
-            filterView2.setImage(new Image(new FileInputStream(filterGrayScale(imgPath)),100,150,false,false));
-            filterView3.setImage(new Image(new FileInputStream(filterColorSpace(imgPath)),100,150,false,false));
-            filterView4.setImage(new Image(new FileInputStream(filterThreshZero(imgPath)),100,150,false,false));
-            filterView5.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(imgPath)),100,150,false,false));
+            filterView1.setImage(new Image(new FileInputStream(filterGaussian(imgPath)),100,130,false,true));
+
+            filterView2.setImage(new Image(new FileInputStream(filterGrayScale(imgPath)),100,130,false,true));
+            filterView3.setImage(new Image(new FileInputStream(filterColorSpace(imgPath)),100,130,false,true));
+            filterView4.setImage(new Image(new FileInputStream(filterThreshZero(imgPath)),100,130,false,true));
+            filterView5.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(imgPath)),100,130,false,true));
 
             //filterView2.set
 
@@ -556,6 +565,7 @@ public class FullScreenImageController {
 
             byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
             Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
+
             mat.put(0, 0, data);
 
             Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC1);
@@ -571,6 +581,7 @@ public class FullScreenImageController {
             String imgFilterName = parts[parts.length-1].replace(".jpg","_2.jpg");
 
             File output = new File(storageDir+imgFilterName);
+
             ImageIO.write(image1, "jpg", output);
 
             return storageDir+imgFilterName;
@@ -697,6 +708,7 @@ public class FullScreenImageController {
     @FXML
     public void onFilter1Pressed() {
         try {
+            changeActiveFilter(filterView1);
             ivfullscreenImage.setImage(new Image(new FileInputStream(filterGaussian(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
@@ -706,6 +718,7 @@ public class FullScreenImageController {
     @FXML
     public void onFilter2Pressed() {
         try {
+            changeActiveFilter(filterView2);
             ivfullscreenImage.setImage(new Image(new FileInputStream(filterGrayScale(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
@@ -716,6 +729,7 @@ public class FullScreenImageController {
     @FXML
     public void onFilter3Pressed() {
         try {
+            changeActiveFilter(filterView3);
             ivfullscreenImage.setImage(new Image(new FileInputStream(filterColorSpace(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
@@ -724,6 +738,7 @@ public class FullScreenImageController {
     @FXML
     public void onFilter4Pressed() {
         try {
+            changeActiveFilter(filterView4);
             ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshZero(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
@@ -733,9 +748,26 @@ public class FullScreenImageController {
     @FXML
     public void onFilter5Pressed() {
         try {
+            changeActiveFilter(filterView5);
             ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
+        }
+    }
+
+    public void changeActiveFilter(ImageView imageView){
+        if(!imageView.equals(activeFilterImageView)) {
+            if(activeFilterImageView!=null){
+                activeFilterImageView.setFitHeight(130);
+                activeFilterImageView.setPreserveRatio(false);
+                activeFilterImageView.setY(15);
+            }
+
+            imageView.setFitHeight(150);
+            imageView.setPreserveRatio(false);
+            imageView.setY(0);
+            activeFilterImageView = imageView;
+
         }
     }
 
