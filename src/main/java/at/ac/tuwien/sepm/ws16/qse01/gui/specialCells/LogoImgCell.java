@@ -63,7 +63,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
                     try {
-
+                        LOGGER.info("Image uploading..."+file.getPath()+"_"+file.getAbsolutePath());
                         Profile.PairLogoRelativeRectangle p = logoList.get(getIndex());
 
                         p.getLogo().setPath(file.getAbsolutePath());
@@ -80,8 +80,8 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                         setGraphic(hb);
 
 
-                        pservice.editPairLogoRelativeRectangle(p,p.getLogo().getId(),p.getRelativeRectangle());
-                        //TODO nachdem profilDAO keine exception wirft,diese zeile wieder vor tableview schieben.
+                        pservice.editPairLogoRelativeRectangle(p);
+
 
                     } catch (ServiceException e) {
                        LOGGER.error(e.getMessage());

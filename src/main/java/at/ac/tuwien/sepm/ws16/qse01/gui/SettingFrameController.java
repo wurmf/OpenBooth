@@ -368,11 +368,12 @@ public class SettingFrameController {
                 public void changed(ObservableValue ov, Profile t, Profile selectedProfil) {
                     try {
                         refreshTablePosition(pservice.getAllPositions());
-                     //   refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
                         int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-                        kamPosList.removeAll(kamPosList);
+                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
+
+                        /* kamPosList.removeAll(kamPosList);
                         kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
-                        tableKamPos.setItems(kamPosList);
+                        tableKamPos.setItems(kamPosList);*/
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfilID));
                     } catch (ServiceException e) {
                         e.printStackTrace();
@@ -542,9 +543,8 @@ public class SettingFrameController {
                                 if (t.getNewValue().compareTo("") != 0) {
 
                                     p.getLogo().setLabel(t.getNewValue());
-                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
 
-                                  //  pservice.editPairLogoRelativeRectangle(p)
+                                   pservice.editPairLogoRelativeRectangle(p);
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
@@ -578,8 +578,8 @@ public class SettingFrameController {
                                 if (!t.getNewValue().isNaN()) {
 
                                      p.getRelativeRectangle().setX(t.getNewValue());
-                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //pservice. editPairLogo  editPosition(p);
+                                    pservice.editPairLogoRelativeRectangle(p);
+
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
@@ -614,8 +614,7 @@ public class SettingFrameController {
                                 if (!t.getNewValue().isNaN()) {
 
                                      p.getRelativeRectangle().setY(t.getNewValue());
-                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                   //pservice. editPairLogo  editPosition(p);
+                                     pservice.editPairLogoRelativeRectangle(p);
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
@@ -649,8 +648,7 @@ public class SettingFrameController {
                                 );
                                 if (!t.getNewValue().isNaN()) {
                                     p.getRelativeRectangle().setWidth(t.getNewValue());
-                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //pservice. editPairLogo  editPosition(p);
+                                    pservice.editPairLogoRelativeRectangle(p);
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
@@ -683,8 +681,7 @@ public class SettingFrameController {
                                 );
                                 if (!t.getNewValue().isNaN()) {
                                     p.getRelativeRectangle().setHeight(t.getNewValue());
-                                    //TODO: service Methoden für pairLogoRelativeRectangle -> für updaten
-                                    //pservice. editPairLogo  editPosition(p);
+                                    pservice.editPairLogoRelativeRectangle(p);
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
                                 }
@@ -913,9 +910,10 @@ public class SettingFrameController {
 
             try {
                 LOGGER.info("adding the new profil to tableView...");
-                //TODO: Nachdem profildao methode  keine exception wirft, profList.add nach pservice.add ausführen.
-                profList.add(p);
+
+
                 pservice.add(p);
+                profList.add(p);
 
              //   profList.add(p);
             } catch (ServiceException e) {
@@ -935,20 +933,22 @@ public class SettingFrameController {
                 Logo newLogo = new Logo(name,txLogoLogo.getText());
                 RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()), Double.valueOf(txLogoHoehe.getText()),Double.valueOf(txLogoBreite.getText()));
 
+                LOGGER.info("adding the new pairLogo to tableView...");
+
+                newLogo = pservice.addLogo(newLogo);
+
                 Profile.PairLogoRelativeRectangle p = new Profile.PairLogoRelativeRectangle(newLogo,newPosition);
 
-
-                LOGGER.info("adding the new pairLogo to tableView...");
-                //TODO: Nachdem profildao methode  keine exception wirft, profList.add nach pservice.add ausführen.
                 logoList.add(p);
 
-                //TODO: service methode für pairlogo hinzufügen erstellen.
-               // pservice.addPairLogo(p);
+                int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
 
-                /*   profList.add(p);
+                pservice.addPairLogoRelativeRectangle(selectedProfilID,newLogo.getId(),newPosition);
+
+
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
-           */ } catch (NumberFormatException e){
+            } catch (NumberFormatException e){
                 showError("Bitte in Position Eingabefelder (Xstart,>Ystart,Breite,Höhe) nur Zahlen eingeben.");
                 LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
                 //TODO: Dialogfenster öffnen.
@@ -970,15 +970,14 @@ public class SettingFrameController {
 
             try {
                 LOGGER.info("adding the new position to tableView...");
-                //TODO: Nachdem profildao methode  keine exception wirft, posList.add nach pservice.add ausführen.
-                posList.add(p);
+
                 pservice.addPosition(p);
+                posList.add(p);
 
                 int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                 kamPosList.clear();
                 kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
 
-                //   posList.add(p);
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             }

@@ -805,13 +805,16 @@ public class FullScreenImageController {
     public void saveFilteredImg(){
         try {
             LOGGER.info("Filtered image saved in DB...");
-            imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+
             activeFilterImageView.setFitHeight(130);
             activeFilterImageView.setPreserveRatio(false);
             activeFilterImageView.setY(15);
             activeFilterImageView = null;
             saveFilteredButton.setVisible(false);
             ivfullscreenImage.setId(filteredImgPath);
+
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+            imageList.add(activ+1,newImage);
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }
