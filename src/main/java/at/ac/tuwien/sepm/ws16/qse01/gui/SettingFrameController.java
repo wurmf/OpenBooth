@@ -543,7 +543,7 @@ public class SettingFrameController {
                                 if (t.getNewValue().compareTo("") != 0) {
 
                                     p.getLogo().setLabel(t.getNewValue());
-
+                                    System.out.println(p.getLogo().getId()+"_"+p.getLogo().getLabel()+"_"+p.getLogo().getPath());
                                    pservice.editPairLogoRelativeRectangle(p);
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
