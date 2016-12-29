@@ -58,7 +58,7 @@ public class ProfileServiceTest extends TestEnvironment{
         assertTrue(profileA.getPairLogoRelativeRectangles().isEmpty());
         assertTrue(profileA.getPairLogoRelativeRectangles().size() == 0);
 
-        this.profileB = new Profile("Profile B,",
+        this.profileB = new Profile("Profile B",
                 true,
                 true,
                 true,
@@ -79,7 +79,39 @@ public class ProfileServiceTest extends TestEnvironment{
         pairCameraPositions.add(pairCameraPosition0);
         pairCameraPositions.add(pairCameraPosition1);
         profileB.setPairCameraPositions(pairCameraPositions);
+        Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle0
+                = new Profile.PairLogoRelativeRectangle(
+                    profileService.getLogo(1),
+                    new RelativeRectangle(10,11,12,13));
+        Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle1
+                = new Profile.PairLogoRelativeRectangle(
+                    profileService.getLogo(2),
+                    new RelativeRectangle(14,15,16,17));
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles
+                = profileB.getPairLogoRelativeRectangles();
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangle0);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangle1);
+        profileB.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
         profileB = profileService.add(profileB);
+        assertTrue(this.profileB != null);
+        assertTrue(profileB.getName().equals("Profile B"));
+        assertTrue(profileB.isPrintEnabled());
+        assertTrue(profileB.isFilerEnabled());
+        assertTrue(profileB.isGreenscreenEnabled());
+        assertTrue(profileB.isMobilEnabled());
+        assertTrue(profileB.getWatermark().equals("/dev/null/watermarkB.jpg"));
+        assertTrue(!profileB.getPairCameraPositions().isEmpty());
+        assertTrue(profileB.getPairCameraPositions().size() == 2);
+        assertTrue(profileB.getPairCameraPositions().get(0).getCamera().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(1).getCamera().getId()==2);
+        assertTrue(profileB.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profileB.getPairLogoRelativeRectangles().isEmpty());
+        assertTrue(profileB.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(new RelativeRectangle(10,11,12,13)));
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(new RelativeRectangle(14,15,16,17)));
     }
 
 

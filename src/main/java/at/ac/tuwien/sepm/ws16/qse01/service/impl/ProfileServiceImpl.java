@@ -447,22 +447,74 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public boolean addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
-        return false;
+        Profile.PairCameraPosition pairCameraPosition
+                = new Profile.PairCameraPosition(
+                this.getCamera(cameraId),
+                this.getPosition(positionId),
+                isGreenScreenReady);
+        Profile profile = this.get(profileId);
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        pairCameraPositions.add(pairCameraPosition);
+        profile.setPairCameraPositions(pairCameraPositions);
+        return this.edit(profile);
     }
 
     @Override
     public boolean addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
-        return false;
+        return addPairCameraPosition(this.getActiveProfile().getId(),cameraId,positionId, isGreenScreenReady);
     }
 
     @Override
     public boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition, int newCameraId, int newPositionId, boolean invertIsGreenScreenReadySwitch) throws ServiceException {
-        return false;
+        if (newCameraId > 0){pairCameraPosition.setCamera(getCamera(newCameraId));}
+        if (newPositionId > 0){pairCameraPosition.setPosition(getPosition(newPositionId));}
+        Profile profile = this.get(pairCameraPosition.getProfileId());
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        boolean b = true;
+        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+        {
+            if(auxPairCameraPosition.getId()==pairCameraPosition.getId())
+            {
+                b = auxPairCameraPosition.isGreenScreenReady();
+            }
+        }
+        if (invertIsGreenScreenReadySwitch) {
+            if (b) {pairCameraPosition.setGreenScreenReady(false);}
+            else {pairCameraPosition.setGreenScreenReady(true);}
+        }
+        return editPairCameraPosition(pairCameraPosition);
+    }
+
+    @Override
+    public boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition) throws ServiceException{
+        Profile profile = this.get(pairCameraPosition.getProfileId());
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+        {
+            if(auxPairCameraPosition.getId()==pairCameraPosition.getId())
+            {
+                auxPairCameraPosition.setCamera(pairCameraPosition.getCamera());
+                auxPairCameraPosition.setPosition(pairCameraPosition.getPosition());
+                auxPairCameraPosition.setGreenScreenReady(pairCameraPosition.isGreenScreenReady());
+            }
+        }
+        profile.setPairCameraPositions(pairCameraPositions);
+        return this.edit(profile);
     }
 
     @Override
     public boolean erasePairCameraPosition(Profile.PairCameraPosition pairCameraPosition) throws ServiceException {
-        return false;
+        Profile profile = this.get(pairCameraPosition.getProfileId());
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+        {
+            if(auxPairCameraPosition.getId()==pairCameraPosition.getId())
+            {
+                pairCameraPositions.remove(auxPairCameraPosition);
+            }
+        }
+        profile.setPairCameraPositions(pairCameraPositions);
+        return this.edit(profile);
     }
 
     @Override
@@ -481,21 +533,56 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public boolean addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
-        return false;
+        Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle
+                = new Profile.PairLogoRelativeRectangle(
+                this.getLogo(logoId),
+                relativeRectangle);
+        Profile profile = this.get(profileId);
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangle);
+        profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        return this.edit(profile);
     }
 
     @Override
     public boolean addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
-        return false;
+        return addPairLogoRelativeRectangle(this.getActiveProfile().getId(),logoId,relativeRectangle);
     }
 
     @Override
     public boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle) throws ServiceException {
-        return false;
+        if (newLogoId > 0){pairLogoRelativeRectangle.setLogo(getLogo(newLogoId));}
+        if (newRelativeRectangle != null){pairLogoRelativeRectangle.setRelativeRectangle(newRelativeRectangle);}
+        return editPairLogoRelativeRectangle(pairLogoRelativeRectangle);
+    }
+
+    @Override
+    public boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
+        Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
+        for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
+        {
+            if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId()) {
+                auxPairLogoRelativeRectangle.setLogo(pairLogoRelativeRectangle.getLogo());
+                auxPairLogoRelativeRectangle.setRelativeRectangle(pairLogoRelativeRectangle.getRelativeRectangle());
+            }
+        }
+        profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        return this.edit(profile);
     }
 
     @Override
     public boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
-        return false;
+        Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
+        for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
+        {
+            if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId())
+            {
+                pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);
+            }
+        }
+        profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        return this.edit(profile);
     }
 }
