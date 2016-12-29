@@ -187,6 +187,7 @@ public class Profile {
                 && ((Profile) object).getId() == this.getId();
     }
 
+    @Override
     public String toString(){return this.name;}
 
     /**
@@ -196,7 +197,6 @@ public class Profile {
         private int id;
         private int profileId;
         private Camera camera;
-        //private String cameraLable;
         private Position position;
         private boolean isGreenScreenReady;
 

@@ -19,7 +19,7 @@ import java.util.List;
 @Repository
 public class JDBCLogoDAO implements LogoDAO {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCLogoDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCLogoDAO.class);
     private Connection con;
 
     @Autowired
@@ -32,7 +32,8 @@ public class JDBCLogoDAO implements LogoDAO {
     public Logo create(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering create methode with parameter " + logo);
 
-        if (logo==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if (logo==null)
+            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
@@ -50,7 +51,8 @@ public class JDBCLogoDAO implements LogoDAO {
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){logo.setId(rs.getInt(1));}
+                if (rs.next())
+                    {logo.setId(rs.getInt(1));}
                 LOGGER.debug("Persisted object creation successfully with AutoID:" + logo.getId());
             }
             //No AutoID
@@ -70,7 +72,9 @@ public class JDBCLogoDAO implements LogoDAO {
         }
         finally{
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
@@ -81,10 +85,10 @@ public class JDBCLogoDAO implements LogoDAO {
     @Override
     public boolean update(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + logo);
-        if(logo==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        if(logo==null)
+            throw new IllegalArgumentException("Error! Called update method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -114,7 +118,9 @@ public class JDBCLogoDAO implements LogoDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
         }
@@ -135,7 +141,8 @@ public class JDBCLogoDAO implements LogoDAO {
             rs = stmt.executeQuery();
             if(rs.next()) {
                 Logo logo = new Logo(rs.getInt("logoID"),rs.getString("label"),rs.getString("path"),rs.getBoolean("isDeleted"));
-                if (logo.getPath() == null){logo.setPath("");}
+                if (logo.getPath() == null)
+                    {logo.setPath("");}
                 LOGGER.debug("Persisted object reading has been successfully. " + logo);
                 return logo;
             }
@@ -149,7 +156,9 @@ public class JDBCLogoDAO implements LogoDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
         }
@@ -180,7 +189,9 @@ public class JDBCLogoDAO implements LogoDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
         }
@@ -189,7 +200,8 @@ public class JDBCLogoDAO implements LogoDAO {
     @Override
     public boolean delete(Logo logo) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + logo);
-        if (logo==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (logo==null)
+            throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
         PreparedStatement stmt = null;
         String sqlString;
@@ -218,7 +230,9 @@ public class JDBCLogoDAO implements LogoDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
         }

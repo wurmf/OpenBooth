@@ -466,8 +466,10 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition, int newCameraId, int newPositionId, boolean invertIsGreenScreenReadySwitch) throws ServiceException {
-        if (newCameraId > 0){pairCameraPosition.setCamera(getCamera(newCameraId));}
-        if (newPositionId > 0){pairCameraPosition.setPosition(getPosition(newPositionId));}
+        if (newCameraId > 0)
+            {pairCameraPosition.setCamera(getCamera(newCameraId));}
+        if (newPositionId > 0)
+            {pairCameraPosition.setPosition(getPosition(newPositionId));}
         Profile profile = this.get(pairCameraPosition.getProfileId());
         List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
         boolean b = true;

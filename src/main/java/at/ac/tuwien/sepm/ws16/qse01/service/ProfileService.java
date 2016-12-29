@@ -2,9 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.geometry.Pos;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
 /**

@@ -27,7 +27,7 @@ import java.util.List;
 @Repository
 public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDCBPairCameraPositionDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDCBPairCameraPositionDAO.class);
     private Connection con;
     private CameraDAO cameraDAO;
     private PositionDAO positionDAO;
@@ -44,7 +44,8 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     public Profile.PairCameraPosition create(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
         LOGGER.debug("Entering create method with parameter " + pairCameraPosition);
 
-        if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if (pairCameraPosition==null)
+            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
@@ -63,7 +64,8 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){pairCameraPosition.setId(rs.getInt(1));}
+                if (rs.next())
+                    {pairCameraPosition.setId(rs.getInt(1));}
                 LOGGER.debug("Create successfully with AutoID:" + pairCameraPosition.getId());
             }
             //NoAutoID
@@ -85,7 +87,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         }
         finally{
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
@@ -112,10 +116,10 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     @Override
     public boolean update(Profile.PairCameraPosition pairCameraPosition)throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + pairCameraPosition);
-        if(pairCameraPosition==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        if(pairCameraPosition==null)
+            throw new IllegalArgumentException("Error! Called update method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -148,7 +152,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
         }
@@ -190,7 +196,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
         }
@@ -225,7 +233,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
         }
@@ -235,9 +245,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     public boolean delete(Profile.PairCameraPosition pairCameraPosition) throws PersistenceException {
         LOGGER.debug("Entering delete method with parameters " + pairCameraPosition);
 
-        if (pairCameraPosition==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (pairCameraPosition==null)
+            throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -267,7 +277,9 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
         }
@@ -303,7 +315,8 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
         finally {
             // Return resources
             try {
-                if (stmt != null) stmt.close();
+                if (stmt != null)
+                    stmt.close();
             }
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);
