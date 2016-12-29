@@ -27,6 +27,15 @@ public interface ImageService {
      * */
     Image read(int id) throws  ServiceException;
 
+
+    /**
+     * Persists change of an existing and already persisted image object
+     *
+     * @param img - image object with changed properties to be persisted
+     * @throws ServiceException if persistence data store can not be accessed
+     */
+    void update(Image img) throws ServiceException;
+
     /**
      * Returns the path for last image by shootingid
      *

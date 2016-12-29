@@ -108,6 +108,40 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
     @Override
+    public void update(Image img) throws PersistenceException {
+        LOGGER.debug("Entering update method with parameters {}"+img);
+
+        PreparedStatement stmt = null;
+        String query = "UPDATE images set imagepath = ?,shootingid = ?, time=? WHERE imageID = ? ; ";
+
+        try {
+            stmt = con.prepareStatement(query);
+
+            stmt.setString(1,img.getImagepath());
+            stmt.setInt(2,img.getShootingid());
+
+            stmt.setTimestamp (3, new Timestamp(img.getDate().getTime()));
+
+            stmt.executeUpdate();
+
+
+        } catch (SQLException e ) {
+            throw new PersistenceException("Update failed: "+e.getMessage());
+        } catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing update failed: " + e.getMessage());
+                }
+            }
+        }
+
+    }
+
+    @Override
     public String getLastImgPath(int shootingid) throws PersistenceException {
         LOGGER.debug("Entering getLastImgPath method with parameter: shootingid = "+shootingid);
 

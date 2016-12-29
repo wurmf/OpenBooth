@@ -55,6 +55,17 @@ public class ImageServiceImpl implements ImageService {
         }
 
     }
+
+    @Override
+    public void update(Image img) throws ServiceException {
+        try {
+            LOGGER.debug("Entering update method in Service with image = "+img.toString());
+            dao.update(img);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! Updating in service layer has failed.:" + e.getMessage());
+        }
+    }
+
     @Override
     public void delete(int imageID) throws ServiceException {
         try {

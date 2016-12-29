@@ -78,6 +78,9 @@ public class FullScreenImageController {
     private ImageView image3;
     @FXML
     private ImageView ivfullscreenImage;
+    @FXML
+    private Button saveFilteredButton;
+
 
     private ImageView[]slide =new ImageView[3];
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
@@ -86,6 +89,7 @@ public class FullScreenImageController {
     private String storageDir;
     private Shooting activeShooting;
     private ImageView activeFilterImageView;
+    private String filteredImgPath= null;
 
     private ImageService imageService;
     private ShootingService shootingService;
@@ -470,10 +474,10 @@ public class FullScreenImageController {
             if(new File(img.getImagepath()).isFile()) {
                 ivfullscreenImage.setImage(new Image(new FileInputStream(img.getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
                 ivfullscreenImage.setId(img.getImagepath());
-            } else {
+            } /*else {
                 ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
                 ivfullscreenImage.setId(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath());
-            }
+            }*/
 
 
             checkStorageDir();
@@ -516,7 +520,7 @@ public class FullScreenImageController {
         }
     }
     public String resize(String imgPath,int width,int height){
-        Mat source = Imgcodecs.imread(System.getProperty("user.dir") + "/src/main/resources/"+imgPath,
+        Mat source = Imgcodecs.imread(imgPath,
                 Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Mat resizeimage = new Mat();
         Size sz = new Size(width,height);
@@ -708,8 +712,10 @@ public class FullScreenImageController {
     @FXML
     public void onFilter1Pressed() {
         try {
-            changeActiveFilter(filterView1);
-            ivfullscreenImage.setImage(new Image(new FileInputStream(filterGaussian(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            if(changeActiveFilter(filterView1)) {
+                filteredImgPath = filterGaussian(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
         }
@@ -718,8 +724,10 @@ public class FullScreenImageController {
     @FXML
     public void onFilter2Pressed() {
         try {
-            changeActiveFilter(filterView2);
-            ivfullscreenImage.setImage(new Image(new FileInputStream(filterGrayScale(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            if(changeActiveFilter(filterView2)) {
+                filteredImgPath = filterGrayScale(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
         }
@@ -729,8 +737,10 @@ public class FullScreenImageController {
     @FXML
     public void onFilter3Pressed() {
         try {
-            changeActiveFilter(filterView3);
-            ivfullscreenImage.setImage(new Image(new FileInputStream(filterColorSpace(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            if(changeActiveFilter(filterView3)) {
+                filteredImgPath = filterColorSpace(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
         }
@@ -738,8 +748,10 @@ public class FullScreenImageController {
     @FXML
     public void onFilter4Pressed() {
         try {
-            changeActiveFilter(filterView4);
-            ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshZero(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            if(changeActiveFilter(filterView4)) {
+                filteredImgPath = filterThreshZero(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
         }
@@ -748,15 +760,19 @@ public class FullScreenImageController {
     @FXML
     public void onFilter5Pressed() {
         try {
-            changeActiveFilter(filterView5);
-            ivfullscreenImage.setImage(new Image(new FileInputStream(filterThreshBinaryInvert(ivfullscreenImage.getId())), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+
+            if(changeActiveFilter(filterView5)) {
+                filteredImgPath = filterThreshBinaryInvert(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            }
         } catch (FileNotFoundException e) {
             LOGGER.error("onFilter1Pressed ->"+e.getMessage());
         }
     }
 
-    public void changeActiveFilter(ImageView imageView){
+    public boolean changeActiveFilter(ImageView imageView){
         if(!imageView.equals(activeFilterImageView)) {
+            saveFilteredButton.setVisible(true);
             if(activeFilterImageView!=null){
                 activeFilterImageView.setFitHeight(130);
                 activeFilterImageView.setPreserveRatio(false);
@@ -768,7 +784,38 @@ public class FullScreenImageController {
             imageView.setY(0);
             activeFilterImageView = imageView;
 
+            return true;
+        }else{
+            activeFilterImageView.setFitHeight(130);
+            activeFilterImageView.setPreserveRatio(false);
+            activeFilterImageView.setY(15);
+            activeFilterImageView = null;
+            saveFilteredButton.setVisible(false);
+            try {
+                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+            } catch (FileNotFoundException e) {
+                LOGGER.error("changeActiveFilter ->"+e.getMessage());
+            }
+            return false;
         }
+
+
+    }
+    @FXML
+    public void saveFilteredImg(){
+        try {
+            LOGGER.info("Filtered image saved in DB...");
+            imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+            activeFilterImageView.setFitHeight(130);
+            activeFilterImageView.setPreserveRatio(false);
+            activeFilterImageView.setY(15);
+            activeFilterImageView = null;
+            saveFilteredButton.setVisible(false);
+            ivfullscreenImage.setId(filteredImgPath);
+        } catch (ServiceException e) {
+            LOGGER.error("saveFilteredImg->"+e.getMessage());
+        }
+
     }
 
 

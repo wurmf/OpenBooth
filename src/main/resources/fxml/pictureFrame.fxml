@@ -8,6 +8,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
    <children>
@@ -42,6 +45,19 @@
                            </image>
                         </ImageView>
                      </graphic>
+                  </Button>
+                  <Button fx:id="saveFilteredButton" layoutX="756.0" layoutY="4.0" mnemonicParsing="false" onAction="#saveFilteredImg" prefHeight="138.0" prefWidth="620.0" text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" visible="false">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font>
+                     <textFill>
+                        <LinearGradient cycleMethod="REFLECT" endX="1.0" endY="1.0" startX="0.7836538461538461" startY="0.4326923076923077">
+                           <stops>
+                              <Stop color="#61e545" />
+                              <Stop color="#434242" offset="1.0" />
+                           </stops>
+                        </LinearGradient>
+                     </textFill>
                   </Button>
                </children>
             </Pane>
