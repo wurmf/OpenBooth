@@ -17,26 +17,34 @@ import org.slf4j.LoggerFactory;
  */
 public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Boolean> {
     final static Logger LOGGER = LoggerFactory.getLogger(CamPosComboBoxCell.class);
+
     private  ObservableList<Profile.PairCameraPosition> camPosList;
+    private  ObservableList<Position> posList;
     private ProfileService pservice;
 
-    private final ComboBox posList = new ComboBox();
+    private ComboBox<Position> comboBox = new ComboBox();
 
     public CamPosComboBoxCell(ObservableList<Profile.PairCameraPosition> camPosList, ProfileService pservice, ObservableList<Position> posList) {
         this.camPosList = camPosList;
+        this.posList = posList;
         this.pservice = pservice;
-        this.posList.setPromptText("Position auswählen");
+        this.comboBox.setItems(posList);
+        this.comboBox.setPromptText("Position auswählen");
 
-        this.posList.valueProperty().addListener(new ChangeListener<Profile.PairCameraPosition>() {
+        this.comboBox.valueProperty().addListener(new ChangeListener<Position>() {
 
             @Override
-            public void changed(ObservableValue ov, Profile.PairCameraPosition t, Profile.PairCameraPosition selectedCamPos) {
+            public void changed(ObservableValue ov, Position t, Position selectedPos) {
                 Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
-                currentCamPos.setPosition(selectedCamPos.getPosition());
+                currentCamPos.setPosition(selectedPos);
+                LOGGER.debug("Selected Pos ->"+(selectedPos==null?"keine":selectedPos.getName()));
+
                 try {
                     pservice.editPairCameraPosition(currentCamPos,currentCamPos.getCamera().getId(),currentCamPos.getPosition().getId(),false);
                 } catch (ServiceException e) {
                     LOGGER.debug("Error->"+e.getMessage());
+                }  catch(NullPointerException e){
+                    LOGGER.debug("NullPointer ->"+e.getMessage());
                 }
 
             }
@@ -53,25 +61,30 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
         if(empty) {
             setGraphic(null);
         }else{
-            LOGGER.info("index =>"+getIndex());
+            System.out.println("INDEX =>"+getIndex()+"___ItemsAnz="+this.comboBox.getItems().size());
+          // this.comboBox.getItems().clear();
+          //  this.comboBox.setItems(posList);
             Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
             try {
 
                 int index2select = -1;
                 int i = 0;
                 for(Position pos: pservice.getAllPositions()) {
-                    this.posList.getItems().add(pos.getName());
-                    if(currentCamPos.getPosition().getId()==pos.getId())
-                        index2select = i;
+
+                    if(currentCamPos.getPosition()!=null) {
+                        System.out.println(currentCamPos.getPosition().getId()+"-"+pos.getId());
+                        if (currentCamPos.getPosition().getId() == pos.getId())
+                            index2select = i;
+                    }
                     i++;
                 }
                 if(index2select!= -1)
-                    this.posList.getSelectionModel().select(index2select);
+                    this.comboBox.getSelectionModel().select(index2select);
             } catch (ServiceException e) {
                 e.printStackTrace();
             }
 
-            setGraphic(posList);
+            setGraphic(comboBox);
         }
     }
 }

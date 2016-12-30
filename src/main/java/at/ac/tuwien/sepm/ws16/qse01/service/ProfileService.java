@@ -2,9 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.geometry.Pos;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
 /**
@@ -121,6 +119,14 @@ public interface ProfileService {
      * @throws ServiceException if erasing is not possible
      */
     boolean eraseLogo(Logo logo) throws ServiceException;
+
+    /**
+     * Get a certain camera by its id
+     * @param id - camera id
+     * @return camera object with given id
+     * @throws ServiceException if getting is not possible
+     */
+    Camera getCamera(int id) throws ServiceException;
 
     /**
      * Get all positions of given profile
@@ -398,6 +404,16 @@ public interface ProfileService {
             throws ServiceException;
 
     /**
+     * Edit given pairCameraPosition object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairCameraPosition - PairCameraPosition object to exchange current object
+     * @return true, if editing of given pairCameraPosition object has been successful
+     * @throws ServiceException
+     */
+    boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition)
+            throws ServiceException;
+
+    /**
      * Erase given paraCameraPostion
      * @param pairCameraPosition - given PairCameraPosition object
      * @return true, if erasing has been successful
@@ -457,6 +473,16 @@ public interface ProfileService {
      * @return true, if editing of given pairLogoRelativeRectangle object has been successful
      */
     boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle)
+            throws ServiceException;
+
+    /**
+     * Edit given pairLogoRelativeRectangle object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairLogoRelativeRectangle - PairLogoRelativeRectangle object to exchange current object
+     * @return true, if editing of given pairLogoRelativeRectangle object has been successful
+     * @throws ServiceException
+     */
+    boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)
             throws ServiceException;
 
     /**

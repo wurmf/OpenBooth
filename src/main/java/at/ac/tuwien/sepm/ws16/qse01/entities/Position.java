@@ -80,4 +80,8 @@ public class Position {
                 && ((Position) object).getButtonImagePath() == this.getButtonImagePath()
                 && ((Position) object).isDeleted() == this.isDeleted();
     }
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 }

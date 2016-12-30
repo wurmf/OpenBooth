@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
@@ -110,6 +109,7 @@ public class TestEnvironment {
                 new JDBCProfileDAO(H2Handler.getInstance()),
                 new JDBCPositionDAO(H2Handler.getInstance()),
                 new JDBCLogoDAO(H2Handler.getInstance()),
+                new JDBCCameraDAO(H2Handler.getInstance()),
                 new ShootingServiceImpl());
 
         try {
