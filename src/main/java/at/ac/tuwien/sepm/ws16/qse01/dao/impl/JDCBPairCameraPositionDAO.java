@@ -36,8 +36,8 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     public JDCBPairCameraPositionDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
-        cameraDAO = new JDBCCameraDAO(H2Handler.getInstance());
-        positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
+        cameraDAO = new JDBCCameraDAO(handler);
+        positionDAO = new JDBCPositionDAO(handler);
     }
 
     @Override

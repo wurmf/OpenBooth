@@ -1,7 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCAdminUserDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +21,14 @@ import static junit.framework.TestCase.assertTrue;
 /**
  * Abstract test-class for AdminUserDAOs.
  */
-public abstract class AbstractAdminUserDAOTest {
+public class AdminUserDAOTest extends TestEnvironment{
 
-    static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdminUserDAOTest.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(AdminUserDAOTest.class);
     protected AdminUserDAO adminUserDAO;
-    protected void setAdminUserDAO(AdminUserDAO adminUserDAO){
-        this.adminUserDAO=adminUserDAO;
+
+    @Before
+    public void setUp() throws PersistenceException{
+        adminUserDAO=new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
     }
 
     /**

@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
@@ -59,7 +58,7 @@ public class TestEnvironment {
 
     protected Connection con;
 
-    @Mock protected H2Handler mockH2Handler;
+    @Mock protected H2EmbeddedHandler mockH2Handler;
     @Mock protected Connection mockConnection;
     @Mock protected Statement mockStatement;
     @Mock protected PreparedStatement mockPreparedStatement;
@@ -93,23 +92,23 @@ public class TestEnvironment {
 
         /* Setup DAOs for all testing
          */
-        this.con = H2Handler.getInstance().getConnection();
-        logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
-        cameraDAO = new JDBCCameraDAO(H2Handler.getInstance());
-        positionDAO = new JDBCPositionDAO(H2Handler.getInstance());
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
-        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
-        profileDAO = new JDBCProfileDAO(H2Handler.getInstance());
-        imageDAO = new JDBCImageDAO(H2Handler.getInstance());
-        shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+        this.con = H2EmbeddedHandler.getInstance().getConnection();
+        logoDAO = new JDBCLogoDAO(H2EmbeddedHandler.getInstance());
+        cameraDAO = new JDBCCameraDAO(H2EmbeddedHandler.getInstance());
+        positionDAO = new JDBCPositionDAO(H2EmbeddedHandler.getInstance());
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2EmbeddedHandler.getInstance());
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2EmbeddedHandler.getInstance());
+        profileDAO = new JDBCProfileDAO(H2EmbeddedHandler.getInstance());
+        imageDAO = new JDBCImageDAO(H2EmbeddedHandler.getInstance());
+        shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
 
         /*
         * Setup Services for all testing
          */
         profileService = new ProfileServiceImpl(
-                new JDBCProfileDAO(H2Handler.getInstance()),
-                new JDBCPositionDAO(H2Handler.getInstance()),
-                new JDBCLogoDAO(H2Handler.getInstance()),
+                new JDBCProfileDAO(H2EmbeddedHandler.getInstance()),
+                new JDBCPositionDAO(H2EmbeddedHandler.getInstance()),
+                new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
                 new ShootingServiceImpl());
 
         try {
@@ -119,6 +118,8 @@ public class TestEnvironment {
         catch (SQLException e) {
             throw new PersistenceException("Error! AutoCommit couldn't be deactivated:" + e);
         }
+        //Run drop.sql, create.sql, init.sql, insert.sql
+        H2EmbeddedHandler.getInstance().resetDBForTest();
     }
 
     @After public void tearDown() throws Exception {
