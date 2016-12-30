@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
@@ -12,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.util.Duration;
@@ -33,35 +35,27 @@ import java.util.Optional;
 @Component
 public class FullScreenImageController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FullScreenImageController.class);
+
+    @FXML
+    private GridPane base;
     @FXML
     private Pane planetop;
     @FXML
     private Pane planbottom;
     @FXML
-    private Button button5;
-    @FXML
-    private Button button6;
-    @FXML
-    private Button button9;
-    @FXML
-    private Button button7;
-    @FXML
-    private Button button8;
-    @FXML
     private Button button3;
     @FXML
     private Button button4;
     @FXML
-    private Button button1;
-    @FXML
-    private Button button2;
-    @FXML
-    private ImageView image4;
-    @FXML
-    private ImageView image3;
-    @FXML
     private ImageView ivfullscreenImage;
+
+
+    private boolean b3=true;
+    private boolean b4=true;
+    private boolean upperbutton=false;
+
+    private at.ac.tuwien.sepm.ws16.qse01.entities.Image firstImage;
 
     private ImageView[]slide =new ImageView[3];
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
@@ -72,13 +66,15 @@ public class FullScreenImageController {
     private ShootingService shootingService;
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
+    private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
+    public FullScreenImageController(SpringFXMLLoader springFXMLLoader,WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
+        this.springFXMLLoader = springFXMLLoader;
     }
 
     /**
@@ -91,45 +87,6 @@ public class FullScreenImageController {
      */
     @FXML
     private void initialize(){
-        try {
-            if (imageList == null) {
-                if(shootingService.searchIsActive().getActive()){
-                    activ=shootingService.searchIsActive().getId();
-                    imageList = imageService.getAllImages(activ);
-                }
-                //TODO give the index of the image
-                //currentIndex=0;
-            }
-            if(currentIndex>=0&&imageList!=null&&!imageList.isEmpty()) {
-
-                Image imlast=null;
-                Image imnext=null;
-
-                Image imonscreen = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()));
-                 slide[1] = new ImageView(imonscreen);
-                if (currentIndex != 0) {
-                    imlast = new Image(new FileInputStream(imageList.get(currentIndex - 1).getImagepath()));
-                    slide[0] = new ImageView(imlast);
-                }else{
-                    slide[0]= null;
-                }
-                if (currentIndex != imageList.size() - 1) {
-                    imnext = new Image(new FileInputStream(imageList.get(currentIndex + 1).getImagepath()));
-                    slide[2] = new ImageView(imnext);
-                }else{
-                    slide[2]=null;
-                }
-
-                ivfullscreenImage.setImage(slide[1].getImage());
-                //ivfullscreenImage = slide[1];
-            }
-        } catch (ServiceException e) {
-            LOGGER.debug("initialize - "+e);
-           informationDialog("Bilder konnten nicht geladen werden");
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("initialize - "+e);
-            informationDialog("Der Speicherpfad konnte nicht gefunden werden");
-        }
     }
 
     @FXML
@@ -321,35 +278,30 @@ public class FullScreenImageController {
      *
      * @param actionEvent swipe action event
      */
-    public void onGetLastImage(ActionEvent actionEvent) {
+    public void onLastImagePressed(ActionEvent actionEvent) {
+        LOGGER.debug("reach"+currentIndex);
+        upperbutton = true;
         try {
-            if(slide[0]!=null) {
-                FadeTransition fadeIn = getFadeTransition(slide[0], 0.0, 1.0, 2000);
-                fadeIn.play();
-                //  FadeTransition fadeOut = getFadeTransition(slide[1], 1.0, 0.0, 2000);
-                ivfullscreenImage.setImage(slide[0].getImage());
-                currentIndex--;
-                LOGGER.debug("Last1",currentIndex+"");
-
-                if(currentIndex>0){
-                    Image image = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 150, 0, true, true);
-                    slide[2] = slide[1];
-                    slide[1] = slide[0];
-                    slide[0] = new ImageView(image);
-
-                }else {
-                    currentIndex=0;
-                    slide[2] = slide[1];
-                    slide[1] = slide[0];
-                    slide[0] = null;
-
+            if (currentIndex-1 > -1) {
+                if (currentIndex - 1 > 0) {
+                    currentIndex = currentIndex - 1;
+                }else if (currentIndex - 1 == 0) {
+                    currentIndex = 0;
+                    b4=false;
+                    button4.setVisible(false);
                 }
+                if(!button3.isVisible()&& imageList.size()>1){
+                    b3=true;
+                    button3.setVisible(true);
+                }
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), base.getWidth(), base.getHeight(), true, true));
+            } else {
+                windowManager.showMiniatureFrame();
             }
-            //ivfullscreenImage.setImage(image);
         } catch (FileNotFoundException e) {
-            LOGGER.debug("onGetLastImage - "+e);
-            informationDialog("Das Speicherfile konnte nicht gefunden werden");
+            e.printStackTrace();
         }
+
     }
 
     /**
@@ -360,71 +312,29 @@ public class FullScreenImageController {
      *
      * @param actionEvent swipe action event
      */
-    public void onGetNextImage(ActionEvent actionEvent) {
+    public void onNextImage(ActionEvent actionEvent) {
+        LOGGER.debug("reach"+currentIndex);
+        upperbutton = true;
         try {
-            if(slide[2]!=null) {
-                FadeTransition fadeOut = getFadeTransition(slide[2], 1.0, 0.0, 2000);
-                fadeOut.play();
-                ivfullscreenImage.setImage(slide[2].getImage());
-                currentIndex++;
-
-                LOGGER.debug("Next1",currentIndex+"");
-
-                if(currentIndex<imageList.size()){
-                    Image image = null;
-                    image = new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 150, 0, true, true);
-
-                    slide[0] = slide[1];
-                    slide[1] = slide[2];
-                    slide[2] = new ImageView(image);
-
-                }else {
-                    currentIndex=imageList.size()-1;
-                    slide[0] = slide[1];
-                    slide[1] = slide[2];
-                    slide[2]=null;
+            if (currentIndex+1 < imageList.size()) {
+                if (currentIndex + 1 < imageList.size()-1) {
+                    currentIndex = currentIndex +1;
+                }else if (currentIndex + 1 == imageList.size()-1) {
+                    currentIndex = imageList.size()-1;
+                    b3=false;
+                    button3.setVisible(false);
                 }
+                if(!button4.isVisible()&& imageList.size()>1){
+                    b4=true;
+                    button4.setVisible(true);
+                }
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
+            } else {
+                windowManager.showMiniatureFrame();
             }
         } catch (FileNotFoundException e) {
-        LOGGER.debug(e.getMessage());
+            e.printStackTrace();
         }
-    }
-
-    /**
-     * to get an full screen image without buttons
-     * and reload the buttons when pressed again
-     * this is achieved by seting visiblety
-     * @param actionEvent press action event
-     */
-    public void onfullscreen1(ActionEvent actionEvent) {
-
-        if(planbottom.isVisible()){
-            planbottom.setVisible(false);
-            planetop.setVisible(false);
-            button1.setVisible(false);
-            button2.setVisible(false);
-            image3.setVisible(false);
-            image4.setVisible(false);
-            button5.setVisible(false);
-            button6.setVisible(false);
-            button7.setVisible(false);
-            button8.setVisible(false);
-            button9.setVisible(false);
-        } else {
-
-            planbottom.setVisible(true);
-            planetop.setVisible(true);
-            button1.setVisible(true);
-            button2.setVisible(true);
-            image4.setVisible(true);
-            image3.setVisible(true);
-            button5.setVisible(true);
-            button6.setVisible(true);
-            button7.setVisible(true);
-            button8.setVisible(true);
-            button9.setVisible(true);
-        }
-
 
     }
 
@@ -434,48 +344,69 @@ public class FullScreenImageController {
      * this is achieved by seting visiblety
      * @param actionEvent press action event
      */
-    public void onfullscreen2(ActionEvent actionEvent) {
-        if(planbottom.isVisible()){
-            planbottom.setVisible(false);
-            planetop.setVisible(false);
-            button1.setVisible(false);
-            button2.setVisible(false);
-            image3.setVisible(false);
-            image4.setVisible(false);
-            button5.setVisible(false);
-            button6.setVisible(false);
-            button7.setVisible(false);
-            button8.setVisible(false);
-            button9.setVisible(false);
-        } else {
+    public void onfullScreenPressed (ActionEvent actionEvent) {
 
-            planbottom.setVisible(true);
-            planetop.setVisible(true);
-            button1.setVisible(true);
-            button2.setVisible(true);
-            image4.setVisible(true);
-            image3.setVisible(true);
-            button5.setVisible(true);
-            button6.setVisible(true);
-            button7.setVisible(true);
-            button8.setVisible(true);
-            button9.setVisible(true);
+        if (!upperbutton) {
+            if (planbottom.isVisible()) {
+                planbottom.setVisible(false);
+                planetop.setVisible(false);
+                button3.setVisible(false);
+                button4.setVisible(false);
+            } else {
+                planbottom.setVisible(true);
+                planetop.setVisible(true);
+                if(b3){
+                    button3.setVisible(true);
+                }
+                if(b4){
+                    button4.setVisible(true);
+                }
+            }
         }
-
-
+        upperbutton=false;
     }
+
+    /**
+     * defines the first image and initialises the image list
+     * @param imgID image id given from miniaturframe
+     */
     public void changeImage(int imgID){
-        try {
-            if(new File(imageService.read(imgID).getImagepath()).isFile())
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
-            else
-                ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + imageService.read(imgID).getImagepath()),  ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
 
+        try {
+
+            if (shootingService.searchIsActive().getActive()) {
+                activ = shootingService.searchIsActive().getId();
+                imageList = imageService.getAllImages(activ);
+            }
+            if (imageList != null) {
+                LOGGER.debug("hear" + imageList.size());
+                //currentIndex = imageList.indexOf(firstImage);
+                for (int i = 0; i <imageList.size() ; i++) {
+                    if(imageList.get(i).getImageID()==imgID){
+                        currentIndex=i;
+                    }
+                    LOGGER.debug("hear" + imageList.get(i).getImageID());
+                }
+
+                if(currentIndex==0){
+                    button4.setVisible(false);
+                }if(currentIndex==imageList.size()-1){
+                    button3.setVisible(false);
+                }
+
+                ivfullscreenImage.setImage(new Image(new FileInputStream(imageService.read(imgID).getImagepath()), base.getWidth(), base.getHeight(), true, true));
+
+            } else {
+                windowManager.showMiniatureFrame();
+            }
+        } catch (ServiceException e) {
+            informationDialog("Bitte wenden Sie sich an den Betreiber");
+            LOGGER.debug(e.getMessage());
         } catch (FileNotFoundException e) {
-               LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
-        } catch (ServiceException e){
-            LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
+            LOGGER.debug(e.getMessage());
+            informationDialog("Foto konnte nicht gefunden werden");
         }
+
     }
 
 }

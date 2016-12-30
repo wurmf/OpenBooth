@@ -109,6 +109,7 @@ public class TestEnvironment {
                 new JDBCProfileDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCPositionDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
+                new JDBCCameraDAO(H2EmbeddedHandler.getInstance()),
                 new ShootingServiceImpl());
 
         try {
