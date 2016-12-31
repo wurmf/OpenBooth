@@ -73,8 +73,12 @@ public class WindowManager {
         // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
-       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
-        Parent root = (Parent) pictureWrapper.getLoadedObject();
+       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
+        Parent root = (Parent) pictureWrapper.getLoadedObject(); 
+        URL cssf= this.getClass().getResource("/css/fullscreen.css");
+        LOGGER.info("CSSF -"+cssf);
+        root.setStyle("-fx-font-size:"+fontSize+"px;");
+        root.getStylesheets().add(cssf.toExternalForm());
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
         this.pictureController = pictureWrapper.getController();
 
