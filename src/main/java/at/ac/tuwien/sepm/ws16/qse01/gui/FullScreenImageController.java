@@ -405,7 +405,7 @@ public class FullScreenImageController {
         } catch (FileNotFoundException e) {
             LOGGER.debug(e.getMessage());
             informationDialog("Foto konnte nicht gefunden werden");
-            windowManager.showMainFrame();
+           // windowManager.showMiniatureFrame();
         }
 
     }
