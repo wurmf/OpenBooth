@@ -80,7 +80,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                         setGraphic(hb);
 
 
-                        pservice.editPairLogoRelativeRectangle(p);
+                        pservice.editLogo(p.getLogo());
 
 
                     } catch (ServiceException e) {
