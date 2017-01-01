@@ -12,7 +12,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -172,6 +171,7 @@ public class SettingFrameController {
     private ImageView previewLogo;
 
     private Profile.PairLogoRelativeRectangle selectedLogo = null;
+    private Profile selectedProfile = null;
 
     @Autowired
     public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice,LogoWatermarkService logoService,CameraService cameraService,WindowManager windowmanager) throws ServiceException {
@@ -360,8 +360,22 @@ public class SettingFrameController {
             this.refreshTableProfiles(pservice.getAllProfiles());
 
              /* ######################### */
-            /* INITIALIZING ComboBox Profil-List */
+            /* INITIALIZING selecting Profile   */
             /* ######################### */
+            tableProfil.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+                        if (newSelection != null) {
+                             selectedProfile = (Profile) newSelection;
+                            try {
+                                refreshTablePosition(pservice.getAllPositions());
+                                refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                            } catch (ServiceException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+            /*
             profilList.getItems().addAll(pservice.getAllProfiles());
             profilList.valueProperty().addListener(new ChangeListener<Profile>() {
                 @Override
@@ -374,12 +388,12 @@ public class SettingFrameController {
                         /* kamPosList.removeAll(kamPosList);
                         kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
                         tableKamPos.setItems(kamPosList);*/
-                        refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfilID));
+                 /*       refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfilID));
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }
                 }
-            });
+            });*/
 
             /* ######################### */
             /* INITIALIZING Position Table */
@@ -403,10 +417,10 @@ public class SettingFrameController {
                                     p.setName(t.getNewValue());
                                     pservice.editPosition(p);
 
-                                    int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                                   /* int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                                     kamPosList.removeAll(kamPosList);
-                                    kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
-                                   // refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+                                    kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));*/
+                                    refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
                                 } else {
                                     //new EntityException("Vorname", "Vorname darf nicht leer sein.");
                                     refreshTablePosition(pservice.getAllPositionsOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
@@ -454,8 +468,8 @@ public class SettingFrameController {
 
                         @Override
                         public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                            int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-                            return new PositionButtonCell(posList,kamPosList,selectedProfilID,pservice,windowManager.getStage());
+                           // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+                            return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                         }
 
                     });
@@ -941,9 +955,9 @@ public class SettingFrameController {
 
                 logoList.add(p);
 
-                int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
 
-                pservice.addPairLogoRelativeRectangle(selectedProfilID,newLogo.getId(),newPosition);
+                pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
 
 
             } catch (ServiceException e) {
@@ -974,9 +988,9 @@ public class SettingFrameController {
                 pservice.addPosition(p);
                 posList.add(p);
 
-                int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
+               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                 kamPosList.clear();
-                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
 
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
@@ -987,7 +1001,7 @@ public class SettingFrameController {
     @FXML
     public void openMainFrame(){
         LOGGER.info("backButton clicked...");
-        windowManager.showShootingAdministration();
+        windowManager.showMainFrame();
     }
     public void showError(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);

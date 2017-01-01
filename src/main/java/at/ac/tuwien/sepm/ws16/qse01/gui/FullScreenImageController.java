@@ -105,7 +105,6 @@ public class FullScreenImageController {
         planbottom = new GridPane();
         planbottom.setPrefHeight(100);
         planbottom.setStyle("-fx-background-color: rgba(50,50, 50, 0.5)");
-        //mainPane.add(planbottom,0,2);
     }
 
     @FXML
@@ -436,7 +435,6 @@ public class FullScreenImageController {
      * prepares filter-imageViews by getting all filters from service and showing the filter in small preview imageviews
      * @param imgOriginalPath path of the image to show
      */
-
     public void makePreviewFilter(String imgOriginalPath){
         LOGGER.info("Entering makePreviewFilter with imgPath->"+imgOriginalPath);
 
@@ -474,6 +472,7 @@ public class FullScreenImageController {
                             case "threshbinaryinvert":
                                 newImgPath = imageService.filterThreshBinaryInvert(ivfullscreenImage.getId());
                                 break;
+                            default:
 
                         }
                         try {
@@ -490,7 +489,7 @@ public class FullScreenImageController {
                     }
 
                 });
-               // System.out.println(counter);
+
                 planbottom.add(imageView,counter,0);
                 ColumnConstraints con = new ColumnConstraints();
                 con.setPrefWidth(100);
@@ -520,19 +519,18 @@ public class FullScreenImageController {
             if(activeFilterImageView!=null){
                 activeFilterImageView.setFitHeight(80);
                 activeFilterImageView.setPreserveRatio(false);
-                //activeFilterImageView.setY(15);
             }
 
             imageView.setFitHeight(100);
             imageView.setPreserveRatio(false);
-           // imageView.setY(0);
+
             activeFilterImageView = imageView;
 
             return true;
         }else{
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
-           // activeFilterImageView.setY(15);
+
             activeFilterImageView = null;
             saveFilteredButton.setVisible(false);
             try {
@@ -556,7 +554,7 @@ public class FullScreenImageController {
 
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
-           // activeFilterImageView.setY(15);
+
             activeFilterImageView = null;
             saveFilteredButton.setVisible(false);
             ivfullscreenImage.setId(filteredImgPath);
