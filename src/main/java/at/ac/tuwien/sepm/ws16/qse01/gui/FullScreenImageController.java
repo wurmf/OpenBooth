@@ -432,6 +432,11 @@ public class FullScreenImageController {
 
     }
 
+    /**
+     * prepares filter-imageViews by getting all filters from service and showing the filter in small preview imageviews
+     * @param imgOriginalPath path of the image to show
+     */
+
     public void makePreviewFilter(String imgOriginalPath){
         LOGGER.info("Entering makePreviewFilter with imgPath->"+imgOriginalPath);
 
@@ -485,7 +490,7 @@ public class FullScreenImageController {
                     }
 
                 });
-                System.out.println(counter);
+               // System.out.println(counter);
                 planbottom.add(imageView,counter,0);
                 ColumnConstraints con = new ColumnConstraints();
                 con.setPrefWidth(100);
@@ -503,6 +508,12 @@ public class FullScreenImageController {
         }
     }
 
+    /**
+     * changes the size of the preview imagefilter (which is clicked) so user knows which filter is actually active.
+     * if the active filter is clicked,then the filter effect will be removed.
+     * @param imageView clicked imageView of filter
+     * @return it returns false, if the active filter is clicked, else true.
+     */
     public boolean changeActiveFilter(ImageView imageView){
         if(!imageView.equals(activeFilterImageView)) {
             saveFilteredButton.setVisible(true);
@@ -535,6 +546,9 @@ public class FullScreenImageController {
 
     }
 
+    /**
+     * saves the filtered image in database...
+     */
     @FXML
     public void saveFilteredImg(){
         try {

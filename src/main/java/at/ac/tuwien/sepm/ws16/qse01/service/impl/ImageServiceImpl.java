@@ -61,7 +61,7 @@ public class ImageServiceImpl implements ImageService {
             throw new ServiceException("Error: "+e.getMessage());
         }
 
-        System.out.println(System.getProperty("java.library.path"));
+      //  System.out.println(System.getProperty("java.library.path"));
 
         // System.loadLibrary(Core.NATIVE_LIBRARY_NAME); = opencv_300
         String lib= "/.lib/libopencv_java320.dylib";
@@ -171,7 +171,7 @@ public class ImageServiceImpl implements ImageService {
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
 
-        System.out.println(storageDir+imgFilterName);
+   //     System.out.println(storageDir+imgFilterName);
         Imgcodecs.imwrite(storageDir+imgFilterName, resizeimage);
 
         return storageDir+imgFilterName;
@@ -192,18 +192,10 @@ public class ImageServiceImpl implements ImageService {
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_1.jpg");
 
-        System.out.println(storageDir+imgFilterName);
+      //  System.out.println(storageDir+imgFilterName);
         Imgcodecs.imwrite(storageDir+imgFilterName, destination);
         return storageDir+imgFilterName;
-      /*  // If not preview then save it in DB!
-        if(!preview){
-            try {
-                imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(storageDir+imgFilterName,activeShooting.getId()));
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }*/
-        //   return filteredImg;
+
     }
 
     @Override
@@ -301,7 +293,7 @@ public class ImageServiceImpl implements ImageService {
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_4.jpg");
 
-        System.out.println(storageDir+imgFilterName);
+       // System.out.println(storageDir+imgFilterName);
         Imgcodecs.imwrite(storageDir+imgFilterName, destination);
 
         return storageDir+imgFilterName;
@@ -320,7 +312,7 @@ public class ImageServiceImpl implements ImageService {
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_5.jpg");
 
-        System.out.println(storageDir+imgFilterName);
+     //   System.out.println(storageDir+imgFilterName);
         Imgcodecs.imwrite(storageDir+imgFilterName, destination);
 
         return storageDir+imgFilterName;
@@ -339,7 +331,7 @@ public class ImageServiceImpl implements ImageService {
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_6.jpg");
 
-        System.out.println(storageDir+imgFilterName);
+     //   System.out.println(storageDir+imgFilterName);
         Imgcodecs.imwrite(storageDir+imgFilterName, destination);
 
         return storageDir+imgFilterName;
