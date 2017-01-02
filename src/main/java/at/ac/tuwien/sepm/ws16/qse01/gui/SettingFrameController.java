@@ -542,7 +542,11 @@ public class SettingFrameController {
             colLogoName.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Logo>("logo"));
             colLogoName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String>, ObservableValue<String>>() {
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String> p) {
-                    return new ReadOnlyObjectWrapper(p.getValue().getLogo().getLabel());
+                    String newLabel = "null(No Logo Name)";
+                    if(p.getValue().getLogo()!=null)
+                        newLabel = p.getValue().getLogo().getLabel();
+
+                    return new ReadOnlyObjectWrapper(newLabel);
                 }
             });
             colLogoName.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -555,9 +559,13 @@ public class SettingFrameController {
                                         t.getTablePosition().getRow())
                                 );
                                 if (t.getNewValue().compareTo("") != 0) {
+                                   if(p.getLogo()==null){
+                                       Logo newLogo = pservice.addLogo(new Logo(t.getNewValue(),"noimage.jpg"));
+                                       p.setLogo(newLogo);
+                                   }else
+                                       p.getLogo().setLabel(t.getNewValue());
 
-                                    p.getLogo().setLabel(t.getNewValue());
-                                    System.out.println(p.getLogo().getId()+"_"+p.getLogo().getLabel()+"_"+p.getLogo().getPath());
+                                    LOGGER.info("Logo changed..."+p.getLogo().getId()+"_"+p.getLogo().getLabel()+"_"+p.getLogo().getPath());
                                    pservice.editLogo(p.getLogo());
                                 } else {
                                     refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(((Profile)profilList.getSelectionModel().getSelectedItem()).getId()));
@@ -716,7 +724,10 @@ public class SettingFrameController {
             colLogoLogo.setSortable(false);
             colLogoLogo.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String>, ObservableValue<String>>() {
                 public ObservableValue<String> call(TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String> p) {
-                    return new ReadOnlyObjectWrapper(p.getValue().getLogo().getPath());
+                    String logoPath = "noimage.jpg";
+                    if(p.getValue().getLogo()!=null)
+                        logoPath = p.getValue().getLogo().getPath();
+                    return new ReadOnlyObjectWrapper(logoPath);
                 }
             });
             colLogoLogo.setCellFactory(new Callback<TableColumn, TableCell>() {
@@ -953,11 +964,13 @@ public class SettingFrameController {
 
                 Profile.PairLogoRelativeRectangle p = new Profile.PairLogoRelativeRectangle(newLogo,newPosition);
 
-                logoList.add(p);
+
 
                // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
 
-                pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
+                p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
+
+                logoList.add(p);
 
 
             } catch (ServiceException e) {
