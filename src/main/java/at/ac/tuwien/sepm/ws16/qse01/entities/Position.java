@@ -76,8 +76,15 @@ public class Position {
     public boolean equals(Object object){
         return object instanceof Position
                 && ((Position) object).getId() == this.getId()
-                && ((Position) object).getName() == this.getName()
-                && ((Position) object).getButtonImagePath() == this.getButtonImagePath()
-                && ((Position) object).isDeleted() == this.isDeleted();
+                && ((Position) object).getName().equals(this.getName())
+                && ((Position) object).getButtonImagePath().equals(this.getButtonImagePath())
+                && ((Position) object).isDeleted() ==  this.isDeleted();
     }
+    @Override
+    public String toString(){
+        return this.getName();
+    }
+
+    public String toStringDetails()
+    { return "Id:"+id+"Name:"+name+"Path:"+buttonImagePath;}
 }

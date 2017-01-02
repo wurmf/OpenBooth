@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.dao;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
-
 import java.util.List;
 
 /**
@@ -26,6 +25,14 @@ public interface ImageDAO {
      * @return Image which successfully founded.
      */
      Image read(int id) throws PersistenceException;
+
+    /**
+     * Persists change of an existing and already persisted image object
+     *
+     * @param img - image object with changed properties to be persisted
+     * @throws PersistenceException if persistence data store can not be accessed
+     */
+    void update(Image img) throws PersistenceException;
 
     /**
      * Returns the path for last image by shootingid

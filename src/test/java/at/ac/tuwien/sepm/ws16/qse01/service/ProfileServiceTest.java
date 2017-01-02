@@ -1,15 +1,17 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -21,6 +23,11 @@ public class ProfileServiceTest extends TestEnvironment{
     //@Autowired
     //private ProfileService profileService;
 
+    private Profile profile1;
+    private Profile profile2;
+    private Profile profileA;
+    private Profile profileB;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -31,10 +38,126 @@ public class ProfileServiceTest extends TestEnvironment{
         super.tearDown();
     }
 
-    /* protected void setProfileService(ProfileService profileService){
-        this.profileService=profileService;
+    /* Testing method
+    Profile add(Profile profile) throws ServiceException;
+     */
+    @Test
+    public void test_add_withValidProfileEntity() throws ServiceException{
+        this.profileA = profileService.add(new Profile("Profile A"));
+        assertTrue(this.profileA != null);
+        assertTrue(profileA.getName().equals("Profile A"));
+        assertTrue(!profileA.isPrintEnabled());
+        assertTrue(!profileA.isFilerEnabled());
+        assertTrue(!profileA.isGreenscreenEnabled());
+        assertTrue(!profileA.isMobilEnabled());
+        assertTrue(profileA.getWatermark().isEmpty());
+        assertTrue(profileA.getPairCameraPositions().isEmpty());
+        assertTrue(profileA.getPairCameraPositions().size() == 0);
+        assertTrue(profileA.getPairLogoRelativeRectangles().isEmpty());
+        assertTrue(profileA.getPairLogoRelativeRectangles().size() == 0);
+
+        this.profileB = new Profile("Profile B",
+                true,
+                true,
+                true,
+                true,
+                "/dev/null/watermarkB.jpg");
+        Profile.PairCameraPosition pairCameraPosition0
+                = new Profile.PairCameraPosition(
+                        profileService.getCamera(1),
+                        profileService.getPosition(1),
+                        true);
+        Profile.PairCameraPosition pairCameraPosition1
+                = new Profile.PairCameraPosition(
+                profileService.getCamera(2),
+                profileService.getPosition(2),
+                false);
+        List<Profile.PairCameraPosition> pairCameraPositions
+                = profileB.getPairCameraPositions();
+        pairCameraPositions.add(pairCameraPosition0);
+        pairCameraPositions.add(pairCameraPosition1);
+        profileB.setPairCameraPositions(pairCameraPositions);
+        Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle0
+                = new Profile.PairLogoRelativeRectangle(
+                    profileService.getLogo(1),
+                    new RelativeRectangle(10,11,12,13));
+        Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle1
+                = new Profile.PairLogoRelativeRectangle(
+                    profileService.getLogo(2),
+                    new RelativeRectangle(14,15,16,17));
+        List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles
+                = profileB.getPairLogoRelativeRectangles();
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangle0);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangle1);
+        profileB.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        profileB = profileService.add(profileB);
+        assertTrue(this.profileB != null);
+        assertTrue(profileB.getName().equals("Profile B"));
+        assertTrue(profileB.isPrintEnabled());
+        assertTrue(profileB.isFilerEnabled());
+        assertTrue(profileB.isGreenscreenEnabled());
+        assertTrue(profileB.isMobilEnabled());
+        assertTrue(profileB.getWatermark().equals("/dev/null/watermarkB.jpg"));
+        assertTrue(!profileB.getPairCameraPositions().isEmpty());
+        assertTrue(profileB.getPairCameraPositions().size() == 2);
+        assertTrue(profileB.getPairCameraPositions().get(0).getCamera().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(1).getCamera().getId()==2);
+        assertTrue(profileB.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profileB.getPairLogoRelativeRectangles().isEmpty());
+        assertTrue(profileB.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(new RelativeRectangle(10,11,12,13)));
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(new RelativeRectangle(14,15,16,17)));
     }
+
+
+    /* Testing method
+    Profile get(int id) throws ServiceException;
     */
+    @Test
+    public void test_get_withValidInt() throws ServiceException{
+        profile1 = profileService.get(1);
+        assertTrue(profile1.getName().equals("Profile 1"));
+        assertTrue(!profile1.isPrintEnabled());
+        assertTrue(!profile1.isFilerEnabled());
+        assertTrue(!profile1.isGreenscreenEnabled());
+        assertTrue(!profile1.isMobilEnabled());
+        assertTrue(profile1.getWatermark().isEmpty());
+        assertTrue(profile1.getPairCameraPositions().get(0).getCamera().getId()==1);
+        assertTrue(profile1.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(!profile1.getPairCameraPositions().get(0).isGreenScreenReady());
+        assertTrue(profile1.getPairCameraPositions().get(1).getCamera().getId()==2);
+        assertTrue(profile1.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profile1.getPairCameraPositions().get(1).isGreenScreenReady());
+        assertTrue(profile1.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profile1.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(new RelativeRectangle(85,95,80,90)));
+        assertTrue(profile1.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profile1.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(new RelativeRectangle(5,10,15,20)));
+        profile2 = profileService.get(2);
+        assertTrue(profile2.getName().equals("Profile 2"));
+        assertTrue(!profile2.isPrintEnabled());
+        assertTrue(!profile2.isFilerEnabled());
+        assertTrue(!profile2.isGreenscreenEnabled());
+        assertTrue(!profile2.isMobilEnabled());
+        assertTrue(profile2.getWatermark().isEmpty());
+        assertTrue(profile2.getPairCameraPositions().get(0).getCamera().getId()==2);
+        assertTrue(profile2.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(!profile2.getPairCameraPositions().get(0).isGreenScreenReady());
+        assertTrue(profile2.getPairCameraPositions().get(1).getCamera().getId()==1);
+        assertTrue(profile2.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profile2.getPairCameraPositions().get(1).isGreenScreenReady());
+        assertTrue(profile2.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profile2.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(new RelativeRectangle(75,95,80,90)));
+        assertTrue(profile2.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profile2.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(new RelativeRectangle(15,20,25,30)));
+    }
+
+    @Test
+    public void test_read_NotExisting() throws Exception{
+        Assert.assertTrue(profileService.get(1000000) == null);
+    }
 
     /*
     @Test

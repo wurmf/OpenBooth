@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.geometry.Pos;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
 /**
@@ -121,6 +120,14 @@ public interface ProfileService {
      * @throws ServiceException if erasing is not possible
      */
     boolean eraseLogo(Logo logo) throws ServiceException;
+
+    /**
+     * Get a certain camera by its id
+     * @param id - camera id
+     * @return camera object with given id
+     * @throws ServiceException if getting is not possible
+     */
+    Camera getCamera(int id) throws ServiceException;
 
     /**
      * Get all positions of given profile
@@ -361,11 +368,9 @@ public interface ProfileService {
      * @param cameraId - id of camera that has to be part of this combination
      * @param positionId - id of position that has to be paer of this combination
      * @param isGreenScreenReady - true, if this combination has to be greenscreenready
-     * @return true, if adding has been successfull,
-     * false, if adding is not possible, because given camera has been been already assigned a position
-     * in the given profile
+     * @return Profile.PairCameraPosition object that has been generated and added to Profile
      */
-    boolean addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady)
+    Profile.PairCameraPosition addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady)
             throws ServiceException;
 
     /**
@@ -373,11 +378,9 @@ public interface ProfileService {
      * @param cameraId - id of camera that has to be part of this combination
      * @param positionId - id of position that has to be paer of this combination
      * @param isGreenScreenReady - true, if this combination has to be greenscreenready
-     * @return true, if adding has been successfull,
-     * false, if adding is not possible, because given camera has been been already assigned a position
-     * in currently active profile
+     * @return Profile.PairCameraPosition object that has been generated and added to Profile
      */
-    boolean addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady)
+    Profile.PairCameraPosition addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady)
             throws ServiceException;
 
     /**
@@ -395,6 +398,15 @@ public interface ProfileService {
      * @return true, if editing of given pairCameraPosition object has been successful
      */
     boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition, int newCameraId, int newPositionId, boolean invertIsGreenScreenReadySwitch)
+            throws ServiceException;
+
+    /**
+     * Edit given pairCameraPosition object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairCameraPosition - PairCameraPosition object to exchange current object
+     * @return true, if editing of given pairCameraPosition object has been successful
+     */
+    boolean editPairCameraPosition(Profile.PairCameraPosition pairCameraPosition)
             throws ServiceException;
 
     /**
@@ -426,20 +438,18 @@ public interface ProfileService {
      * Add a combination of logo and its (relative rectangle) position to a given profile
      * @param logoId - id of logo that has to be part of this combination
      * @param relativeRectangle RelativeRectangle object that has to be part of this combination
-     * @return true, if adding has been successfull,
-     * false, if adding is not possible
+     * @return Profile.PairLogoRelativeRectangle object that has been generated and added to Profile
      */
-    boolean addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle)
+    Profile.PairLogoRelativeRectangle addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle)
             throws ServiceException;
 
     /**
      * Add a combination of logo and its (relative rectangle) position to currently active profile
      * @param logoId - id of logo that has to be part of this combination
      * @param relativeRectangle RelativeRectangle object that has to be part of this combination
-     * @return true, if adding has been successfull,
-     * false, if adding is not possible
+     * @return Profile.PairLogoRelativeRectangle object that has been generated and added to Profile
      */
-    boolean addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle)
+    Profile.PairLogoRelativeRectangle addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle)
             throws ServiceException;
 
     /**
@@ -457,6 +467,15 @@ public interface ProfileService {
      * @return true, if editing of given pairLogoRelativeRectangle object has been successful
      */
     boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle)
+            throws ServiceException;
+
+    /**
+     * Edit given pairLogoRelativeRectangle object
+     * (Note that ProfileId is encapsuled in the object and does not need to be separatily taken care of)
+     * @param pairLogoRelativeRectangle - PairLogoRelativeRectangle object to exchange current object
+     * @return true, if editing of given pairLogoRelativeRectangle object has been successful
+     */
+    boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)
             throws ServiceException;
 
     /**

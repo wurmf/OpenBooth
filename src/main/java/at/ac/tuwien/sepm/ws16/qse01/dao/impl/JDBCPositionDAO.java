@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Repository
 public class JDBCPositionDAO implements PositionDAO{
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCPositionDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCPositionDAO.class);
     private Connection con;
 
     @Autowired
@@ -31,7 +31,8 @@ public class JDBCPositionDAO implements PositionDAO{
     public Position create(Position position) throws PersistenceException {
         LOGGER.debug("Entering create method with parameters " + position);
 
-        if(position==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if(position==null)
+            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
         PreparedStatement stmt = null;
@@ -49,7 +50,8 @@ public class JDBCPositionDAO implements PositionDAO{
                 stmt.executeUpdate();
                 //Get autoassigned id
                 rs = stmt.getGeneratedKeys();
-                if (rs.next()){position.setId(rs.getInt(1));}
+                if (rs.next())
+                    {position.setId(rs.getInt(1));}
                 LOGGER.debug("Create successfully with AutoID:" + position.getId());
             }
             //NoAutoID
@@ -70,7 +72,9 @@ public class JDBCPositionDAO implements PositionDAO{
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
@@ -81,10 +85,10 @@ public class JDBCPositionDAO implements PositionDAO{
     @Override
     public boolean update(Position position) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + position);
-        if(position==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        if(position==null)
+            throw new IllegalArgumentException("Error! Called update method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -116,7 +120,9 @@ public class JDBCPositionDAO implements PositionDAO{
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
         }
@@ -151,7 +157,9 @@ public class JDBCPositionDAO implements PositionDAO{
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
         }
@@ -182,7 +190,9 @@ public class JDBCPositionDAO implements PositionDAO{
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
         }
@@ -191,9 +201,10 @@ public class JDBCPositionDAO implements PositionDAO{
     @Override
     public boolean delete(Position position) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + position);
-        if (position==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (position==null)
+            throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
-        ResultSet rs;
+
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -222,7 +233,9 @@ public class JDBCPositionDAO implements PositionDAO{
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try {
+                if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
         }

@@ -69,18 +69,11 @@ public class Logo {
 
     @Override
     public boolean equals(Object object){
-        if(object instanceof Logo
-                && ((Logo) object).getId()==this.getId()
-                && ((Logo) object).getLabel()==this.getLabel()
-                && ((Logo) object).getPath()==this.getPath()
-                && ((Logo) object).isDeleted()==this.isDeleted()
-                )
-        {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return object instanceof Logo
+                && ((Logo) object).getId() == this.getId()
+                && ((Logo) object).getLabel().equals(this.getLabel())
+                && ((Logo) object).getPath().equals(this.getPath())
+                && ((Logo) object).isDeleted() == this.isDeleted();
     }
 
     @Override

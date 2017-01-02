@@ -35,7 +35,6 @@ public class PositionDAOTest extends TestEnvironment {
         super.tearDown();
     }
 
-    private Position positionA = new Position("Position A", "/dev/null/positionA.jpg");
     private Position positionB = new Position("Position B", "/dev/null/positionB.jpg");
     private Position positionC = new Position("Position C", "/dev/null/positionC.jpg");
     private Position position1000000 = new Position(1000000,"Position 1000000", "/dev/null/position1000000.jpg", false);
@@ -53,19 +52,19 @@ public class PositionDAOTest extends TestEnvironment {
     @Test(expected = PersistenceException.class)
     public void testmock_create_withPersistenceTroubles_Fail() throws Exception{
         when(mockConnection.prepareStatement(anyString(),anyInt())).thenThrow(SQLException.class);
-        mockPositionDAO.create(this.positionA);
+        mockPositionDAO.create(this.positionB);
     }
 
     @Test
     public void test_create_withValidInputArguments() throws Exception {
-        assertTrue(positionA.getId() == Integer.MIN_VALUE);
-        assertTrue(positionA.getName() == "Position A");
-        assertTrue(positionA.getButtonImagePath() == "/dev/null/positionA.jpg");
+        assertTrue(positionB.getId() == Integer.MIN_VALUE);
+        assertTrue(positionB.getName().equals("Position B"));
+        assertTrue(positionB.getButtonImagePath().equals("/dev/null/positionB.jpg"));
         assertTrue(!positionA.isDeleted());
-        Position returnValue = positionDAO.create(positionA);
+        Position returnValue = positionDAO.create(positionB);
         assertTrue(returnValue.getId()>=1);
-        assertTrue(returnValue.getName() == "Position A");
-        assertTrue(returnValue.getButtonImagePath() == "/dev/null/positionA.jpg");
+        assertTrue(returnValue.getName().equals("Position B"));
+        assertTrue(returnValue.getButtonImagePath().equals("/dev/null/positionB.jpg"));
         assertTrue(!returnValue.isDeleted());
     }
 
@@ -73,23 +72,23 @@ public class PositionDAOTest extends TestEnvironment {
     public void testmock_create_withValidInputArguments() throws Exception {
         when(mockResultSet.next()).thenReturn(Boolean.TRUE);
         when(mockResultSet.getInt(1)).thenReturn(id);
-        Position returnvalue = mockPositionDAO.create(this.positionA);
+        Position returnvalue = mockPositionDAO.create(this.positionB);
         verify(mockPreparedStatement).executeUpdate();
         assertTrue(returnvalue.getId() == 1);
-        assertTrue(returnvalue.getName() == "Position A");
-        assertTrue(returnvalue.getButtonImagePath() == "/dev/null/positionA.jpg");
+        assertTrue(returnvalue.getName().equals("Position B"));
+        assertTrue(returnvalue.getButtonImagePath().equals("/dev/null/positionB.jpg"));
     }
 
     @Test(expected = PersistenceException.class)
     public void test_create_withAlreadyExistingInputparameter_fail() throws Exception{
         assertTrue(position1000000.getId() == 1000000);
-        assertTrue(position1000000.getName() == "Position 1000000");
-        assertTrue(position1000000.getButtonImagePath() == "/dev/null/position1000000.jpg");
+        assertTrue(position1000000.getName().equals("Position 1000000"));
+        assertTrue(position1000000.getButtonImagePath().equals("/dev/null/position1000000.jpg"));
         assertTrue(!position1000000.isDeleted());
         Position returnValue = positionDAO.create(position1000000);
         assertTrue(position1000000.getId() == 1000000);
-        assertTrue(position1000000.getName() == "Position 1000000");
-        assertTrue(position1000000.getButtonImagePath() == "/dev/null/position1000000.jpg");
+        assertTrue(position1000000.getName().equals("Position 1000000"));
+        assertTrue(position1000000.getButtonImagePath().equals("/dev/null/position1000000.jpg"));
         assertTrue(!position1000000.isDeleted());
         Position returnValue2 = positionDAO.create(position1000000);
     }
@@ -112,36 +111,19 @@ public class PositionDAOTest extends TestEnvironment {
 
     @Test
     public void test_update_withValidInputParameter()throws Exception{
-        assertTrue(positionA.getId() == Integer.MIN_VALUE);
-        assertTrue(positionA.getName() == "Position A");
-        assertTrue(positionA.getButtonImagePath() == "/dev/null/positionA.jpg");
-        assertTrue(!positionA.isDeleted());
-        Position returnValue = positionDAO.create(positionA);
-        assertTrue(positionA.getId() >= 1);
-        assertTrue(positionA.getName() == "Position A");
-        assertTrue(positionA.getButtonImagePath() == "/dev/null/positionA.jpg");
-        assertTrue(!positionA.isDeleted());
-        returnValue.setName("Modified Position A1");
-        returnValue.setButtonImagePath("/dev/null/modifiedpositionA1.jpg");
-        boolean returnBoolean = positionDAO.update(returnValue);
+        positionA = positionDAO.create(positionA);
+        positionA.setName("Modified Position A1");
+        positionA.setButtonImagePath("/dev/null/modifiedpositionA1.jpg");
+        boolean returnBoolean = positionDAO.update(positionA);
         assertTrue(returnBoolean);
     }
 
     @Test
     public void test_update_WithNotExisting()throws Exception{
-        assertTrue(positionA.getId() == Integer.MIN_VALUE);
-        assertTrue(positionA.getName() == "Position A");
-        assertTrue(positionA.getButtonImagePath() == "/dev/null/positionA.jpg");
-        assertTrue(!positionA.isDeleted());
-        Position returnValue = positionDAO.create(positionA);
-        assertTrue(positionA.getId() >= 1);
-        assertTrue(positionA.getName() == "Position A");
-        assertTrue(positionA.getButtonImagePath() == "/dev/null/positionA.jpg");
-        assertTrue(!positionA.isDeleted());
-        returnValue.setId(returnValue.getId() + 1);
-        returnValue.setName("Modified Position A1");
-        returnValue.setButtonImagePath("/dev/null/modifiedpositionA1.jpg");
-        boolean returnBoolean = positionDAO.update(returnValue);
+        positionA.setId(positionA.getId() + 1);
+        positionA.setName("Modified Position A1");
+        positionA.setButtonImagePath("/dev/null/modifiedpositionA1.jpg");
+        boolean returnBoolean = positionDAO.update(positionA);
         assertTrue(!returnBoolean);
     }
 
@@ -152,18 +134,17 @@ public class PositionDAOTest extends TestEnvironment {
 
     @Test
     public void test_read_withValidInt() throws Exception{
-        Position returnValue1 = positionDAO.create(positionA);
+        positionA = positionDAO.create(positionA);
         Position returnValue2 = positionDAO.create(positionB);
         Position returnValue3 = positionDAO.create(positionC);
-        assertTrue(positionDAO.read(returnValue1.getId()).equals(returnValue1));
+        assertTrue(positionDAO.read(positionA.getId()).equals(positionA));
         assertTrue(positionDAO.read(returnValue2.getId()).equals(returnValue2));
         assertTrue(positionDAO.read(returnValue3.getId()).equals(returnValue3));
     }
 
     @Test
     public void test_read_NotExisting() throws Exception{
-        Position returnValue1 = positionDAO.create(positionA);
-        assertTrue(positionDAO.read(returnValue1.getId() + 1) == null);
+        assertTrue(positionDAO.read(positionA.getId() + 1) == null);
     }
 
     /**
@@ -173,11 +154,11 @@ public class PositionDAOTest extends TestEnvironment {
 
     @Test
     public void test_readAll_withNonEmptyReturnList() throws Exception{
-        Position returnValue1 = positionDAO.create(positionA);
+        positionA = positionDAO.create(positionA);
         Position returnValue2 = positionDAO.create(positionB);
         Position returnValue3 = positionDAO.create(positionC);
         List<Position> returnList = positionDAO.readAll();
-        assertTrue(returnList.contains(returnValue1)
+        assertTrue(returnList.contains(positionA)
                 && returnList.contains(returnValue2)
                 && returnList.contains(returnValue3));
     }
@@ -186,6 +167,7 @@ public class PositionDAOTest extends TestEnvironment {
     public void test_readAll_withEmptyReturnList() throws Exception{
         positionDAO.delete(positionDAO.read(1));
         positionDAO.delete(positionDAO.read(2));
+        positionDAO.delete(positionA);
         assertTrue(positionDAO.readAll().size() == 0);
     }
 
@@ -207,11 +189,11 @@ public class PositionDAOTest extends TestEnvironment {
 
     @Test
     public void test_delete_withValidInputArguments() throws Exception {
-        Position returnValue1 = positionDAO.create(positionA);
+        positionA = positionDAO.create(positionA);
         Position returnValue2 = positionDAO.create(positionB);
         Position returnValue3 = positionDAO.create(positionC);
-        assertTrue(positionDAO.delete(returnValue1));
-        assertTrue(positionDAO.read(returnValue1.getId())== null);
+        assertTrue(positionDAO.delete(positionA));
+        assertTrue(positionDAO.read(positionA.getId())== null);
         assertTrue(positionDAO.delete(returnValue2));
         assertTrue(positionDAO.read(returnValue2.getId())== null);
         assertTrue(positionDAO.delete(returnValue3));
@@ -222,8 +204,8 @@ public class PositionDAOTest extends TestEnvironment {
     public void test_delete_withNotExistingInputparameter_fail() throws Exception{
         Position returnValue = positionDAO.create(position1000000);
         assertTrue(position1000000.getId() == 1000000);
-        assertTrue(position1000000.getName() == "Position 1000000");
-        assertTrue(position1000000.getButtonImagePath() == "/dev/null/position1000000.jpg");
+        assertTrue(position1000000.getName().equals("Position 1000000"));
+        assertTrue(position1000000.getButtonImagePath().equals("/dev/null/position1000000.jpg"));
         assertTrue(!position1000000.isDeleted());
         assertTrue(positionDAO.delete(returnValue));
         assertFalse(positionDAO.delete(returnValue));

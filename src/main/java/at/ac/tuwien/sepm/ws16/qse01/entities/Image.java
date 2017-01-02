@@ -17,7 +17,12 @@ public class Image {
     public Image(){
         //Empty Constructor
     }
-
+    public Image(String imagepath, int shootingid) {
+        imageID = Integer.MIN_VALUE;
+        this.imagepath = imagepath;
+        this.shootingid = shootingid;
+        setAutoDate();
+    }
     public Image(int imageID, String imagepath, int shootingid, Date date) {
         this.imageID = imageID;
         this.imagepath = imagepath;

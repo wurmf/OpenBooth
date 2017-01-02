@@ -2,12 +2,14 @@ package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -42,11 +44,12 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
         img.setFitWidth(35);
 
 
+
         cellButton.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
             public void handle(ActionEvent t) {
-                // System.out.println("img changed..");
+
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Logo Hochladen...");
                 fileChooser.setInitialDirectory(
@@ -59,8 +62,8 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                 );
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
-                  //  try {
-
+                    try {
+                        LOGGER.info("Image uploading..."+file.getPath()+"_"+file.getAbsolutePath());
                         Profile.PairLogoRelativeRectangle p = logoList.get(getIndex());
 
                         p.getLogo().setPath(file.getAbsolutePath());
@@ -76,13 +79,13 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                         hb.setAlignment(Pos.CENTER);
                         setGraphic(hb);
 
-                        //TODO: servicemethode -> editPairLogoRelativeRectangle
-                       // pservice.editProfile.PairLogoRelativeRectangle(p);
-                        //TODO nachdem profilDAO keine exception wirft,diese zeile wieder vor tableview schieben.
 
-               /*     } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }*/
+                        pservice.editLogo(p.getLogo());
+
+
+                    } catch (ServiceException e) {
+                       LOGGER.error(e.getMessage());
+                    }
                 }
 
             }
@@ -107,13 +110,28 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
         });
     }
 
-    public javafx.scene.image.Image getImage(String path) {
-        javafx.scene.image.Image img = null;
-        if(path == null) {
-            return new javafx.scene.image.Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
-        }else
-            return new javafx.scene.image.Image("file:"+path,true);
+    public Image getImage(String path) {
 
+        if(new File(path).isFile()){
+            return new Image("file:" + path, true);
+        }else if(new File("file: "+System.getProperty("user.dir") + "/src/main/resources/"+path).isFile()){
+            return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/"+path,true);
+        }else
+          return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
+
+        /*
+        if (new File(path).isFile())
+            return new javafx.scene.image.Image("file: "+path, true);
+        else if (new File(System.getProperty("user.dir") + "/src/main/resources/" + path).isFile())
+            return new javafx.scene.image.Image("file: "+new File(System.getProperty("user.dir") + "/src/main/resources/" + path).getAbsolutePath());
+        else{
+            if(new File("/src/main/resources/images/noimage.png").isFile())
+                return new javafx.scene.image.Image("file: /src/main/resources/images/noimage.png");
+            else if(new File(System.getProperty("user.dir")+"/src/main/resources/images/noimage.png").isFile())
+                return new javafx.scene.image.Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
+
+        }
+        return null;*/
 
     }
 
@@ -125,6 +143,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
         if(empty) {
             setGraphic(null);
         }else{
+
             img.setImage(getImage(item));
             HBox hb = new HBox(img,cellButton);
             hb.setSpacing(10);

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -37,6 +38,9 @@ public class MiniaturFrameController {
 
     @Resource
     private ImageService imageService;
+    @Resource
+    private ShootingService shootingService;
+
     private WindowManager windowManager;
     @FXML
     private TilePane tile;
@@ -46,8 +50,9 @@ public class MiniaturFrameController {
     private ImageView activeImageView = null;
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService, WindowManager windowManager) throws ServiceException {
+    public MiniaturFrameController(ImageService imageService, ShootingService shootingService,WindowManager windowManager) throws ServiceException {
         this.imageService = imageService;
+        this.shootingService = shootingService;
         this.windowManager = windowManager;
     }
 
@@ -63,8 +68,9 @@ public class MiniaturFrameController {
         tile.setVgap(20);
 
 
+        LOGGER.info("Active Shooting ->"+shootingService.searchIsActive().getId());
 
-        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(1);
+        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
 
@@ -122,8 +128,9 @@ public class MiniaturFrameController {
             try {
                 if(new File(img.getImagepath()).isFile()) {
                     imageView = createImageView(new File(img.getImagepath()));
-                }else if(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).isFile()){
-                    img.setImagepath(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath());
+                }else if(new File(System.getProperty("user.dir") + img.getImagepath()).isFile()){
+                    img.setImagepath(System.getProperty("user.dir") + img.getImagepath());
+                    imageService.update(img);
                     imageView = createImageView(new File(img.getImagepath()));
                 }else {
                     LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
@@ -148,11 +155,14 @@ public class MiniaturFrameController {
         ImageView imageView;
         try {
 
-            final Image image = new Image(new FileInputStream(imageFile), 150, 0, true,
+            final Image image = new Image(new FileInputStream(imageFile), 150, 150, true,
                     true);
            imageView = new ImageView(image);
-            imageView.setFitWidth(150);
+            imageView.setStyle("-fx-background-color: BLACK");
+
+          /*  imageView.setFitWidth(150);
             imageView.setFitHeight(150);
+            imageView.setSmooth(true);*/
 
 
             imageView.setOnMouseClicked(mouseEvent -> {
@@ -177,12 +187,17 @@ public class MiniaturFrameController {
         if(!imageView.equals(activeImageView)) {
             ((VBox) imageView.getParent()).getChildren().get(1).setVisible(true);
             if(activeImageView!=null){
+
                 activeImageView.setFitHeight(150);
                 activeImageView.setFitWidth(150);
+                activeImageView.setPreserveRatio(true);
+                imageView.setStyle("-fx-background-color: BLACK");
                 ((VBox) activeImageView.getParent()).getChildren().get(1).setVisible(false);
             }
+            imageView.setPreserveRatio(false);
             imageView.setFitWidth(180);
             imageView.setFitHeight(180);
+            imageView.setStyle("-fx-background-color: BLACK");
             activeImageView = imageView;
 
         }

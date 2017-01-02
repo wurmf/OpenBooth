@@ -23,7 +23,7 @@ import java.util.List;
  */
 @Repository
 public class JDBCProfileDAO implements ProfileDAO {
-    private final static Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProfileDAO.class);
     private Connection con;
     private PairCameraPositionDAO pairCameraPositionDAO;
     private PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
@@ -39,7 +39,8 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public Profile create(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering create method with parameters " + profile);
-        if(profile==null)throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if(profile==null)
+            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
 
         PreparedStatement stmt = null;
         try {
@@ -61,7 +62,8 @@ public class JDBCProfileDAO implements ProfileDAO {
 
                 stmt.executeUpdate();
                 ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()){profile.setId(rs.getInt(1));}
+                if (rs.next())
+                    {profile.setId(rs.getInt(1));}
                 LOGGER.debug("Persisted Profile successfully with AutoID:" + profile.getId());
             }
             //NoAutoID
@@ -103,7 +105,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);
         }
         finally {
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
         }
@@ -113,10 +117,10 @@ public class JDBCProfileDAO implements ProfileDAO {
     @Override
     public boolean update(Profile profile) throws PersistenceException {
         LOGGER.debug("Entering update method with parameters " + profile);
-        if(profile==null)throw new IllegalArgumentException("Error! Called update method with null pointer.");
+        if(profile==null)
+            throw new IllegalArgumentException("Error! Called update method with null pointer.");
         LOGGER.debug("Passed:Checking parameters according to specification.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -196,7 +200,9 @@ public class JDBCProfileDAO implements ProfileDAO {
         }
         finally {
             // Return resources
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
         }
@@ -229,6 +235,8 @@ public class JDBCProfileDAO implements ProfileDAO {
                         rs.getString("watermark"),
                         rs.getBoolean("isDeleted")
             );
+            if(profile.getWatermark() == null)
+                {profile.setWatermark("");}
             return profile;
             }
             else {
@@ -240,7 +248,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
         }
         finally {
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
         }
@@ -267,7 +277,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             throw new PersistenceException("Error! ReadAll objects in persistence layer has failed.:" + e);
         }
         finally {
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
         }
@@ -277,9 +289,9 @@ public class JDBCProfileDAO implements ProfileDAO {
     public boolean delete(Profile profile) throws PersistenceException{
         LOGGER.debug("Entering delete method with parameters " + profile);
 
-        if (profile==null) throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (profile==null)
+            throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
 
-        ResultSet rs;
         String sqlString;
         PreparedStatement stmt = null;
 
@@ -307,7 +319,9 @@ public class JDBCProfileDAO implements ProfileDAO {
             throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
         }
         finally {
-            try {if (stmt != null) stmt.close();}
+            try
+                {if (stmt != null)
+                    stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
         }
