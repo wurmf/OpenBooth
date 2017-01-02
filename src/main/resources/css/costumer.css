@@ -1,0 +1,9 @@
+.root{
+  -fx-background-color: red;
+}
+
+.button{
+   -fx-background-color: transparent;
+   -fx-text-fill: white;
+   -fx-font-family: HP Simplified;
+   }

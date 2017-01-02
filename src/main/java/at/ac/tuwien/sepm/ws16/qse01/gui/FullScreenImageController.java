@@ -354,4 +354,6 @@ public class FullScreenImageController {
 
     }
 
+    public void saveFilteredImg(ActionEvent actionEvent) {
+    }
 }

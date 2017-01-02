@@ -146,7 +146,7 @@ public class ShootingAdminController {
 
                         shootingService.addShooting(shouting);
 
-                        windowManager.showMiniatureFrame();
+                        windowManager.showCostumerScene();
                         windowManager.initShotFrameManager();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());

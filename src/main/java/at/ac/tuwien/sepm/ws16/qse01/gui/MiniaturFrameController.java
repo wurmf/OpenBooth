@@ -207,7 +207,8 @@ public class MiniaturFrameController {
     }
 
     public void backButtonClicked(){
-        windowManager.showMainFrame();
+        //windowManager.showMainFrame();
+        windowManager.showCostumerScene();
         LOGGER.debug("backbutton cliked...");
     }
 }

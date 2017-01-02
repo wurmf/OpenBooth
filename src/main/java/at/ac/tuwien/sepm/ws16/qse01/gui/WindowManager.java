@@ -118,16 +118,22 @@ public class WindowManager {
         LOGGER.info("CSSAD -"+cssad);
         parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentad.getStylesheets().add(cssad.toExternalForm());
-        this.adminLoginScene = new Scene((Parent) adminLoginWrapper.getLoadedObject(),screenWidth,screenHeight);
+        this.adminLoginScene = new Scene(parentad,screenWidth,screenHeight);
 
         //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
 
+        //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
-        this.costumerScene= new Scene((Parent)costumerWrapper.getLoadedObject(),screenWidth,screenHeight);
+        Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
+        URL csscos= this.getClass().getResource("/css/costumer.css");
+        LOGGER.info("CSSCOS -"+csscos);
+        parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentad.getStylesheets().add(csscos.toExternalForm());
+        this.costumerScene = new Scene(parentcos,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
