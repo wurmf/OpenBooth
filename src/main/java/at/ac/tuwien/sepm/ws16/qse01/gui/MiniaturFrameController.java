@@ -66,11 +66,14 @@ public class MiniaturFrameController {
 
         tile.setHgap(20);
         tile.setVgap(20);
-
-
-        LOGGER.info("Active Shooting ->"+shootingService.searchIsActive().getId());
-
-        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
+        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages;
+        if(shootingService.searchIsActive().getActive()) {
+            LOGGER.info("Active Shooting ->" + shootingService.searchIsActive().getId());
+            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+        }else{
+            return;
+        }
+        //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
 
