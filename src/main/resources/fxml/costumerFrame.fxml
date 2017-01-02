@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="basicpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.60" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CostumerFrameController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CostumerFrameController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
@@ -16,7 +16,7 @@
       <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <GridPane fx:id="gridpanel" GridPane.columnIndex="1">
+      <GridPane GridPane.columnIndex="1">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
         </columnConstraints>
@@ -37,10 +37,10 @@
           <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" onAction="#switchToLogin" text="Anmelden" GridPane.columnIndex="1" />
+            <Button fx:id="login" mnemonicParsing="false" onAction="#switchToLogin" text="Anmelden" GridPane.columnIndex="1" />
          </children>
       </GridPane>
-      <Button fx:id="rightbutton" mnemonicParsing="false" onAction="#switchToFilter" GridPane.columnIndex="2" />
-      <Button fx:id="leftbutton" mnemonicParsing="false" onAction="#switchToAllImages" />
+      <Button fx:id="rightbutton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToFilter" GridPane.columnIndex="2" />
+      <Button fx:id="leftbutton" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#switchToAllImages" />
    </children>
 </GridPane>

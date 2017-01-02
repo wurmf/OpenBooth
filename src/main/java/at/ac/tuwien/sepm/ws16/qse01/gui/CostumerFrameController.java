@@ -119,7 +119,7 @@ public class CostumerFrameController {
 
             for (int i = 0; i < pairList.size(); i++) {
                 GridPane gp = new GridPane();
-                String name = "Kamera " + pairList.get(i).getPosition().getName();
+                String name = "Kamera "+pairList.get(i).getCamera().getId()+ "  "  + pairList.get(i).getPosition().getName();
                 ImageView imageView = new ImageView();
                 imageView.setVisible(true);
                 imageView.prefHeight(high);
@@ -146,7 +146,8 @@ public class CostumerFrameController {
                 LOGGER.debug("url costumer: "+url);
                 filter.setStyle("-fx-background-image: url('"+url+"'); " +
                         "   -fx-background-size: 100%;" +
-                        "   -fx-background-color: transparent;");
+                        "   -fx-background-color: transparent;" +
+                        "   -fx-font-size:"+ allpicturesview.getFont().getSize()/column+"px;");
                 filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
 
                 });

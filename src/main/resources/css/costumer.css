@@ -1,9 +1,14 @@
-.root{
-  -fx-background-color: red;
-}
+.root{}
 
 .button{
    -fx-background-color: transparent;
-   -fx-text-fill: white;
+   -fx-text-fill: black;
    -fx-font-family: HP Simplified;
    }
+#allpicturesview{
+   -fx-pref-width: 15em;
+   -fx-pref-height:2em;
+}
+#login{
+  -fx-font-size: 16px;
+}

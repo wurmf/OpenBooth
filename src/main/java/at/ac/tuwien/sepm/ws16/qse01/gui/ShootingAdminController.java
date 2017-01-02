@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,9 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
+    @FXML GridPane gridbase;
+    @FXML
+    private GridPane gridSave;
     @FXML
     private Button canclebutton;
     @FXML
@@ -54,6 +58,7 @@ public class ShootingAdminController {
 
     private String path =null;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+    Label label;
 
     private ShootingService shootingService;
     private ProfileService profileService;
@@ -84,12 +89,21 @@ public class ShootingAdminController {
                 stopButton.setVisible(true);
                 storage.setVisible(false);
                 canclebutton.setText("Fortsetzen");
-               // storageDirLabel.setVisible(false);
+                storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
+                label = new Label(shootingService.searchIsActive().getStorageDir());
+                label.setVisible(true);
+                gridbase.add(label,2,3);
+
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
                 storageDirLabel.setVisible(true);
+                if(label!= null){
+                    label.setVisible(false);
+                }
+                gridSave.setVisible(true);
                 canclebutton.setText("Abbrechen");
             }
             String resource = System.getProperty("user.home");
