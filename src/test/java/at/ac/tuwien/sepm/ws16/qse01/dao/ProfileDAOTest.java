@@ -22,66 +22,12 @@ import static org.mockito.Mockito.when;
 /**
  * ProfileDAO Tester
  */
-public class ProfileDAOTest extends TestEnvironment{
+public class ProfileDAOTest extends TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileDAOTest.class);
-    private Profile profileA;
-    private Profile profileB;
-    private Profile profileC;
-    private List<Profile.PairCameraPosition> pairCameraPositions;
-    private Profile.PairCameraPosition pairCameraPositionA;
-    private Profile.PairCameraPosition pairCameraPositionB;
-    private List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
-    private Camera camera1;
-    private Camera camera2;
-    private Position position1;
-    private Position position2;
-    private Logo logo1;
-    private Logo logo2;
-    private RelativeRectangle relativeRectangleA;
-    private RelativeRectangle relativeRectangleB;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        profileA = new Profile("Profile A");
-        profileB = new Profile("Profile B",
-                true,
-                true,
-                true,
-                true,
-                "/dev/null/watermarkB.jpg");
-
-        camera1 = cameraDAO.read(1);
-        camera2 = cameraDAO.read(2);
-        position1 = positionDAO.read(1);
-        position2 = positionDAO.read(2);
-        logo1 = logoDAO.read(1);
-        logo2 = logoDAO.read(2);
-        relativeRectangleA = new RelativeRectangle(10.1,10.2, 30.3,30.4);
-        relativeRectangleB = new RelativeRectangle(80.1,80.2,10.3,10.4);
-        pairCameraPositions = new ArrayList<>();
-        pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1,true);
-        pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
-        pairCameraPositions.add(pairCameraPositionA);
-        pairCameraPositions.add(pairCameraPositionB);
-        pairLogoRelativeRectangles = new ArrayList<>();
-        pairLogoRelativeRectangleA = new Profile.PairLogoRelativeRectangle(logo1,relativeRectangleA);
-        pairLogoRelativeRectangleB = new Profile.PairLogoRelativeRectangle(logo2,relativeRectangleB);
-        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
-        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
-
-        profileC = new Profile(20,
-                "Profile C",
-                pairCameraPositions,
-                pairLogoRelativeRectangles,
-                true,
-                true,
-                true,
-                true,
-                "/dev/null/watermarkC.jpg",
-                false);
     }
 
     @After
@@ -90,26 +36,25 @@ public class ProfileDAOTest extends TestEnvironment{
     }
 
     /**
-     *
-     *TESTING method: Profile create(Profile profile)
+     * TESTING method: Profile create(Profile profile)
      * throws PersistenceException;
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void testmock_create_withNullArguments_Fail() throws Exception{
+    public void testmock_create_withNullArguments_Fail() throws Exception {
         mockProfileDAO.create(null);
     }
 
     @Test(expected = PersistenceException.class)
-    public void testmock_create_withPersistenceTroubles_Fail() throws Exception{
-        when(mockConnection.prepareStatement(anyString(),anyInt())).thenThrow(SQLException.class);
+    public void testmock_create_withPersistenceTroubles_Fail() throws Exception {
+        when(mockConnection.prepareStatement(anyString(), anyInt())).thenThrow(SQLException.class);
         mockProfileDAO.create(this.profileA);
     }
 
     @Test
     public void test_create_withValidInputArguments() throws Exception {
         assertTrue(profileA.getId() == Integer.MIN_VALUE);
-        assertTrue(profileA.getName() == "Profile A");
+        assertTrue(profileA.getName().equals("Profile A"));
         assertTrue(profileA.getPairCameraPositions().size() == 0);
         assertTrue(profileA.getPairLogoRelativeRectangles().size() == 0);
         assertTrue(!profileA.isPrintEnabled());
@@ -118,9 +63,9 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(!profileA.isMobilEnabled());
         assertTrue(profileA.getWatermark().isEmpty());
         assertTrue(!profileA.isDeleted());
-        Profile returnValue = profileDAO.create(profileA);
-        assertTrue(returnValue.getId()>=1);
-        assertTrue(returnValue.getName() == "Profile A");
+        profileA = profileDAO.create(profileA);
+        assertTrue(profileA.getId() >= 1);
+        assertTrue(profileA.getName().equals("Profile A"));
         assertTrue(profileA.getPairCameraPositions().size() == 0);
         assertTrue(profileA.getPairLogoRelativeRectangles().size() == 0);
         assertTrue(!profileA.isPrintEnabled());
@@ -128,10 +73,10 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(!profileA.isGreenscreenEnabled());
         assertTrue(!profileA.isMobilEnabled());
         assertTrue(profileA.getWatermark().isEmpty());
-        assertTrue(!returnValue.isDeleted());
+        assertTrue(!profileA.isDeleted());
 
         assertTrue(profileB.getId() == Integer.MIN_VALUE);
-        assertTrue(profileB.getName() == "Profile B");
+        assertTrue(profileB.getName().equals("Profile B"));
         assertTrue(profileB.getPairCameraPositions().size() == 0);
         assertTrue(profileB.getPairLogoRelativeRectangles().size() == 0);
         assertTrue(profileB.isPrintEnabled());
@@ -139,21 +84,21 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(profileB.isGreenscreenEnabled());
         assertTrue(profileB.isMobilEnabled());
         assertTrue(profileB.getWatermark().equals("/dev/null/watermarkB.jpg"));
-        assertTrue(!profileA.isDeleted());
-        Profile returnValue2 = profileDAO.create(profileB);
-        assertTrue(returnValue2.getId()>=1);
-        assertTrue(returnValue2.getName() == "Profile B");
-        assertTrue(returnValue2.getPairCameraPositions().size() == 0);
-        assertTrue(returnValue2.getPairLogoRelativeRectangles().size() == 0);
-        assertTrue(returnValue2.isPrintEnabled());
-        assertTrue(returnValue2.isFilerEnabled());
-        assertTrue(returnValue2.isGreenscreenEnabled());
-        assertTrue(returnValue2.isMobilEnabled());
-        assertTrue(returnValue2.getWatermark().equals("/dev/null/watermarkB.jpg"));
-        assertTrue(!returnValue2.isDeleted());
+        assertTrue(!profileB.isDeleted());
+        profileB = profileDAO.create(profileB);
+        assertTrue(profileB.getId() >= 1);
+        assertTrue(profileB.getName().equals("Profile B"));
+        assertTrue(profileB.getPairCameraPositions().size() == 0);
+        assertTrue(profileB.getPairLogoRelativeRectangles().size() == 0);
+        assertTrue(profileB.isPrintEnabled());
+        assertTrue(profileB.isFilerEnabled());
+        assertTrue(profileB.isGreenscreenEnabled());
+        assertTrue(profileB.isMobilEnabled());
+        assertTrue(profileB.getWatermark().equals("/dev/null/watermarkB.jpg"));
+        assertTrue(!profileB.isDeleted());
 
         assertTrue(profileC.getId() == 20);
-        assertTrue(profileC.getName() == "Profile C");
+        assertTrue(profileC.getName().equals("Profile C"));
         assertTrue(profileC.getPairCameraPositions().size() == 2);
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
@@ -166,50 +111,50 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(profileC.isMobilEnabled());
         assertTrue(profileC.getWatermark().equals("/dev/null/watermarkC.jpg"));
         assertTrue(!profileC.isDeleted());
-        Profile returnValue3 = profileDAO.create(profileC);
-        assertTrue(returnValue3.getId() == 20);
-        assertTrue(returnValue3.getName() == "Profile C");
-        assertTrue(returnValue3.getPairCameraPositions().size() == 2);
+        profileC = profileDAO.create(profileC);
+        assertTrue(profileC.getId() == 20);
+        assertTrue(profileC.getName().equals("Profile C"));
+        assertTrue(profileC.getPairCameraPositions().size() == 2);
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
-        assertTrue(returnValue3.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileC.getPairLogoRelativeRectangles().size() == 2);
         assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
         assertTrue(profileC.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
-        assertTrue(returnValue3.isPrintEnabled());
-        assertTrue(returnValue3.isFilerEnabled());
-        assertTrue(returnValue3.isGreenscreenEnabled());
-        assertTrue(returnValue3.isMobilEnabled());
-        assertTrue(returnValue3.getWatermark().equals("/dev/null/watermarkC.jpg"));
-        assertTrue(!returnValue3.isDeleted());
+        assertTrue(profileC.isPrintEnabled());
+        assertTrue(profileC.isFilerEnabled());
+        assertTrue(profileC.isGreenscreenEnabled());
+        assertTrue(profileC.isMobilEnabled());
+        assertTrue(profileC.getWatermark().equals("/dev/null/watermarkC.jpg"));
+        assertTrue(!profileC.isDeleted());
     }
 
     @Test(expected = PersistenceException.class)
-    public void test_create_withAlreadyExistingInputparameter_fail() throws Exception{
+    public void test_create_withAlreadyExistingInputparameter_fail() throws Exception {
         Profile returnValue = profileDAO.create(profileA);
         Profile returnValue2 = profileDAO.create(returnValue);
     }
 
     /**
-     *
-     *TESTING method: boolean update(Profile profile)
+     * TESTING method: boolean update(Profile profile)
      * throws PersistenceException;
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void testmock_update_withNullArguments_Fail() throws Exception{
+    public void testmock_update_withNullArguments_Fail() throws Exception {
         mockProfileDAO.update(null);
     }
 
     @Test(expected = PersistenceException.class)
-    public void testmock_update_withPersistenceTroubles_Fail() throws Exception{
+    public void testmock_update_withPersistenceTroubles_Fail() throws Exception {
         when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
         mockProfileDAO.update(this.profileA);
     }
 
     @Test
-    public void test_update_withValidInputParameter()throws Exception{
+    public void test_update_withValidInputParameter() throws Exception {
+        profileC = profileDAO.create(profileC);
         assertTrue(profileC.getId() == 20);
-        assertTrue(profileC.getName() == "Profile C");
+        assertTrue(profileC.getName().equals("Profile C"));
         assertTrue(profileC.getPairCameraPositions().size() == 2);
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionA));
         assertTrue(profileC.getPairCameraPositions().contains(pairCameraPositionB));
@@ -222,36 +167,60 @@ public class ProfileDAOTest extends TestEnvironment{
         assertTrue(profileC.isMobilEnabled());
         assertTrue(profileC.getWatermark().equals("/dev/null/watermarkC.jpg"));
         assertTrue(!profileC.isDeleted());
-        Profile returnValue = profileDAO.create(profileC);
-        assertTrue(returnValue.getId() == 20);
-        assertTrue(returnValue.getName() == "Profile C");
-        assertTrue(returnValue.getPairCameraPositions().size() == 2);
-        assertTrue(returnValue.getPairCameraPositions().contains(pairCameraPositionA));
-        assertTrue(returnValue.getPairCameraPositions().contains(pairCameraPositionB));
-        assertTrue(returnValue.getPairLogoRelativeRectangles().size() == 2);
-        assertTrue(returnValue.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleA));
-        assertTrue(returnValue.getPairLogoRelativeRectangles().contains(pairLogoRelativeRectangleB));
-        assertTrue(returnValue.isPrintEnabled());
-        assertTrue(returnValue.isFilerEnabled());
-        assertTrue(returnValue.isGreenscreenEnabled());
-        assertTrue(returnValue.isMobilEnabled());
-        assertTrue(returnValue.getWatermark().equals("/dev/null/watermarkC.jpg"));
-        assertTrue(!returnValue.isDeleted());
-        returnValue.setName("Profile C+");
-        returnValue.setPairCameraPositions(new ArrayList<>());
-        returnValue.setPairLogoRelativeRectangles(new ArrayList<>());
-        returnValue.setPrintEnabled(false);
-        returnValue.setFilerEnabled(false);
-        returnValue.setGreenscreenEnabled(false);
-        returnValue.setMobilEnabled(false);
-        returnValue.setWatermark("");
-        assertTrue(profileDAO.update(returnValue));
+        profileC.setName("Profile C+");
+        cameraA = cameraDAO.create(cameraA);
+        positionA = positionDAO.create(positionA);
+        pairCameraPositions.add(pairCameraPositionC);
+        profileC.setPairCameraPositions(pairCameraPositions);
+        logoA = logoDAO.create(logoA);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleC);
+        profileC.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        profileC.setPrintEnabled(false);
+        profileC.setFilerEnabled(false);
+        profileC.setGreenscreenEnabled(false);
+        profileC.setMobilEnabled(false);
+        profileC.setWatermark("");
+        assertTrue(profileDAO.update(profileC));
+        profileC = profileDAO.read(profileC.getId());
+        pairCameraPositions = profileC.getPairCameraPositions();
+        pairLogoRelativeRectangles = profileC.getPairLogoRelativeRectangles();
+        assertTrue(pairCameraPositions.size() == 3);
+        assertTrue(pairCameraPositions.get(0).isGreenScreenReady());
+        assertTrue(pairCameraPositions.get(0).getCamera().equals(camera1));
+        assertTrue(pairCameraPositions.get(0).getPosition().equals(position1));
+        assertTrue(!pairCameraPositions.get(1).isGreenScreenReady());
+        assertTrue(pairCameraPositions.get(1).getCamera().equals(camera2));
+        assertTrue(pairCameraPositions.get(1).getPosition().equals(position2));
+        assertTrue(pairCameraPositions.get(2).isGreenScreenReady());
+        assertTrue(pairCameraPositions.get(2).getCamera().equals(cameraA));
+        assertTrue(pairCameraPositions.get(2).getPosition().equals(positionA));
+        assertTrue(pairLogoRelativeRectangles.size() == 3);
+        assertTrue(pairLogoRelativeRectangles.get(0).getLogo().equals(logo1));
+        assertTrue(pairLogoRelativeRectangles.get(0).getRelativeRectangle().equals(relativeRectangleA));
+        assertTrue(pairLogoRelativeRectangles.get(1).getLogo().equals(logo2));
+        assertTrue(pairLogoRelativeRectangles.get(1).getRelativeRectangle().equals(relativeRectangleB));
+        assertTrue(pairLogoRelativeRectangles.get(2).getLogo().equals(logoA));
+        assertTrue(pairLogoRelativeRectangles.get(2).getRelativeRectangle().equals(relativeRectangleC));
+        pairCameraPositions.remove(pairCameraPositionA);
+        pairLogoRelativeRectangles.remove(pairLogoRelativeRectangleA);
+        assertTrue(profileDAO.update(profileC));
+        profileC = profileDAO.read(profileC.getId());
+        pairCameraPositions = profileC.getPairCameraPositions();
+        pairLogoRelativeRectangles = profileC.getPairLogoRelativeRectangles();
+        assertTrue(pairCameraPositions.size() == 2);
+        assertTrue(pairCameraPositions.get(0).equals(pairCameraPositionB));
+        assertTrue(pairCameraPositions.get(1).equals(pairCameraPositionC));
+        assertTrue(!pairCameraPositions.contains(pairCameraPositionA));
+        assertTrue(pairLogoRelativeRectangles.size() == 2);
+        assertTrue(pairLogoRelativeRectangles.get(0).equals(pairLogoRelativeRectangleB));
+        assertTrue(pairLogoRelativeRectangles.get(1).equals(pairLogoRelativeRectangleC));
+        assertTrue(!pairLogoRelativeRectangles.contains(pairLogoRelativeRectangleA));
     }
 
     @Test
-    public void test_update_WithNotExisting()throws Exception{
+    public void test_update_WithNotExisting() throws Exception {
         Profile returnValue = profileDAO.create(profileC);
-        returnValue.setId(returnValue.getId()+1);
+        returnValue.setId(returnValue.getId() + 1);
         returnValue.setName("Profile C+");
         returnValue.setPairCameraPositions(new ArrayList<>());
         returnValue.setPairLogoRelativeRectangles(new ArrayList<>());
@@ -264,16 +233,15 @@ public class ProfileDAOTest extends TestEnvironment{
     }
 
     /**
-     *
-     *TESTING method: Profile read(int id)
+     * TESTING method: Profile read(int id)
      * throws PersistenceException;
      */
 
     @Test
-    public void test_read_withValidInt() throws PersistenceException{
+    public void test_read_withValidInt() throws PersistenceException {
         Profile returnValue = profileDAO.create(profileC);
         Profile returnValue2 = profileDAO.read(returnValue.getId());
-        assertTrue(returnValue2.getName() == "Profile C");
+        assertTrue(returnValue2.getName().equals("Profile C"));
         assertTrue(returnValue2.getPairCameraPositions().size() == 2);
         assertTrue(returnValue2.getPairCameraPositions().contains(pairCameraPositionA));
         assertTrue(returnValue2.getPairCameraPositions().contains(pairCameraPositionB));
@@ -289,18 +257,17 @@ public class ProfileDAOTest extends TestEnvironment{
     }
 
     @Test
-    public void test_read_NotExisting() throws Exception{
+    public void test_read_NotExisting() throws Exception {
         Profile returnValue = profileDAO.create(profileC);
         assertTrue(profileDAO.read(returnValue.getId() + 1) == null);
     }
 
     /**
-     *
-     *TESTING method: List<Profile> readAll()
+     * TESTING method: List<Profile> readAll()
      * throws PersistenceException;
      */
 
-    public void test_readAll_withNonEmptyReturnList() throws Exception{
+    public void test_readAll_withNonEmptyReturnList() throws Exception {
         Profile returnValue1 = profileDAO.create(profileA);
         Profile returnValue2 = profileDAO.create(profileB);
         Profile returnValue3 = profileDAO.create(profileC);
@@ -311,18 +278,17 @@ public class ProfileDAOTest extends TestEnvironment{
     }
 
     /**
-     *
-     *TESTING method: boolean delete(Profile profile)
+     * TESTING method: boolean delete(Profile profile)
      * throws PersistenceException;
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void testmock_delete_withNullArguments_Fail() throws Exception{
+    public void testmock_delete_withNullArguments_Fail() throws Exception {
         mockProfileDAO.delete(null);
     }
 
     @Test(expected = PersistenceException.class)
-    public void testmock_delete_withPersistenceTroubles_Fail() throws Exception{
+    public void testmock_delete_withPersistenceTroubles_Fail() throws Exception {
         when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
         mockProfileDAO.delete(this.profileA);
     }
@@ -333,15 +299,15 @@ public class ProfileDAOTest extends TestEnvironment{
         Profile returnValue2 = profileDAO.create(profileB);
         Profile returnValue3 = profileDAO.create(profileC);
         assertTrue(profileDAO.delete(returnValue1));
-        assertTrue(profileDAO.read(returnValue1.getId())== null);
+        assertTrue(profileDAO.read(returnValue1.getId()) == null);
         assertTrue(profileDAO.delete(returnValue2));
-        assertTrue(profileDAO.read(returnValue2.getId())== null);
+        assertTrue(profileDAO.read(returnValue2.getId()) == null);
         assertTrue(profileDAO.delete(returnValue3));
-        assertTrue(profileDAO.read(returnValue3.getId())== null);
+        assertTrue(profileDAO.read(returnValue3.getId()) == null);
     }
 
     @Test
-    public void test_delete_withNotExistingInputparameter_fail() throws Exception{
+    public void test_delete_withNotExistingInputparameter_fail() throws Exception {
         Profile returnValue = profileDAO.create(profileA);
         assertTrue(profileDAO.delete(returnValue));
         assertFalse(profileDAO.delete(returnValue));
