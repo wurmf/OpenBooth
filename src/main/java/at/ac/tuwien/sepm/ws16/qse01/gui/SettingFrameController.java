@@ -747,7 +747,7 @@ public class SettingFrameController {
                         @Override
                         public TableCell<Profile.PairLogoRelativeRectangle, Boolean> call(TableColumn<Profile.PairLogoRelativeRectangle, Boolean> p) {
 
-                            return new LogoButtonCell(logoList,pservice,windowManager.getStage());
+                            return new LogoButtonCell(logoList,pservice,windowManager.getStage(),selectedProfile.getId());
                         }
 
                     });

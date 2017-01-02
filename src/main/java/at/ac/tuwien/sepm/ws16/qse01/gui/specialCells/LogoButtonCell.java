@@ -27,7 +27,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
     private final Button cellButton = new Button("X");
 
-    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage) {
+    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage, int profileID) {
         this.posList = posList;
         this.pservice = pservice;
 
@@ -52,6 +52,14 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                     //remove selected item from the table list
                     posList.remove(currentPairLogo);
                    try {
+                        int countsOfLogoUsing = 0;
+                        for(Profile.PairLogoRelativeRectangle p: pservice.getAllPairLogoRelativeRectangle(profileID)) {
+                            if (currentPairLogo.getLogo().getId() == p.getLogo().getId())
+                                countsOfLogoUsing++;
+                        }
+                       //if Logo is used just by this pairlogo relation, then delete it from database
+                        if(countsOfLogoUsing==1)
+                            pservice.eraseLogo(currentPairLogo.getLogo());
 
                         pservice.erasePairLogoRelativeRectangle(currentPairLogo);
                     } catch (ServiceException e) {

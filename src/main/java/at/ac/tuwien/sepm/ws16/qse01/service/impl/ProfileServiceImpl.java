@@ -575,7 +575,6 @@ public class ProfileServiceImpl implements ProfileService{
             }
         }
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
-        editLogo(pairLogoRelativeRectangle.getLogo());
         return this.edit(profile);
     }
 
@@ -591,7 +590,6 @@ public class ProfileServiceImpl implements ProfileService{
             }
         }
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
-        eraseLogo(pairLogoRelativeRectangle.getLogo());
         return this.edit(profile);
     }
 }
