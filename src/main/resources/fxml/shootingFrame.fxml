@@ -23,7 +23,7 @@
     <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button mnemonicParsing="false" onAction="#onDemolitionPressed" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Button fx:id="canclebutton" mnemonicParsing="false" onAction="#onDemolitionPressed" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3" />
       <ChoiceBox fx:id="profileChoiceBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
       <Label text="Profil:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <font>

@@ -36,6 +36,7 @@ public class WindowManager {
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
+    private Scene costumerScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
@@ -124,6 +125,10 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
 
+        SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
+        this.costumerScene= new Scene((Parent)costumerWrapper.getLoadedObject(),screenWidth,screenHeight);
+
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
@@ -135,7 +140,7 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            this.mainStage.setScene(miniaturScene);
+            this.mainStage.setScene(costumerScene);
             //initShotFrameManager();
         } else {
             this.mainStage.setScene(mainScene);
@@ -172,6 +177,11 @@ public class WindowManager {
      */
     public void showProfileScene(){
         mainStage.setScene(settingScene);
+        mainStage.setFullScreen(true);
+    }
+
+    public void showCostumerScene(){
+        mainStage.setScene(costumerScene);
         mainStage.setFullScreen(true);
     }
     /**

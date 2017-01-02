@@ -76,6 +76,10 @@ public class ShootingServiceImpl implements ShootingService {
         }
     }
 
+    public void updateProfile(){
+
+    }
+
     @Override
     public String createPath() throws ServiceException {
         String path=null;

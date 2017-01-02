@@ -38,10 +38,10 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
-
+    @FXML
+    private Button canclebutton;
     @FXML
     private Button storage;
-
     @FXML
     private Button startButton;
     @FXML
@@ -83,12 +83,14 @@ public class ShootingAdminController {
                 startButton.setVisible(false);
                 stopButton.setVisible(true);
                 storage.setVisible(false);
-                storageDirLabel.setVisible(false);
+                canclebutton.setText("Fortsetzen");
+               // storageDirLabel.setVisible(false);
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
                 storageDirLabel.setVisible(true);
+                canclebutton.setText("Abbrechen");
             }
             String resource = System.getProperty("user.home");
 
@@ -108,6 +110,7 @@ public class ShootingAdminController {
                     profileChoiceBox.setValue(observableListProfile.get(0));
                 }
             }
+            storageDirLabel.setText(shootingService.searchIsActive().getStorageDir());
         } catch (ServiceException e) {
             LOGGER.debug("initialise -"+e);
             showInformationDialog("Bitte erstellen Sie ein Profil");
@@ -159,8 +162,17 @@ public class ShootingAdminController {
      * @param actionEvent press action event
      */
     public void onDemolitionPressed(ActionEvent actionEvent) {
-        //storageDirLabel.setText("");
-        windowManager.showMainFrame();
+        try {
+            if (shootingService.searchIsActive().getActive()) {
+                shootingService.updateProfile();
+                windowManager.showCostumerScene();
+            } else {
+                windowManager.showMainFrame();
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("restart kein aktives shooting"+e);
+            showInformationDialog("Shooting konnte nicht mehr hergestellt werden");
+        }
     }
 
     /*
