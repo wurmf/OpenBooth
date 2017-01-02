@@ -582,13 +582,17 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
         Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
+        Profile.PairLogoRelativeRectangle toRemove = null;
         for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
         {
             if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId())
             {
-                pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);
+                toRemove =auxPairLogoRelativeRectangle;
             }
         }
+        if(toRemove!=null)
+            pairLogoRelativeRectangles.remove(toRemove);
+
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
         return this.edit(profile);
     }

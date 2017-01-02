@@ -54,7 +54,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                    try {
                         int countsOfLogoUsing = 0;
                         for(Profile.PairLogoRelativeRectangle p: pservice.getAllPairLogoRelativeRectangle(profileID)) {
-                            if (currentPairLogo.getLogo().getId() == p.getLogo().getId())
+                            if (p.getLogo()!= null && currentPairLogo.getLogo().getId() == p.getLogo().getId())
                                 countsOfLogoUsing++;
                         }
                        //if Logo is used just by this pairlogo relation, then delete it from database
