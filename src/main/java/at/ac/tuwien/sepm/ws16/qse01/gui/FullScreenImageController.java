@@ -57,7 +57,6 @@ public class FullScreenImageController {
 
     private at.ac.tuwien.sepm.ws16.qse01.entities.Image firstImage;
 
-    private ImageView[]slide =new ImageView[3];
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
     private int currentIndex=-1;
     private int activ;
@@ -66,27 +65,13 @@ public class FullScreenImageController {
     private ShootingService shootingService;
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
-    private SpringFXMLLoader springFXMLLoader;
 
     @Autowired
-    public FullScreenImageController(SpringFXMLLoader springFXMLLoader,WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
-        this.springFXMLLoader = springFXMLLoader;
-    }
-
-    /**
-     * iniziaising full screen image view
-     * if the List == null and there is an activ shooting avalible the imageList gets initialised
-     * if the list is not empty, the chosen image gets displayed
-     *
-     * catches ServiceException which can be thrown by all metodes requering an Service class
-     * catches FileNotFoundException which can be thrown by all FileInputStream´s
-     */
-    @FXML
-    private void initialize(){
     }
 
     @FXML
@@ -142,63 +127,26 @@ public class FullScreenImageController {
             alert.setHeaderText("Bild Löschen");
             alert.initOwner(windowManager.getStage());
             Optional<ButtonType> result =alert.showAndWait();
-            if(result.isPresent()&&result.get()==ButtonType.OK){
-                //delete
-                if(currentIndex+1<imageList.size()) {
-                    slide[1] = slide[2];
+                if(result.isPresent()&&result.get()==ButtonType.OK){
+
                     imageService.delete(imageList.get(currentIndex).getImageID());
-                    if (currentIndex+2<imageList.size()) {
-                        at.ac.tuwien.sepm.ws16.qse01.entities.Image nextim = imageList.get(currentIndex + 2);
-                        imageList = imageService.getAllImages(activ);
-                        Image image = new Image(new FileInputStream(nextim.getImagepath()));
-                        slide[2] = new ImageView(image);
-                        if(imageList.indexOf(nextim)>0){
-                            currentIndex = imageList.indexOf(nextim) - 1;
+
+                    if(currentIndex<imageList.size()-1){
+                        onNextImage();
+                        currentIndex--;
+                    }else{
+                        if(currentIndex>0){
+                            onLastImagePressed();
                         }else{
-                            currentIndex=0;
-                        }
-
-                    }else {
-                        slide[2]=null;
-                        imageList = imageService.getAllImages(activ);
-                        if(imageList.size()>0){
-                            currentIndex=imageList.size()-1;
-                        }else {
-                            currentIndex=0;
+                            onClosePressed();
                         }
                     }
-                    ivfullscreenImage.setImage(slide[1].getImage());
-
-                }else if(currentIndex-1>-1) {
-                    slide[1] = slide[0];
-                    imageService.delete(imageList.get(currentIndex).getImageID());
-                    if (currentIndex-2>-1) {
-                        at.ac.tuwien.sepm.ws16.qse01.entities.Image nextim = imageList.get(currentIndex - 2);
-                        imageList = imageService.getAllImages(activ);
-                        Image image = new Image(new FileInputStream(nextim.getImagepath()));
-                        slide[0] = new ImageView(image);
-                        if(imageList.indexOf(nextim)<imageList.size()-1);
-                        currentIndex = imageList.indexOf(nextim)+1;
-                    }else {
-                        slide[0]=null;
-                        imageList = imageService.getAllImages(activ);
-                        currentIndex=0;
-                    }
-                    ivfullscreenImage.setImage(slide[1].getImage());
-            }else {
-                    slide = null;
-                    ivfullscreenImage = null;
-                    imageService.delete(imageList.get(currentIndex).getImageID());
-                    windowManager.showMiniatureFrame();
+                    imageList= imageService.getAllImages(activ);
                 }
-            }
             }
         } catch (ServiceException e) {
             LOGGER.debug("delete - "+e);
             informationDialog("Bild konnte nicht gelöscht werden.");
-        } catch (FileNotFoundException e) {
-            LOGGER.debug("delete - "+e);
-            informationDialog("Der Speicher Ort konnte nicht gefunden werden!");
         }
     }
 
@@ -206,11 +154,9 @@ public class FullScreenImageController {
      * closes full screen and opens miniatur sceen again
      * before doing so it sets currentIndex to -1 to overcome possible null pointer exeptions
      *
-     * @param actionEvent press action event
      */
     @FXML
-    public void onClosePressed(ActionEvent actionEvent) {
-        currentIndex=-1;
+    public void onClosePressed(){
         windowManager.showMiniatureFrame();
     }
 
@@ -276,9 +222,8 @@ public class FullScreenImageController {
      *
      * catches FillNotFound exeption
      *
-     * @param actionEvent swipe action event
      */
-    public void onLastImagePressed(ActionEvent actionEvent) {
+    public void onLastImagePressed() {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
@@ -310,9 +255,8 @@ public class FullScreenImageController {
      *
      * catches FillNotFound exeption
      *
-     * @param actionEvent swipe action event
      */
-    public void onNextImage(ActionEvent actionEvent) {
+    public void onNextImage() {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
