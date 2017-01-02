@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
@@ -11,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
