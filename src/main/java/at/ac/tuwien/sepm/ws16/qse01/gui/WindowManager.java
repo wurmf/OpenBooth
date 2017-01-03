@@ -40,6 +40,7 @@ public class WindowManager {
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
+    private ShootingAdminController shootingAdminController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
@@ -101,6 +102,7 @@ public class WindowManager {
         parentsf.setStyle("-fx-font-size:"+fontSize+"px;");
         parentsf.getStylesheets().add(csssf.toExternalForm());
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
+        this.shootingAdminController = shootingWrapper.getController();
 
         //Creating Profile-Scene
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
@@ -137,7 +139,7 @@ public class WindowManager {
         Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
         URL csscos= this.getClass().getResource("/css/costumer.css");
         LOGGER.info("CSSCOS -"+csscos);
-        parentcos.setStyle("-fx-font-size:"+ fontSize*2 +"px;");
+        parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.costumerScene = new Scene(parentcos,screenWidth,screenHeight);
 
@@ -173,6 +175,7 @@ public class WindowManager {
      * Sets the shootingScene as Scene in the mainStage.
      */
     public void showShootingAdministration(){
+        shootingAdminController.inactivemode();
         mainStage.setScene(shootingScene);
         mainStage.setFullScreen(true);
     }

@@ -83,7 +83,6 @@ public class ShootingAdminController {
     private void initialize() {
 
         try {
-
             if(shootingService.searchIsActive().getActive()){
                 startButton.setVisible(false);
                 stopButton.setVisible(true);
@@ -92,6 +91,7 @@ public class ShootingAdminController {
                 storageDirLabel.setVisible(false);
                 gridSave.setVisible(false);
                 label = new Label(shootingService.searchIsActive().getStorageDir());
+                LOGGER.debug(label.getText());
                 label.setVisible(true);
                 gridbase.add(label,2,3);
 
@@ -124,13 +124,43 @@ public class ShootingAdminController {
                     profileChoiceBox.setValue(observableListProfile.get(0));
                 }
             }
-            storageDirLabel.setText(shootingService.searchIsActive().getStorageDir());
+
         } catch (ServiceException e) {
             LOGGER.debug("initialise -"+e);
             showInformationDialog("Bitte erstellen Sie ein Profil");
         }
     }
 
+    public void inactivemode(){
+        try {
+            if (shootingService.searchIsActive().getActive()) {
+                startButton.setVisible(false);
+                stopButton.setVisible(true);
+                storage.setVisible(false);
+                canclebutton.setText("Fortsetzen");
+                storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
+                label = new Label(shootingService.searchIsActive().getStorageDir());
+                LOGGER.debug(label.getText());
+                label.setVisible(true);
+                gridbase.add(label, 2, 3);
+
+            } else {
+                stopButton.setVisible(false);
+                startButton.setVisible(true);
+                storage.setVisible(true);
+                storageDirLabel.setVisible(true);
+                if (label != null) {
+                    label.setVisible(false);
+                }
+                gridSave.setVisible(true);
+                canclebutton.setText("Abbrechen");
+            }
+        }catch (ServiceException e ){
+            e.printStackTrace();
+        }
+
+    }
     /**
      * when pressed an new shooting starts
      * to successfully start an new shooting an storage path gets selected and an profile must be selected

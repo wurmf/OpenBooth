@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,6 +24,8 @@ public class LoginFrameController {
 
     private WindowManager windowManager;
     private AdminUserService adminUserService;
+    private ShootingService shootingService;
+    private boolean firstLogin=false;
     @FXML
     private TextField adminField;
     @FXML
@@ -32,9 +35,10 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
+    public LoginFrameController(ShootingService shootingService, AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
+        this.shootingService=shootingService;
     }
 
     /**
@@ -48,6 +52,7 @@ public class LoginFrameController {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
                 windowManager.showShootingAdministration();
+                firstLogin=true;
                 resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
@@ -68,8 +73,15 @@ public class LoginFrameController {
      */
     @FXML
     public void closeLogin(){
-        resetValues();
-        windowManager.showMainFrame();
+        try {
+            resetValues();
+            if (shootingService.searchIsActive().getActive() && firstLogin) {
+                windowManager.showCostumerScene();
+            }
+            windowManager.showMainFrame();
+        } catch (ServiceException e) {
+            LOGGER.debug("serach active shooting:"+e);
+        }
     }
 
     /**

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -510,13 +511,17 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean erasePairCameraPosition(Profile.PairCameraPosition pairCameraPosition) throws ServiceException {
         Profile profile = this.get(pairCameraPosition.getProfileId());
         List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
-        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+
+        for(Iterator<Profile.PairCameraPosition> it = pairCameraPositions.iterator();it.hasNext();)
         {
-            if(auxPairCameraPosition.getId()==pairCameraPosition.getId())
+            Profile.PairCameraPosition auxPairCameraPosition = it.next();
+            if(auxPairCameraPosition.getId()== pairCameraPosition.getId())
             {
                 pairCameraPositions.remove(auxPairCameraPosition);
             }
         }
+
+
         profile.setPairCameraPositions(pairCameraPositions);
         return this.edit(profile);
     }
@@ -582,17 +587,14 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
         Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
-        Profile.PairLogoRelativeRectangle toRemove = null;
-        for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
+        for(Iterator<Profile.PairLogoRelativeRectangle> it = pairLogoRelativeRectangles.iterator();it.hasNext();)
         {
+            Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle = it.next();
             if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId())
             {
-                toRemove =auxPairLogoRelativeRectangle;
+                pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);
             }
         }
-        if(toRemove!=null)
-            pairLogoRelativeRectangles.remove(toRemove);
-
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
         return this.edit(profile);
     }

@@ -68,7 +68,7 @@ public class ImageServiceImpl implements ImageService {
         if(com.sun.javafx.PlatformUtil.isWindows())
             lib = "/.lib/opencv_java320.dll";
         if(com.sun.javafx.PlatformUtil.isLinux())
-            lib = "/.lib/opencv_java320.so"; //TODO lib-file for linux must be saved in proj_ws16
+            lib = "/.lib/libopencv_java320.so";
 
         System.load(System.getProperty("user.dir")+lib);
         checkStorageDir();
