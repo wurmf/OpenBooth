@@ -3,8 +3,10 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
@@ -27,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Controller for MiniaturFrame
@@ -47,7 +50,9 @@ public class MiniaturFrameController {
     @FXML
     private ScrollPane scrollPane;
 
+    private Stage stage=null;
     private ImageView activeImageView = null;
+    List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
 
     @Autowired
     public MiniaturFrameController(ImageService imageService, ShootingService shootingService,WindowManager windowManager) throws ServiceException {
@@ -57,6 +62,7 @@ public class MiniaturFrameController {
     }
 
     public void init(Stage stage) throws ServiceException {
+        this.stage=stage;
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
@@ -66,7 +72,6 @@ public class MiniaturFrameController {
 
         tile.setHgap(20);
         tile.setVgap(20);
-        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages;
         if(shootingService.searchIsActive().getActive()) {
             LOGGER.info("Active Shooting ->" + shootingService.searchIsActive().getId());
             listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
@@ -76,80 +81,7 @@ public class MiniaturFrameController {
         //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
-
-            HBox hBox = new HBox();
-            hBox.setSpacing(120);
-            hBox.setVisible(false);
-            hBox.setStyle("-fx-background-color: #dddddd;");
-
-            ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
-            fullscreen.setFitHeight(30);
-            fullscreen.setFitWidth(30);
-            fullscreen.setOnMouseClicked(mouseEvent -> {
-                ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-                LOGGER.debug("fullscreen clicked...imageID = "+imageView.getId());
-
-                windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
-            });
-
-            ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
-            delete.setFitHeight(30);
-            delete.setFitWidth(30);
-            delete.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                LOGGER.debug("delete button clicked...");
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText("Bild Löschen");
-                alert.setContentText("Möchten Sie das Bild tatsächlich löschen");
-                alert.initModality(Modality.WINDOW_MODAL);
-                alert.initOwner(stage);
-                Optional<ButtonType> result =alert.showAndWait();
-
-                if(result.isPresent()&&result.get()==ButtonType.OK){
-                    ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-                    LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
-                    try {
-
-                        imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
-
-
-
-
-                        tile.getChildren().remove(imageView.getParent());
-
-                    } catch (ServiceException e) {
-                        LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
-                    }
-
-                }
-            });
-
-
-            hBox.getChildren().addAll(fullscreen,delete);
-
-
-            ImageView imageView = null;
-            try {
-                if(new File(img.getImagepath()).isFile()) {
-                    imageView = createImageView(new File(img.getImagepath()));
-                }else if(new File(System.getProperty("user.dir") + img.getImagepath()).isFile()){
-                    img.setImagepath(System.getProperty("user.dir") + img.getImagepath());
-                    imageService.update(img);
-                    imageView = createImageView(new File(img.getImagepath()));
-                }else {
-                    LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
-                    imageService.delete(img.getImageID());
-                }
-                if(imageView!=null){
-                    VBox vBox = new VBox();
-                    LOGGER.debug("imageview id = "+img.getImageID());
-                    imageView.setId(String.valueOf(img.getImageID()));
-                    imageView.setUserData(img.getImagepath());
-                    vBox.getChildren().addAll(imageView,hBox);
-                    tile.getChildren().add(vBox);
-                }
-            }catch (Exception e){
-                LOGGER.debug("Fehler: "+e.getMessage());
-            }
+            prepareHBox(img);
         }
 
     }
@@ -207,8 +139,97 @@ public class MiniaturFrameController {
     }
 
     public void backButtonClicked(){
-        //windowManager.showMainFrame();
-        windowManager.showCostumerScene();
+        windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
         LOGGER.debug("backbutton cliked...");
+    }
+
+    public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image) {
+        listOfImages.add(image);
+        prepareHBox(image);
+    }
+    public void notifyOfDelete(at.ac.tuwien.sepm.ws16.qse01.entities.Image image){
+        listOfImages.removeIf(img -> img.getImageID()==image.getImageID());
+
+        List<Node> vboxList=tile.getChildren().stream()
+                .filter(node -> node instanceof VBox)                                               //Filter for instances of VBox
+                .map(node -> (VBox)node)                                                            //Cast these instances to VBoxes
+                .map(vbox -> vbox.getChildren().get(0))                                             //Get the ImageViews from the VBoxes
+                .filter(imageView -> imageView.getId().equals(String.valueOf(image.getImageID())))  //Filter the Stream for the one object that has the images id
+                .map(Node::getParent)                                                               //map the resulting ImageViews back to its parent(Node-object)
+                .collect(Collectors.toList());                                                      //Collect the stream to a list
+        tile.getChildren().remove(vboxList.get(0));
+    }
+
+    private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img){
+        HBox hBox = new HBox();
+        hBox.setSpacing(120);
+        hBox.setVisible(false);
+        hBox.setStyle("-fx-background-color: #dddddd;");
+
+        ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
+        fullscreen.setFitHeight(30);
+        fullscreen.setFitWidth(30);
+        fullscreen.setOnMouseClicked(mouseEvent -> {
+            ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
+            LOGGER.debug("fullscreen clicked...imageID = "+imageView.getId());
+
+            windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
+        });
+
+        ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
+        delete.setFitHeight(30);
+        delete.setFitWidth(30);
+        delete.setOnMouseClicked((MouseEvent mouseEvent) -> {
+            LOGGER.debug("delete button clicked...");
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("Bild Löschen");
+            alert.setContentText("Möchten Sie das Bild tatsächlich löschen");
+            alert.initModality(Modality.WINDOW_MODAL);
+            alert.initOwner(this.stage);
+            Optional<ButtonType> result =alert.showAndWait();
+
+            if(result.isPresent()&&result.get()==ButtonType.OK){
+                ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
+                LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+                try {
+
+                    imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
+
+                    tile.getChildren().remove(imageView.getParent());
+
+                } catch (ServiceException e) {
+                    LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
+                }
+
+            }
+        });
+
+
+        hBox.getChildren().addAll(fullscreen,delete);
+
+
+        ImageView imageView = null;
+        try {
+            if(new File(img.getImagepath()).isFile()) {
+                imageView = createImageView(new File(img.getImagepath()));
+            }else if(new File(System.getProperty("user.dir") + img.getImagepath()).isFile()){
+                img.setImagepath(System.getProperty("user.dir") + img.getImagepath());
+                imageService.update(img);
+                imageView = createImageView(new File(img.getImagepath()));
+            }else {
+                LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
+                imageService.delete(img.getImageID());
+            }
+            if(imageView!=null){
+                VBox vBox = new VBox();
+                LOGGER.debug("imageview id = "+img.getImageID());
+                imageView.setId(String.valueOf(img.getImageID()));
+                imageView.setUserData(img.getImagepath());
+                vBox.getChildren().addAll(imageView,hBox);
+                tile.getChildren().add(vBox);
+            }
+        }catch (Exception e){
+            LOGGER.debug("Fehler: "+e.getMessage());
+        }
     }
 }

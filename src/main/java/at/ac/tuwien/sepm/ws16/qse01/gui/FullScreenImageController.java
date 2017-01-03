@@ -78,16 +78,17 @@ public class FullScreenImageController {
     private ShootingService shootingService;
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
+    private RefreshManager refreshManager;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
+        this.refreshManager=refreshManager;
 
         this.activeShooting = shootingService.searchIsActive();
-
     }
 
     /**
@@ -159,8 +160,8 @@ public class FullScreenImageController {
             alert.initOwner(windowManager.getStage());
             Optional<ButtonType> result =alert.showAndWait();
                 if(result.isPresent()&&result.get()==ButtonType.OK){
-
-                    imageService.delete(imageList.get(currentIndex).getImageID());
+                    at.ac.tuwien.sepm.ws16.qse01.entities.Image image=imageList.get(currentIndex);
+                    imageService.delete(image.getImageID());
 
                     if(currentIndex<imageList.size()-1){
                         onNextImage();
@@ -173,6 +174,7 @@ public class FullScreenImageController {
                         }
                     }
                     imageList= imageService.getAllImages(activ);
+                    refreshManager.notifyMiniatureFrameOfDelete(image);
                 }
             }
         } catch (ServiceException e) {
@@ -541,6 +543,7 @@ public class FullScreenImageController {
             ivfullscreenImage.setId(filteredImgPath);
 
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+            refreshManager.notifyMiniatureFrameOfAdd(newImage);
            // imageList.add(activ+1,newImage);
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());

@@ -10,6 +10,7 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.gui.RefreshManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
@@ -36,6 +37,7 @@ public class CameraHandlerThread  extends Thread{
     ShotFrameManager shotFrameManager;
     CameraGphoto cameraGphoto;
     Camera camera;
+    RefreshManager refreshManager;
 
 
     public void run()
@@ -99,7 +101,7 @@ public class CameraHandlerThread  extends Thread{
             }
             if(imageSaved)
             {
-                shotFrameManager.refreshShot(camera.getId(), image.getImagepath());
+                refreshManager.refreshFrames(camera.getId(), image);
                 imageSaved=false;
             }
         }
@@ -128,5 +130,9 @@ public class CameraHandlerThread  extends Thread{
 
     public void setCamera(Camera camera) {
         this.camera = camera;
+    }
+
+    public void setRefreshManager(RefreshManager refreshManager){
+        this.refreshManager=refreshManager;
     }
 }
