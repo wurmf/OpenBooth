@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -63,10 +64,14 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
                     try {
-
+                        LOGGER.info("Logo Image uploading..."+file.getAbsolutePath());
                         Profile.PairLogoRelativeRectangle p = logoList.get(getIndex());
+                        if(p.getLogo()==null){
+                            Logo newLogo = pservice.addLogo(new Logo("null(No Logo Name)",file.getAbsolutePath()));
+                            p.setLogo(newLogo);
 
-                        p.getLogo().setPath(file.getAbsolutePath());
+                        }else
+                            p.getLogo().setPath(file.getAbsolutePath());
 
 
                         /* UPDATE TABLEVIEW */
@@ -80,8 +85,8 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                         setGraphic(hb);
 
 
-                        pservice.editPairLogoRelativeRectangle(p,p.getLogo().getId(),p.getRelativeRectangle());
-                        //TODO nachdem profilDAO keine exception wirft,diese zeile wieder vor tableview schieben.
+                        pservice.editLogo(p.getLogo());
+
 
                     } catch (ServiceException e) {
                        LOGGER.error(e.getMessage());

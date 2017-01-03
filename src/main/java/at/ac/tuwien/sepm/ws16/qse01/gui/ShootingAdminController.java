@@ -14,6 +14,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +39,13 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
-
+    @FXML GridPane gridbase;
+    @FXML
+    private GridPane gridSave;
+    @FXML
+    private Button canclebutton;
     @FXML
     private Button storage;
-
     @FXML
     private Button startButton;
     @FXML
@@ -54,6 +58,7 @@ public class ShootingAdminController {
 
     private String path =null;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+    Label label;
 
     private ShootingService shootingService;
     private ProfileService profileService;
@@ -78,17 +83,28 @@ public class ShootingAdminController {
     private void initialize() {
 
         try {
-
             if(shootingService.searchIsActive().getActive()){
                 startButton.setVisible(false);
                 stopButton.setVisible(true);
                 storage.setVisible(false);
+                canclebutton.setText("Fortsetzen");
                 storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
+                label = new Label(shootingService.searchIsActive().getStorageDir());
+                LOGGER.debug(label.getText());
+                label.setVisible(true);
+                gridbase.add(label,2,3);
+
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
                 storageDirLabel.setVisible(true);
+                if(label!= null){
+                    label.setVisible(false);
+                }
+                gridSave.setVisible(true);
+                canclebutton.setText("Abbrechen");
             }
             String resource = System.getProperty("user.home");
 
@@ -108,12 +124,43 @@ public class ShootingAdminController {
                     profileChoiceBox.setValue(observableListProfile.get(0));
                 }
             }
+
         } catch (ServiceException e) {
             LOGGER.debug("initialise -"+e);
             showInformationDialog("Bitte erstellen Sie ein Profil");
         }
     }
 
+    public void inactivemode(){
+        try {
+            if (shootingService.searchIsActive().getActive()) {
+                startButton.setVisible(false);
+                stopButton.setVisible(true);
+                storage.setVisible(false);
+                canclebutton.setText("Fortsetzen");
+                storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
+                label = new Label(shootingService.searchIsActive().getStorageDir());
+                LOGGER.debug(label.getText());
+                label.setVisible(true);
+                gridbase.add(label, 2, 3);
+
+            } else {
+                stopButton.setVisible(false);
+                startButton.setVisible(true);
+                storage.setVisible(true);
+                storageDirLabel.setVisible(true);
+                if (label != null) {
+                    label.setVisible(false);
+                }
+                gridSave.setVisible(true);
+                canclebutton.setText("Abbrechen");
+            }
+        }catch (ServiceException e ){
+            e.printStackTrace();
+        }
+
+    }
     /**
      * when pressed an new shooting starts
      * to successfully start an new shooting an storage path gets selected and an profile must be selected
@@ -143,7 +190,7 @@ public class ShootingAdminController {
 
                         shootingService.addShooting(shouting);
 
-                        windowManager.showMiniatureFrame();
+                        windowManager.showCostumerScene();
                         windowManager.initShotFrameManager();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
@@ -159,8 +206,17 @@ public class ShootingAdminController {
      * @param actionEvent press action event
      */
     public void onDemolitionPressed(ActionEvent actionEvent) {
-        //storageDirLabel.setText("");
-        windowManager.showMainFrame();
+        try {
+            if (shootingService.searchIsActive().getActive()) {
+                shootingService.updateProfile();
+                windowManager.showCostumerScene();
+            } else {
+                windowManager.showMainFrame();
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("restart kein aktives shooting"+e);
+            showInformationDialog("Shooting konnte nicht mehr hergestellt werden");
+        }
     }
 
     /*

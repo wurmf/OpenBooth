@@ -46,9 +46,11 @@ public class WindowManager {
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
+    private Scene costumerScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
+    private ShootingAdminController shootingAdminController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -84,8 +86,12 @@ public class WindowManager {
         // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
-       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/pictureFrame.fxml", FullScreenImageController.class);
+       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
+        URL cssf= this.getClass().getResource("/css/fullscreen.css");
+        LOGGER.info("CSSF -"+cssf);
+        root.setStyle("-fx-font-size:"+fontSize+"px;");
+        root.getStylesheets().add(cssf.toExternalForm());
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
         this.pictureController = pictureWrapper.getController();
 
@@ -107,6 +113,7 @@ public class WindowManager {
         parentsf.setStyle("-fx-font-size:"+fontSize+"px;");
         parentsf.getStylesheets().add(csssf.toExternalForm());
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
+        this.shootingAdminController = shootingWrapper.getController();
 
         //Creating Profile-Scene
         SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
@@ -116,7 +123,12 @@ public class WindowManager {
         //Creating Setting-Scene
         SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
-        this.settingScene = new Scene((Parent) settingWrapper.getLoadedObject(),screenWidth,screenHeight);
+        Parent parentsett = (Parent) settingWrapper.getLoadedObject();
+        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSSETT:"+csssett);
+        parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentsett.getStylesheets().add(csssett.toExternalForm());
+        this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
 
         //Creating Login-Scene
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
@@ -125,12 +137,22 @@ public class WindowManager {
         LOGGER.info("CSSAD -"+cssad);
         parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentad.getStylesheets().add(cssad.toExternalForm());
-        this.adminLoginScene = new Scene((Parent) adminLoginWrapper.getLoadedObject(),screenWidth,screenHeight);
+        this.adminLoginScene = new Scene(parentad,screenWidth,screenHeight);
 
         //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
+
+        //costumer scene
+        SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
+        Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
+        URL csscos= this.getClass().getResource("/css/costumer.css");
+        LOGGER.info("CSSCOS -"+csscos);
+        parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
+        parentcos.getStylesheets().add(csscos.toExternalForm());
+        this.costumerScene = new Scene(parentcos,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -143,7 +165,7 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            showAdminLogin(WindowManager.SHOW_MINIATURESCENE);
+            showCostumerScene();
             //initShotFrameManager();
         } else {
             showAdminLogin(SHOW_MAINSCENE);
@@ -182,6 +204,15 @@ public class WindowManager {
         }
         mainStage.setFullScreen(true);
     }
+
+    /**
+     * Sets the shootingScene as Scene in the mainStage.
+     */
+    public void showShootingAdministration(){
+        shootingAdminController.inactivemode();
+        mainStage.setScene(shootingScene);
+        mainStage.setFullScreen(true);
+    }
     /**
      * Sets the mainScene as Scene in the mainStage.
      */
@@ -194,6 +225,11 @@ public class WindowManager {
     public void showProfileScene(){
         showScene(SHOW_PROFILESCENE);
     }
+
+    public void showCostumerScene(){
+        mainStage.setScene(costumerScene);
+        mainStage.setFullScreen(true);
+    }
     /**
      * Sets the miniaturScene as Scene in the mainStage.
      */
@@ -204,18 +240,19 @@ public class WindowManager {
     public void showFullscreenImage(){
         showScene(SHOW_PICTUREFULLSCENE);
     }
+
+    public void showFullscreenImage(int imgID){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
+        pictureController.changeImage(imgID);
+    }
+
     /**
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
      */
     public void closeStages(){
         mainStage.close();
         shotFrameManager.closeFrames();
-    }
-
-    public void showFullscreenImage(int imgID){
-        mainStage.setScene(pictureFullScene);
-        mainStage.setFullScreen(true);
-        pictureController.changeImage(imgID);
     }
 
     /**

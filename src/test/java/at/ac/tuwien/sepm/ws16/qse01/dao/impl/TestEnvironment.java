@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
@@ -16,6 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -63,6 +66,30 @@ public class TestEnvironment {
     @Mock protected Statement mockStatement;
     @Mock protected PreparedStatement mockPreparedStatement;
     @Mock protected ResultSet mockResultSet;
+
+    protected Camera cameraA;
+    protected Position positionA;
+    protected Logo logoA;
+    protected Camera camera1;
+    protected Camera camera2;
+    protected Position position1;
+    protected Position position2;
+    protected Logo logo1;
+    protected Logo logo2;
+    protected Profile.PairCameraPosition pairCameraPositionA;
+    protected Profile.PairCameraPosition pairCameraPositionB;
+    protected Profile.PairCameraPosition pairCameraPositionC;
+    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
+    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
+    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleC;
+    protected RelativeRectangle relativeRectangleA;
+    protected RelativeRectangle relativeRectangleB;
+    protected RelativeRectangle relativeRectangleC;
+    protected List<Profile.PairCameraPosition> pairCameraPositions;
+    protected List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    protected Profile profileA;
+    protected Profile profileB;
+    protected Profile profileC;
 
     @Before public void setUp() throws Exception
     {
@@ -119,8 +146,56 @@ public class TestEnvironment {
         catch (SQLException e) {
             throw new PersistenceException("Error! AutoCommit couldn't be deactivated:" + e);
         }
+
         //Run drop.sql, create.sql, init.sql, insert.sql
         H2EmbeddedHandler.getInstance().resetDBForTest();
+
+        /*
+        * Setup Test objects for all testing
+         */
+        cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
+        positionA = new Position("Position A","/dev/null/positionA.jpg");
+        logoA = new Logo("Logo A","/dev/null/logoA.jpg");
+        camera1 = cameraDAO.read(1);
+        camera2 = cameraDAO.read(2);
+        position1 = positionDAO.read(1);
+        position2 = positionDAO.read(2);
+        logo1 = logoDAO.read(1);
+        logo2 = logoDAO.read(2);
+        relativeRectangleA = new RelativeRectangle(10.1, 10.2, 30.3, 30.4);
+        relativeRectangleB = new RelativeRectangle(80.1, 80.2, 10.3, 10.4);
+        relativeRectangleC = new RelativeRectangle(1, 2, 3, 4);
+        pairCameraPositions = new ArrayList<>();
+        pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1, true);
+        pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
+        pairCameraPositionC = new Profile.PairCameraPosition(cameraA, positionA, true);
+        pairCameraPositions.add(pairCameraPositionA);
+        pairCameraPositions.add(pairCameraPositionB);
+        pairLogoRelativeRectangles = new ArrayList<>();
+        pairLogoRelativeRectangleA = new Profile.PairLogoRelativeRectangle(logo1, relativeRectangleA);
+        pairLogoRelativeRectangleB = new Profile.PairLogoRelativeRectangle(logo2, relativeRectangleB);
+        pairLogoRelativeRectangleC = new Profile.PairLogoRelativeRectangle(logoA, relativeRectangleC);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
+        pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
+
+        profileA = new Profile("Profile A");
+        profileB = new Profile("Profile B",
+                true,
+                true,
+                true,
+                true,
+                "/dev/null/watermarkB.jpg");
+
+        profileC = new Profile(20,
+                "Profile C",
+                pairCameraPositions,
+                pairLogoRelativeRectangles,
+                true,
+                true,
+                true,
+                true,
+                "/dev/null/watermarkC.jpg",
+                false);
     }
 
     @After public void tearDown() throws Exception {

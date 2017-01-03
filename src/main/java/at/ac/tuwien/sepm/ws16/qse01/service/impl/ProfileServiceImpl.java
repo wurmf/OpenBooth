@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,7 +45,6 @@ public class ProfileServiceImpl implements ProfileService{
                               LogoDAO logoDAO,
                               CameraDAO cameraDAO, ShootingService shootingService
     ) throws ServiceException {
-    //public ProfileServiceImpl() throws ServiceException {
         this.profileDAO = profileDAO;
         this.positionDAO = positionDAO;
         this.logoDAO = logoDAO;
@@ -130,6 +130,7 @@ public class ProfileServiceImpl implements ProfileService{
         }
     }
 
+    @Override
     public boolean editPosition(Position position) throws ServiceException {
         LOGGER.debug("Entering editPosition method with parameters " + position);
         try {
@@ -446,7 +447,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public boolean addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
+    public Profile.PairCameraPosition addPairCameraPosition(int profileId, int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
         Profile.PairCameraPosition pairCameraPosition
                 = new Profile.PairCameraPosition(
                 this.getCamera(cameraId),
@@ -456,11 +457,12 @@ public class ProfileServiceImpl implements ProfileService{
         List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
         pairCameraPositions.add(pairCameraPosition);
         profile.setPairCameraPositions(pairCameraPositions);
-        return this.edit(profile);
+        this.edit(profile);
+        return pairCameraPosition;
     }
 
     @Override
-    public boolean addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
+    public Profile.PairCameraPosition addPairCameraPosition(int cameraId, int positionId, boolean isGreenScreenReady) throws ServiceException {
         return addPairCameraPosition(this.getActiveProfile().getId(),cameraId,positionId, isGreenScreenReady);
     }
 
@@ -481,7 +483,8 @@ public class ProfileServiceImpl implements ProfileService{
             }
         }
         if (invertIsGreenScreenReadySwitch) {
-            if (b) {pairCameraPosition.setGreenScreenReady(false);}
+            if (b)
+                {pairCameraPosition.setGreenScreenReady(false);}
             else {pairCameraPosition.setGreenScreenReady(true);}
         }
         return editPairCameraPosition(pairCameraPosition);
@@ -508,13 +511,17 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean erasePairCameraPosition(Profile.PairCameraPosition pairCameraPosition) throws ServiceException {
         Profile profile = this.get(pairCameraPosition.getProfileId());
         List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
-        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+
+        for(Iterator<Profile.PairCameraPosition> it = pairCameraPositions.iterator();it.hasNext();)
         {
-            if(auxPairCameraPosition.getId()==pairCameraPosition.getId())
+            Profile.PairCameraPosition auxPairCameraPosition = it.next();
+            if(auxPairCameraPosition.getId()== pairCameraPosition.getId())
             {
                 pairCameraPositions.remove(auxPairCameraPosition);
             }
         }
+
+
         profile.setPairCameraPositions(pairCameraPositions);
         return this.edit(profile);
     }
@@ -534,7 +541,7 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public boolean addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
+    public Profile.PairLogoRelativeRectangle addPairLogoRelativeRectangle(int profileId, int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
         Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle
                 = new Profile.PairLogoRelativeRectangle(
                 this.getLogo(logoId),
@@ -543,18 +550,21 @@ public class ProfileServiceImpl implements ProfileService{
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangle);
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
-        return this.edit(profile);
+        this.edit(profile);
+        return pairLogoRelativeRectangle;
     }
 
     @Override
-    public boolean addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
+    public Profile.PairLogoRelativeRectangle addPairLogoRelativeRectangle(int logoId, RelativeRectangle relativeRectangle) throws ServiceException {
         return addPairLogoRelativeRectangle(this.getActiveProfile().getId(),logoId,relativeRectangle);
     }
 
     @Override
     public boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle, int newLogoId, RelativeRectangle newRelativeRectangle) throws ServiceException {
-        if (newLogoId > 0){pairLogoRelativeRectangle.setLogo(getLogo(newLogoId));}
-        if (newRelativeRectangle != null){pairLogoRelativeRectangle.setRelativeRectangle(newRelativeRectangle);}
+        if (newLogoId > 0)
+            {pairLogoRelativeRectangle.setLogo(getLogo(newLogoId));}
+        if (newRelativeRectangle != null)
+            {pairLogoRelativeRectangle.setRelativeRectangle(newRelativeRectangle);}
         return editPairLogoRelativeRectangle(pairLogoRelativeRectangle);
     }
 
@@ -577,8 +587,9 @@ public class ProfileServiceImpl implements ProfileService{
     public boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
         Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
-        for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
+        for(Iterator<Profile.PairLogoRelativeRectangle> it = pairLogoRelativeRectangles.iterator();it.hasNext();)
         {
+            Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle = it.next();
             if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId())
             {
                 pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);

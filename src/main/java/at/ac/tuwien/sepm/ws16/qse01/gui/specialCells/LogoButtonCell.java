@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -26,7 +27,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
     private final Button cellButton = new Button("X");
 
-    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage) {
+    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage, int profileID) {
         this.posList = posList;
         this.pservice = pservice;
 
@@ -46,16 +47,24 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile.PairLogoRelativeRectangle currentProfile = (Profile.PairLogoRelativeRectangle) LogoButtonCell.this.getTableView().getItems().get(LogoButtonCell.this.getIndex());
+                    Profile.PairLogoRelativeRectangle currentPairLogo = (Profile.PairLogoRelativeRectangle) LogoButtonCell.this.getTableView().getItems().get(LogoButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    posList.remove(currentProfile);
-                 /*   try {
-                        //TODO: erase pairlogorelativeRectangle;
-                      //  pservice.eraseProfile(currentProfile);
+                    posList.remove(currentPairLogo);
+                   try {
+                        int countsOfLogoUsing = 0;
+                        for(Profile.PairLogoRelativeRectangle p: pservice.getAllPairLogoRelativeRectangle(profileID)) {
+                            if (p.getLogo()!= null && currentPairLogo.getLogo().getId() == p.getLogo().getId())
+                                countsOfLogoUsing++;
+                        }
+                       //if Logo is used just by this pairlogo relation, then delete it from database
+                        if(countsOfLogoUsing==1)
+                            pservice.eraseLogo(currentPairLogo.getLogo());
+
+                        pservice.erasePairLogoRelativeRectangle(currentPairLogo);
                     } catch (ServiceException e) {
                         e.printStackTrace();
-                    }*/
+                    }
 
 
                     setGraphic(null);

@@ -66,11 +66,14 @@ public class MiniaturFrameController {
 
         tile.setHgap(20);
         tile.setVgap(20);
-
-
-        LOGGER.info("Active Shooting ->"+shootingService.searchIsActive().getId());
-
-        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());
+        List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages;
+        if(shootingService.searchIsActive().getActive()) {
+            LOGGER.info("Active Shooting ->" + shootingService.searchIsActive().getId());
+            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+        }else{
+            return;
+        }
+        //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
 
@@ -128,8 +131,9 @@ public class MiniaturFrameController {
             try {
                 if(new File(img.getImagepath()).isFile()) {
                     imageView = createImageView(new File(img.getImagepath()));
-                }else if(new File(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath()).isFile()){
-                    img.setImagepath(System.getProperty("user.dir") + "/src/main/resources" + img.getImagepath());
+                }else if(new File(System.getProperty("user.dir") + img.getImagepath()).isFile()){
+                    img.setImagepath(System.getProperty("user.dir") + img.getImagepath());
+                    imageService.update(img);
                     imageView = createImageView(new File(img.getImagepath()));
                 }else {
                     LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
@@ -203,7 +207,8 @@ public class MiniaturFrameController {
     }
 
     public void backButtonClicked(){
-        windowManager.showMainFrame();
+        //windowManager.showMainFrame();
+        windowManager.showCostumerScene();
         LOGGER.debug("backbutton cliked...");
     }
 }
