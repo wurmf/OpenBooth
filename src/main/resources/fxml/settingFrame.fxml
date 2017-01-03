@@ -19,8 +19,8 @@
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1400.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="1032.4739990234375" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="550.0" />
+    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="504.0" />
       <ColumnConstraints />
   </columnConstraints>
   <rowConstraints>
@@ -29,9 +29,9 @@
     <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TitledPane animated="false" maxWidth="-Infinity" prefHeight="510.0" prefWidth="941.0" text="Profilverwaltung" GridPane.rowIndex="1">
+      <TitledPane animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="235.0" prefWidth="1002.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="235.0">
                <children>
                   <TableView fx:id="tableProfil" prefHeight="427.0" prefWidth="787.0">
                      <columns>
@@ -61,7 +61,7 @@
             <Insets left="20.0" />
          </padding>
       </TitledPane>
-      <TitledPane animated="false" prefHeight="717.0" prefWidth="1024.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1">
+      <TitledPane animated="false" prefHeight="522.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
                <children>
@@ -81,8 +81,11 @@
                </children>
             </AnchorPane>
          </content>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
       </TitledPane>
-      <TitledPane animated="false" prefHeight="717.0" prefWidth="300.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TitledPane animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
                <children>
@@ -95,11 +98,17 @@
                </children>
             </AnchorPane>
          </content>
+         <GridPane.margin>
+            <Insets left="20.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets right="20.0" />
+         </padding>
       </TitledPane>
 
-      <TitledPane animated="false" prefHeight="717.0" prefWidth="941.0" text="Logoverwaltung" GridPane.rowIndex="2">
+      <TitledPane animated="false" prefHeight="717.0" text="Logoverwaltung" GridPane.rowIndex="2">
          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0">
                <children>
 
                               <TableView fx:id="tableLogo" prefHeight="405.0" prefWidth="664.0">
@@ -122,9 +131,9 @@
                               <TextField fx:id="txLogoY" layoutX="290.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoHoehe" layoutX="409.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
-                              <ImageView fx:id="previewLogo" fitHeight="185.0" fitWidth="197.0" layoutX="707.0" layoutY="47.0" onMouseClicked="#fullScreenPreview" pickOnBounds="true" preserveRatio="true" />
-                              <TextField fx:id="txPreviewWidth" layoutX="707.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
-                              <TextField fx:id="txPreviewHeight" layoutX="794.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />
+                              <ImageView fx:id="previewLogo" fitHeight="157.0" fitWidth="165.0" layoutX="696.0" layoutY="54.0" onMouseClicked="#fullScreenPreview" pickOnBounds="true" preserveRatio="true" />
+                              <TextField fx:id="txPreviewWidth" layoutX="699.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
+                              <TextField fx:id="txPreviewHeight" layoutX="785.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />
 
                </children>
             </AnchorPane>

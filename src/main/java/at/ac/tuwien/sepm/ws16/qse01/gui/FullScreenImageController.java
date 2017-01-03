@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
@@ -18,6 +17,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +72,7 @@ public class FullScreenImageController {
     private Shooting activeShooting;
     private ImageView activeFilterImageView;
     private String filteredImgPath= null;
+    private boolean constraintInitialized = false;
 
     private ImageService imageService;
     private ShootingService shootingService;
@@ -270,6 +271,9 @@ public class FullScreenImageController {
                     button3.setVisible(true);
                 }
                 ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), base.getWidth(), base.getHeight(), true, true));
+                ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
+                makePreviewFilter(imageList.get(currentIndex).getImagepath());
+                saveFilteredButton.setVisible(false);
             } else {
                 windowManager.showMiniatureFrame();
             }
@@ -303,6 +307,9 @@ public class FullScreenImageController {
                     button4.setVisible(true);
                 }
                 ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
+                ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
+                makePreviewFilter(imageList.get(currentIndex).getImagepath());
+                saveFilteredButton.setVisible(false);
             } else {
                 windowManager.showMiniatureFrame();
             }
@@ -399,7 +406,17 @@ public class FullScreenImageController {
             String imgPath = imageService.resize(imgOriginalPath,100,150);
 
             int counter= 1;
-            for(Map.Entry<String, String> entry: imageService.getAllFilteredImages(imgPath).entrySet()){
+            Map<String,String> allfilters = imageService.getAllFilteredImages(imgPath);
+
+            double imageFilterConstraint = (Screen.getPrimary().getBounds().getWidth() - (allfilters.size() * 100)) / 2;
+            planbottom.getChildren().clear();
+            if(!constraintInitialized) {
+                System.out.println(imageFilterConstraint);
+                ColumnConstraints con = new ColumnConstraints();
+                con.setPrefWidth(imageFilterConstraint);
+                planbottom.getColumnConstraints().add(con);
+            }
+            for(Map.Entry<String, String> entry: allfilters.entrySet()){
                // System.out.println("filteredImage -> "+entry.getKey()+"-->"+entry.getValue());
 
                 ImageView imageView = new ImageView(new Image(new FileInputStream(entry.getValue()),80,80,false,true));
@@ -446,14 +463,21 @@ public class FullScreenImageController {
                     }
 
                 });
-
-                planbottom.add(imageView,counter,0);
-                ColumnConstraints con = new ColumnConstraints();
-                con.setPrefWidth(100);
-                planbottom.getColumnConstraints().add(con);
-
+                planbottom.add(imageView, counter, 0);
+                if(!constraintInitialized) {
+                    ColumnConstraints con = new ColumnConstraints();
+                    con.setPrefWidth(100);
+                    planbottom.getColumnConstraints().add(con);
+                }
 
                 counter++;
+            }
+            if(!constraintInitialized) {
+                ColumnConstraints con = new ColumnConstraints();
+                con.setPrefWidth(imageFilterConstraint);
+                planbottom.getColumnConstraints().add(con);
+
+                constraintInitialized = true;
             }
 
             mainPane.add(planbottom,0,2);

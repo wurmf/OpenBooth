@@ -5,8 +5,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.paint.LinearGradient?>
-<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
 <GridPane fx:id="base" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
@@ -50,19 +48,10 @@
                         <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" snapToPixel="false" style="-fx-background-image: url('/images/trashcan.png');" />
                         <Button fx:id="button11" mnemonicParsing="false" onAction="#onPrintPressed" style="-fx-background-image: url('/images/printer.png');" GridPane.columnIndex="1" />
                         <!--prefHeight="100.0" prefWidth="620.0"-->
-                     <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg" prefHeight="40.0" prefWidth="277.0" text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" visible="true" GridPane.columnIndex="2">
+                     <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg" prefHeight="40.0" prefWidth="213.0" visible="false" text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2">
                            <font>
-                              <Font name="System Bold" size="16.0" />
-                           </font>
-                           <textFill>
-                              <LinearGradient cycleMethod="REFLECT" endX="1.0" endY="1.0" startX="0.7836538461538461" startY="0.4326923076923077">
-                                 <stops>
-                                    <Stop color="#61e545" />
-                                    <Stop color="#434242" offset="1.0" />
-                                 </stops>
-                              </LinearGradient>
-                           </textFill>
-                        </Button>
+                              <Font name="System Bold" size="13.0" />
+                           </font></Button>
 
                         <Button fx:id="button2" mnemonicParsing="false" onAction="#onClosePressed" snapToPixel="false" style="-fx-background-image: url('/images/backarrow.png');" GridPane.columnIndex="3" />
 
