@@ -5,7 +5,6 @@ import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
-import at.ac.tuwien.sepm.ws16.qse01.gui.model.impl.UniversalModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 
 /**
  * A class that will control stages and serves as a means of communication between all controllers.
@@ -33,6 +31,8 @@ public class WindowManager {
     public static final int SHOW_PROFILESCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
     public static final int SHOW_PICTUREFULLSCENE=5;
+    public static final int SHOW_CUSTOMERSCENE=6;
+    public static final int SHOW_SETTINGSCENE=7;
 
     private SpringFXMLLoader springFXMLLoader;
     private ApplicationContext applicationContext;
@@ -46,7 +46,7 @@ public class WindowManager {
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
-    private Scene costumerScene;
+    private Scene customerScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
@@ -152,7 +152,7 @@ public class WindowManager {
         LOGGER.info("CSSCOS -"+csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
-        this.costumerScene = new Scene(parentcos,screenWidth,screenHeight);
+        this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -168,7 +168,7 @@ public class WindowManager {
             showCostumerScene();
             //initShotFrameManager();
         } else {
-            showAdminLogin(SHOW_MAINSCENE);
+            showAdminLogin(SHOW_MAINSCENE, SHOW_MAINSCENE);
         }
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
@@ -177,9 +177,11 @@ public class WindowManager {
 
     /**
      * Sets the adminLoginScene as Scene in the mainStage.
+     * @param sceneToShow one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the credentials are correct
+     * @param callingScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the back-button is clicked.
      */
-    public void showAdminLogin(int sceneToShow){
-        loginRedirectorModel.setNextScene(sceneToShow);
+    public void showAdminLogin(int sceneToShow, int callingScene){
+        loginRedirectorModel.setScenes(sceneToShow, callingScene);
         mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
@@ -198,6 +200,10 @@ public class WindowManager {
             case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
                 break;
             case SHOW_PICTUREFULLSCENE: mainStage.setScene(pictureFullScene);
+                break;
+            case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
+                break;
+            case SHOW_SETTINGSCENE: mainStage.setScene(settingScene);
                 break;
             default: mainStage.setScene(mainScene);
                 break;
@@ -226,9 +232,11 @@ public class WindowManager {
         showScene(SHOW_PROFILESCENE);
     }
 
+    /**
+     * Sets the customerScene as Scene in the mainStage.
+     */
     public void showCostumerScene(){
-        mainStage.setScene(costumerScene);
-        mainStage.setFullScreen(true);
+        showScene(SHOW_CUSTOMERSCENE);
     }
     /**
      * Sets the miniaturScene as Scene in the mainStage.

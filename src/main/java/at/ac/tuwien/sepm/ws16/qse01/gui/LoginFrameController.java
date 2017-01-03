@@ -73,7 +73,7 @@ public class LoginFrameController {
     @FXML
     public void closeLogin(){
         resetValues();
-        windowManager.showScene(WindowManager.SHOW_MAINSCENE);
+        windowManager.showScene(loginRedirectorModel.getCallingScene());
     }
 
     /**

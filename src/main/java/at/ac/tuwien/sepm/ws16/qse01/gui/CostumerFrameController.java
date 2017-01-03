@@ -71,7 +71,7 @@ public class CostumerFrameController {
     }
 
     public void switchToLogin(ActionEvent actionEvent) {
-        windowmanager.showAdminLogin();
+        windowmanager.showAdminLogin(WindowManager.SHOW_MAINSCENE, WindowManager.SHOW_CUSTOMERSCENE);
     }
 
     public void switchToFilter(ActionEvent actionEvent) {

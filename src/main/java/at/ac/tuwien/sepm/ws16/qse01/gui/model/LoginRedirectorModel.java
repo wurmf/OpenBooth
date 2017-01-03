@@ -5,10 +5,11 @@ package at.ac.tuwien.sepm.ws16.qse01.gui.model;
  */
 public interface LoginRedirectorModel {
     /**
-     * Set the number of the next scene that shall be shown.
-     * @param nextScene one of the static numbers defined WindowManager for choosing a frame.
+     * Set the number of the next scene that shall be shown and the scene from which the login-check is called.
+     * @param nextScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the credentials are correct.
+     * @param callingScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the back-button is clicked.
      */
-    void setNextScene(int nextScene);
+    void setScenes(int nextScene, int callingScene);
 
     /**
      * Get the number of the next window that shall be shown. If setScene() was not called previously an integer is given that is out of range for the WindowManager
@@ -17,4 +18,10 @@ public interface LoginRedirectorModel {
      * @return the number of the next scene that shall be shown.
      */
     int getNextScene();
+
+    /**
+     * Get the number of the scene from which the Login-check was called.
+     * @return the number of the calling scene.
+     */
+    int getCallingScene();
 }

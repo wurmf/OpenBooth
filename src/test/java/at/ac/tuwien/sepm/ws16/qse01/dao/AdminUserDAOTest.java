@@ -24,12 +24,6 @@ import static junit.framework.TestCase.assertTrue;
 public class AdminUserDAOTest extends TestEnvironment{
 
     static final Logger LOGGER = LoggerFactory.getLogger(AdminUserDAOTest.class);
-    protected AdminUserDAO adminUserDAO;
-
-    @Before
-    public void setUp() throws PersistenceException{
-        adminUserDAO=new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
-    }
 
     /**
      * Check if nonexistent-user-read returns null

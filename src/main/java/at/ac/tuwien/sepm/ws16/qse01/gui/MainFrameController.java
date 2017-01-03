@@ -69,7 +69,7 @@ public class MainFrameController {
      * @param actionEvent press action event
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        windowManager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE);
+        windowManager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_MAINSCENE);
     }
 
     /**
@@ -114,7 +114,7 @@ public class MainFrameController {
      * @param actionEvent press action event
      */
     public void onEditPressed(ActionEvent actionEvent) {
-        windowManager.showProfileScene();
+        windowManager.showScene(WindowManager.SHOW_SETTINGSCENE);
     }
 
     /**

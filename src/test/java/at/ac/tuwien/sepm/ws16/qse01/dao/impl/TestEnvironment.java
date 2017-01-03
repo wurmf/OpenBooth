@@ -59,6 +59,8 @@ public class TestEnvironment {
 
     protected ProfileService profileService;
 
+    protected AdminUserDAO adminUserDAO;
+
     protected Connection con;
 
     @Mock protected H2EmbeddedHandler mockH2Handler;
@@ -128,6 +130,7 @@ public class TestEnvironment {
         profileDAO = new JDBCProfileDAO(H2EmbeddedHandler.getInstance());
         imageDAO = new JDBCImageDAO(H2EmbeddedHandler.getInstance());
         shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
+        adminUserDAO = new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
 
         /*
         * Setup Services for all testing

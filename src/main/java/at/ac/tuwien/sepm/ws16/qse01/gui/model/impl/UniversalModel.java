@@ -12,16 +12,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class UniversalModel implements LoginRedirectorModel, SelectedImageShareModel{
     private int nextScene=-1;
+    private int callingScene=-1;
 
     @Override
-    public void setNextScene(int nextScene) {
+    public void setScenes(int nextScene, int callingScene) {
         this.nextScene=nextScene;
+        this.callingScene=callingScene;
     }
 
     @Override
     public int getNextScene() {
         int out=nextScene;
         nextScene=-1;
+        return out;
+    }
+
+    @Override
+    public int getCallingScene() {
+        int out=callingScene;
+        callingScene=-1;
         return out;
     }
 }
