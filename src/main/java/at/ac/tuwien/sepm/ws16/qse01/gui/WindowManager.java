@@ -30,9 +30,8 @@ public class WindowManager {
     public static final int SHOW_SHOOTINGSCENE=2;
     public static final int SHOW_PROFILESCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
-    public static final int SHOW_PICTUREFULLSCENE=5;
-    public static final int SHOW_CUSTOMERSCENE=6;
-    public static final int SHOW_SETTINGSCENE=7;
+    public static final int SHOW_CUSTOMERSCENE=5;
+    public static final int SHOW_SETTINGSCENE=6;
 
     private SpringFXMLLoader springFXMLLoader;
     private ApplicationContext applicationContext;
@@ -187,8 +186,6 @@ public class WindowManager {
             case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
                 break;
             case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
-                break;
-            case SHOW_PICTUREFULLSCENE: mainStage.setScene(pictureFullScene);
                 break;
             case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
                 break;
