@@ -80,7 +80,7 @@ public class CostumerFrameController {
     public void switchToLogin(ActionEvent actionEvent) {
 
         try {
-            windowmanager.showAdminLogin(WindowManager.SHOW_MAINSCENE, WindowManager.SHOW_CUSTOMERSCENE);
+            windowmanager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_CUSTOMERSCENE);
             if (!allpicturesview.isVisible()) {
                 if (shootingservice.searchIsActive().getActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
