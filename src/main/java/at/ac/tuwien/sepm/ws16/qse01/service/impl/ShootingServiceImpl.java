@@ -76,8 +76,12 @@ public class ShootingServiceImpl implements ShootingService {
         }
     }
 
-    public void updateProfile(){
-
+    public void updateProfile(Shooting shooting) throws ServiceException{
+        try {
+            shootingDAO.updateProfile(shooting);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e.getMessage());
+        }
     }
 
     @Override

@@ -34,4 +34,7 @@ public interface ShootingDAO {
      * @throws PersistenceException caused by using sql
      */
      void endShooting() throws PersistenceException;
+
+     void updateProfile(Shooting shooting) throws PersistenceException;
+
 }

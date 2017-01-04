@@ -60,6 +60,13 @@ public class CostumerFrameController {
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
+            if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                LOGGER.debug("Profile id:" + profile.getId() + "");
+                if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                    LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                }
+            }
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
             LOGGER.error("initialise:",e.getMessage());
@@ -72,6 +79,14 @@ public class CostumerFrameController {
 
     public void switchToLogin(ActionEvent actionEvent) {
         windowmanager.showAdminLogin();
+        if(!allpicturesview.isVisible()){
+            rightbutton.setVisible(true);
+            allpicturesview.setVisible(true);
+            gridpanel.setVisible(true);
+            leftbutton.setVisible(false);
+            setInvisible();
+        }
+
     }
 
     public void switchToFilter(ActionEvent actionEvent) {
@@ -83,10 +98,10 @@ public class CostumerFrameController {
             if (buttoncreated && profile.getId() == shootingservice.searchIsActive().getProfileid()) {
                 loadButton();
             } else {
-                LOGGER.debug("Profile id:",profile.getId()+"");
+                LOGGER.debug("Profile id:"+profile.getId()+"");
                 if(profile.getId() != shootingservice.searchIsActive().getProfileid()){
                     profile= profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    LOGGER.debug("Profile id changed:",profile.getId()+"");
+                    LOGGER.debug("Profile id changed:"+profile.getId()+"");
                 }
                 creatButtons();
             }
@@ -105,66 +120,73 @@ public class CostumerFrameController {
     }
 
     private void creatButtons(){
-       // try {
+       try {
+            buttonList= new ArrayList<>();
+            if (shootingservice.searchIsActive().getActive()) {
+                profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+            }
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
-            if (pairList.isEmpty()) {
-                return;
-            }
-            LOGGER.debug("buttons:"+ buttonList.size() +"");
-            int column =(int)((float)pairList.size()/3.0f);
-            int width = (int)((float)gridpanel.getWidth()/(float)column)-5;
-            int high = (int)((float)gridpanel.getHeight()/3)-7;
-            int countrow=0;
-            int countcolumn=0;
+            if (pairList.isEmpty()||pairList.size()==0) {
+                rightbutton.setVisible(false);
+            }else {
+                LOGGER.debug("buttons:" + buttonList.size() + "");
+                LOGGER.debug("pair:"+pairList.size()+"");
+                int column = (int) ((float) pairList.size() / 3.0f);
+                int width = (int) ((float) gridpanel.getWidth() / (float) column) - 5;
+                int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
+                int countrow = 0;
+                int countcolumn = 0;
+                grid = new GridPane();
 
-            for (int i = 0; i < pairList.size(); i++) {
-                GridPane gp = new GridPane();
-                String name = "Kamera "+pairList.get(i).getCamera().getId()+ "  "  + pairList.get(i).getPosition().getName();
-                ImageView imageView = new ImageView();
-                imageView.setVisible(true);
-                imageView.prefHeight(high);
-                imageView.prefWidth(20);
+                for (int i = 0; i < pairList.size(); i++) {
+                    GridPane gp = new GridPane();
+                    String name = "Kamera " + pairList.get(i).getCamera().getId() + "  " + pairList.get(i).getPosition().getName();
+                    ImageView imageView = new ImageView();
+                    imageView.setVisible(true);
+                    imageView.prefHeight(high);
+                    imageView.prefWidth(20);
 
-                //imageView.setImage(camera.getFiler);
-                //imageView.setImage(new javafx.scene.image.Image(new FileInputStream(pairList.get(i).getCameraLable()), width, high, true, true));
-                if(countrow<2){
-                    countrow++;
-                }else {
-                    countrow=0;
-                    if(countcolumn<column){
-                        countcolumn++;
-                    }else{
-                        LOGGER.debug("not enoth columns"+ column);
+                    //imageView.setImage(camera.getFiler);
+                    //imageView.setImage(new javafx.scene.image.Image(new FileInputStream(pairList.get(i).getCameraLable()), width, high, true, true));
+                    if (countrow < 2) {
+                        countrow++;
+                    } else {
+                        countrow = 0;
+                        if (countcolumn < column) {
+                            countcolumn++;
+                        } else {
+                            LOGGER.debug("not enoth columns" + column);
+                        }
                     }
+                    Button filter = new Button();
+                    filter.setText(name);
+                    filter.setVisible(true);
+                    filter.setPrefWidth(width - 20);
+                    filter.setPrefHeight(high);
+                    String url = pairList.get(i).getCameraLable();
+                    LOGGER.debug("url costumer: " + url);
+                    filter.setStyle("-fx-background-image: url('" + url + "'); " +
+                            "   -fx-background-size: 100%;" +
+                            "   -fx-background-color: transparent;" +
+                            "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
+
+                    });
+                    buttonList.add(filter);
+                    gp.prefWidth(width);
+                    gp.prefHeight(high);
+                    gp.add(filter, 0, 0);
+                    gp.add(imageView, 1, 0);
+                    grid.add(gp, countcolumn, countrow);
+                    // Image image = new Image(pairList.get(i).getCameraLable());
+                    LOGGER.debug("count calls "+i+"");
                 }
-                Button filter = new Button();
-                filter.setText(name);
-                filter.setVisible(true);
-                filter.setPrefWidth(width-20);
-                filter.setPrefHeight(high);
-                String url = pairList.get(i).getCameraLable();
-                LOGGER.debug("url costumer: "+url);
-                filter.setStyle("-fx-background-image: url('"+url+"'); " +
-                        "   -fx-background-size: 100%;" +
-                        "   -fx-background-color: transparent;" +
-                        "   -fx-font-size:"+ allpicturesview.getFont().getSize()/column+"px;");
-                filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
-
-                });
-                buttonList.add(filter);
-                gp.prefWidth(width);
-                gp.prefHeight(high);
-                gp.add(filter,0,0);
-                gp.add(imageView,1,0);
-                grid.add(gp,countcolumn,countrow);
-                // Image image = new Image(pairList.get(i).getCameraLable());
+                basicpane.add(grid, 1, 0);
+                buttoncreated = true;
             }
-
-            basicpane.add(grid,1,0);
-            buttoncreated = true;
-       /* } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
+       } catch (ServiceException e) {
+           showInformationDialog(e.getMessage());
+        }
     }
 
     private void loadButton() {

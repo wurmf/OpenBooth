@@ -154,7 +154,7 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            this.mainStage.setScene(costumerScene);
+            this.mainStage.setScene(adminLoginScene);
             //initShotFrameManager();
         } else {
             this.mainStage.setScene(mainScene);

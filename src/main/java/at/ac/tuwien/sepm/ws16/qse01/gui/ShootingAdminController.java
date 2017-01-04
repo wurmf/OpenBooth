@@ -39,7 +39,14 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
-    @FXML GridPane gridbase;
+    @FXML
+    private Label saveing;
+    @FXML
+    private Label save1;
+    @FXML
+    private Label finallsavingplace;
+    @FXML
+    private GridPane gridbase;
     @FXML
     private GridPane gridSave;
     @FXML
@@ -58,7 +65,7 @@ public class ShootingAdminController {
 
     private String path =null;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
-    Label label;
+
 
     private ShootingService shootingService;
     private ProfileService profileService;
@@ -90,21 +97,22 @@ public class ShootingAdminController {
                 canclebutton.setText("Fortsetzen");
                 storageDirLabel.setVisible(false);
                 gridSave.setVisible(false);
-                label = new Label(shootingService.searchIsActive().getStorageDir());
-                LOGGER.debug(label.getText());
-                label.setVisible(true);
-                gridbase.add(label,2,3);
+
+                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
+                finallsavingplace.setVisible(true);
+                save1.setVisible(true);
+                saveing.setVisible(false);
 
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
                 storageDirLabel.setVisible(true);
-                if(label!= null){
-                    label.setVisible(false);
-                }
                 gridSave.setVisible(true);
                 canclebutton.setText("Abbrechen");
+                finallsavingplace.setVisible(false);
+                save1.setVisible(false);
+                saveing.setVisible(true);
             }
             String resource = System.getProperty("user.home");
 
@@ -132,6 +140,8 @@ public class ShootingAdminController {
     }
 
     public void inactivemode(){
+
+
         try {
             if (shootingService.searchIsActive().getActive()) {
                 startButton.setVisible(false);
@@ -140,21 +150,21 @@ public class ShootingAdminController {
                 canclebutton.setText("Fortsetzen");
                 storageDirLabel.setVisible(false);
                 gridSave.setVisible(false);
-                label = new Label(shootingService.searchIsActive().getStorageDir());
-                LOGGER.debug(label.getText());
-                label.setVisible(true);
-                gridbase.add(label, 2, 3);
+                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
+                finallsavingplace.setVisible(true);
+                save1.setVisible(true);
+                saveing.setVisible(false);
 
             } else {
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
                 storageDirLabel.setVisible(true);
-                if (label != null) {
-                    label.setVisible(false);
-                }
                 gridSave.setVisible(true);
                 canclebutton.setText("Abbrechen");
+                finallsavingplace.setVisible(false);
+                save1.setVisible(false);
+                saveing.setVisible(true);
             }
         }catch (ServiceException e ){
             e.printStackTrace();
@@ -208,7 +218,11 @@ public class ShootingAdminController {
     public void onDemolitionPressed(ActionEvent actionEvent) {
         try {
             if (shootingService.searchIsActive().getActive()) {
-                shootingService.updateProfile();
+                Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
+                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
+                    shootingService.updateProfile(shooting);
+                }
                 windowManager.showCostumerScene();
             } else {
                 windowManager.showMainFrame();

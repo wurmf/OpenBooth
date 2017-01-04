@@ -51,9 +51,16 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                windowManager.showShootingAdministration();
-                firstLogin=true;
-                resetValues();
+                if(shootingService.searchIsActive().getActive()){
+                    windowManager.showCostumerScene();
+                    firstLogin=true;
+                    resetValues();
+                }else{
+                    windowManager.showShootingAdministration();
+                    firstLogin=true;
+                    resetValues();
+                }
+
             } else{
                 wrongCredentialsLabel.setVisible(true);
             }
