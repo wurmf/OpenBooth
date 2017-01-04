@@ -165,7 +165,7 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            showCostumerScene();
+            showScene(WindowManager.SHOW_CUSTOMERSCENE);
             //initShotFrameManager();
         } else {
             showAdminLogin(SHOW_MAINSCENE, SHOW_MAINSCENE);
@@ -173,17 +173,6 @@ public class WindowManager {
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
-    }
-
-    /**
-     * Sets the adminLoginScene as Scene in the mainStage.
-     * @param sceneToShow one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the credentials are correct
-     * @param callingScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the back-button is clicked.
-     */
-    public void showAdminLogin(int sceneToShow, int callingScene){
-        loginRedirectorModel.setScenes(sceneToShow, callingScene);
-        mainStage.setScene(adminLoginScene);
-        mainStage.setFullScreen(true);
     }
 
     /**
@@ -211,44 +200,22 @@ public class WindowManager {
         mainStage.setFullScreen(true);
     }
 
+
     /**
-     * Sets the shootingScene as Scene in the mainStage.
+     * Sets the adminLoginScene as Scene in the mainStage.
+     * @param sceneToShow one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the credentials are correct
+     * @param callingScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the back-button is clicked.
      */
-    public void showShootingAdministration(){
-        shootingAdminController.inactivemode();
-        mainStage.setScene(shootingScene);
+    public void showAdminLogin(int sceneToShow, int callingScene){
+        loginRedirectorModel.setScenes(sceneToShow, callingScene);
+        mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
-    /**
-     * Sets the mainScene as Scene in the mainStage.
-     */
-    public void showMainFrame(){
-        showScene(SHOW_MAINSCENE);
-    }
-    /**
-     * Sets the profileScene as Scene in the mainStage.
-     */
-    public void showProfileScene(){
-        showScene(SHOW_PROFILESCENE);
-    }
 
     /**
-     * Sets the customerScene as Scene in the mainStage.
+     * Sets the FullScreenScene as Scene in the mainStage.
+     * @param imgID the ID of the img that will be shown.
      */
-    public void showCostumerScene(){
-        showScene(SHOW_CUSTOMERSCENE);
-    }
-    /**
-     * Sets the miniaturScene as Scene in the mainStage.
-     */
-    public void showMiniatureFrame(){
-        showScene(SHOW_MINIATURESCENE);
-    }
-
-    public void showFullscreenImage(){
-        showScene(SHOW_PICTUREFULLSCENE);
-    }
-
     public void showFullscreenImage(int imgID){
         mainStage.setScene(pictureFullScene);
         mainStage.setFullScreen(true);

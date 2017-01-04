@@ -190,7 +190,7 @@ public class FullScreenImageController {
      */
     @FXML
     public void onClosePressed(){
-        windowManager.showMiniatureFrame();
+        windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
     @FXML
@@ -277,7 +277,7 @@ public class FullScreenImageController {
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
             } else {
-                windowManager.showMiniatureFrame();
+                windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -313,7 +313,7 @@ public class FullScreenImageController {
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
             } else {
-                windowManager.showMiniatureFrame();
+                windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -384,7 +384,7 @@ public class FullScreenImageController {
 
                 makePreviewFilter(img.getImagepath());
             } else {
-                windowManager.showMiniatureFrame();
+                windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
         } catch (ServiceException e) {
             informationDialog("Bitte wenden Sie sich an den Betreiber");

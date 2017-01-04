@@ -1014,7 +1014,7 @@ public class SettingFrameController {
     @FXML
     public void openMainFrame(){
         LOGGER.info("backButton clicked...");
-        windowManager.showMainFrame();
+        windowManager.showScene(WindowManager.SHOW_MAINSCENE);
     }
     public void showError(String msg){
         Alert alert = new Alert(Alert.AlertType.ERROR);

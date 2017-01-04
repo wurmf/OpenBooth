@@ -67,7 +67,7 @@ public class CostumerFrameController {
     }
 
     public void switchtoMiniaturFrame(){
-        windowmanager.showMiniatureFrame();
+        windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
     public void switchToLogin(ActionEvent actionEvent) {
