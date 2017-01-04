@@ -78,15 +78,25 @@ public class CostumerFrameController {
     }
 
     public void switchToLogin(ActionEvent actionEvent) {
-        windowmanager.showAdminLogin();
-        if(!allpicturesview.isVisible()){
-            rightbutton.setVisible(true);
-            allpicturesview.setVisible(true);
-            gridpanel.setVisible(true);
-            leftbutton.setVisible(false);
-            setInvisible();
+        try {
+            windowmanager.showAdminLogin();
+            if (!allpicturesview.isVisible()) {
+                if (shootingservice.searchIsActive().getActive()) {
+                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                }
+                List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
+                if (pairList.isEmpty() || pairList.size() == 0) {
+                    rightbutton.setVisible(false);
+                }
+                rightbutton.setVisible(true);
+                allpicturesview.setVisible(true);
+                gridpanel.setVisible(true);
+                leftbutton.setVisible(false);
+                setInvisible();
+            }
+        } catch (ServiceException e) {
+            LOGGER.debug(e.getMessage());
         }
-
     }
 
     public void switchToFilter(ActionEvent actionEvent) {
@@ -170,7 +180,7 @@ public class CostumerFrameController {
                             "   -fx-background-color: transparent;" +
                             "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
-
+                        //kamera Filter controller
                     });
                     buttonList.add(filter);
                     gp.prefWidth(width);
