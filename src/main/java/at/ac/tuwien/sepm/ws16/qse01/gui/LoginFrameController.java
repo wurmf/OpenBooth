@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -24,8 +25,7 @@ public class LoginFrameController {
 
     private WindowManager windowManager;
     private AdminUserService adminUserService;
-    private ShootingService shootingService;
-    private boolean firstLogin=false;
+    private LoginRedirectorModel loginRedirectorModel;
     @FXML
     private TextField adminField;
     @FXML
@@ -35,10 +35,10 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(ShootingService shootingService, AdminUserService adminUserService, WindowManager windowManager) throws ServiceException{
+    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
-        this.shootingService=shootingService;
+        this.loginRedirectorModel=loginRedirectorModel;
     }
 
     /**
@@ -51,16 +51,8 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                if(shootingService.searchIsActive().getActive()){
-                    windowManager.showCostumerScene();
-                    firstLogin=true;
-                    resetValues();
-                }else{
-                    windowManager.showShootingAdministration();
-                    firstLogin=true;
-                    resetValues();
-                }
-
+                windowManager.showScene(loginRedirectorModel.getNextScene());
+                resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
             }
@@ -80,19 +72,12 @@ public class LoginFrameController {
      */
     @FXML
     public void closeLogin(){
-        try {
-            resetValues();
-            if (shootingService.searchIsActive().getActive() && firstLogin) {
-                windowManager.showCostumerScene();
-            }
-            windowManager.showMainFrame();
-        } catch (ServiceException e) {
-            LOGGER.debug("serach active shooting:"+e);
-        }
+        resetValues();
+        windowManager.showScene(loginRedirectorModel.getCallingScene());
     }
 
     /**
-     * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible.
+     * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible and sets the scene.
      */
     private void resetValues(){
         wrongCredentialsLabel.setVisible(false);

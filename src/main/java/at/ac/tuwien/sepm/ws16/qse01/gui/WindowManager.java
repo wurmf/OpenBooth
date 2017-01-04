@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
+import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -25,27 +26,36 @@ import java.net.URL;
 public class WindowManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WindowManager.class);
 
+    public static final int SHOW_MAINSCENE=1;
+    public static final int SHOW_SHOOTINGSCENE=2;
+    public static final int SHOW_PROFILESCENE=3;
+    public static final int SHOW_MINIATURESCENE=4;
+    public static final int SHOW_CUSTOMERSCENE=5;
+    public static final int SHOW_SETTINGSCENE=6;
+
     private SpringFXMLLoader springFXMLLoader;
     private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
+    private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
+    private Scene adminLoginScene;
     private Scene mainScene;
     private Scene shootingScene;
-    private Scene adminLoginScene;
     private Scene profileScene;
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
-    private Scene costumerScene;
+    private Scene customerScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
 
     @Autowired
-    public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager){
+    public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
         this.springFXMLLoader=springFXMLLoader;
         this.shotFrameManager = shotFrameManager;
+        this.loginRedirectorModel = loginRedirectorModel;
         activeShootingAvailable=false;
         fontSize =0;
     }
@@ -141,7 +151,7 @@ public class WindowManager {
         LOGGER.info("CSSCOS -"+csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
-        this.costumerScene = new Scene(parentcos,screenWidth,screenHeight);
+        this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -154,10 +164,10 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            this.mainStage.setScene(adminLoginScene);
+            showAdminLogin(SHOW_CUSTOMERSCENE,SHOW_MAINSCENE);
             //initShotFrameManager();
         } else {
-            this.mainStage.setScene(mainScene);
+            showAdminLogin(SHOW_MAINSCENE, SHOW_MAINSCENE);
         }
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
@@ -165,60 +175,56 @@ public class WindowManager {
     }
 
     /**
-     * Sets the adminLoginScene as Scene in the mainStage.
+     * Sets the scene specified by the given integer. For use in combination with static integers provided by WindowManager for identification of the scenes.
+     * If a number is given that is not assigned as number for a scene the mainScene will be set.
+     * @param sceneToShow the number of the scene that shall be set.
      */
-    public void showAdminLogin(){
-        mainStage.setScene(adminLoginScene);
-        mainStage.setFullScreen(true);
-    }
-    /**
-     * Sets the shootingScene as Scene in the mainStage.
-     */
-    public void showShootingAdministration(){
-        shootingAdminController.inactivemode();
-        mainStage.setScene(shootingScene);
-        mainStage.setFullScreen(true);
-    }
-    /**
-     * Sets the mainScene as Scene in the mainStage.
-     */
-    public void showMainFrame(){
-        LOGGER.info("MainFrame set");
-        mainStage.setScene(mainScene);
-        mainStage.setFullScreen(true);
-    }
-    /**
-     * Sets the profileScene as Scene in the mainStage.
-     */
-    public void showProfileScene(){
-        mainStage.setScene(settingScene);
+    public void showScene(int sceneToShow){
+        switch (sceneToShow){
+            case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
+                break;
+            case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
+                break;
+            case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
+                break;
+            case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
+                break;
+            case SHOW_SETTINGSCENE: mainStage.setScene(settingScene);
+                break;
+            default: mainStage.setScene(mainScene);
+                break;
+        }
         mainStage.setFullScreen(true);
     }
 
-    public void showCostumerScene(){
-        mainStage.setScene(costumerScene);
-        mainStage.setFullScreen(true);
-    }
+
     /**
-     * Sets the miniaturScene as Scene in the mainStage.
+     * Sets the adminLoginScene as Scene in the mainStage.
+     * @param sceneToShow one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the credentials are correct
+     * @param callingScene one of the static numbers defined in WindowManager for choosing a frame, representing the window which shall be shown next if the back-button is clicked.
      */
-    public void showMiniatureFrame(){
-        LOGGER.info("MiniatureFrame set");
-        mainStage.setScene(miniaturScene);
+    public void showAdminLogin(int sceneToShow, int callingScene){
+        loginRedirectorModel.setScenes(sceneToShow, callingScene);
+        mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
+
+    /**
+     * Sets the FullScreenScene as Scene in the mainStage.
+     * @param imgID the ID of the img that will be shown.
+     */
+    public void showFullscreenImage(int imgID){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
+        pictureController.changeImage(imgID);
+    }
+
     /**
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
      */
     public void closeStages(){
         mainStage.close();
         shotFrameManager.closeFrames();
-    }
-
-    public void showFullscreenImage(int imgID){
-        mainStage.setScene(pictureFullScene);
-        mainStage.setFullScreen(true);
-        pictureController.changeImage(imgID);
     }
 
     /**

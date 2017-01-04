@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
+import at.ac.tuwien.sepm.ws16.qse01.gui.RefreshManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
@@ -29,24 +30,26 @@ import java.util.List;
 @Component
 public class CameraHandlerImpl implements CameraHandler {
 
-    Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
-    ShotFrameManager shotFrameManager;
+    private Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
+    private ShotFrameManager shotFrameManager;
     private SpringFXMLLoader springFXMLLoader;
-    ImageService imageService;
-    ShootingService shootingService;
-    CameraService cameraService;
-    List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
-    List<String> cameraModelList = new ArrayList<>();
-    List<String> cameraPortList = new ArrayList<>();
-    List<Camera> cameraList = new ArrayList<>();
+    private ImageService imageService;
+    private ShootingService shootingService;
+    private CameraService cameraService;
+    private RefreshManager refreshManager;
+    private List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
+    private List<String> cameraModelList = new ArrayList<>();
+    private List<String> cameraPortList = new ArrayList<>();
+    private List<Camera> cameraList = new ArrayList<>();
 
     @Autowired
-    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService, CameraService cameraService)
+    public CameraHandlerImpl(ShotFrameManager shotFrameManager, ImageService imageService, ShootingService shootingService, CameraService cameraService, RefreshManager refreshManager)
     {
         this.shotFrameManager=shotFrameManager;
         this.imageService= imageService;
         this.shootingService= shootingService;
         this.cameraService=cameraService;
+        this.refreshManager=refreshManager;
     }
 
     /**
@@ -66,6 +69,7 @@ public class CameraHandlerImpl implements CameraHandler {
             cameraHandlerThread.setShootingService(shootingService);
             cameraHandlerThread.setCameraGphoto(cameraGphotoList.get(i));
             cameraHandlerThread.setCamera(camera);
+            cameraHandlerThread.setRefreshManager(refreshManager);
             cameraHandlerThread.start();
         }
     }

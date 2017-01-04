@@ -74,12 +74,13 @@ public class CostumerFrameController {
     }
 
     public void switchtoMiniaturFrame(){
-        windowmanager.showMiniatureFrame();
+        windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
     public void switchToLogin(ActionEvent actionEvent) {
+
         try {
-            windowmanager.showAdminLogin();
+            windowmanager.showAdminLogin(WindowManager.SHOW_MAINSCENE, WindowManager.SHOW_CUSTOMERSCENE);
             if (!allpicturesview.isVisible()) {
                 if (shootingservice.searchIsActive().getActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
@@ -97,7 +98,7 @@ public class CostumerFrameController {
         } catch (ServiceException e) {
             LOGGER.debug(e.getMessage());
         }
-    }
+}
 
     public void switchToFilter(ActionEvent actionEvent) {
         try {

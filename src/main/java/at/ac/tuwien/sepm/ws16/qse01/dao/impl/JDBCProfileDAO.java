@@ -32,8 +32,8 @@ public class JDBCProfileDAO implements ProfileDAO {
     public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
-        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2Handler.getInstance());
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2Handler.getInstance());
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(handler);
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(handler);
     }
 
     @Override

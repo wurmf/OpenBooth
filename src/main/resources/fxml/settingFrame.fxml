@@ -31,9 +31,9 @@
    <children>
       <TitledPane animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="235.0">
+          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                <children>
-                  <TableView fx:id="tableProfil" prefHeight="427.0" prefWidth="787.0">
+                  <TableView fx:id="tableProfil" prefHeight="427.0">
                      <columns>
                         <TableColumn fx:id="colProfilID" prefWidth="44.74237585067749" text="ID" />
                         <TableColumn fx:id="colProfilName" prefWidth="207.93091201782227" text="Name" />
@@ -52,7 +52,7 @@
                   <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
                   <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
                   <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
-                  <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" prefWidth="27.0" text="+" />
+                  <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
                   <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
@@ -63,7 +63,7 @@
       </TitledPane>
       <TitledPane animated="false" prefHeight="522.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                <children>
                   <TableView fx:id="tablePosition" prefHeight="427.0" prefWidth="450.0">
                      <columns>
@@ -77,7 +77,7 @@
                   <TextField fx:id="txPositionName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
                   <TextField fx:id="txPositionBild" editable="false" layoutX="242.0" layoutY="435.0" onAction="#positionUpload" onMouseClicked="#positionUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
                   <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
-                  <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" prefWidth="27.0" text="+" />
+                  <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
                </children>
             </AnchorPane>
          </content>
@@ -87,7 +87,7 @@
       </TitledPane>
       <TitledPane animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0" prefWidth="1022.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                <children>
                   <TableView fx:id="tableKamPos" prefHeight="405.0" prefWidth="453.0">
                      <columns>
@@ -108,10 +108,10 @@
 
       <TitledPane animated="false" prefHeight="717.0" text="Logoverwaltung" GridPane.rowIndex="2">
          <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="53.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                <children>
 
-                              <TableView fx:id="tableLogo" prefHeight="405.0" prefWidth="664.0">
+                              <TableView fx:id="tableLogo" prefHeight="405.0">
                                  <columns>
                                     <TableColumn fx:id="colLogoID" prefWidth="44.74237585067749" text="ID" />
                                     <TableColumn fx:id="colLogoName" prefWidth="188.0234603881836" text="Name" />
@@ -126,7 +126,7 @@
                               <TextField fx:id="txLogoName" layoutX="44.0" layoutY="414.0" />
                               <TextField fx:id="txLogoLogo" editable="false" layoutX="473.0" layoutY="412.0" onAction="#logoUpload" onMouseClicked="#logoUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
                               <Button layoutX="605.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveLogo" text="ADD" />
-                              <Button layoutX="564.0" layoutY="412.0" mnemonicParsing="false" onAction="#logoUpload" prefHeight="30.0" prefWidth="27.0" text="+" />
+                              <Button layoutX="564.0" layoutY="412.0" mnemonicParsing="false" onAction="#logoUpload" prefHeight="30.0" text="+" />
                               <TextField fx:id="txLogoX" layoutX="234.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoY" layoutX="290.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />

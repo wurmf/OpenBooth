@@ -200,7 +200,7 @@ public class ShootingAdminController {
 
                         shootingService.addShooting(shouting);
 
-                        windowManager.showCostumerScene();
+                        windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                         windowManager.initShotFrameManager();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
@@ -223,9 +223,9 @@ public class ShootingAdminController {
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
                     shootingService.updateProfile(shooting);
                 }
-                windowManager.showCostumerScene();
+                windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
             } else {
-                windowManager.showMainFrame();
+                windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             }
         } catch (ServiceException e) {
             LOGGER.error("restart kein aktives shooting"+e);
@@ -278,7 +278,7 @@ public class ShootingAdminController {
     public void onStopShootingPressed(ActionEvent actionEvent) {
         try {
             shootingService.endShooting();
-            windowManager.showMainFrame();
+            windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");
             information.show();

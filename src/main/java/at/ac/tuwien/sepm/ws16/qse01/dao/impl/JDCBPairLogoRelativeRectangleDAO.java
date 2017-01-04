@@ -30,7 +30,7 @@ public class JDCBPairLogoRelativeRectangleDAO implements PairLogoRelativeRectang
     public JDCBPairLogoRelativeRectangleDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
         con = handler.getConnection();
-        logoDAO = new JDBCLogoDAO(H2Handler.getInstance());
+        logoDAO = new JDBCLogoDAO(handler);
     }
 
     @Override

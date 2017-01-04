@@ -41,7 +41,7 @@ public class ShootingDAOTest extends TestEnvironment {
         mockShootingDAO.create(null);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void create_withExeption() throws Exception {
         assertTrue(shooting3.getId() == 3);
         assertTrue(shooting3.getProfileid() == 1);

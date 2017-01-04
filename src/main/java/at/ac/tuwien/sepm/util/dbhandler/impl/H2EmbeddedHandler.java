@@ -13,7 +13,7 @@ import java.io.FileReader;
 import java.sql.*;
 
 /**
- * This Singleton-class returns a connection to an H2-database called "fotostudio".
+ * This Singleton-class starts an H2-Server instance and returns a connection to an H2-database called "fotostudio".
  * The class will always return the same connection-object as long as {@link #closeConnection()} is not called. If it is called a new connection will be opened when calling {@link #getConnection()}.
  */
 @Component
@@ -121,10 +121,38 @@ public class H2EmbeddedHandler  implements DBHandler {
     private void insertTestData() throws FileNotFoundException, SQLException{
         try {
             ResultSet rs=RunScript.execute(connection, new FileReader("sql/insert.sql"));
-            if(rs!=null) rs.close();
+            if(rs!=null && !rs.isClosed())rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("insertTestData - "+e);
             throw e;
+        }
+    }
+
+    /**
+     * Runs scripts in the following order:
+     * <ul>
+     *     <li>drop.sql</li>
+     *     <li>create.sql</li>
+     *     <li>init.sql</li>
+     *     <li>insert.sql</li>
+     * </ul>
+     * @throws PersistenceException if an error occurs while reading the sql-script-files or while executing them.
+     */
+    public void resetDBForTest() throws PersistenceException{
+        getConnection();
+        try{
+            ResultSet rs=RunScript.execute(connection, new FileReader("sql/delete.sql"));
+            if(rs!=null && !rs.isClosed())rs.close();
+            rs=RunScript.execute(connection, new FileReader("sql/init.sql"));
+            if(rs!=null && !rs.isClosed())rs.close();
+        } catch(FileNotFoundException|SQLException e){
+            LOGGER.error("resetForTest - "+e);
+            throw new PersistenceException(e);
+        }
+        try{
+            insertTestData();     //Run create.sql, init.sql, insert.sql
+        } catch(FileNotFoundException|SQLException e){
+            throw new PersistenceException(e);
         }
     }
 }
