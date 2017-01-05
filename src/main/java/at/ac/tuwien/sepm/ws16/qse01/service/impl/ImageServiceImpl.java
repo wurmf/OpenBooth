@@ -55,7 +55,7 @@ public class ImageServiceImpl implements ImageService {
         } catch (PersistenceException e) {
             throw new ServiceException("Error: "+e.getMessage());
         }
-        
+
         String lib= "/.lib/libopencv_java320.dylib";
         if(com.sun.javafx.PlatformUtil.isWindows())
             lib = "/.lib/opencv_java320.dll";
@@ -334,8 +334,8 @@ public class ImageServiceImpl implements ImageService {
     public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
-        else
-            throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!");
+       /* else
+            throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
             /*{
             storageDir = System.getProperty("user.dir") + "/shooting" + activeShooting.getId() + "/";
             Path storageDir = Paths.get(this.storageDir);

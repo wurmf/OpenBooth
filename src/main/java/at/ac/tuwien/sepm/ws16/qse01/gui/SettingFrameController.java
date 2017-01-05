@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -35,7 +36,10 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for Setting Frame .
@@ -150,7 +154,7 @@ public class SettingFrameController {
 
     /* LOGO TextFIELDS */
     @FXML
-    private TextField txLogoName;
+    private AutoCompleteTextField txLogoName;
     @FXML
     private TextField txLogoX;
     @FXML
@@ -370,6 +374,10 @@ public class SettingFrameController {
                                 refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
 
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+
+                                txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
+                                txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
+                                txLogoName.setTxLogoPath(txLogoLogo);
                             } catch (ServiceException e) {
                                 e.printStackTrace();
                             }
@@ -972,6 +980,23 @@ public class SettingFrameController {
 
                 logoList.add(p);
 
+                //txLogoName.getEntries().removeAll(txLogoName.getEntries());
+                txLogoName.getEntries().add(newLogo.getLabel()+" #"+newLogo.getId());
+               /* txLogoName.getImgViews().clear();
+                txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));*/
+                ImageView imgView =new ImageView(new Image("file:"+newLogo.getPath(),30,30,true,true));
+
+                imgView.setId(newLogo.getPath());
+
+                txLogoName.getImgViews().put(newLogo.getLabel().toLowerCase()+" #"+newLogo.getId(),imgView);
+
+                txLogoName.clear();
+                txLogoBreite.clear();
+                txLogoHoehe.clear();
+                txLogoX.clear();
+                txLogoY.clear();
+                txLogoLogo.setText("Hochladen...");
+
 
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
@@ -1052,6 +1077,33 @@ public class SettingFrameController {
       /*  } catch (IOException e) {
             LOGGER.error("fullscreenPreview ->"+e.getMessage());
         }*/
+    }
+    public List<String> logo2StringArray(List<Logo> logos){
+      List<String> ret = new ArrayList<>();
+        for (Logo logo:logos){
+           ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
+        }
+      //  System.out.println("neue stringarray size =>"+ret.size());
+        return ret;
+    }
+    public Map<String,ImageView> logo2imgViews(List<Logo> logos){
+        Map<String,ImageView> ret = new HashMap<>();
+        for (Logo logo:logos){
+            String logoPath;
+            if(new File(logo.getPath()).isFile())
+                logoPath = logo.getPath();
+            else if(new File(System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath()).isFile())
+                logoPath = System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath();
+            else
+                logoPath = System.getProperty("user.dir")+"/src/main/resources/images/noimage.png";
+
+            ImageView imgView =new ImageView(new Image("file:"+logoPath,30,30,true,true));
+
+            imgView.setId((logoPath.contains("noimage.png")?"":logoPath));
+
+            ret.put(logo.getLabel().toLowerCase()+" #"+logo.getId(),imgView);
+        }
+        return ret;
     }
 
 }
