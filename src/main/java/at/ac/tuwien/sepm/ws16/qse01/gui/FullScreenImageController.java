@@ -544,7 +544,13 @@ public class FullScreenImageController {
 
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
             refreshManager.notifyMiniatureFrameOfAdd(newImage);
-           // imageList.add(activ+1,newImage);
+            if((currentIndex+1)>=imageList.size())
+                imageList.add(newImage);
+            else {
+                imageList.add(currentIndex + 1, newImage);
+                currentIndex = currentIndex + 1;
+            }
+
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }

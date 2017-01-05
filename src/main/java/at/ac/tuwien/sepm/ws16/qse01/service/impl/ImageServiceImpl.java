@@ -23,11 +23,6 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,10 +55,7 @@ public class ImageServiceImpl implements ImageService {
         } catch (PersistenceException e) {
             throw new ServiceException("Error: "+e.getMessage());
         }
-
-      //  System.out.println(System.getProperty("java.library.path"));
-
-        // System.loadLibrary(Core.NATIVE_LIBRARY_NAME); = opencv_300
+        
         String lib= "/.lib/libopencv_java320.dylib";
         if(com.sun.javafx.PlatformUtil.isWindows())
             lib = "/.lib/opencv_java320.dll";
@@ -71,6 +63,7 @@ public class ImageServiceImpl implements ImageService {
             lib = "/.lib/libopencv_java320.so";
 
         System.load(System.getProperty("user.dir")+lib);
+
         checkStorageDir();
 
     }
@@ -338,10 +331,12 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public void checkStorageDir(){
+    public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
-        else {
+        else
+            throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!");
+            /*{
             storageDir = System.getProperty("user.dir") + "/shooting" + activeShooting.getId() + "/";
             Path storageDir = Paths.get(this.storageDir);
             try {
@@ -352,7 +347,7 @@ public class ImageServiceImpl implements ImageService {
             } catch (IOException e) {
                 LOGGER.error("error creating directory " + e + "\n");
             }
-        }
+        }*/
     }
 
 
