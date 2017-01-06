@@ -7,12 +7,17 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -20,10 +25,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.sql.Wrapper;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +46,8 @@ public class FullScreenImageController {
     private Pane planetop;
     @FXML
     private Pane planbottom;
+    @FXML
+    private Pane anchorPane;
     @FXML
     private Button button5;
     @FXML
@@ -72,6 +82,7 @@ public class FullScreenImageController {
     private ShootingService shootingService;
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
+    private Rectangle cropRectangle = null;
 
     @Autowired
     public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter) throws ServiceException {
@@ -472,10 +483,135 @@ public class FullScreenImageController {
                 ivfullscreenImage.setImage(new Image(new FileInputStream(System.getProperty("user.dir") + "/src/main/resources" + imageService.read(imgID).getImagepath()),  ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
 
         } catch (FileNotFoundException e) {
-               LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
+               LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e));
         } catch (ServiceException e){
-            LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e.getMessage()));
+            LOGGER.debug(("Fehler: Foto wurde nicht gefunden. "+e));
         }
     }
 
+    public void onCropPressed()
+    {
+        LOGGER.info("Crop Button clicked");
+        if(cropRectangle==null)
+        {
+            cropRectangle=createDraggableRectangle(100, 100, 100, 100);
+            anchorPane.getChildren().add(cropRectangle);
+        }
+        else
+        {
+            cropRectangle.setVisible(true);
+        }
+    }
+
+    private Rectangle createDraggableRectangle(double x, double y, double width, double height) {
+        final double handleRadius = 10;
+
+        Rectangle rect = new Rectangle(x, y, width, height);
+        rect.setVisible(true);
+        rect.setFill(Color.BLACK);
+        rect.setOpacity(0.2);
+        // top left resize handle:
+        Circle resizeHandleNW = new Circle(handleRadius, Color.BLACK);
+        // bind to top left corner of Rectangle:
+        resizeHandleNW.centerXProperty().bind(rect.xProperty());
+        resizeHandleNW.centerYProperty().bind(rect.yProperty());
+
+        // bottom right resize handle:
+        Circle resizeHandleSE = new Circle(handleRadius, Color.BLACK);
+        // bind to bottom right corner of Rectangle:
+        resizeHandleSE.centerXProperty().bind(rect.xProperty().add(rect.widthProperty()));
+        resizeHandleSE.centerYProperty().bind(rect.yProperty().add(rect.heightProperty()));
+
+
+        // force circles to live in same parent as rectangle:
+        rect.parentProperty().addListener((obs, oldParent, newParent) -> {
+            for (Circle c : Arrays.asList(resizeHandleNW, resizeHandleSE)) {
+                Pane currentParent = (Pane)c.getParent();
+                if (currentParent != null) {
+                    currentParent.getChildren().remove(c);
+                }
+                ((Pane)newParent).getChildren().add(c);
+            }
+        });
+
+        Wrapper<Point2D> mouseLocation = new Wrapper<>();
+
+        setUpDragging(resizeHandleNW, mouseLocation) ;
+        setUpDragging(resizeHandleSE, mouseLocation) ;
+
+        resizeHandleNW.setOnMouseDragged(event -> {
+            if (mouseLocation.value != null) {
+                double deltaX = event.getSceneX() - mouseLocation.value.getX();
+                double deltaY = event.getSceneY() - mouseLocation.value.getY();
+                double newX = rect.getX() + deltaX ;
+                if (newX >= handleRadius
+                        && newX <= rect.getX() + rect.getWidth() - handleRadius) {
+                    rect.setX(newX);
+                    rect.setWidth(rect.getWidth() - deltaX);
+                }
+                double newY = rect.getY() + deltaY ;
+                if (newY >= handleRadius
+                        && newY <= rect.getY() + rect.getHeight() - handleRadius) {
+                    rect.setY(newY);
+                    rect.setHeight(rect.getHeight() - deltaY);
+                }
+                mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+            }
+        });
+
+        resizeHandleSE.setOnMouseDragged(event -> {
+            if (mouseLocation.value != null) {
+                double deltaX = event.getSceneX() - mouseLocation.value.getX();
+                double deltaY = event.getSceneY() - mouseLocation.value.getY();
+                double newMaxX = rect.getX() + rect.getWidth() + deltaX ;
+                if (newMaxX >= rect.getX()
+                        && newMaxX <= rect.getParent().getBoundsInLocal().getWidth() - handleRadius) {
+                    rect.setWidth(rect.getWidth() + deltaX);
+                }
+                double newMaxY = rect.getY() + rect.getHeight() + deltaY ;
+                if (newMaxY >= rect.getY()
+                        && newMaxY <= rect.getParent().getBoundsInLocal().getHeight() - handleRadius) {
+                    rect.setHeight(rect.getHeight() + deltaY);
+                }
+                mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+            }
+        });
+
+        rect.setOnMouseDragged(event -> {
+            if (mouseLocation.value != null) {
+                double deltaX = event.getSceneX() - mouseLocation.value.getX();
+                double deltaY = event.getSceneY() - mouseLocation.value.getY();
+                double newX = rect.getX() + deltaX ;
+                double newMaxX = newX + rect.getWidth();
+                if (newX >= handleRadius
+                        && newMaxX <= rect.getParent().getBoundsInLocal().getWidth() - handleRadius) {
+                    rect.setX(newX);
+                }
+                double newY = rect.getY() + deltaY ;
+                double newMaxY = newY + rect.getHeight();
+                if (newY >= handleRadius
+                        && newMaxY <= rect.getParent().getBoundsInLocal().getHeight() - handleRadius) {
+                    rect.setY(newY);
+                }
+                mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+            }
+
+        });
+
+        return rect ;
+    }
+
+    private void setUpDragging(Circle circle, Wrapper<Point2D> mouseLocation) {
+
+        circle.setOnDragDetected(event -> {
+            circle.getParent().setCursor(Cursor.CLOSED_HAND);
+            mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+        });
+
+        circle.setOnMouseReleased(event -> {
+            circle.getParent().setCursor(Cursor.DEFAULT);
+            mouseLocation.value = null ;
+        });
+    }
+    static class Wrapper<T> { T value ; }
 }

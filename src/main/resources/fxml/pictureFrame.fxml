@@ -6,8 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+<AnchorPane fx:id="anchorPane" prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
    <children>
       <ImageView fx:id="ivfullscreenImage" fitHeight="1079.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" smooth="true" />
       <BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: TRANSPARENT;">
@@ -41,6 +42,15 @@
                         </ImageView>
                      </graphic>
                   </Button>
+                  <Button fx:id="cropButton" layoutX="497.0" layoutY="-1.0" mnemonicParsing="false" onAction="#onCropPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                     <graphic>
+                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/crop.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
             </Pane>
          </top>
@@ -57,7 +67,7 @@
             </Pane>
          </bottom>
          <left>
-            <Button fx:id="button3" mnemonicParsing="false" onAction="#onfullscreen1" onSwipeLeft="#onGetLastImage" prefHeight="780.0" prefWidth="980.0" style="-fx-background-color: TRANSPARENT;" BorderPane.alignment="CENTER">
+            <Button fx:id="button3" mnemonicParsing="false" onAction="#onfullscreen1" onSwipeLeft="#onGetLastImage" prefHeight="780.0" prefWidth="980.0" style="-fx-background-color: TRANSPARENT;" textFill="#a13030" BorderPane.alignment="CENTER">
                <graphic>
                   <ImageView fx:id="image3" fitHeight="262.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                      <image>

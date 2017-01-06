@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
@@ -12,6 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,25 +26,24 @@ import java.util.List;
 public class ImageServiceImpl implements ImageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageServiceImpl.class);
 
-    private ImageDAO dao;
-
+    private ImageDAO imageDAO;
     public ImageServiceImpl() throws ServiceException{
         try {
-            this.dao = new JDBCImageDAO(H2Handler.getInstance());
+            this.imageDAO = new JDBCImageDAO(H2Handler.getInstance());
         } catch (PersistenceException e) {
             throw new ServiceException("Error: "+e.getMessage());
         }
     }
     @Autowired
     public ImageServiceImpl(ImageDAO imageDAO) throws ServiceException {
-        this.dao = imageDAO;
+        this.imageDAO = imageDAO;
     }
 
     @Override
     public Image create(Image f) throws ServiceException {
         try{
             LOGGER.debug("Entering create method in Service with parameters {}"+f);
-            return dao.create(f);
+            return imageDAO.create(f);
          } catch (PersistenceException e) {
             throw new ServiceException("Error! Creating in service layer has failed.:" + e.getMessage());
         }
@@ -49,7 +53,7 @@ public class ImageServiceImpl implements ImageService {
     public Image read(int id) throws ServiceException {
         try {
             LOGGER.debug("Entering read method in Service with image id = "+id);
-            return dao.read(id);
+            return imageDAO.read(id);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Reading in service layer has failed.:" + e.getMessage());
         }
@@ -59,7 +63,7 @@ public class ImageServiceImpl implements ImageService {
     public void delete(int imageID) throws ServiceException {
         try {
             LOGGER.debug("Entering delete method in Service with imageID = " + imageID);
-            dao.delete(imageID);
+            imageDAO.delete(imageID);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! Deleting in service layer has failed.:" + e.getMessage());
         }
@@ -69,7 +73,7 @@ public class ImageServiceImpl implements ImageService {
     public String getLastImgPath(int shootingid) throws ServiceException  {
         try {
             LOGGER.debug("Entering getLastImgPath method in Service with shootingid = " + shootingid);
-            return dao.getLastImgPath(shootingid);
+            return imageDAO.getLastImgPath(shootingid);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getLastImgPath in service layer has failed.:" + e.getMessage());
         }
@@ -79,7 +83,7 @@ public class ImageServiceImpl implements ImageService {
     public List<Image> getAllImages(int shootingid) throws ServiceException {
         try {
             LOGGER.debug("Entering getAllImages method in Service with shootingid = " + shootingid);
-            return dao.getAllImages(shootingid);
+            return imageDAO.getAllImages(shootingid);
         }catch(PersistenceException e){
             throw new ServiceException("Error! Showing all images in service layer has failed.:" + e.getMessage());
         }
@@ -89,12 +93,28 @@ public class ImageServiceImpl implements ImageService {
     public int getNextImageID() throws ServiceException {
         try {
             LOGGER.debug("Entering getNextImageID method in Service ");
-            return dao.getNextImageID();
+            return imageDAO.getNextImageID();
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getNextImageId in service layer has failed.:" + e.getMessage());
         }
     }
 
+    @Override
+    public Image crop(Image original, int x1, int x2, int y1, int y2) throws ServiceException {
+        try {
+            BufferedImage bufOriginal = ImageIO.read(new File(original.getImagepath()));
+            BufferedImage bufCropped = bufOriginal.getSubimage(x1, y1, x2-x1, y2-y1);
+            Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
+            return imageDAO.createAndSave(img, bufCropped);
 
-
+        } catch (IOException e) {
+            LOGGER.debug("crop: " + e);
+            throw new ServiceException(e.getMessage());
+        }
+        catch (PersistenceException e)
+        {
+            LOGGER.debug("crop: " + e);
+            throw new ServiceException(e.getMessage());
+        }
+    }
 }
