@@ -205,6 +205,9 @@ public class WindowManager {
      */
     public void showAdminLogin(int sceneToShow, int callingScene){
         loginRedirectorModel.setScenes(sceneToShow, callingScene);
+        if(callingScene ==SHOW_CUSTOMERSCENE){
+            shootingAdminController.inactivemode();
+        }
         mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }

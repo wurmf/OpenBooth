@@ -70,9 +70,8 @@ public class CostumerFrameController {
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
             LOGGER.error("initialise:",e.getMessage());
-        } catch (NullPointerException e){
-            LOGGER.error("no active shooting");
-
+        } catch (NullPointerException n){
+            LOGGER.error("no active shooting:",n.getMessage());
         }
     }
 
@@ -100,13 +99,14 @@ public class CostumerFrameController {
             }
         } catch (ServiceException e) {
             LOGGER.debug(e.getMessage());
-        }catch (NullPointerException e){
-            LOGGER.error("no active shooting");
         }
 }
 
     public void switchToFilter(ActionEvent actionEvent) {
         try {
+            if(shootingservice.searchIsActive().getActive()){
+                profile=profileservice.get(shootingservice.searchIsActive().getProfileid());
+            }
             rightbutton.setVisible(false);
             allpicturesview.setVisible(false);
             gridpanel.setVisible(false);
@@ -124,6 +124,8 @@ public class CostumerFrameController {
         }catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden!");
             LOGGER.error("load buttons:",e.getMessage());
+        }catch (NullPointerException n){
+            LOGGER.error("active shooting:",n.getMessage());
         }
     }
 
@@ -139,9 +141,8 @@ public class CostumerFrameController {
        try {
             buttonList= new ArrayList<>();
             if (shootingservice.searchIsActive().getActive()) {
-                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
-
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
             if (pairList.isEmpty()||pairList.size()==0) {
                 rightbutton.setVisible(false);
@@ -203,9 +204,7 @@ public class CostumerFrameController {
             }
        } catch (ServiceException e) {
            showInformationDialog(e.getMessage());
-       }catch (NullPointerException e){
-           LOGGER.error("no active shooting");
-       }
+        }
     }
 
     private void loadButton() {

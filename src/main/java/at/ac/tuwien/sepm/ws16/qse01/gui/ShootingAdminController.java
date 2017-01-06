@@ -90,22 +90,19 @@ public class ShootingAdminController {
     private void initialize() {
 
         try {
-            Shooting shooting =shootingService.searchIsActive();
-            if(shooting!=null) {
-                if (shootingService.searchIsActive().getActive()) {
-                    startButton.setVisible(false);
-                    stopButton.setVisible(true);
-                    storage.setVisible(false);
-                    canclebutton.setText("Fortsetzen");
-                    storageDirLabel.setVisible(false);
-                    gridSave.setVisible(false);
+            if(shootingService.searchIsActive().getActive()){
+                startButton.setVisible(false);
+                stopButton.setVisible(true);
+                storage.setVisible(false);
+                canclebutton.setText("Fortsetzen");
+                storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
 
-                    finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
-                    finallsavingplace.setVisible(true);
-                    save1.setVisible(true);
-                    saveing.setVisible(false);
+                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
+                finallsavingplace.setVisible(true);
+                save1.setVisible(true);
+                saveing.setVisible(false);
 
-                }
             }else{
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
@@ -143,25 +140,20 @@ public class ShootingAdminController {
     }
 
     public void inactivemode(){
-
-
         try {
-            Shooting shooting =shootingService.searchIsActive();
-            if(shooting!=null) {
-                if (shootingService.searchIsActive().getActive()) {
-                    startButton.setVisible(false);
-                    stopButton.setVisible(true);
-                    storage.setVisible(false);
-                    canclebutton.setText("Fortsetzen");
-                    storageDirLabel.setVisible(false);
-                    gridSave.setVisible(false);
-                    finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
-                    finallsavingplace.setVisible(true);
-                    save1.setVisible(true);
-                    saveing.setVisible(false);
+            if (shootingService.searchIsActive().getActive()) {
+                startButton.setVisible(false);
+                stopButton.setVisible(true);
+                storage.setVisible(false);
+                canclebutton.setText("Fortsetzen");
+                storageDirLabel.setVisible(false);
+                gridSave.setVisible(false);
+                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
+                finallsavingplace.setVisible(true);
+                save1.setVisible(true);
+                saveing.setVisible(false);
 
-                }
-            }else {
+            } else {
                 stopButton.setVisible(false);
                 startButton.setVisible(true);
                 storage.setVisible(true);
@@ -223,18 +215,14 @@ public class ShootingAdminController {
      */
     public void onDemolitionPressed(ActionEvent actionEvent) {
         try {
-            Shooting s =shootingService.searchIsActive();
-            if(s!=null) {
-
-                if (shootingService.searchIsActive().getActive()) {
-                    Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
-                    if (shootingService.searchIsActive().getProfileid() != profile.getId()) {
-                        Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
-                        shootingService.updateProfile(shooting);
-                    }
-                    windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+            if (shootingService.searchIsActive().getActive()) {
+                Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
+                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
+                    shootingService.updateProfile(shooting);
                 }
-            }else {
+                windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+            } else {
                 windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             }
         } catch (ServiceException e) {

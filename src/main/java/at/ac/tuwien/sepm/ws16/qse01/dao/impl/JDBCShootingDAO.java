@@ -91,11 +91,7 @@ public class JDBCShootingDAO implements ShootingDAO {
                 }
             }
         }
-        if(!shouting.getActive()){
-            return null;
-        }else {
-            return shouting;
-        }
+        return shouting;
     }
 
     @Override
