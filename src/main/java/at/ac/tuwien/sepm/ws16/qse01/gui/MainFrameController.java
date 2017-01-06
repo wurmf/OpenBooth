@@ -83,7 +83,7 @@ public class MainFrameController {
     public void showRecoveryDialog(){
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
-                "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
+                "Möchten sie die zuletzt geöffnete Shooting wieder her stellen?");
         alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
