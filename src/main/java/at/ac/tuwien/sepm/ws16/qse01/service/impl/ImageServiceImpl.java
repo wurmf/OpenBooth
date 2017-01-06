@@ -56,13 +56,14 @@ public class ImageServiceImpl implements ImageService {
             throw new ServiceException("Error: "+e.getMessage());
         }
 
-        String lib= "/.lib/libopencv_java320.dylib";
+        String lib= "/lib/libopencv_java320.dylib";
         if(com.sun.javafx.PlatformUtil.isWindows())
-            lib = "/.lib/opencv_java320.dll";
+            lib = "/lib/opencv_java320.dll";
         if(com.sun.javafx.PlatformUtil.isLinux())
-            lib = "/.lib/libopencv_java320.so";
+            lib = "/lib/libopencv_java320.so";
 
-        System.load(System.getProperty("user.dir")+lib);
+        String libPath = this.getClass().getResource(lib).getPath();
+        System.load(libPath);
 
         checkStorageDir();
 
