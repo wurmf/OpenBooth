@@ -251,7 +251,7 @@ public class JDBCImageDAO implements ImageDAO {
     public List<Image> getAllImages(int shootingid) throws PersistenceException {
         List<Image> imageList = new ArrayList<>();
         PreparedStatement stmt = null;
-        String query = "select * from images where shootingid = ? ;";
+        String query = "select * from images where shootingid = ? order by imagepath;";
 
         try {
             stmt = con.prepareStatement(query);
