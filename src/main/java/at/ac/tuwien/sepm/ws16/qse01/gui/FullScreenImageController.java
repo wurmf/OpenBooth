@@ -173,8 +173,13 @@ public class FullScreenImageController {
                             onClosePressed();
                         }
                     }
-                    imageList= imageService.getAllImages(activ);
-                    refreshManager.notifyMiniatureFrameOfDelete(image);
+                    if(activ!=-1) {
+                        imageList = imageService.getAllImages(activ);
+                        refreshManager.notifyMiniatureFrameOfDelete(image);
+                    }else{
+                        LOGGER.debug("no active shooting");
+                        informationDialog("Bild konnte nicht gelöscht werden.");
+                    }
                 }
             }
         } catch (ServiceException e) {
@@ -354,7 +359,7 @@ public class FullScreenImageController {
      * @param imgID image id given from miniaturframe
      */
     public void changeImage(int imgID){
-
+       activ = -1;
         try {
 
             if (shootingService.searchIsActive().getActive()) {
@@ -393,6 +398,8 @@ public class FullScreenImageController {
             LOGGER.debug(e.getMessage());
             informationDialog("Foto konnte nicht gefunden werden");
            // windowManager.showMiniatureFrame();
+        }catch (NullPointerException e){
+            LOGGER.error("no active shooting");
         }
 
     }

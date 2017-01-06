@@ -70,6 +70,9 @@ public class CostumerFrameController {
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
             LOGGER.error("initialise:",e.getMessage());
+        } catch (NullPointerException e){
+            LOGGER.error("no active shooting");
+
         }
     }
 
@@ -97,6 +100,8 @@ public class CostumerFrameController {
             }
         } catch (ServiceException e) {
             LOGGER.debug(e.getMessage());
+        }catch (NullPointerException e){
+            LOGGER.error("no active shooting");
         }
 }
 
@@ -134,8 +139,9 @@ public class CostumerFrameController {
        try {
             buttonList= new ArrayList<>();
             if (shootingservice.searchIsActive().getActive()) {
-                profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
+
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
             if (pairList.isEmpty()||pairList.size()==0) {
                 rightbutton.setVisible(false);
@@ -197,7 +203,9 @@ public class CostumerFrameController {
             }
        } catch (ServiceException e) {
            showInformationDialog(e.getMessage());
-        }
+       }catch (NullPointerException e){
+           LOGGER.error("no active shooting");
+       }
     }
 
     private void loadButton() {

@@ -60,7 +60,9 @@ public class MainFrameController {
         } catch (ServiceException e) {
             showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
             LOGGER.info("MainFrameController:",e.getMessage());
-         }
+         }catch (NullPointerException n){
+            LOGGER.debug("no active shooting");
+        }
     }
 
     /**
