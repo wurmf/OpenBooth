@@ -46,10 +46,12 @@ public class WindowManager {
     private Scene miniaturScene;
     private Scene pictureFullScene;
     private Scene customerScene;
+    private Scene kamerafilterScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
+    private KameraFilterController kameraFilterController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -153,6 +155,11 @@ public class WindowManager {
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
 
+        SpringFXMLLoader.FXMLWrapper<Object, KameraFilterController> kameraFilterFXMLWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", KameraFilterController.class);
+        this.kamerafilterScene = new Scene((Parent) kameraFilterFXMLWrapper.getLoadedObject(),screenWidth,screenHeight);
+
+
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
@@ -222,6 +229,11 @@ public class WindowManager {
         pictureController.changeImage(imgID);
     }
 
+    public void showKameraFilterSceen(int idK, int idF, boolean greenscreen){
+        mainStage.setScene(kamerafilterScene);
+        mainStage.setFullScreen(true);
+        kameraFilterController.currentlychousen(idK,idF,greenscreen);
+    }
     /**
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.
      */

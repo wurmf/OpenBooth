@@ -187,8 +187,10 @@ public class CostumerFrameController {
                             "   -fx-background-size: 100%;" +
                             "   -fx-background-color: transparent;" +
                             "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                        //kamera Filter controller
+                        //kamera Filter controller fiter id
+                        windowmanager.showKameraFilterSceen(index,1,pairList.get(index).isGreenScreenReady());
                     });
                     buttonList.add(filter);
                     gp.prefWidth(width);

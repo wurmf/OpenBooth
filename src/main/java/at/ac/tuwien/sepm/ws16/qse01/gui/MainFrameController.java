@@ -80,7 +80,7 @@ public class MainFrameController {
      * caches ServiceException eventualy caused by endShooting
      *
      */
-    public void showRecoveryDialog(){
+     public void showRecoveryDialog(){
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
                 "Möchten sie die zuletzt geöffnete Shooting wieder her stellen?");
