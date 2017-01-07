@@ -123,10 +123,11 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
         Parent parentsett = (Parent) settingWrapper.getLoadedObject();
-        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        //Anmerkung: Css für Einstellungen wird erst dann hinzugefügt, wenn einstellungen-gui fertig ist. - Deniz
+      /*  URL csssett = this.getClass().getResource("/css/basicstyle.css");
         LOGGER.info("CSSSETT:"+csssett);
         parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
-        parentsett.getStylesheets().add(csssett.toExternalForm());
+        parentsett.getStylesheets().add(csssett.toExternalForm());*/
         this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
 
         //Creating Login-Scene

@@ -35,30 +35,27 @@ public class AutoCompleteTextField extends TextField
         imgViews = new HashMap<>();
         entriesPopup = new ContextMenu();
 
-        textProperty().addListener(new ChangeListener<String>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-               // System.out.println("in textfield ->"+s2+"_"+getText()+"__"+entries.size());
-                if (getText().length() == 0)
+        textProperty().addListener((observableValue, s, s2) -> {
+
+            if (getText().length() == 0)
+            {
+                entriesPopup.hide();
+            } else
+            {
+                LinkedList<String> searchResult = new LinkedList<>();
+                System.out.println(getText().toLowerCase()+"_"+getText().toLowerCase()+Character.MAX_VALUE);
+                searchResult.addAll(entries.subSet(getText().toLowerCase(), getText().toLowerCase() + Character.MAX_VALUE));
+                if (entries.size() > 0)
                 {
-                    entriesPopup.hide();
+                  //  System.out.println(searchResult.size());
+                    populatePopup(searchResult);
+                    if (!entriesPopup.isShowing())
+                    {
+                        entriesPopup.show(AutoCompleteTextField.this, Side.BOTTOM, 0, 0);
+                    }
                 } else
                 {
-                    LinkedList<String> searchResult = new LinkedList<>();
-                    searchResult.addAll(entries.subSet(getText().toLowerCase(), getText() + Character.MAX_VALUE));
-                    if (entries.size() > 0)
-                    {
-                      //  System.out.println(searchResult.size());
-                        populatePopup(searchResult);
-                        if (!entriesPopup.isShowing())
-                        {
-                            entriesPopup.show(AutoCompleteTextField.this, Side.BOTTOM, 0, 0);
-                        }
-                    } else
-                    {
-                        entriesPopup.hide();
-                    }
+                    entriesPopup.hide();
                 }
             }
         });
