@@ -176,7 +176,7 @@ public class FilterServiceImpl implements FilterService {
                 put(0,1,0);
                 put(0,2,1);
 
-                put(1,0-2);
+                put(1,0,-2);
                 put(1,1,0);
                 put(1,2,2);
 
