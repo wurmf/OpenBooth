@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Interface to implement services for images.
@@ -73,85 +72,7 @@ public interface ImageService {
      */
     List<Image> getAllImages(int shootingid) throws ServiceException;
 
-    /**
-     * converts given image to filtered image with existing filters.
-     *
-     * @param imgPath the path of image to convert
-     * @return Map<String,String> list of all image paths of filtered images
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    Map<String,String> getAllFilteredImages(String imgPath) throws ServiceException;
 
-    /**
-     * resizes given image to given size ( width - height )
-     *
-     * @param imgPath the path of image to resize
-     * @return String image path of resized image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String resize(String imgPath,int width,int height) throws ServiceException;
-
-    /**
-     * changes given image with GAUSSIAN filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterGaussian(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with GRAY SCALE filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterGrayScale(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with COLOR SPACE filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterColorSpace(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with SOBEL filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterSobel(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with THRESH ZERO filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterThreshZero(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with THRESH BINARY INVERT filter
-     *
-     * @param imgPath the path of image to filter
-     * @return String image path of filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    String filterThreshBinaryInvert(String imgPath) throws ServiceException;
-
-    /**
-     * checks if storage directory of active shooting exists. If it doesnt exist, then
-     * it will create a storage directory.
-     *
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    void checkStorageDir() throws ServiceException;
 
 
 }

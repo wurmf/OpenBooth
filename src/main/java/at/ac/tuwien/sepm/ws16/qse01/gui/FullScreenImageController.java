@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.animation.FadeTransition;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -24,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -74,6 +78,7 @@ public class FullScreenImageController {
     private String filteredImgPath= null;
     private boolean constraintInitialized = false;
 
+    private FilterService filterService;
     private ImageService imageService;
     private ShootingService shootingService;
     private WindowManager windowManager;
@@ -81,7 +86,8 @@ public class FullScreenImageController {
     private RefreshManager refreshManager;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+        this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
@@ -265,6 +271,8 @@ public class FullScreenImageController {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
+            deletePreviews(ivfullscreenImage.getId());
+
             if (currentIndex-1 > -1) {
                 if (currentIndex - 1 > 0) {
                     currentIndex = currentIndex - 1;
@@ -301,6 +309,8 @@ public class FullScreenImageController {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
+            deletePreviews(ivfullscreenImage.getId());
+
             if (currentIndex+1 < imageList.size()) {
                 if (currentIndex + 1 < imageList.size()-1) {
                     currentIndex = currentIndex +1;
@@ -313,10 +323,12 @@ public class FullScreenImageController {
                     b4=true;
                     button4.setVisible(true);
                 }
+
                 ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
                 ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
+
             } else {
                 windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
@@ -412,10 +424,10 @@ public class FullScreenImageController {
         LOGGER.info("Entering makePreviewFilter with imgPath->"+imgOriginalPath);
 
         try {
-            String imgPath = imageService.resize(imgOriginalPath,100,150);
+            String imgPath = filterService.resize(imgOriginalPath,80,80);
 
             int counter= 1;
-            Map<String,String> allfilters = imageService.getAllFilteredImages(imgPath);
+            Map<String,BufferedImage> allfilters = filterService.getAllFilteredImages(imgPath);
 
             double imageFilterConstraint = (Screen.getPrimary().getBounds().getWidth() - (allfilters.size() * 100)) / 2;
             planbottom.getChildren().clear();
@@ -425,46 +437,41 @@ public class FullScreenImageController {
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
             }
-            for(Map.Entry<String, String> entry: allfilters.entrySet()){
-               // System.out.println("filteredImage -> "+entry.getKey()+"-->"+entry.getValue());
+            for(Map.Entry<String, BufferedImage> entry: allfilters.entrySet()){
 
-                ImageView imageView = new ImageView(new Image(new FileInputStream(entry.getValue()),80,80,false,true));
+                ImageView imageView = new ImageView(SwingFXUtils.toFXImage(entry.getValue(),null));
                 imageView.setId(entry.getKey());
                 imageView.setOnMouseClicked(e -> {
-                    String newImgPath = "";
+                    Image filteredImage;
                     ImageView imgView =(ImageView) e.getSource();
 
                     try {
                         switch (imgView.getId()) {
 
                             case "gaussian":
-                                newImgPath = imageService.filterGaussian(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterGaussian(ivfullscreenImage.getId()),null);
                                 break;
                             case "sobel":
-                                newImgPath = imageService.filterSobel(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterSobel(ivfullscreenImage.getId()),null);
                                 break;
                             case "colorspace":
-                                newImgPath = imageService.filterColorSpace(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterColorSpace(ivfullscreenImage.getId()),null);
                                 break;
                             case "grayscale":
-                                newImgPath = imageService.filterGrayScale(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterGrayScale(ivfullscreenImage.getId()),null);
                                 break;
                             case "threshzero":
-                                newImgPath = imageService.filterThreshZero(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterThreshZero(ivfullscreenImage.getId()),null);
                                 break;
                             case "threshbinaryinvert":
-                                newImgPath = imageService.filterThreshBinaryInvert(ivfullscreenImage.getId());
+                                filteredImage = SwingFXUtils.toFXImage(filterService.filterThreshBinaryInvert(ivfullscreenImage.getId()),null);
                                 break;
                             default:
+                                filteredImage = new Image(ivfullscreenImage.getId());
 
                         }
-                        try {
-                            if(changeActiveFilter(imgView)) {
-                                filteredImgPath = newImgPath;
-                                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
-                            }
-                        } catch (FileNotFoundException e1) {
-                            LOGGER.error("FilterOnClick ->"+e1.getMessage());
+                        if(changeActiveFilter(imgView)) {
+                            ivfullscreenImage.setImage(filteredImage);
                         }
 
                     } catch (ServiceException e2) {
@@ -562,6 +569,13 @@ public class FullScreenImageController {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }
 
+    }
+    public void deletePreviews(String imgPath){
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
+        if(new File(activeShooting.getStorageDir()+imgFilterName).isFile())
+            new File(activeShooting.getStorageDir()+imgFilterName).delete();
     }
 
 }

@@ -121,6 +121,7 @@ public class JDBCImageDAO implements ImageDAO {
             stmt.setInt(2,img.getShootingid());
 
             stmt.setTimestamp (3, new Timestamp(img.getDate().getTime()));
+            stmt.setInt(4,img.getImageID());
 
             stmt.executeUpdate();
 
