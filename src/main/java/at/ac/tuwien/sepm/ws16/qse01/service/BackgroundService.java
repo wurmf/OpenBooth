@@ -18,9 +18,9 @@ public interface BackgroundService {
     List<Background> getAllforCurrentShootingAvailable() throws ServiceException;
     boolean erase(Background background) throws ServiceException;
 
-    Background add(Background.Event event) throws ServiceException;
-    boolean edit(Background.Event event) throws ServiceException;
-    List<Background.Event> getEvent(int id) throws ServiceException;
-    List<Background.Event> getAllEvents() throws ServiceException;
+    Background add(Background.Category category) throws ServiceException;
+    boolean edit(Background.Category category) throws ServiceException;
+    List<Background.Category> getEvent(int id) throws ServiceException;
+    List<Background.Category> getAllEvents() throws ServiceException;
     boolean eraseEvent(int id) throws ServiceException;
 }

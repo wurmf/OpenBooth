@@ -6,7 +6,11 @@ ALTER SEQUENCE cameras_seq RESTART WITH 1;
 ALTER SEQUENCE logos_seq RESTART WITH 1;
 ALTER SEQUENCE profile_logo_relativeRectangles_seq RESTART WITH 1;
 ALTER SEQUENCE profile_camera_positions_seq RESTART WITH 1;
+ALTER SEQUENCE backgroundcategories_seq RESTART WITH 1;
+ALTER SEQUENCE backgrounds_seq RESTART WITH 1;
 
+DELETE FROM backgrounds;
+DELETE FROM backgroundcategories;
 DELETE FROM profile_camera_positions;
 DELETE FROM profile_logo_relativeRectangles;
 DELETE FROM positions;

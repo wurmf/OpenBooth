@@ -6,6 +6,8 @@ CREATE SEQUENCE cameras_seq CYCLE MAXVALUE 2147483600;
 CREATE SEQUENCE logos_seq CYCLE MAXVALUE 2147483600;
 CREATE SEQUENCE profile_logo_relativeRectangles_seq CYCLE MAXVALUE 2147483600;
 CREATE SEQUENCE profile_camera_positions_seq CYCLE MAXVALUE 2147483600;
+CREATE SEQUENCE backgroundcategories_seq CYCLE MAXVALUE 2147483600;
+CREATE SEQUENCE backgrounds_seq CYCLE MAXVALUE 2147483600;
 
 CREATE TABLE adminusers (adminname VARCHAR(20) PRIMARY KEY, password BINARY(32) NOT NULL);
 
@@ -59,4 +61,17 @@ CREATE TABLE profile_logo_relativeRectangles(
                         width DOUBLE,
                         height DOUBLE,
                         UNIQUE KEY (profile_logo_relativeRectangles_id,profileId, logoId)
+                        );
+
+CREATE TABLE backgroundcategories(
+                        backgroundcategoryID BIGINT DEFAULT backgroundcategories_seq.nextval PRIMARY KEY,
+                        name VARCHAR(50) NOT NULL,
+                        isDeleted BOOLEAN DEFAULT false
+                        );
+
+CREATE TABLE backgrounds(
+                        backgroundID BIGINT DEFAULT backgrounds_seq.nextval PRIMARY KEY,
+                        name VARCHAR(50) NOT NULL,
+                        path VARCHAR(250) NOT NULL DEFAULT '',
+                        isDeleted BOOLEAN DEFAULT false
                         );
