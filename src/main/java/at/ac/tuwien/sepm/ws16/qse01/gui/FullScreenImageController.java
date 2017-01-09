@@ -431,7 +431,6 @@ public class FullScreenImageController {
             double imageFilterConstraint = (Screen.getPrimary().getBounds().getWidth() - (allfilters.size() * 100)) / 2;
             planbottom.getChildren().clear();
             if(!constraintInitialized) {
-                System.out.println(imageFilterConstraint);
                 ColumnConstraints con = new ColumnConstraints();
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
