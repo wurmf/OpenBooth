@@ -136,7 +136,7 @@ public class JDBCProfileDAO implements ProfileDAO {
             stmt.setBoolean(4,profile.isGreenscreenEnabled());
             stmt.setBoolean(5,profile.isMobilEnabled());
             stmt.setString(6,profile.getWatermark());
-            stmt.setLong(7,profile.getId());
+            stmt.setInt(7,profile.getId());
             stmt.executeUpdate();
             int returnUpdateCount = stmt.executeUpdate();
 

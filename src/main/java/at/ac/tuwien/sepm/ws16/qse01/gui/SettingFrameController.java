@@ -948,7 +948,13 @@ public class SettingFrameController {
                 pservice.add(p);
                 profList.add(p);
 
-             //   profList.add(p);
+                txProfilDrucken.setSelected(false);
+                txProfilFilter.setSelected(false);
+                txProfilGreen.setSelected(false);
+                txProfilMobil.setSelected(false);
+                txProfilName.clear();
+                txProfilWatermark.setText("Hochladen...");
+
             } catch (ServiceException e) {
                LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             }
@@ -964,32 +970,38 @@ public class SettingFrameController {
         }else {
             try {
                 Logo newLogo = new Logo(name,txLogoLogo.getText());
-                RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()), Double.valueOf(txLogoHoehe.getText()),Double.valueOf(txLogoBreite.getText()));
+                double width = 0.0;
+                double height = 0.0;
+                if(txLogoHoehe.getText().isEmpty() && !txLogoBreite.getText().isEmpty()){
+                    width = Double.valueOf(txLogoBreite.getText());
+                    height = (((width*100)/Double.valueOf(txPreviewWidth.getText()))*Double.valueOf(txPreviewHeight.getText()))/100;
+                }else if(!txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
+                    height = Double.valueOf(txLogoHoehe.getText());
+                    width = (((height*100)/Double.valueOf(txPreviewHeight.getText()))*Double.valueOf(txPreviewWidth.getText()))/100;
+                }else if(txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
+                    showError("Bitte in Breite und Höhe Eingabefelder nur Zahlen eingeben.");
+                    throw new NumberFormatException();
+                }else{
+                    width = Double.valueOf(txLogoBreite.getText());
+                    height = Double.valueOf(txLogoHoehe.getText());
+                }
+                RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()),width,height);
 
                 LOGGER.info("adding the new pairLogo to tableView...");
 
                 newLogo = pservice.addLogo(newLogo);
 
-                Profile.PairLogoRelativeRectangle p = new Profile.PairLogoRelativeRectangle(newLogo,newPosition);
-
-
-
-               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-
-                p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
+                Profile.PairLogoRelativeRectangle p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
 
                 logoList.add(p);
 
-                //txLogoName.getEntries().removeAll(txLogoName.getEntries());
                 txLogoName.getEntries().add(newLogo.getLabel()+" #"+newLogo.getId());
-               /* txLogoName.getImgViews().clear();
-                txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));*/
+
                 ImageView imgView =new ImageView(new Image("file:"+newLogo.getPath(),30,30,true,true));
 
                 imgView.setId(newLogo.getPath());
 
                 txLogoName.getImgViews().put(newLogo.getLabel().toLowerCase()+" #"+newLogo.getId(),imgView);
-
                 txLogoName.clear();
                 txLogoBreite.clear();
                 txLogoHoehe.clear();
@@ -1001,7 +1013,7 @@ public class SettingFrameController {
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             } catch (NumberFormatException e){
-                showError("Bitte in Position Eingabefelder (Xstart,>Ystart,Breite,Höhe) nur Zahlen eingeben.");
+                showError("Bitte in Position Eingabefelder (Xstart,Ystart,Breite,Höhe) nur Zahlen eingeben.");
                 LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
                 //TODO: Dialogfenster öffnen.
             }
@@ -1026,9 +1038,12 @@ public class SettingFrameController {
                 pservice.addPosition(p);
                 posList.add(p);
 
-               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                 kamPosList.clear();
                 kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+
+                txPositionBild.setText("Hochladen...");
+                txPositionName.clear();
+
 
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
@@ -1052,38 +1067,29 @@ public class SettingFrameController {
 
     @FXML
     public void fullScreenPreview(){
-       // try {
-            Stage previewStage = new Stage();
-            Group root = new Group();
-            Scene scene = new Scene(root);
 
-          /*  HBox box = new HBox();
-            box.getChildren().add(iv1);
-            box.getChildren().add(iv2);
-            box.getChildren().add(iv3);*/
-            ImageView prevView = new ImageView(previewLogo.getImage());
-            prevView.setFitHeight(prevView.getImage().getHeight());
-            prevView.setFitWidth(prevView.getImage().getWidth());
-            root.getChildren().add(prevView);
+        Stage previewStage = new Stage();
+        Group root = new Group();
+        Scene scene = new Scene(root);
 
-            previewStage.setTitle("Preview Logo");
-            previewStage.setWidth(prevView.getImage().getWidth());
-            previewStage.setHeight(prevView.getImage().getHeight());
-            previewStage.setScene(scene);
+        ImageView prevView = new ImageView(previewLogo.getImage());
+        prevView.setFitHeight(prevView.getImage().getHeight());
+        prevView.setFitWidth(prevView.getImage().getWidth());
+        root.getChildren().add(prevView);
+
+        previewStage.setTitle("Preview Logo");
+        previewStage.setWidth(prevView.getImage().getWidth());
+        previewStage.setHeight(prevView.getImage().getHeight());
+        previewStage.setScene(scene);
         previewStage.setFullScreen(false);
         previewStage.initOwner(windowManager.getStage());
-            previewStage.show();
-            //Desktop.getDesktop().open(new File(System.getProperty("user.dir")+"/preview.jpg"));
-      /*  } catch (IOException e) {
-            LOGGER.error("fullscreenPreview ->"+e.getMessage());
-        }*/
+        previewStage.show();
     }
     public List<String> logo2StringArray(List<Logo> logos){
       List<String> ret = new ArrayList<>();
         for (Logo logo:logos){
            ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
         }
-      //  System.out.println("neue stringarray size =>"+ret.size());
         return ret;
     }
     public Map<String,ImageView> logo2imgViews(List<Logo> logos){
