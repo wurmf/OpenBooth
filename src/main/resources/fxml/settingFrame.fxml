@@ -45,12 +45,14 @@
                   <TextField fx:id="txProfilName" layoutX="36.0" layoutY="435.0" prefHeight="27.0" prefWidth="205.0" />
                   <CheckBox fx:id="txProfilMobil" layoutX="285.0" layoutY="439.0" mnemonicParsing="false" />
                   <CheckBox fx:id="txProfilGreen" layoutX="394.0" layoutY="439.0" mnemonicParsing="false" />
-                  <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
                   <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
-                  <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                  <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
+                   <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
+
+                   <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
                   <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
-                  <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
+                   <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
+
+                   <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </AnchorPane>
         </content>
@@ -121,13 +123,14 @@
                                  </columns>
                               </TableView>
                               <AutoCompleteTextField fx:id="txLogoName" layoutX="44.0" layoutY="414.0" />
-                              <TextField fx:id="txLogoLogo" editable="false" layoutX="473.0" layoutY="412.0" onAction="#logoUpload" onMouseClicked="#logoUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                              <Button layoutX="605.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveLogo" text="ADD" />
-                              <Button layoutX="564.0" layoutY="412.0" mnemonicParsing="false" onAction="#logoUpload" prefHeight="30.0" text="+" />
+
                               <TextField fx:id="txLogoX" layoutX="234.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoY" layoutX="290.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
                               <TextField fx:id="txLogoHoehe" layoutX="409.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
+                              <TextField fx:id="txLogoLogo" editable="false" layoutX="473.0" layoutY="412.0" onAction="#logoUpload" onMouseClicked="#logoUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
+                              <Button layoutX="605.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveLogo" text="ADD" />
+                              <Button layoutX="564.0" layoutY="412.0" mnemonicParsing="false" onAction="#logoUpload" prefHeight="30.0" text="+" />
                               <ImageView fx:id="previewLogo" fitHeight="157.0" fitWidth="165.0" layoutX="696.0" layoutY="54.0" onMouseClicked="#fullScreenPreview" pickOnBounds="true" preserveRatio="true" />
                               <TextField fx:id="txPreviewWidth" layoutX="699.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
                               <TextField fx:id="txPreviewHeight" layoutX="785.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />

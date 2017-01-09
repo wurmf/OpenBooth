@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS profile_backgroundcategories;
+DROP TABLE IF EXISTS backgrounds;
+DROP TABLE IF EXISTS backgroundcategories;
 DROP TABLE IF EXISTS profile_camera_positions;
 DROP TABLE IF EXISTS profile_logo_relativeRectangles;
 DROP TABLE IF EXISTS logos;
@@ -16,3 +19,5 @@ DROP SEQUENCE IF EXISTS cameras_seq;
 DROP SEQUENCE IF EXISTS logos_seq;
 DROP SEQUENCE IF EXISTS profile_logo_relativeRectangles_seq;
 DROP SEQUENCE IF EXISTS profile_camera_positions_seq;
+DROP SEQUENCE IF EXISTS backgroundcategories_seq;
+DROP SEQUENCE IF EXISTS backgrounds_seq;

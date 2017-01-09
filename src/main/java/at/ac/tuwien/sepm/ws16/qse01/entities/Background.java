@@ -5,30 +5,26 @@ package at.ac.tuwien.sepm.ws16.qse01.entities;
  */
 public class Background extends Picture{
     private String name;
-    private AssociationType associationType;
-    private int associationId;
+    private Category category;
+    private boolean isDeleted;
 
     public Background(int id,
+                      String name,
                       String path,
-                      AssociationType associationType,
-                      int associationId) {
+                      Category category,
+                      boolean isDeleted) {
         super(id, path);
-        this.setAssociationType(associationType);
-        this.setAssociationId(associationId);
+        this.setName(name);
+        this.setCategory(category);
+        this.setDeleted(isDeleted);
     }
 
-    public Background(String path,
-                      AssociationType associationType,
-                      int associationId) {
+    public Background(String name,
+                      String path,
+                      Category category) {
         super(path);
-        this.setAssociationType(associationType);
-        this.setAssociationId(associationId);
-    }
-
-    public Background(String path) {
-        super(path);
-        this.setAssociationType(AssociationType.GLOBAL);
-        this.setAssociationId(0);
+        this.setName(name);
+        this.setCategory(category);
     }
 
     public String getName() {
@@ -39,52 +35,46 @@ public class Background extends Picture{
         this.name = name;
     }
 
-    public AssociationType getAssociationType() {
-        return associationType;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setAssociationType(AssociationType associationType) {
-        this.associationType = associationType;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public int getAssociationId() {
-        return associationId;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setAssociationId(int associationId) {
-        this.associationId = associationId;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override
     public String toString() {
         return "Background{" +
                 "name='" + name + '\'' +
-                ", associationType=" + associationType +
-                ", associationId=" + associationId +
+                ", category=" + category +
                 '}';
     }
 
     /**
-     * Association Types
+     * Category entity
      */
-    public enum AssociationType {
-        GLOBAL,PROFILE,EVENT
-    }
-
-    /**
-     * Event entity
-     */
-    public class Event {
+    public static class Category {
         private int id;
         private String name;
+        private boolean isDeleted;
 
-        public Event(int id, String name) {
+        public Category(int id, String name, boolean isDeleted) {
             this.id = id;
             this.name = name;
+            this.isDeleted = isDeleted;
         }
 
-        public Event(String name) {
-            this(Integer.MIN_VALUE,name);
+        public Category(String name) {
+            this(Integer.MIN_VALUE,name,false);
         }
 
         public int getId() {
@@ -103,9 +93,17 @@ public class Background extends Picture{
             this.name = name;
         }
 
+        public boolean isDeleted() {
+            return isDeleted;
+        }
+
+        public void setDeleted(boolean deleted) {
+            isDeleted = deleted;
+        }
+
         @Override
         public String toString() {
-            return "Event{" +
+            return "Background.Category{" +
                     "id=" + id +
                     ", name='" + name + '\'' +
                     '}';

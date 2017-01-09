@@ -24,14 +24,14 @@ public interface LogoDAO {
      * in case logo object with given id exists and can be updated in the persistence store, true value will be returned
      * if logo object with given id doesn't exist in persistence store, nothing will be updated and false value will be returned
      * @param logo - logo object with changed properties to be persisted
-     * @return true, if given logo object is deleted in persistence store successfully, false otherwise
+     * @return true, if given logo object is updated in persistence store successfully, false otherwise
      * @throws PersistenceException if persistence data store can not be accessed
      */
     boolean update(Logo logo) throws PersistenceException;
 
     /**
      * Retrieve a logo object identified by id from the persistence store
-     * independenently if it has been marked as deleted or not
+     * independently if it has been marked as deleted or not
      * @param id - id of the logo object that is looked for
      * @return logo object that has been looked for, if a logo object with given id doesn't
      * exist in persistence store, null value will be returned
