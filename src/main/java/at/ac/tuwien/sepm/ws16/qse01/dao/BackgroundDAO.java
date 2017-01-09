@@ -43,6 +43,11 @@ public interface BackgroundDAO {
      */
     Background read(int id) throws PersistenceException;
 
+    /**
+     * Retrieve all Background objects that are not deleted
+     * @return List of Background objects
+     * @throws PersistenceException if persistence data store can not be accessed
+     */
     List<Background> readAll() throws PersistenceException;
 
     List<Background> readAllWithCategory(int id) throws PersistenceException;
