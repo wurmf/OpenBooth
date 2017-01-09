@@ -75,3 +75,8 @@ CREATE TABLE backgrounds(
                         path VARCHAR(250) NOT NULL DEFAULT '',
                         isDeleted BOOLEAN DEFAULT false
                         );
+
+CREATE TABLE profile_backgroundcategories(
+                        profileId BIGINT REFERENCES profiles(profileID) ON DELETE CASCADE,
+                        backgroundcategoryID BIGINT REFERENCES backgroundcategories(backgroundcategoryID) ON DELETE CASCADE
+                        );

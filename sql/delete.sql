@@ -9,6 +9,7 @@ ALTER SEQUENCE profile_camera_positions_seq RESTART WITH 1;
 ALTER SEQUENCE backgroundcategories_seq RESTART WITH 1;
 ALTER SEQUENCE backgrounds_seq RESTART WITH 1;
 
+DELETE FROM profile_backgroundcategories;
 DELETE FROM backgrounds;
 DELETE FROM backgroundcategories;
 DELETE FROM profile_camera_positions;
