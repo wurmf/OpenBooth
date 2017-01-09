@@ -1,13 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,8 +12,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Moatzgeile Sau on 04.01.2017.
+ * Kamera Filter frame controller
  */
 @Component
 public class KameraFilterController {
@@ -60,6 +55,7 @@ public class KameraFilterController {
     private ImageService imageService;
     private ShootingService shootingService;
     @Autowired
+
     public KameraFilterController(ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
@@ -67,67 +63,43 @@ public class KameraFilterController {
         this.shootingService = shootingService;
     }
 
+    /**
+     * creats the filter selection for all kameras
+     * marks the chousen filter
+     */
     private void creatButtons(){
-        // try {
-        /*List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
-        if (pairList.isEmpty()) {
-            return;
-        }
-        LOGGER.debug("buttons:"+ buttonList.size() +"");
-        int column =(int)((float)pairList.size()/3.0f);
-        int width = (int)((float)gridpanel.getWidth()/(float)column)-5;
-        int high = (int)((float)gridpanel.getHeight()/3)-7;
-        int countrow=0;
-        int countcolumn=0;
 
-        for (int i = 0; i < pairList.size(); i++) {
-            GridPane gp = new GridPane();
-            String name = "Kamera "+pairList.get(i).getCamera().getId()+ "  "  + pairList.get(i).getPosition().getName();
-            ImageView imageView = new ImageView();
-            imageView.setVisible(true);
-            imageView.prefHeight(high);
-            imageView.prefWidth(20);
-
-            //imageView.setImage(camera.getFiler);
-            //imageView.setImage(new javafx.scene.image.Image(new FileInputStream(pairList.get(i).getCameraLable()), width, high, true, true));
-            if(countrow<2){
-                countrow++;
-            }else {
-                countrow=0;
-                if(countcolumn<column){
-                    countcolumn++;
-                }else{
-                    LOGGER.debug("not enoth columns"+ column);
+        try {
+            GridPane filter = new GridPane();
+            ScrollPane scrollPane = new ScrollPane();
+            scrollPane.setFitToWidth(true);
+            filter.prefWidth(scrollPane.getWidth() - scrollPane.getWidth() * 0.05);
+            int columcount = 0;
+            int rowcount = 0;
+            for (int i = 0; i < 1; i++) {//imagefilter.size
+                if (columcount == 6) {
+                    rowcount++;
+                    columcount = 0;
                 }
+                ImageView iv = new ImageView();
+                iv.setFitHeight((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
+                iv.setFitWidth((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);//imagefilter.get(i).getImagepath()
+                iv.setImage(new javafx.scene.image.Image(new FileInputStream(""), iv.getFitWidth(), iv.getFitHeight(), true, true));
+                iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
+                   /* if(fId==){
+
+                    }*/
+                });
+                filter.add(iv, columcount, rowcount);
+                columcount++;
             }
-            Button filter = new Button();
-            filter.setText(name);
-            filter.setVisible(true);
-            filter.setPrefWidth(width-20);
-            filter.setPrefHeight(high);
-            String url = pairList.get(i).getCameraLable();
-            LOGGER.debug("url costumer: "+url);
-            filter.setStyle("-fx-background-image: url('"+url+"'); " +
-                    "   -fx-background-size: 100%;" +
-                    "   -fx-background-color: transparent;" +
-                    "   -fx-font-size:"+ allpicturesview.getFont().getSize()/column+"px;");
-            filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
-
-            });
-            buttonList.add(filter);
-            gp.prefWidth(width);
-            gp.prefHeight(high);
-            gp.add(filter,0,0);
-            gp.add(imageView,1,0);
-            grid.add(gp,countcolumn,countrow);
-            // Image image = new Image(pairList.get(i).getCameraLable());
+            scrollPane.setVisible(true);
+            scrollPane.setContent(filter);
+            grid.add(scrollPane, 0, 0);
+            root.add(grid, 0, 1);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Filter panel", e.getMessage());
         }
-
-        basicpane.add(grid,1,0);
-        buttoncreated = true;
-       /* } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }*/
     }
 
 
@@ -136,6 +108,9 @@ public class KameraFilterController {
         grid.setVisible(true);
     }
 
+    /**
+     * creats image buttons for green screen image and marks chousen one
+     */
     private void creatGreenscreenButton(){
         try {
             if (shootingService.searchIsActive().getActive()) {
@@ -148,18 +123,18 @@ public class KameraFilterController {
                 green.prefWidth(scrollPane.getWidth()-scrollPane.getWidth()*0.05);
                 int columcount =0;
                 int rowcount =0;
-                for (int i = 0; i <greenScreenImages.size() ; i++) {
-                    if(columcount==6){
+                for (Image greenScreenImage : greenScreenImages) {
+                    if (columcount == 6) {
                         rowcount++;
-                        columcount=0;
+                        columcount = 0;
                     }
                     ImageView iv = new ImageView();
-                    iv.setFitHeight((scrollPane.getWidth()-scrollPane.getWidth()*0.05)/6);
-                    iv.setFitWidth((scrollPane.getWidth()-scrollPane.getWidth()*0.05)/6);
-                    iv.setImage(new javafx.scene.image.Image(new FileInputStream(greenScreenImages.get(i).getImagepath()), iv.getFitWidth(), iv.getFitHeight(), true, true));
+                    iv.setFitHeight((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
+                    iv.setFitWidth((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
+                    iv.setImage(new javafx.scene.image.Image(new FileInputStream(greenScreenImage.getImagepath()), iv.getFitWidth(), iv.getFitHeight(), true, true));
                     iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
                         //grau überegt
-                        chousenimage[index]=iv;
+                        chousenimage[index] = iv;
 
                     });
                     green.add(iv, columcount, rowcount);
@@ -171,33 +146,52 @@ public class KameraFilterController {
             }
         } catch (ServiceException e) {
             LOGGER.error("greenScreenButton:",e);
-            wm.showScene(wm.SHOW_CUSTOMERSCENE);
+            wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
         } catch (FileNotFoundException e) {
             LOGGER.error("greenScreenButoon:",e);
         }
     }
 
+    /**
+     * goes back to costumer frame
+     */
     public void onBackbuttonpressed() {
-        wm.showScene(wm.SHOW_CUSTOMERSCENE);
+        wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
     }
 
+    /**
+     * on single image pressed
+     */
     public void onsingelPressed() {
         currentMode[index]=0;
 
     }
 
+    /**
+     * on serien pictures pressed
+     */
     public void onserienPressed() {
         currentMode[index]=1;
     }
 
+    /**
+     * on time image pressed
+     */
     public void ontimerPressed() {
         currentMode[index]=2;
     }
 
+    /**
+     * gives currentMode
+     * @return current mode (on time, single, serien)
+     */
     public int getCurrentMode(){
         return  currentMode[index];
     }
 
+    /**
+     * initialisation of the frame
+     */
     public void firstVisit() {
         try {
             buttonList = new ArrayList<>();
@@ -209,9 +203,16 @@ public class KameraFilterController {
         }
     }
 
+    /**
+     * desides whether an new fiter imge is chousen or green screen
+     * @param index current mode
+     * @param idFilter current filter id
+     * @param greenscreen boolean green screen or not
+     */
     public void currentlychousen(int index, int idFilter, boolean greenscreen){
         this.index=index;
         fId=idFilter;
+        titel.setText("");
         try {
             if (!first) {
                 firstVisit();
