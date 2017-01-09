@@ -73,7 +73,7 @@ public class MiniaturFrameController {
         tile.setVgap(20);
         if(shootingService.searchIsActive().getActive()) {
             LOGGER.info("Active Shooting ->" + shootingService.searchIsActive().getId());
-            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+            listOfImages = imageService.getAllImages(2);//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
         }else{
             return;
         }

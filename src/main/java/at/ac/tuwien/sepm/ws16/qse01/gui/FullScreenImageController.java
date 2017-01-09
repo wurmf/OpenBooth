@@ -450,12 +450,13 @@ public class FullScreenImageController {
                 imageView.setOnMouseClicked(e -> {
                     Image filteredImage;
                     ImageView imgView =(ImageView) e.getSource();
-                    System.out.println("image ->"+filter);
                     try {
                         filteredImage = SwingFXUtils.toFXImage(filterService.filter(imgView.getId(),ivfullscreenImage.getId()),null);
 
                         if(changeActiveFilter(imgView)) {
                             ivfullscreenImage.setImage(filteredImage);
+                            ivfullscreenImage.setFitHeight(base.getHeight());
+                            ivfullscreenImage.setFitWidth(base.getWidth());
                         }
 
                     } catch (ServiceException e2) {
@@ -517,7 +518,7 @@ public class FullScreenImageController {
             activeFilterImageView = original;
             saveFilteredButton.setVisible(false);
             try {
-                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), base.getWidth(), base.getHeight(),true,true));
             } catch (FileNotFoundException e) {
                 LOGGER.error("changeActiveFilter ->"+e.getMessage());
             }

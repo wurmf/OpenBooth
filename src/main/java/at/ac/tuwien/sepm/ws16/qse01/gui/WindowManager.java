@@ -142,8 +142,12 @@ public class WindowManager {
         //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
-        this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
-
+        Parent parentmin = (Parent) miniWrapper.getLoadedObject();
+        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSSETT:"+csssett);
+        parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentmin.getStylesheets().add(csssett.toExternalForm());
+        this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
         //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
