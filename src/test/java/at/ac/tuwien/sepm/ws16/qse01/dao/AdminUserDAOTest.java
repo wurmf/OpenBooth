@@ -1,12 +1,9 @@
 
     package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-    import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
     import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-    import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCAdminUserDAO;
     import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
     import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
-    import org.junit.Before;
     import org.junit.Test;
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
@@ -75,10 +72,11 @@
                 md.update(correspondingPassword.getBytes("UTF-8"));
                 byte[] correspondingPasswordBytes=md.digest();
                 AdminUser user=adminUserDAO.read(nameToLookFor);
+                System.out.println(user==null);
                 assertFalse(user==null);
                 assertFalse(!user.getAdminName().equals(nameToLookFor));
                 assertTrue(Arrays.equals(correspondingPasswordBytes, user.getPassword()));
-            } catch (PersistenceException|NoSuchAlgorithmException |UnsupportedEncodingException e) {
+            } catch (PersistenceException|NoSuchAlgorithmException|UnsupportedEncodingException e) {
                 LOGGER.error("readEmptyUserName - "+e);
             }
         }
