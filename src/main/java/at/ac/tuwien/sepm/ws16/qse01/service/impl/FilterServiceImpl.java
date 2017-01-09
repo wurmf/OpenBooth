@@ -5,6 +5,8 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -35,7 +37,7 @@ public class FilterServiceImpl implements FilterService {
 
     @Autowired
     public FilterServiceImpl(ShootingDAO shootingDAO) throws ServiceException {
-        filterList = Arrays.asList("gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
+        filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
         try {
             activeShooting = shootingDAO.searchIsActive();
@@ -54,6 +56,7 @@ public class FilterServiceImpl implements FilterService {
 
         checkStorageDir();
     }
+    @Override
     public List<String> getExistingFilters(){
         return filterList;
     }
@@ -63,13 +66,9 @@ public class FilterServiceImpl implements FilterService {
         LOGGER.info("Entering getAllFilteredImages->imgPath->"+imgPath);
 
         Map<String,BufferedImage> filteredImgPaths = new HashMap<>();
-
-        filteredImgPaths.put("gaussian",filterGaussian(imgPath));
-        filteredImgPaths.put("grayscale",filterGrayScale(imgPath));
-        filteredImgPaths.put("colorspace",filterColorSpace(imgPath));
-        filteredImgPaths.put("sobel",filterSobel(imgPath));
-        filteredImgPaths.put("threshzero",filterThreshZero(imgPath));
-        filteredImgPaths.put("threshbinaryinvert",filterThreshBinaryInvert(imgPath));
+        filteredImgPaths.put("original", SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null));
+        for(String filterName: filterList)
+            filteredImgPaths.put(filterName,filter(filterName,imgPath));
 
         return filteredImgPaths;
     }
@@ -93,6 +92,41 @@ public class FilterServiceImpl implements FilterService {
     }
 
     @Override
+    public BufferedImage filter(String filterName, String imgPath) throws ServiceException {
+        BufferedImage filteredImage;
+        switch (filterName) {
+
+            case "gaussian":
+                filteredImage = filterGaussian(imgPath);
+                break;
+            case "sobel":
+                filteredImage = filterSobel(imgPath);
+                break;
+            case "colorspace":
+                filteredImage = filterColorSpace(imgPath);
+                break;
+            case "grayscale":
+                filteredImage = filterGrayScale(imgPath);
+                break;
+            case "threshzero":
+                filteredImage = filterThreshZero(imgPath);
+                break;
+            case "threshbinaryinvert":
+                filteredImage = filterThreshBinaryInvert(imgPath);
+                break;
+            default:
+                filteredImage = SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+        }
+        return filteredImage;
+    }
+
+    /**
+     * changes given image with GAUSSIAN filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterGaussian(String imgPath){
         LOGGER.info("Entering filterGaussian->imgPath->"+imgPath);
 
@@ -107,7 +141,13 @@ public class FilterServiceImpl implements FilterService {
 
     }
 
-    @Override
+    /**
+     * changes given image with GRAYSCALE filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterGrayScale(String imgPath){
         LOGGER.info("Entering filterGrayScale->imgPath->"+imgPath);
 
@@ -135,7 +175,13 @@ public class FilterServiceImpl implements FilterService {
         return null;
     }
 
-    @Override
+    /**
+     * changes given image with COLORSPACE filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterColorSpace(String imgPath){
         LOGGER.info("Entering filterColorSpace->imgPath->"+imgPath);
 
@@ -163,7 +209,13 @@ public class FilterServiceImpl implements FilterService {
         return null;
     }
 
-    @Override
+    /**
+     * changes given image with SOBEL filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterSobel(String imgPath){
         LOGGER.info("Entering filterSobel->imgPath->"+imgPath);
         int kernelSize = 3;
@@ -191,7 +243,13 @@ public class FilterServiceImpl implements FilterService {
         return getBufferedImage(destination);
     }
 
-    @Override
+    /**
+     * changes given image with THRESHZERO filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterThreshZero(String imgPath){
         LOGGER.info("Entering filterThreshZero->imgPath->"+imgPath);
 
@@ -202,7 +260,13 @@ public class FilterServiceImpl implements FilterService {
         return getBufferedImage(destination);
     }
 
-    @Override
+    /**
+     * changes given image with THRESHBINARYINVERT filter
+     *
+     * @param imgPath the path of image to filter
+     * @return BufferedImage filtered image
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public BufferedImage filterThreshBinaryInvert(String imgPath){
         LOGGER.info("Entering filterThreshBinaryInvert->imgPath->"+imgPath);
 
@@ -213,7 +277,12 @@ public class FilterServiceImpl implements FilterService {
         return getBufferedImage(destination);
     }
 
-    @Override
+    /**
+     * checks if storage directory of active shooting exists. If it doesnt exist, then
+     * it will create a storage directory.
+     *
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
     public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
@@ -233,6 +302,13 @@ public class FilterServiceImpl implements FilterService {
         }*/
     }
 
+    /**
+     * converts given mat object to buffered image
+     *
+     * @param m - a mat object to convert buffered image
+     * @return BufferedImage converted buffered image
+     *
+     */
     public BufferedImage getBufferedImage(Mat m) {
 
 
