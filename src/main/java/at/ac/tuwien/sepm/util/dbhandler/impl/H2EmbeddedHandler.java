@@ -50,6 +50,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
     private void openConnection(String dbName) throws SQLException, ClassNotFoundException, FileNotFoundException, PersistenceException{
+        LOGGER.info("Trying to open connection to database "+dbName);
         try {
             Class.forName("org.h2.Driver");
             h2Server= Server.createTcpServer().start();
@@ -59,7 +60,7 @@ public class H2EmbeddedHandler  implements DBHandler {
                 LOGGER.info("openConnection - first startup detected");
                 firstStartup();
             } else{
-                LOGGER.info("openConnection - Database already exists");
+                LOGGER.info("openConnection - Database "+dbName+" already exists");
             }
         } catch(ClassNotFoundException|SQLException e){
             LOGGER.error("openConnection - "+e);
@@ -92,8 +93,8 @@ public class H2EmbeddedHandler  implements DBHandler {
     public Connection getTestConnection() throws PersistenceException{
         if(connection==null){
             try {
-                openConnection("fotostudioTest");
                 testState=true;
+                openConnection("fotostudioTest");
             } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
                 throw new PersistenceException(e);
             }
@@ -134,7 +135,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
             ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"create.sql"));
             if(rs!=null) rs.close();
-            rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
+            if(!testState) rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
             if(rs!=null) rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("firstStartup - "+e);
@@ -160,7 +161,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
             if(rs!=null && !rs.isClosed())rs.close();
         } catch(FileNotFoundException|SQLException e){
-            LOGGER.error("insertTestData - "+e);
+            LOGGER.error("insertData - "+e);
             throw e;
         }
     }

@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * This Singleton-class returns a connection to an H2-database called "fotostudio".
  * The class will always return the same connection-object as long as {@link #closeConnection()} is not called. If it is called a new connection will be opened when calling {@link #getConnection()}.
  */
-public class H2Handler  implements DBHandler {
+public class H2Handler implements DBHandler {
     private final Logger LOGGER = LoggerFactory.getLogger(H2Handler.class);
 
     private static H2Handler ourInstance = new H2Handler();
@@ -63,5 +63,10 @@ public class H2Handler  implements DBHandler {
         } finally {
             connection=null;
         }
+    }
+
+    @Override
+    public Connection getTestConnection() throws PersistenceException {
+        return null;
     }
 }

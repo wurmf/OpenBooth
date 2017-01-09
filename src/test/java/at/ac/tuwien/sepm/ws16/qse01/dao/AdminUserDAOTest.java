@@ -72,7 +72,6 @@
                 md.update(correspondingPassword.getBytes("UTF-8"));
                 byte[] correspondingPasswordBytes=md.digest();
                 AdminUser user=adminUserDAO.read(nameToLookFor);
-                System.out.println(user==null);
                 assertFalse(user==null);
                 assertFalse(!user.getAdminName().equals(nameToLookFor));
                 assertTrue(Arrays.equals(correspondingPasswordBytes, user.getPassword()));

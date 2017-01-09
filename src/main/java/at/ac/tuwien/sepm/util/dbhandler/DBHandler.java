@@ -10,6 +10,7 @@ import java.sql.Connection;
 public interface DBHandler {
     /**
      * Returns a connection to the database on which the concrete implementation is working on.
+     * If {@link DBHandler#getTestConnection()} was previously called, a connection to the test-database is returned.
      * @return A Connection-object linking to the target-database.
      * @throws PersistenceException if the implementation is unable to return a working connection to the database.
      */
@@ -19,4 +20,11 @@ public interface DBHandler {
      * Closes an open connection to the database.
      */
     void closeConnection();
+
+    /**
+     * Establishes and returns a connection to a database only used for tests.
+     * @return a connection to the test database
+     * @throws PersistenceException if the implementation is unable to return a working connection to the database.
+     */
+    Connection getTestConnection() throws PersistenceException;
 }
