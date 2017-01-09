@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS profile_backgroundcategories
+DROP TABLE IF EXISTS profile_backgroundcategories;
 DROP TABLE IF EXISTS backgrounds;
 DROP TABLE IF EXISTS backgroundcategories;
 DROP TABLE IF EXISTS profile_camera_positions;
