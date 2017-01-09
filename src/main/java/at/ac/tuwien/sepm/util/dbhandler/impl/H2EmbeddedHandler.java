@@ -30,11 +30,13 @@ public class H2EmbeddedHandler  implements DBHandler {
     private Connection connection;
     private boolean testState;
     private Server h2Server;
+    private String fileSep;
 
 
     private H2EmbeddedHandler() {
         this.connection=null;
         this.testState=false;
+        this.fileSep=File.separator;
     }
     public static H2EmbeddedHandler getInstance() {
         return ourInstance;
@@ -78,9 +80,6 @@ public class H2EmbeddedHandler  implements DBHandler {
             } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
                 throw new PersistenceException(e);
             }
-        } else if(testState){
-            LOGGER.error("getConnection - tried to open Connection to default-DB but there is already a connection established to the test-DB");
-            throw new PersistenceException("tried to open Connection to default-DB but there is already a connection established to the test-DB");
         }
         return connection;
     }
@@ -132,17 +131,21 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     private void firstStartup() throws FileNotFoundException, SQLException, PersistenceException{
         try {
-            ResultSet rs=RunScript.execute(connection, new FileReader("sql/create.sql"));
+            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
+            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"create.sql"));
             if(rs!=null) rs.close();
-            rs=RunScript.execute(connection, new FileReader("sql/init.sql"));
+            rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
             if(rs!=null) rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("firstStartup - "+e);
             throw e;
         }
         //TODO: Delete following before building module for client.
-        insertTestData();
-        setUpDefaultImgs();
+        if(!testState) {
+            insertData();
+            setUpDefaultImgs();
+            LOGGER.info("Data inserted into DB, dummy images copied to filesystem");
+        }
         LOGGER.info("Database initialized.");
     }
 
@@ -151,9 +154,10 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if the create-script is not found in the specified folder.
      * @throws SQLException if an error occurs while running the script on the database.
      */
-    private void insertTestData() throws FileNotFoundException, SQLException{
+    private void insertData() throws FileNotFoundException, SQLException{
         try {
-            ResultSet rs=RunScript.execute(connection, new FileReader("sql/insert.sql"));
+            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
+            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
             if(rs!=null && !rs.isClosed())rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("insertTestData - "+e);
@@ -161,45 +165,17 @@ public class H2EmbeddedHandler  implements DBHandler {
         }
     }
 
-    /**
-     * Runs scripts in the following order:
-     * <ul>
-     *     <li>drop.sql</li>
-     *     <li>create.sql</li>
-     *     <li>init.sql</li>
-     *     <li>insert.sql</li>
-     * </ul>
-     * @throws PersistenceException if an error occurs while reading the sql-script-files or while executing them.
-     */
-    public void resetDBForTest() throws PersistenceException{
-        getConnection();
-        try{
-            ResultSet rs=RunScript.execute(connection, new FileReader("sql/delete.sql"));
-            if(rs!=null && !rs.isClosed())rs.close();
-            rs=RunScript.execute(connection, new FileReader("sql/init.sql"));
-            if(rs!=null && !rs.isClosed())rs.close();
-        } catch(FileNotFoundException|SQLException e){
-            LOGGER.error("resetForTest - "+e);
-            throw new PersistenceException(e);
-        }
-        try{
-            insertTestData();     //Run create.sql, init.sql, insert.sql
-        } catch(FileNotFoundException|SQLException e){
-            throw new PersistenceException(e);
-        }
-    }
-
     private void setUpDefaultImgs() throws PersistenceException{
         String fSep=File.separator;
         String destPath = System.getProperty("user.home") + fSep + "fotostudio" + fSep + "BeispielBilder" + fSep;
-        String workingDir=this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
+        String dummiesDir=this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
         String image1 = "p1.jpg";
         String image2 = "p2.jpg";
 
-        LOGGER.info("workingDir: "+workingDir);
+        LOGGER.info("workingDir: "+dummiesDir);
 
-        Path img1Source = Paths.get(workingDir+image1);
-        Path img2Source = Paths.get(workingDir+image2);
+        Path img1Source = Paths.get(dummiesDir+image1);
+        Path img2Source = Paths.get(dummiesDir+image2);
 
         Path img1Dest= Paths.get(destPath+image1);
         Path img2Dest= Paths.get(destPath+image2);
