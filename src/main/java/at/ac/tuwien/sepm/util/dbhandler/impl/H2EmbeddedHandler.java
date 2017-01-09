@@ -8,8 +8,14 @@ import org.h2.tools.RunScript;
 import org.h2.tools.Server;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.*;
 
 /**
@@ -22,11 +28,13 @@ public class H2EmbeddedHandler  implements DBHandler {
 
     private static H2EmbeddedHandler ourInstance = new H2EmbeddedHandler();
     private Connection connection;
+    private boolean testState;
     private Server h2Server;
 
 
     private H2EmbeddedHandler() {
         this.connection=null;
+        this.testState=false;
     }
     public static H2EmbeddedHandler getInstance() {
         return ourInstance;
@@ -39,11 +47,11 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws ClassNotFoundException if the driver class is not found.
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
-    private void openConnection() throws SQLException, ClassNotFoundException, FileNotFoundException{
+    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, FileNotFoundException, PersistenceException{
         try {
             Class.forName("org.h2.Driver");
             h2Server= Server.createTcpServer().start();
-            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/fotostudio", "sa","");
+            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/"+dbName, "sa","");
             ResultSet rs= connection.getMetaData().getTables(null,null,"ADMINUSERS",null);
             if(!rs.next()){
                 LOGGER.info("openConnection - first startup detected");
@@ -58,18 +66,41 @@ public class H2EmbeddedHandler  implements DBHandler {
     }
 
     /**
-     * Returns a connection to the database. If there is no open connection, the metho calls {@link #openConnection()} to start the database and create a connection.
-     * @return a connection to the database.
-     * @throws PersistenceException if an error occured while opening the connection, so this can only happen on first call of the method or after calling {@link #closeConnection()}.
+     * Returns a connection to the default database. If there is no open connection, the method calls {@link #openConnection(String dbName)} to start the database-server and create a connection.
+     * @return a connection to the default database.
+     * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the test-database.
      */
     @Override
     public Connection getConnection() throws PersistenceException {
         if(connection==null){
             try {
-                openConnection();
+                openConnection("fotostudio");
             } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
                 throw new PersistenceException(e);
             }
+        } else if(testState){
+            LOGGER.error("getConnection - tried to open Connection to default-DB but there is already a connection established to the test-DB");
+            throw new PersistenceException("tried to open Connection to default-DB but there is already a connection established to the test-DB");
+        }
+        return connection;
+    }
+
+    /**
+     * Returns a connection to the test-database. If there is no open connection, the method calls {@link #openConnection(String dbName)} to start the database-server and create a connection.
+     * @return a connection to the test-database.
+     * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the default database.
+     */
+    public Connection getTestConnection() throws PersistenceException{
+        if(connection==null){
+            try {
+                openConnection("fotostudioTest");
+                testState=true;
+            } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
+                throw new PersistenceException(e);
+            }
+        } else if(!testState){
+            LOGGER.error("getConnection - tried to open Connection to test-DB but there is already a connection established to the default-DB");
+            throw new PersistenceException("tried to open Connection to test-DB but there is already a connection established to the default-DB");
         }
         return connection;
     }
@@ -79,6 +110,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     @Override
     public void closeConnection() {
+        testState=false;
         try {
             if(connection!=null) {
                 connection.close();
@@ -98,7 +130,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if the create-script is not found in the specified folder.
      * @throws SQLException if an error occurs while running the script on the database.
      */
-    private void firstStartup() throws FileNotFoundException, SQLException{
+    private void firstStartup() throws FileNotFoundException, SQLException, PersistenceException{
         try {
             ResultSet rs=RunScript.execute(connection, new FileReader("sql/create.sql"));
             if(rs!=null) rs.close();
@@ -110,6 +142,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         }
         //TODO: Delete following before building module for client.
         insertTestData();
+        setUpDefaultImgs();
         LOGGER.info("Database initialized.");
     }
 
@@ -153,6 +186,57 @@ public class H2EmbeddedHandler  implements DBHandler {
             insertTestData();     //Run create.sql, init.sql, insert.sql
         } catch(FileNotFoundException|SQLException e){
             throw new PersistenceException(e);
+        }
+    }
+
+    private void setUpDefaultImgs() throws PersistenceException{
+        String fSep=File.separator;
+        String destPath = System.getProperty("user.home") + fSep + "fotostudio" + fSep + "BeispielBilder" + fSep;
+        String workingDir=this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
+        String image1 = "p1.jpg";
+        String image2 = "p2.jpg";
+
+        LOGGER.info("workingDir: "+workingDir);
+
+        Path img1Source = Paths.get(workingDir+image1);
+        Path img2Source = Paths.get(workingDir+image2);
+
+        Path img1Dest= Paths.get(destPath+image1);
+        Path img2Dest= Paths.get(destPath+image2);
+
+
+        PreparedStatement stmt=null;
+        try {
+            if(!img1Dest.getParent().toFile().exists()){
+                Files.createDirectory(img1Dest.getParent());
+            }
+            Files.copy(img1Source,img1Dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(img2Source,img2Dest, StandardCopyOption.REPLACE_EXISTING);
+
+
+            stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
+
+            stmt.setString(1,destPath+image1);
+            stmt.setInt(2,1);
+            stmt.execute();
+
+            stmt.setString(1,destPath+image2);
+            stmt.setInt(2,2);
+            stmt.execute();
+
+            stmt.close();
+        } catch (IOException|SQLException e) {
+            LOGGER.error("setUpDefaultImgs - "+e);
+            throw new PersistenceException(e);
+        } finally {
+            if(stmt!=null){
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.error("setUpDefaultImgs - "+e);
+                    throw new PersistenceException(e);
+                }
+            }
         }
     }
 }
