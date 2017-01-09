@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,6 +11,12 @@ import java.util.Map;
  */
 public interface FilterService {
 
+    /**
+     * getter methode for existing filter list
+     * @return List list of existing filters
+     * @throws ServiceException if an error occurs then it throws a ServiceException
+     */
+    public List<String> getExistingFilters() throws ServiceException;
     /**
      * converts given image to filtered image with existing filters.
      *
@@ -31,62 +38,10 @@ public interface FilterService {
     /**
      * changes given image with GAUSSIAN filter
      *
+     * @param filterName the name of filter
      * @param imgPath the path of image to filter
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    BufferedImage filterGaussian(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with GRAY SCALE filter
-     *
-     * @param imgPath the path of image to filter
-     * @return BufferedImage filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    BufferedImage filterGrayScale(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with COLOR SPACE filter
-     *
-     * @param imgPath the path of image to filter
-     * @return BufferedImage filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    BufferedImage filterColorSpace(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with SOBEL filter
-     *
-     * @param imgPath the path of image to filter
-     * @return BufferedImage filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    BufferedImage filterSobel(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with THRESH ZERO filter
-     *
-     * @param imgPath the path of image to filter
-     * @return BufferedImage filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    BufferedImage filterThreshZero(String imgPath) throws ServiceException;
-
-    /**
-     * changes given image with THRESH BINARY INVERT filter
-     *
-     * @param imgPath the path of image to filter
-     * @return BufferedImage filtered image
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    BufferedImage filterThreshBinaryInvert(String imgPath) throws ServiceException;
-
-    /**
-     * checks if storage directory of active shooting exists. If it doesnt exist, then
-     * it will create a storage directory.
-     *
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-    void checkStorageDir() throws ServiceException;
+    BufferedImage filter(String filterName,String imgPath) throws ServiceException;
 }

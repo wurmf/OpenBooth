@@ -26,13 +26,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -75,6 +73,7 @@ public class FullScreenImageController {
 
     private Shooting activeShooting;
     private ImageView activeFilterImageView;
+    private ImageView original;
     private String filteredImgPath= null;
     private boolean constraintInitialized = false;
 
@@ -427,7 +426,7 @@ public class FullScreenImageController {
             String imgPath = filterService.resize(imgOriginalPath,80,80);
 
             int counter= 1;
-            Map<String,BufferedImage> allfilters = filterService.getAllFilteredImages(imgPath);
+            List<String> allfilters = filterService.getExistingFilters();
 
             double imageFilterConstraint = (Screen.getPrimary().getBounds().getWidth() - (allfilters.size() * 100)) / 2;
             planbottom.getChildren().clear();
@@ -437,39 +436,24 @@ public class FullScreenImageController {
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
             }
-            for(Map.Entry<String, BufferedImage> entry: allfilters.entrySet()){
 
-                ImageView imageView = new ImageView(SwingFXUtils.toFXImage(entry.getValue(),null));
-                imageView.setId(entry.getKey());
+            for(String filter: allfilters){
+                ImageView imageView = new ImageView(SwingFXUtils.toFXImage(filterService.filter(filter,imgPath),null));
+                if(counter == 1) {
+                    imageView.setFitHeight(100);
+                    original = imageView;
+                    activeFilterImageView = original;
+
+                }
+
+                imageView.setId(filter);
                 imageView.setOnMouseClicked(e -> {
                     Image filteredImage;
                     ImageView imgView =(ImageView) e.getSource();
-
+                    System.out.println("image ->"+filter);
                     try {
-                        switch (imgView.getId()) {
+                        filteredImage = SwingFXUtils.toFXImage(filterService.filter(imgView.getId(),ivfullscreenImage.getId()),null);
 
-                            case "gaussian":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterGaussian(ivfullscreenImage.getId()),null);
-                                break;
-                            case "sobel":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterSobel(ivfullscreenImage.getId()),null);
-                                break;
-                            case "colorspace":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterColorSpace(ivfullscreenImage.getId()),null);
-                                break;
-                            case "grayscale":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterGrayScale(ivfullscreenImage.getId()),null);
-                                break;
-                            case "threshzero":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterThreshZero(ivfullscreenImage.getId()),null);
-                                break;
-                            case "threshbinaryinvert":
-                                filteredImage = SwingFXUtils.toFXImage(filterService.filterThreshBinaryInvert(ivfullscreenImage.getId()),null);
-                                break;
-                            default:
-                                filteredImage = new Image(ivfullscreenImage.getId());
-
-                        }
                         if(changeActiveFilter(imgView)) {
                             ivfullscreenImage.setImage(filteredImage);
                         }
@@ -528,7 +512,9 @@ public class FullScreenImageController {
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
 
-            activeFilterImageView = null;
+            original.setFitHeight(100);
+
+            activeFilterImageView = original;
             saveFilteredButton.setVisible(false);
             try {
                 ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
