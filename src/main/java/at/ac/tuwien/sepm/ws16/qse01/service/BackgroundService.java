@@ -12,15 +12,14 @@ public interface BackgroundService {
     Background add(Background background) throws ServiceException;
     boolean edit(Background background) throws ServiceException;
     Background get(int id) throws ServiceException;
-    List<Background> getAllAssociatedWithProfile(int id) throws ServiceException;
-    List<Background> getAllAssociatedWithEvent(int id) throws ServiceException;
-    List<Background> getAllAssociatedGlobal(int id) throws ServiceException;
+    List<Background> getAll() throws ServiceException;
+    List<Background> getAllWithCategory(int id) throws ServiceException;
     List<Background> getAllforCurrentShootingAvailable() throws ServiceException;
     boolean erase(Background background) throws ServiceException;
 
-    Background add(Background.Category category) throws ServiceException;
-    boolean edit(Background.Category category) throws ServiceException;
-    List<Background.Category> getEvent(int id) throws ServiceException;
-    List<Background.Category> getAllEvents() throws ServiceException;
-    boolean eraseEvent(int id) throws ServiceException;
+    Background.Category addCategory(Background.Category category) throws ServiceException;
+    boolean editCategory(Background.Category category) throws ServiceException;
+    List<Background.Category> getCategory(int id) throws ServiceException;
+    List<Background.Category> getAllCategories() throws ServiceException;
+    boolean eraseCategory(int id) throws ServiceException;
 }
