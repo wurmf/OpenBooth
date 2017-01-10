@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -74,7 +73,7 @@ public class MiniaturFrameController {
         tile.setVgap(20);
         if(shootingService.searchIsActive().getActive()) {
             LOGGER.info("Active Shooting ->" + shootingService.searchIsActive().getId());
-            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
         }else{
             return;
         }
@@ -92,13 +91,8 @@ public class MiniaturFrameController {
 
             final Image image = new Image(new FileInputStream(imageFile), 150, 150, true,
                     true);
-           imageView = new ImageView(image);
+            imageView = new ImageView(image);
             imageView.setStyle("-fx-background-color: BLACK");
-
-          /*  imageView.setFitWidth(150);
-            imageView.setFitHeight(150);
-            imageView.setSmooth(true);*/
-
 
             imageView.setOnMouseClicked(mouseEvent -> {
 
@@ -212,8 +206,8 @@ public class MiniaturFrameController {
         try {
             if(new File(img.getImagepath()).isFile()) {
                 imageView = createImageView(new File(img.getImagepath()));
-            }else if(new File(System.getProperty("user.dir") + img.getImagepath()).isFile()){
-                img.setImagepath(System.getProperty("user.dir") + img.getImagepath());
+            }else if(new File(System.getProperty("user.dir") + "/src/main/resources/"+img.getImagepath()).isFile()){
+                img.setImagepath(System.getProperty("user.dir") + "/src/main/resources/"+img.getImagepath());
                 imageService.update(img);
                 imageView = createImageView(new File(img.getImagepath()));
             }else {

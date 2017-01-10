@@ -31,7 +31,7 @@
             <Font name="HP Simplified" size="16.0" />
          </font>
       </Label>
-      <Label text="Speicherort:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
+      <Label fx:id="saveing" text="Speicherort:" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="3">
          <font>
             <Font name="HP Simplified" size="16.0" />
          </font>
@@ -65,5 +65,7 @@
             <Button fx:id="stopButton" mnemonicParsing="false" onAction="#onStopShootingPressed" text="Shooting Beenden" textFill="WHITE" />
          </children>
       </GridPane>
+      <Label fx:id="save1" text="Speicherort:" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <Label fx:id="finallsavingplace" GridPane.columnIndex="2" GridPane.rowIndex="2" />
    </children>
 </GridPane>

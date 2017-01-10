@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
+import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -16,6 +17,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -121,7 +124,7 @@ public class TestEnvironment {
 
         /* Setup DAOs for all testing
          */
-        this.con = H2EmbeddedHandler.getInstance().getConnection();
+        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
         logoDAO = new JDBCLogoDAO(H2EmbeddedHandler.getInstance());
         cameraDAO = new JDBCCameraDAO(H2EmbeddedHandler.getInstance());
         positionDAO = new JDBCPositionDAO(H2EmbeddedHandler.getInstance());
@@ -150,8 +153,12 @@ public class TestEnvironment {
             throw new PersistenceException("Error! AutoCommit couldn't be deactivated:" + e);
         }
 
-        //Run drop.sql, create.sql, init.sql, insert.sql
-        H2EmbeddedHandler.getInstance().resetDBForTest();
+        //Run delete.sql, insert.sql
+        String sqlFolder=this.getClass().getResource(File.separator+"sql"+File.separator).getPath();
+        ResultSet rs= RunScript.execute(con, new FileReader(sqlFolder+"delete.sql"));
+        if(rs!=null&&!rs.isClosed()) rs.close();
+        rs= RunScript.execute(con, new FileReader(sqlFolder+"insert.sql"));
+        if(rs!=null&&!rs.isClosed()) rs.close();
 
         /*
         * Setup Test objects for all testing

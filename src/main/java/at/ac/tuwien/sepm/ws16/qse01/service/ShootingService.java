@@ -11,7 +11,7 @@ import java.nio.file.FileAlreadyExistsException;
  */
 public interface ShootingService {
 
-     void updateProfile();
+     void updateProfile(Shooting shooting)throws ServiceException;
     /**
      *  calls adding in DAO and gets parameter from Controller
      *

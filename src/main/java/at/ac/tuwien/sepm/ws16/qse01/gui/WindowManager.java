@@ -123,10 +123,11 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
         Parent parentsett = (Parent) settingWrapper.getLoadedObject();
-        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        //Anmerkung: Css für Einstellungen wird erst dann hinzugefügt, wenn einstellungen-gui fertig ist. - Deniz
+      /*  URL csssett = this.getClass().getResource("/css/basicstyle.css");
         LOGGER.info("CSSSETT:"+csssett);
         parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
-        parentsett.getStylesheets().add(csssett.toExternalForm());
+        parentsett.getStylesheets().add(csssett.toExternalForm());*/
         this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
 
         //Creating Login-Scene
@@ -141,8 +142,12 @@ public class WindowManager {
         //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
-        this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
-
+        Parent parentmin = (Parent) miniWrapper.getLoadedObject();
+        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSSETT:"+csssett);
+        parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentmin.getStylesheets().add(csssett.toExternalForm());
+        this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
         //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
@@ -156,7 +161,7 @@ public class WindowManager {
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
-            LOGGER.error("start - "+e);
+            LOGGER.error("start - ",e);
         }
 
 
@@ -164,7 +169,7 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            showScene(WindowManager.SHOW_CUSTOMERSCENE);
+            showAdminLogin(SHOW_CUSTOMERSCENE,SHOW_MAINSCENE);
             //initShotFrameManager();
         } else {
             showAdminLogin(SHOW_MAINSCENE, SHOW_MAINSCENE);
@@ -205,6 +210,9 @@ public class WindowManager {
      */
     public void showAdminLogin(int sceneToShow, int callingScene){
         loginRedirectorModel.setScenes(sceneToShow, callingScene);
+        if(callingScene ==SHOW_CUSTOMERSCENE){
+            shootingAdminController.inactivemode();
+        }
         mainStage.setScene(adminLoginScene);
         mainStage.setFullScreen(true);
     }
@@ -249,9 +257,9 @@ public class WindowManager {
             shotFrameManager.init();
             cameraHandler.getImages();
         } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
+            LOGGER.info("initShotFrameManager - Getting camera - ",e);
         } catch (UnsatisfiedLinkError e){
-            LOGGER.error("initshotFrameManager-> Error "+e.getMessage());
+            LOGGER.error("initshotFrameManager - ",e);
         }
     }
 

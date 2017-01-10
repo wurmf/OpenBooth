@@ -122,4 +122,32 @@ public class JDBCShootingDAO implements ShootingDAO {
         }
     }
 
+    @Override
+    public void updateProfile(Shooting shooting) throws PersistenceException {
+        PreparedStatement stmt=null;
+        try {
+            String prepered="update Shootings set PROFILEID=? where SHOOTINGID= ?";
+            stmt = con.prepareStatement(prepered);
+
+            stmt.setInt(1,shooting.getProfileid());
+            stmt.setInt(2,shooting.getId());
+            stmt.execute();
+
+        } catch (SQLException e) {
+            LOGGER.info("ShootingDAO", e.getMessage());
+            throw new PersistenceException(e.getMessage());
+        } catch(AssertionError i) {
+            LOGGER.error("ShootingDAO",i.getMessage());
+            throw new PersistenceException("Update des Profies war nicht möglich");
+        }finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.error(e.getMessage());
+                }
+            }
+        }
+    }
+
 }

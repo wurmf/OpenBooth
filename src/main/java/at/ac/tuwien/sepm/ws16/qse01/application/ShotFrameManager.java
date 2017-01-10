@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,15 +52,15 @@ public class ShotFrameManager {
 
          /* Creating shotFrame */
         List<Camera> cameraList=null;
-        int anz = 1;
+        int numberOfCameras = 1;
         try {
              cameraList=cameraService.getActiveCameras();
-            anz += cameraList.size();
+            numberOfCameras += cameraList.size();
         } catch (ServiceException e) {
            LOGGER.debug("Fehler: die anzahl der kameras konnte nicht gelesen werden");
         }
         int x = 200;
-        for(int i=1; i<anz; i++) { // Anzahl der Kameras...
+        for(int i=1; i<numberOfCameras; i++) { // Anzahl der Kameras...
             Stage stage = new Stage();
             stage.setTitle("Shot Frame "+i);
 
@@ -86,12 +87,22 @@ public class ShotFrameManager {
     }
 
     public void refreshShot(int cameraID,String imgPath) {
-        LOGGER.debug("ShotFrameManager->refershhot with cameraID="+cameraID+", imgPath="+imgPath);
+        LOGGER.debug("ShotFrameManager->refreshshot with cameraID="+cameraID+", imgPath="+imgPath);
+        getShotframe(cameraID).refreshShot(imgPath);
+
+    }
+    public void refreshShot(int cameraID,BufferedImage img) {
+        LOGGER.debug("ShotFrameManager->refreshshot with cameraID="+cameraID);
+        getShotframe(cameraID).refreshShot(img);
+
+    }
+    public ShotFrameController getShotframe(int cameraID){
         for(ShotFrameController shotFrameController: shotframes){
             if(shotFrameController.getFrameID()==cameraID){
-                shotFrameController.refreshShot("file:" + imgPath);
+               return shotFrameController;
             }
         }
+        return null;
     }
     public void closeFrames(){
         isClosed=true;

@@ -1,16 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.model.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
-import at.ac.tuwien.sepm.ws16.qse01.gui.model.SelectedImageShareModel;
 import org.springframework.stereotype.Component;
 
 /**
- * This class implements LoginRedirectorModel and SelectedImageShareModel, which means that an instance of this class can be used as Model satisfying both of these
- * interfaces.
- * So this class can be used for communication between WindowManager and
+ * This class implements LoginRedirectorModel, so it can be used to communicate between the AdminLoginController and the WindowManager.
  */
 @Component
-public class UniversalModel implements LoginRedirectorModel, SelectedImageShareModel{
+public class UniversalModel implements LoginRedirectorModel{
     private int nextScene=-1;
     private int callingScene=-1;
 

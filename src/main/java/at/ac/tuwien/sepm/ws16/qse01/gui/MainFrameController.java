@@ -59,7 +59,7 @@ public class MainFrameController {
             }
         } catch (ServiceException e) {
             showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
-            LOGGER.info("MainFrameController:",e.getMessage());
+            LOGGER.info("initialize - ",e);
          }
     }
 
@@ -83,7 +83,7 @@ public class MainFrameController {
     public void showRecoveryDialog(){
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
-                "Möchten sie die zuletzt geöffnete Session wieder her stellen?");
+                "Möchten sie die zuletzt geöffnete Shooting wieder her stellen?");
         alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
@@ -93,7 +93,7 @@ public class MainFrameController {
                 shootingService.endShooting();
                 showInformationDialog("Shooting wurde beendet");
             } catch (ServiceException e) {
-                LOGGER.debug("recovery-"+e);
+                LOGGER.debug("recovery - ",e);
                 showInformationDialog("Shooting konnte nicht beendet werden!");
             }
         }

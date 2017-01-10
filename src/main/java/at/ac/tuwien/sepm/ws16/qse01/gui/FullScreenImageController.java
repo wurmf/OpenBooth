@@ -2,10 +2,12 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.animation.FadeTransition;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -25,10 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.print.PrinterException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -71,9 +73,11 @@ public class FullScreenImageController {
 
     private Shooting activeShooting;
     private ImageView activeFilterImageView;
+    private ImageView original;
     private String filteredImgPath= null;
     private boolean constraintInitialized = false;
 
+    private FilterService filterService;
     private ImageService imageService;
     private ShootingService shootingService;
     private WindowManager windowManager;
@@ -81,7 +85,8 @@ public class FullScreenImageController {
     private RefreshManager refreshManager;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+        this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
@@ -126,7 +131,7 @@ public class FullScreenImageController {
                     failure=true;
                 }
             } catch (PrinterException e) {
-                LOGGER.error("onPrintPressed - "+ e);
+                LOGGER.error("onPrintPressed - ", e);
                 failure=true;
             }
             if(failure){
@@ -173,12 +178,17 @@ public class FullScreenImageController {
                             onClosePressed();
                         }
                     }
-                    imageList= imageService.getAllImages(activ);
-                    refreshManager.notifyMiniatureFrameOfDelete(image);
+                    if(activ!=-1) {
+                        imageList = imageService.getAllImages(activ);
+                        refreshManager.notifyMiniatureFrameOfDelete(image);
+                    }else{
+                        LOGGER.debug("no active shooting");
+                        informationDialog("Bild konnte nicht gelöscht werden.");
+                    }
                 }
             }
         } catch (ServiceException e) {
-            LOGGER.debug("delete - "+e);
+            LOGGER.debug("delete - ",e);
             informationDialog("Bild konnte nicht gelöscht werden.");
         }
     }
@@ -260,6 +270,8 @@ public class FullScreenImageController {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
+            deletePreviews(ivfullscreenImage.getId());
+
             if (currentIndex-1 > -1) {
                 if (currentIndex - 1 > 0) {
                     currentIndex = currentIndex - 1;
@@ -296,6 +308,8 @@ public class FullScreenImageController {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         try {
+            deletePreviews(ivfullscreenImage.getId());
+
             if (currentIndex+1 < imageList.size()) {
                 if (currentIndex + 1 < imageList.size()-1) {
                     currentIndex = currentIndex +1;
@@ -308,10 +322,12 @@ public class FullScreenImageController {
                     b4=true;
                     button4.setVisible(true);
                 }
+
                 ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
                 ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
+
             } else {
                 windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
@@ -354,7 +370,7 @@ public class FullScreenImageController {
      * @param imgID image id given from miniaturframe
      */
     public void changeImage(int imgID){
-
+       activ = -1;
         try {
 
             if (shootingService.searchIsActive().getActive()) {
@@ -393,6 +409,8 @@ public class FullScreenImageController {
             LOGGER.debug(e.getMessage());
             informationDialog("Foto konnte nicht gefunden werden");
            // windowManager.showMiniatureFrame();
+        }catch (NullPointerException e){
+            LOGGER.error("no active shooting");
         }
 
     }
@@ -405,59 +423,39 @@ public class FullScreenImageController {
         LOGGER.info("Entering makePreviewFilter with imgPath->"+imgOriginalPath);
 
         try {
-            String imgPath = imageService.resize(imgOriginalPath,100,150);
+            String imgPath = filterService.resize(imgOriginalPath,80,80);
 
             int counter= 1;
-            Map<String,String> allfilters = imageService.getAllFilteredImages(imgPath);
+            List<String> allfilters = filterService.getExistingFilters();
 
             double imageFilterConstraint = (Screen.getPrimary().getBounds().getWidth() - (allfilters.size() * 100)) / 2;
             planbottom.getChildren().clear();
             if(!constraintInitialized) {
-                System.out.println(imageFilterConstraint);
                 ColumnConstraints con = new ColumnConstraints();
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
             }
-            for(Map.Entry<String, String> entry: allfilters.entrySet()){
-               // System.out.println("filteredImage -> "+entry.getKey()+"-->"+entry.getValue());
 
-                ImageView imageView = new ImageView(new Image(new FileInputStream(entry.getValue()),80,80,false,true));
-                imageView.setId(entry.getKey());
+            for(String filter: allfilters){
+                ImageView imageView = new ImageView(SwingFXUtils.toFXImage(filterService.filter(filter,imgPath),null));
+                if(counter == 1) {
+                    imageView.setFitHeight(100);
+                    original = imageView;
+                    activeFilterImageView = original;
+
+                }
+
+                imageView.setId(filter);
                 imageView.setOnMouseClicked(e -> {
-                    String newImgPath = "";
+                    Image filteredImage;
                     ImageView imgView =(ImageView) e.getSource();
-
                     try {
-                        switch (imgView.getId()) {
+                        filteredImage = SwingFXUtils.toFXImage(filterService.filter(imgView.getId(),ivfullscreenImage.getId()),null);
 
-                            case "gaussian":
-                                newImgPath = imageService.filterGaussian(ivfullscreenImage.getId());
-                                break;
-                            case "sobel":
-                                newImgPath = imageService.filterSobel(ivfullscreenImage.getId());
-                                break;
-                            case "colorspace":
-                                newImgPath = imageService.filterColorSpace(ivfullscreenImage.getId());
-                                break;
-                            case "grayscale":
-                                newImgPath = imageService.filterGrayScale(ivfullscreenImage.getId());
-                                break;
-                            case "threshzero":
-                                newImgPath = imageService.filterThreshZero(ivfullscreenImage.getId());
-                                break;
-                            case "threshbinaryinvert":
-                                newImgPath = imageService.filterThreshBinaryInvert(ivfullscreenImage.getId());
-                                break;
-                            default:
-
-                        }
-                        try {
-                            if(changeActiveFilter(imgView)) {
-                                filteredImgPath = newImgPath;
-                                ivfullscreenImage.setImage(new Image(new FileInputStream(filteredImgPath), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
-                            }
-                        } catch (FileNotFoundException e1) {
-                            LOGGER.error("FilterOnClick ->"+e1.getMessage());
+                        if(changeActiveFilter(imgView)) {
+                            ivfullscreenImage.setImage(filteredImage);
+                            ivfullscreenImage.setFitHeight(base.getHeight());
+                            ivfullscreenImage.setFitWidth(base.getWidth());
                         }
 
                     } catch (ServiceException e2) {
@@ -514,10 +512,12 @@ public class FullScreenImageController {
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
 
-            activeFilterImageView = null;
+            original.setFitHeight(100);
+
+            activeFilterImageView = original;
             saveFilteredButton.setVisible(false);
             try {
-                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), ivfullscreenImage.getFitWidth(), ivfullscreenImage.getFitHeight(), true, true));
+                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), base.getWidth(), base.getHeight(),true,true));
             } catch (FileNotFoundException e) {
                 LOGGER.error("changeActiveFilter ->"+e.getMessage());
             }
@@ -544,11 +544,24 @@ public class FullScreenImageController {
 
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
             refreshManager.notifyMiniatureFrameOfAdd(newImage);
-           // imageList.add(activ+1,newImage);
+            if((currentIndex+1)>=imageList.size())
+                imageList.add(newImage);
+            else {
+                imageList.add(currentIndex + 1, newImage);
+                currentIndex = currentIndex + 1;
+            }
+
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }
 
+    }
+    public void deletePreviews(String imgPath){
+        //exporting image name from imagePath
+        String[] parts = imgPath.split("/");
+        String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
+        if(new File(activeShooting.getStorageDir()+imgFilterName).isFile())
+            new File(activeShooting.getStorageDir()+imgFilterName).delete();
     }
 
 }

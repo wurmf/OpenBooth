@@ -23,6 +23,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -35,7 +36,10 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for Setting Frame .
@@ -115,9 +119,9 @@ public class SettingFrameController {
 
     /* Profile TEXTFIELDS for ADDING */
     @FXML
-    private TextField txPositionName;
+    private TextField txBackgroundName;
     @FXML
-    private TextField txPositionBild;
+    private TextField txBackgroundPath;
 
     /* BEGINN OF KameraPosition-Zuweisung Table Column FXML */
     @FXML
@@ -150,7 +154,7 @@ public class SettingFrameController {
 
     /* LOGO TextFIELDS */
     @FXML
-    private TextField txLogoName;
+    private AutoCompleteTextField txLogoName;
     @FXML
     private TextField txLogoX;
     @FXML
@@ -169,6 +173,24 @@ public class SettingFrameController {
     private TextField txPreviewHeight;
     @FXML
     private ImageView previewLogo;
+
+    /* BEGINN OF Category-Background Table Column FXML */
+    @FXML
+    private TableView tableBackground;
+    @FXML
+    private TableColumn colBackgroundID;
+    @FXML
+    private TableColumn colBackgroundName;
+    @FXML
+    private TableColumn colBackgroundPath;
+    @FXML
+    private TableColumn colBackgroundAction;
+
+    /* Profile TEXTFIELDS for ADDING */
+    @FXML
+    private TextField txPositionName;
+    @FXML
+    private TextField txPositionBild;
 
     private Profile.PairLogoRelativeRectangle selectedLogo = null;
     private Profile selectedProfile = null;
@@ -370,6 +392,10 @@ public class SettingFrameController {
                                 refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
 
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+
+                                txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
+                                txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
+                                txLogoName.setTxLogoPath(txLogoLogo);
                             } catch (ServiceException e) {
                                 e.printStackTrace();
                             }
@@ -920,6 +946,22 @@ public class SettingFrameController {
         }
     }
     @FXML
+    private void backgroundUpload(){
+        fileChooser.setTitle("Hintergrund Hochladen...");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        fileChooser.getExtensionFilters().addAll(
+                //  new FileChooser.ExtensionFilter("All Images", "*.*")
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            txBackgroundPath.setText(file.getAbsolutePath());
+        }
+    }
+    @FXML
     private void saveProfil(){
         LOGGER.debug("Profil Add Button has been clicked");
         String name = txProfilName.getText();
@@ -940,7 +982,13 @@ public class SettingFrameController {
                 pservice.add(p);
                 profList.add(p);
 
-             //   profList.add(p);
+                txProfilDrucken.setSelected(false);
+                txProfilFilter.setSelected(false);
+                txProfilGreen.setSelected(false);
+                txProfilMobil.setSelected(false);
+                txProfilName.clear();
+                txProfilWatermark.setText("Hochladen...");
+
             } catch (ServiceException e) {
                LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             }
@@ -956,27 +1004,50 @@ public class SettingFrameController {
         }else {
             try {
                 Logo newLogo = new Logo(name,txLogoLogo.getText());
-                RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()), Double.valueOf(txLogoHoehe.getText()),Double.valueOf(txLogoBreite.getText()));
+                double width = 0.0;
+                double height = 0.0;
+                if(txLogoHoehe.getText().isEmpty() && !txLogoBreite.getText().isEmpty()){
+                    width = Double.valueOf(txLogoBreite.getText());
+                    height = (((width*100)/Double.valueOf(txPreviewWidth.getText()))*Double.valueOf(txPreviewHeight.getText()))/100;
+                }else if(!txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
+                    height = Double.valueOf(txLogoHoehe.getText());
+                    width = (((height*100)/Double.valueOf(txPreviewHeight.getText()))*Double.valueOf(txPreviewWidth.getText()))/100;
+                }else if(txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
+                    showError("Bitte in Breite und Höhe Eingabefelder nur Zahlen eingeben.");
+                    throw new NumberFormatException();
+                }else{
+                    width = Double.valueOf(txLogoBreite.getText());
+                    height = Double.valueOf(txLogoHoehe.getText());
+                }
+                RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()),width,height);
 
                 LOGGER.info("adding the new pairLogo to tableView...");
 
                 newLogo = pservice.addLogo(newLogo);
 
-                Profile.PairLogoRelativeRectangle p = new Profile.PairLogoRelativeRectangle(newLogo,newPosition);
-
-
-
-               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-
-                p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
+                Profile.PairLogoRelativeRectangle p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
 
                 logoList.add(p);
+
+                txLogoName.getEntries().add(newLogo.getLabel()+" #"+newLogo.getId());
+
+                ImageView imgView =new ImageView(new Image("file:"+newLogo.getPath(),30,30,true,true));
+
+                imgView.setId(newLogo.getPath());
+
+                txLogoName.getImgViews().put(newLogo.getLabel().toLowerCase()+" #"+newLogo.getId(),imgView);
+                txLogoName.clear();
+                txLogoBreite.clear();
+                txLogoHoehe.clear();
+                txLogoX.clear();
+                txLogoY.clear();
+                txLogoLogo.setText("Hochladen...");
 
 
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             } catch (NumberFormatException e){
-                showError("Bitte in Position Eingabefelder (Xstart,>Ystart,Breite,Höhe) nur Zahlen eingeben.");
+                showError("Bitte in Position Eingabefelder (Xstart,Ystart,Breite,Höhe) nur Zahlen eingeben.");
                 LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
                 //TODO: Dialogfenster öffnen.
             }
@@ -1001,9 +1072,12 @@ public class SettingFrameController {
                 pservice.addPosition(p);
                 posList.add(p);
 
-               // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                 kamPosList.clear();
                 kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+
+                txPositionBild.setText("Hochladen...");
+                txPositionName.clear();
+
 
             } catch (ServiceException e) {
                 LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
@@ -1027,31 +1101,49 @@ public class SettingFrameController {
 
     @FXML
     public void fullScreenPreview(){
-       // try {
-            Stage previewStage = new Stage();
-            Group root = new Group();
-            Scene scene = new Scene(root);
 
-          /*  HBox box = new HBox();
-            box.getChildren().add(iv1);
-            box.getChildren().add(iv2);
-            box.getChildren().add(iv3);*/
-            ImageView prevView = new ImageView(previewLogo.getImage());
-            prevView.setFitHeight(prevView.getImage().getHeight());
-            prevView.setFitWidth(prevView.getImage().getWidth());
-            root.getChildren().add(prevView);
+        Stage previewStage = new Stage();
+        Group root = new Group();
+        Scene scene = new Scene(root);
 
-            previewStage.setTitle("Preview Logo");
-            previewStage.setWidth(prevView.getImage().getWidth());
-            previewStage.setHeight(prevView.getImage().getHeight());
-            previewStage.setScene(scene);
+        ImageView prevView = new ImageView(previewLogo.getImage());
+        prevView.setFitHeight(prevView.getImage().getHeight());
+        prevView.setFitWidth(prevView.getImage().getWidth());
+        root.getChildren().add(prevView);
+
+        previewStage.setTitle("Preview Logo");
+        previewStage.setWidth(prevView.getImage().getWidth());
+        previewStage.setHeight(prevView.getImage().getHeight());
+        previewStage.setScene(scene);
         previewStage.setFullScreen(false);
         previewStage.initOwner(windowManager.getStage());
-            previewStage.show();
-            //Desktop.getDesktop().open(new File(System.getProperty("user.dir")+"/preview.jpg"));
-      /*  } catch (IOException e) {
-            LOGGER.error("fullscreenPreview ->"+e.getMessage());
-        }*/
+        previewStage.show();
+    }
+    public List<String> logo2StringArray(List<Logo> logos){
+      List<String> ret = new ArrayList<>();
+        for (Logo logo:logos){
+           ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
+        }
+        return ret;
+    }
+    public Map<String,ImageView> logo2imgViews(List<Logo> logos){
+        Map<String,ImageView> ret = new HashMap<>();
+        for (Logo logo:logos){
+            String logoPath;
+            if(new File(logo.getPath()).isFile())
+                logoPath = logo.getPath();
+            else if(new File(System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath()).isFile())
+                logoPath = System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath();
+            else
+                logoPath = System.getProperty("user.dir")+"/src/main/resources/images/noimage.png";
+
+            ImageView imgView =new ImageView(new Image("file:"+logoPath,30,30,true,true));
+
+            imgView.setId((logoPath.contains("noimage.png")?"":logoPath));
+
+            ret.put(logo.getLabel().toLowerCase()+" #"+logo.getId(),imgView);
+        }
+        return ret;
     }
 
 }

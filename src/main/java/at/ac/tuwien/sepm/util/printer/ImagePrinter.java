@@ -37,7 +37,7 @@ public class ImagePrinter {
             File imageFile=new File(image.getImagepath());
             print(ImageIO.read(imageFile));
         } catch (IOException e) {
-            LOGGER.error("print - "+e);
+            LOGGER.error("print - ",e);
             throw new PrinterException("Unable to read file from given path");
         }
     }
