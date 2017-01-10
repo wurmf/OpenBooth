@@ -39,7 +39,7 @@ public class H2Handler implements DBHandler {
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/fotostudio", "sa","");
         } catch(ClassNotFoundException|SQLException e){
-            LOGGER.error("openConnection - "+e);
+            LOGGER.error("openConnection - ",e);
             throw new PersistenceException(e);
         }
     }
@@ -59,7 +59,7 @@ public class H2Handler implements DBHandler {
                 connection.close();
             }
         } catch (SQLException e) {
-            LOGGER.info("closeConnection - unable to close connection - "+e);
+            LOGGER.info("closeConnection - unable to close connection - ",e);
         } finally {
             connection=null;
         }

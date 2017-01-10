@@ -131,7 +131,7 @@ public class FullScreenImageController {
                     failure=true;
                 }
             } catch (PrinterException e) {
-                LOGGER.error("onPrintPressed - "+ e);
+                LOGGER.error("onPrintPressed - ", e);
                 failure=true;
             }
             if(failure){
@@ -188,7 +188,7 @@ public class FullScreenImageController {
                 }
             }
         } catch (ServiceException e) {
-            LOGGER.debug("delete - "+e);
+            LOGGER.debug("delete - ",e);
             informationDialog("Bild konnte nicht gelöscht werden.");
         }
     }

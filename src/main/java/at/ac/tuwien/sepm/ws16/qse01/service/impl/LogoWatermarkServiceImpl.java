@@ -303,7 +303,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             File newImage = new File(destImgPath);
             ImageIO.write(img, formatName, newImage);
         } catch (IOException e) {
-            LOGGER.error("saveImage - error during saving image " + e);
+            LOGGER.error("saveImage - error during saving image - " , e);
             throw new ServiceException(e);
         }
 
@@ -321,7 +321,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         try {
             img = ImageIO.read(new File(srcImgPath));
         } catch (IOException e) {
-            LOGGER.error("openImage - error loading given image " + e);
+            LOGGER.error("openImage - error loading given image " , e);
             throw new ServiceException(e);
         }
         LOGGER.debug("Image at {} opened", srcImgPath);

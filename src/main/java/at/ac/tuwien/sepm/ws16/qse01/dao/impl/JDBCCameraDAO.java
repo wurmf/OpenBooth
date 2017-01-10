@@ -258,7 +258,7 @@ public class JDBCCameraDAO implements CameraDAO{
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("exists - " + e);
+                    LOGGER.debug("exists - " , e);
                 }
             }
         }

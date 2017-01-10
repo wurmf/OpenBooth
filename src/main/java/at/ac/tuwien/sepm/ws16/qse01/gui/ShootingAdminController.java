@@ -134,7 +134,7 @@ public class ShootingAdminController {
             }
 
         } catch (ServiceException e) {
-            LOGGER.debug("initialise -"+e);
+            LOGGER.debug("initialize - ",e);
             showInformationDialog("Bitte erstellen Sie ein Profil");
         }
     }
@@ -226,7 +226,7 @@ public class ShootingAdminController {
                 windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             }
         } catch (ServiceException e) {
-            LOGGER.error("restart kein aktives shooting"+e);
+            LOGGER.error("onDemolitionPressed - restart kein aktives shooting - ",e);
             showInformationDialog("Shooting konnte nicht mehr hergestellt werden");
         }
     }

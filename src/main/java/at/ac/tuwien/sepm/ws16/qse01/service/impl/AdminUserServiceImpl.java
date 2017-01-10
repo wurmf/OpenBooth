@@ -42,7 +42,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             byte[] inputPass = md.digest();
             return Arrays.equals(inputPass,user.getPassword());
         } catch (PersistenceException|NoSuchAlgorithmException|UnsupportedEncodingException e) {
-            LOGGER.error("checkLogin - "+e);
+            LOGGER.error("checkLogin - ",e);
             throw new ServiceException(e);
         }
     }

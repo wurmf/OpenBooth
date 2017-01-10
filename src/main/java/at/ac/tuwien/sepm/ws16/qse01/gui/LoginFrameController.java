@@ -57,7 +57,7 @@ public class LoginFrameController {
                 wrongCredentialsLabel.setVisible(true);
             }
         } catch (ServiceException e) {
-            LOGGER.error("checkLogin - "+e);
+            LOGGER.error("checkLogin - ",e);
         }
     }
 

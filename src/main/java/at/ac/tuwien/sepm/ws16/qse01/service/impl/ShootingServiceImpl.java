@@ -29,58 +29,59 @@ import java.util.Date;
 public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
-    ShootingDAO shootingDAO;
+    private ShootingDAO shootingDAO;
 
     public ShootingServiceImpl() throws ServiceException{
         try {
             this.shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
         } catch (PersistenceException e) {
-            throw new ServiceException("Error: "+e.getMessage());
+            throw new ServiceException(e);
         }
     }
     @Autowired
-    public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) throws Exception {
+    public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;
     }
+
     String getImageStorage(){
-        //DAO.getImageStorage();
-        String imagePath ="";
-        return imagePath;
+        return "";
     }
 
+    @Override
     public void addShooting(Shooting shooting) throws ServiceException {
         try {
 
             shootingDAO.create(shooting);
         } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
-
+    @Override
     public Shooting searchIsActive() throws ServiceException {
 
         try {
             return shootingDAO.searchIsActive();
         } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
-
+    @Override
     public void endShooting() throws ServiceException {
         try {
             shootingDAO.endShooting();
         } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
+    @Override
     public void updateProfile(Shooting shooting) throws ServiceException{
         try {
             shootingDAO.updateProfile(shooting);
         } catch (PersistenceException e) {
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(e);
         }
     }
 
@@ -90,23 +91,14 @@ public class ShootingServiceImpl implements ShootingService {
         Path storagepath = null;
 
         String resource = System.getProperty("user.home");
-
-                        /*if(mobiel) {
-                            storage = Paths.get(resource + "fotostudio/Mobil");
-                        }else{*/
         storagepath = Paths.get(resource + "/fotostudio/Studio");
-        // }
         if (storagepath != null) {
             try {
                 Files.createDirectories(storagepath);
             }  catch (IOException e) {
-                LOGGER.error("creatin initial folder" + e);
-                throw new ServiceException("Derspeicherort konnte nicht erstellt werden");
+                LOGGER.error("createPath - creating initial folder", e);
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
             }
-                            /*catch (FileAlreadyExistsException e) {
-                                LOGGER.info("shooting folder already exists" + e);
-
-                            }*/
             DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
             Date date = new Date();
             Path shootingstorage = Paths.get(storagepath + "/" + dateFormat.format(date));
@@ -114,11 +106,11 @@ public class ShootingServiceImpl implements ShootingService {
             try {
                 Files.createDirectories(shootingstorage);
             } catch (FileAlreadyExistsException e) {
-                LOGGER.info("shooting folder already exists" + e);
-                throw new ServiceException("Derspeicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
+                LOGGER.info("shooting folder already exists - " , e);
+                throw new ServiceException("Der Speicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
             } catch (IOException e) {
-                LOGGER.error("creatin shooting folder file" + e);
-                throw new ServiceException("Derspeicherort konnte nicht erstellt werden");
+                LOGGER.error("creatin shooting folder file - ", e);
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
             }
             path = shootingstorage.toString();
         }

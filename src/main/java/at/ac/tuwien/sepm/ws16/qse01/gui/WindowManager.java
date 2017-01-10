@@ -161,7 +161,7 @@ public class WindowManager {
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
-            LOGGER.error("start - "+e);
+            LOGGER.error("start - ",e);
         }
 
 
@@ -257,9 +257,9 @@ public class WindowManager {
             shotFrameManager.init();
             cameraHandler.getImages();
         } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
+            LOGGER.info("initShotFrameManager - Getting camera - ",e);
         } catch (UnsatisfiedLinkError e){
-            LOGGER.error("initshotFrameManager-> Error "+e.getMessage());
+            LOGGER.error("initshotFrameManager - ",e);
         }
     }
 

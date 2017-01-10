@@ -42,7 +42,7 @@ public class ShotFrameController {
         try {
             shotView.setImage(new Image(imgPath));
         }catch (Exception e){
-            LOGGER.debug("Fehler: "+e);
+            LOGGER.debug("refreshShot(String) - Fehler - ",e);
         }
     }
 
@@ -52,7 +52,7 @@ public class ShotFrameController {
         try {
             shotView.setImage(SwingFXUtils.toFXImage(img,null));
         }catch (Exception e){
-            LOGGER.debug("Fehler: "+e);
+            LOGGER.debug("refreshShot(BufferedImage) - Fehler - ",e);
         }
     }
 

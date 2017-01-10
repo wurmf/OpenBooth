@@ -31,7 +31,7 @@
             try {
                 assertTrue(adminUserDAO.read("nonExistentUser-NoOneIsNamedLikeThis")==null);
             } catch (PersistenceException e) {
-                LOGGER.error("readNonExistentUser - "+e);
+                LOGGER.error("readNonExistentUser - ",e);
             }
         }
 
@@ -43,7 +43,7 @@
             try {
                 assertTrue(adminUserDAO.read(null)==null);
             } catch (PersistenceException e) {
-                LOGGER.error("readNullUser - "+e);
+                LOGGER.error("readNullUser - ",e);
             }
         }
 
@@ -55,7 +55,7 @@
             try {
                 assertTrue(adminUserDAO.read("")==null);
             } catch (PersistenceException e) {
-                LOGGER.error("readEmptyUserName - "+e);
+                LOGGER.error("readEmptyUserName - ",e);
             }
         }
 
@@ -76,7 +76,7 @@
                 assertFalse(!user.getAdminName().equals(nameToLookFor));
                 assertTrue(Arrays.equals(correspondingPasswordBytes, user.getPassword()));
             } catch (PersistenceException|NoSuchAlgorithmException|UnsupportedEncodingException e) {
-                LOGGER.error("readEmptyUserName - "+e);
+                LOGGER.error("readEmptyUserName - ",e);
             }
         }
     }
