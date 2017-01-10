@@ -63,7 +63,7 @@ public class H2EmbeddedHandler  implements DBHandler {
                 LOGGER.info("openConnection - Database "+dbName+" already exists");
             }
         } catch(ClassNotFoundException|SQLException e){
-            LOGGER.error("openConnection - "+e);
+            LOGGER.error("openConnection - ",e);
             throw e;
         }
     }
@@ -116,7 +116,7 @@ public class H2EmbeddedHandler  implements DBHandler {
                 connection.close();
             }
         } catch (SQLException e) {
-            LOGGER.info("closeConnection - unable to close connection - "+e);
+            LOGGER.info("closeConnection - unable to close connection - ",e);
         } finally {
             connection=null;
             if(h2Server!=null){
@@ -138,7 +138,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             if(!testState) rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
             if(rs!=null) rs.close();
         } catch(FileNotFoundException|SQLException e){
-            LOGGER.error("firstStartup - "+e);
+            LOGGER.error("firstStartup - ",e);
             throw e;
         }
         //TODO: Delete following before building module for client.
@@ -161,7 +161,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
             if(rs!=null && !rs.isClosed())rs.close();
         } catch(FileNotFoundException|SQLException e){
-            LOGGER.error("insertData - "+e);
+            LOGGER.error("insertData - ",e);
             throw e;
         }
     }
@@ -203,14 +203,14 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             stmt.close();
         } catch (IOException|SQLException e) {
-            LOGGER.error("setUpDefaultImgs - "+e);
+            LOGGER.error("setUpDefaultImgs - ",e);
             throw new PersistenceException(e);
         } finally {
             if(stmt!=null){
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error("setUpDefaultImgs - "+e);
+                    LOGGER.error("setUpDefaultImgs - ",e);
                     throw new PersistenceException(e);
                 }
             }
