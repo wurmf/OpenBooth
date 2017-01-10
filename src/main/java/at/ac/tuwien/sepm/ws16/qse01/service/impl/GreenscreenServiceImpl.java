@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.ws16.qse01.service.GreenscreenService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.opencv.core.CvType;
@@ -7,6 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -26,14 +28,9 @@ public class GreenscreenServiceImpl implements GreenscreenService{
     private static Logger LOGGER = LoggerFactory.getLogger(GreenscreenServiceImpl.class);
 
 
-    public GreenscreenServiceImpl(){
-        String lib= "/.lib/libopencv_java320.dylib";
-        if(com.sun.javafx.PlatformUtil.isWindows())
-            lib = "/.lib/opencv_java320.dll";
-        if(com.sun.javafx.PlatformUtil.isLinux())
-            lib = "/.lib/libopencv_java320.so";
-
-        System.load(System.getProperty("user.dir")+lib);
+    @Autowired
+    public GreenscreenServiceImpl(OpenCVLoader openCVLoader) throws ServiceException{
+        openCVLoader.loadLibrary();
     }
 
     @Override
