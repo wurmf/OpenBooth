@@ -90,6 +90,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @return a connection to the test-database.
      * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the default database.
      */
+    @Override
     public Connection getTestConnection() throws PersistenceException{
         if(connection==null){
             try {
@@ -134,9 +135,12 @@ public class H2EmbeddedHandler  implements DBHandler {
         try {
             String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
             ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"create.sql"));
-            if(rs!=null) rs.close();
-            if(!testState) rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
-            if(rs!=null) rs.close();
+            if(rs!=null)
+                rs.close();
+            if(!testState)
+                rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
+            if(rs!=null)
+                rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("firstStartup - ",e);
             throw e;
@@ -159,7 +163,8 @@ public class H2EmbeddedHandler  implements DBHandler {
         try {
             String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
             ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
-            if(rs!=null && !rs.isClosed())rs.close();
+            if(rs!=null)
+                rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("insertData - ",e);
             throw e;
@@ -169,18 +174,24 @@ public class H2EmbeddedHandler  implements DBHandler {
     private void setUpDefaultImgs() throws PersistenceException{
         String fSep=File.separator;
         String destPath = System.getProperty("user.home") + fSep + "fotostudio" + fSep + "BeispielBilder" + fSep;
-        String dummiesDir=this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
+        String dummiesDir = this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
+        String logoDir = this.getClass().getResource(fSep +"images"+fSep +"logos"+fSep).getPath();
         String image1 = "p1.jpg";
         String image2 = "p2.jpg";
+        String logo1 = "logofamp.jpg";
+        String logo2 ="logo1.jpg";
 
         LOGGER.info("workingDir: "+dummiesDir);
 
         Path img1Source = Paths.get(dummiesDir+image1);
         Path img2Source = Paths.get(dummiesDir+image2);
+        Path logo1Source= Paths.get(logoDir+logo1);
+        Path logo2Source= Paths.get(logoDir+logo2);
 
         Path img1Dest= Paths.get(destPath+image1);
         Path img2Dest= Paths.get(destPath+image2);
-
+        Path logo1Dest= Paths.get(destPath+logo1);
+        Path logo2Dest= Paths.get(destPath+logo2);
 
         PreparedStatement stmt=null;
         try {
@@ -190,9 +201,10 @@ public class H2EmbeddedHandler  implements DBHandler {
             Files.copy(img1Source,img1Dest, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(img2Source,img2Dest, StandardCopyOption.REPLACE_EXISTING);
 
+            Files.copy(logo1Source,logo1Dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(logo2Source,logo2Dest, StandardCopyOption.REPLACE_EXISTING);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
-
             stmt.setString(1,destPath+image1);
             stmt.setInt(2,1);
             stmt.execute();
@@ -202,6 +214,17 @@ public class H2EmbeddedHandler  implements DBHandler {
             stmt.execute();
 
             stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE logos SET path=?, label=? where logoID=?;");
+            stmt.setString(1,destPath+logo1);
+            stmt.setString(2,"Fotografie am Punkt");
+            stmt.setInt(3,1);
+            stmt.execute();
+
+            stmt.setString(1,destPath+logo2);
+            stmt.setString(2,"Beispiel-Logo");
+            stmt.setInt(3,2);
+            stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);
             throw new PersistenceException(e);
