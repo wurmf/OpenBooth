@@ -144,8 +144,12 @@ public class WindowManager {
         //Creating Miniatur-Scene
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
-        this.miniaturScene=new Scene((Parent) miniWrapper.getLoadedObject(),screenWidth,screenHeight);
-
+        Parent parentmin = (Parent) miniWrapper.getLoadedObject();
+        URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.info("CSSSETT:"+csssett);
+        parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentmin.getStylesheets().add(csssett.toExternalForm());
+        this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
         //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
@@ -164,7 +168,7 @@ public class WindowManager {
         try {
             miniWrapper.getController().init(mainStage);
         } catch (ServiceException e) {
-            LOGGER.error("start - "+e);
+            LOGGER.error("start - ",e);
         }
 
 
@@ -265,9 +269,9 @@ public class WindowManager {
             shotFrameManager.init();
             cameraHandler.getImages();
         } catch (Exception e) {
-            LOGGER.info("start - Getting camera - "+e);
+            LOGGER.info("initShotFrameManager - Getting camera - ",e);
         } catch (UnsatisfiedLinkError e){
-            LOGGER.error("initshotFrameManager-> Error "+e.getMessage());
+            LOGGER.error("initshotFrameManager - ",e);
         }
     }
 

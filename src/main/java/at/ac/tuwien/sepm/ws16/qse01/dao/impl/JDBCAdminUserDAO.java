@@ -51,7 +51,7 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
                 return null;
             }
         } catch (SQLException e) {
-            LOGGER.error(loggerFuncName+e);
+            LOGGER.error(loggerFuncName+" - "+e);
             throw new PersistenceException(e);
         } finally{
             closeResource(stmt,loggerFuncName);

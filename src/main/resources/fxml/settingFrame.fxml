@@ -10,9 +10,9 @@
 
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
     <content>
-        <VBox minHeight="1200"  alignment="TOP_CENTER">
+        <VBox minHeight="2000"  alignment="TOP_CENTER">
             <children>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1400.0" >
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1500.0" prefWidth="1400.0" >
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="504.0" />
@@ -22,6 +22,7 @@
       <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="89.0" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="525.2872924804688" valignment="TOP" vgrow="SOMETIMES" />
     <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
 
@@ -142,6 +143,31 @@
             <Insets left="20.0" />
          </padding>
       </TitledPane>
+
+       <TitledPane animated="false" prefHeight="522.0" text="Greenscreen->Hintergrundverwaltung" GridPane.columnIndex="0" GridPane.rowIndex="3">
+           <content>
+               <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+                   <children>
+                       <TableView fx:id="tableBackground" prefHeight="427.0" prefWidth="450.0">
+                           <columns>
+                               <TableColumn fx:id="colBackgroundID" prefWidth="44.74237585067749" text="ID" />
+                               <TableColumn fx:id="colBackgroundName" prefWidth="189.813720703125" text="Name" />
+                               <TableColumn fx:id="colBackgroundPath" minWidth="0.0" prefWidth="136.0037841796875" text="Bild" />
+                               <TableColumn fx:id="colBackgroundAction" minWidth="0.0" prefWidth="58.9962158203125" text="Aktion" />
+
+                           </columns>
+                       </TableView>
+                       <TextField fx:id="txBackgroundName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
+                       <TextField fx:id="txBackgroundPath" editable="false" layoutX="242.0" layoutY="435.0" onAction="#backgroundUpload" onMouseClicked="#backgroundUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
+                       <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
+                       <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
+                   </children>
+               </AnchorPane>
+           </content>
+           <padding>
+               <Insets left="20.0" right="20.0" />
+           </padding>
+       </TitledPane>
       <Label text="Einstellungen" textFill="#362d2d">
          <padding>
             <Insets left="100.0" />

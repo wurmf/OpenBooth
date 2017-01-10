@@ -59,7 +59,7 @@ public class MainFrameController {
             }
         } catch (ServiceException e) {
             showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
-            LOGGER.info("MainFrameController:",e.getMessage());
+            LOGGER.info("initialize - ",e);
          }
     }
 
@@ -93,7 +93,7 @@ public class MainFrameController {
                 shootingService.endShooting();
                 showInformationDialog("Shooting wurde beendet");
             } catch (ServiceException e) {
-                LOGGER.debug("recovery-"+e);
+                LOGGER.debug("recovery - ",e);
                 showInformationDialog("Shooting konnte nicht beendet werden!");
             }
         }

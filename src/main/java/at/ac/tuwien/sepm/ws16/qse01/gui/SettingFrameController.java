@@ -119,9 +119,9 @@ public class SettingFrameController {
 
     /* Profile TEXTFIELDS for ADDING */
     @FXML
-    private TextField txPositionName;
+    private TextField txBackgroundName;
     @FXML
-    private TextField txPositionBild;
+    private TextField txBackgroundPath;
 
     /* BEGINN OF KameraPosition-Zuweisung Table Column FXML */
     @FXML
@@ -173,6 +173,24 @@ public class SettingFrameController {
     private TextField txPreviewHeight;
     @FXML
     private ImageView previewLogo;
+
+    /* BEGINN OF Category-Background Table Column FXML */
+    @FXML
+    private TableView tableBackground;
+    @FXML
+    private TableColumn colBackgroundID;
+    @FXML
+    private TableColumn colBackgroundName;
+    @FXML
+    private TableColumn colBackgroundPath;
+    @FXML
+    private TableColumn colBackgroundAction;
+
+    /* Profile TEXTFIELDS for ADDING */
+    @FXML
+    private TextField txPositionName;
+    @FXML
+    private TextField txPositionBild;
 
     private Profile.PairLogoRelativeRectangle selectedLogo = null;
     private Profile selectedProfile = null;
@@ -925,6 +943,22 @@ public class SettingFrameController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txPositionBild.setText(file.getAbsolutePath());
+        }
+    }
+    @FXML
+    private void backgroundUpload(){
+        fileChooser.setTitle("Hintergrund Hochladen...");
+        fileChooser.setInitialDirectory(
+                new File(System.getProperty("user.home"))
+        );
+        fileChooser.getExtensionFilters().addAll(
+                //  new FileChooser.ExtensionFilter("All Images", "*.*")
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            txBackgroundPath.setText(file.getAbsolutePath());
         }
     }
     @FXML
