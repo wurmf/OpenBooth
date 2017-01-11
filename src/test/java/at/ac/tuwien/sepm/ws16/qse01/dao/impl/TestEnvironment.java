@@ -60,6 +60,9 @@ public class TestEnvironment {
     protected ShootingDAO shootingDAO;
     protected ShootingDAO mockShootingDAO;
 
+    protected BackgroundCategoryDAO backgroundCategoryDAO;
+    protected BackgroundCategoryDAO mockbackgroundCategoryDAO;
+
     protected ProfileService profileService;
 
     protected AdminUserDAO adminUserDAO;
@@ -95,9 +98,13 @@ public class TestEnvironment {
     protected Profile profileA;
     protected Profile profileB;
     protected Profile profileC;
+    protected Background.Category backgroundCategoryA;
+    protected Background.Category backgroundCategoryB;
+    protected Background.Category backgroundCategory10;
 
     @Before public void setUp() throws Exception
     {
+        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
         /* Setup test mocks
         *  Please don't mess with these ones,
         *  if you don't understand completely what implications it has
@@ -120,11 +127,11 @@ public class TestEnvironment {
         mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
         mockImageDAO = new JDBCImageDAO(mockH2Handler);
         mockShootingDAO = new JDBCShootingDAO(mockH2Handler);
+        mockbackgroundCategoryDAO = new JDBCBackgroundCategoryDAO(mockH2Handler);
 
 
         /* Setup DAOs for all testing
          */
-        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
         logoDAO = new JDBCLogoDAO(H2EmbeddedHandler.getInstance());
         cameraDAO = new JDBCCameraDAO(H2EmbeddedHandler.getInstance());
         positionDAO = new JDBCPositionDAO(H2EmbeddedHandler.getInstance());
@@ -134,6 +141,7 @@ public class TestEnvironment {
         imageDAO = new JDBCImageDAO(H2EmbeddedHandler.getInstance());
         shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
         adminUserDAO = new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
+        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(H2EmbeddedHandler.getInstance());
 
         /*
         * Setup Services for all testing
@@ -154,10 +162,12 @@ public class TestEnvironment {
         }
 
         //Run delete.sql, insert.sql
-        String sqlFolder=this.getClass().getResource(File.separator+"sql"+File.separator).getPath();
-        ResultSet rs= RunScript.execute(con, new FileReader(sqlFolder+"delete.sql"));
+        String deletePath=this.getClass().getResource("/sql/delete.sql").getPath();
+        String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
+
+        ResultSet rs= RunScript.execute(con, new FileReader(deletePath));
         if(rs!=null&&!rs.isClosed()) rs.close();
-        rs= RunScript.execute(con, new FileReader(sqlFolder+"insert.sql"));
+        rs= RunScript.execute(con, new FileReader(insertPath));
         if(rs!=null&&!rs.isClosed()) rs.close();
 
         /*
@@ -206,6 +216,11 @@ public class TestEnvironment {
                 true,
                 "/dev/null/watermarkC.jpg",
                 false);
+
+        backgroundCategoryA = new Background.Category("Taufe");
+        backgroundCategoryB = new Background.Category("Firmung");
+        backgroundCategory10
+                = new Background.Category(10,"Verlobung",false);
     }
 
     @After public void tearDown() throws Exception {
