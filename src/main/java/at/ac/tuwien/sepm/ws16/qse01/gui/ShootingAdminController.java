@@ -54,9 +54,12 @@ public class ShootingAdminController {
     private Button stopButton;
     @FXML
     private Label storageDirLabel;//storageDirLabel.setText();
-
     @FXML
     private ChoiceBox<Profile> profileChoiceBox;
+    @FXML
+    private Button bgStorage;
+    @FXML
+    private Label bgStorageDirLabel;
 
     private String path =null;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -248,6 +251,14 @@ public class ShootingAdminController {
 
     }
 
+    /**
+     *
+     */
+    @FXML
+    public void onChooseBgStorageDirPressed(){
+        bgStorage.setDisable(true);
+        bgStorageDirLabel.setText("Button pressed");
+    }
     /**
      * information dialog
      *
