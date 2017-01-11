@@ -486,4 +486,13 @@ public interface ProfileService {
     boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)
             throws ServiceException;
 
+
+    Background.Category addBackgroundCategoryToProfile(int profileId, Background.Category backgroundCategory) throws ServiceException;
+
+    boolean eraseBackgroundCategoryFromProfile(int profileId, Background.Category backgroundCategory) throws ServiceException;
+
+    Background.Category addBackgroundCategoryToProfile(Background.Category backgroundCategory) throws ServiceException;
+
+    boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException;
+
 }

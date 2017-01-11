@@ -11,6 +11,7 @@ public class Profile {
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private List<Background.Category> backgroundCategories = new ArrayList<>();
     private boolean isMobilEnabled;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
@@ -173,6 +174,14 @@ public class Profile {
         isMobilEnabled = mobilEnabled;
     }
 
+    public List<Background.Category> getBackgroundCategories() {
+        return backgroundCategories;
+    }
+
+    public void setBackgroundCategories(List<Background.Category> backgroundCategories) {
+        this.backgroundCategories = backgroundCategories;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
@@ -192,12 +201,14 @@ public class Profile {
 
     /**
      * Camera-Position Pair Entity
+     * Note: Contains private attribute filterName, that is not persisted
      */
     public static class PairCameraPosition {
         private int id;
         private int profileId;
         private Camera camera;
         private Position position;
+        private String filterName = "";
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(int id,
@@ -255,6 +266,14 @@ public class Profile {
 
         public void setPosition(Position position) {
             this.position = position;
+        }
+
+        public String getFilterName() {
+            return this.filterName;
+        }
+
+        public void setFilterName(String filteName) {
+            this.filterName = filterName;
         }
 
         public boolean isGreenScreenReady() {
