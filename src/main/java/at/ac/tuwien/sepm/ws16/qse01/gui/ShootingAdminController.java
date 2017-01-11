@@ -62,6 +62,7 @@ public class ShootingAdminController {
     private Label bgStorageDirLabel;
 
     private String path =null;
+    private String bgPath="";
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 
@@ -188,8 +189,7 @@ public class ShootingAdminController {
                             showInformationDialog(s.getMessage());
                         }
                     }
-                    //TODO: add actual bgPath
-                    Shooting shouting = new Shooting(0, profile.getId(), path,"", true);
+                    Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
                     LOGGER.info("ShootingAdminController:", path);
                     path = "";
@@ -216,7 +216,6 @@ public class ShootingAdminController {
             if (shootingService.searchIsActive().getActive()) {
                 Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
                 if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
-                    //TODO: add actual bgPath
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "","", true);
                     shootingService.updateProfile(shooting);
                 }
@@ -238,7 +237,6 @@ public class ShootingAdminController {
      * @param actionEvent press action event
 */
     public void onChooseStorageDirPressed(ActionEvent actionEvent) {
-
         try{
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Speicherort wählen");
@@ -248,16 +246,22 @@ public class ShootingAdminController {
         }catch (NullPointerException n){
             showInformationDialog("Default Pfad ausgewählt");
         }
-
     }
 
     /**
-     *
+     * Opens a DirectoryChooser that lets the user choose a folder in which background images are located.
      */
     @FXML
     public void onChooseBgStorageDirPressed(){
-        bgStorage.setDisable(true);
-        bgStorageDirLabel.setText("Button pressed");
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Quellordner auswählen");
+        File sourceFolder =directoryChooser.showDialog(windowManager.getStage());
+        if(sourceFolder!=null) {
+            bgPath = sourceFolder.getPath();
+            bgStorageDirLabel.setText(bgPath);
+        } else{
+            storageDirLabel.setText("Keine Hintergründe definiert");
+        }
     }
     /**
      * information dialog
