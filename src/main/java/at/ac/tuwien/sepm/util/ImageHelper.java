@@ -5,6 +5,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -18,6 +19,7 @@ import java.util.List;
  * This class provides methods for opening and saving buffered images
  * and converting buffered images to mat and back
  */
+@Component
 public class ImageHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageHelper.class);

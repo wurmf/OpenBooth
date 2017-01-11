@@ -126,7 +126,7 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterGaussian(String imgPath){
+    public BufferedImage filterGaussian(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterGaussian->imgPath->"+imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
@@ -136,7 +136,7 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.GaussianBlur(source, destination,new Size(15,15), 0);
 
 
-        return getBufferedImage(destination);
+        return imageHelper.convertMatToBufferedImg(destination);
 
     }
 
@@ -162,12 +162,9 @@ public class FilterServiceImpl implements FilterService {
             Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC1);
             Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
 
-            byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int) (mat1.elemSize())];
-            mat1.get(0, 0, data1);
-            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
-            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 
-            return image1;
+
+            return imageHelper.convertMatToBufferedImg(mat1);
         } catch (Exception e) {
             LOGGER.error("GrayScaleFilter -> : " + e.getMessage());
         }
@@ -194,13 +191,8 @@ public class FilterServiceImpl implements FilterService {
             Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
             Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
 
-            byte[] data1 = new byte[mat1.rows()*mat1.cols()*(int)(mat1.elemSize())];
-            mat1.get(0, 0, data1);
-            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), 5);
-            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 
-
-            return image1;
+            return imageHelper.convertMatToBufferedImg(mat1);
 
         } catch (Exception e) {
             LOGGER.error("ColorSpace -> : " + e.getMessage());
@@ -215,7 +207,7 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterSobel(String imgPath){
+    public BufferedImage filterSobel(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterSobel->imgPath->"+imgPath);
         int kernelSize = 3;
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
@@ -239,7 +231,7 @@ public class FilterServiceImpl implements FilterService {
 
         Imgproc.filter2D(source, destination, -1, kernel);
 
-        return getBufferedImage(destination);
+        return imageHelper.convertMatToBufferedImg(destination);
     }
 
     /**
@@ -249,14 +241,14 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterThreshZero(String imgPath){
+    public BufferedImage filterThreshZero(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterThreshZero->imgPath->"+imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
-        return getBufferedImage(destination);
+        return imageHelper.convertMatToBufferedImg(destination);
     }
 
     /**
@@ -266,14 +258,14 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterThreshBinaryInvert(String imgPath){
+    public BufferedImage filterThreshBinaryInvert(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterThreshBinaryInvert->imgPath->"+imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
-        return getBufferedImage(destination);
+        return imageHelper.convertMatToBufferedImg(destination);
     }
 
     /**
