@@ -32,6 +32,7 @@ import java.util.Map;
 public class FilterServiceImpl implements FilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceImpl.class);
 
+    private BufferedImage bufferedImage;
     private String storageDir;
     private Shooting activeShooting;
 
@@ -133,7 +134,7 @@ public class FilterServiceImpl implements FilterService {
 
         Mat destination = new Mat(source.rows(),source.cols(),source.type());
         //Gaussian kernel size -> 15 - 15 -> sigmaX = 0
-        Imgproc.GaussianBlur(source, destination,new Size(15,15), 0);
+        Imgproc.GaussianBlur(source, destination,new Size(25,25), 0);
 
 
         return imageHelper.convertMatToBufferedImg(destination);
@@ -166,7 +167,7 @@ public class FilterServiceImpl implements FilterService {
 
             return imageHelper.convertMatToBufferedImg(mat1);
         } catch (Exception e) {
-            LOGGER.error("GrayScaleFilter -> : " + e.getMessage());
+            LOGGER.error("GrayScaleFilter ->",e);
         }
         return null;
     }
@@ -277,20 +278,9 @@ public class FilterServiceImpl implements FilterService {
     public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
-       /* else
+        else
             throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
-            /*{
-            storageDir = System.getProperty("user.dir") + "/shooting" + activeShooting.getId() + "/";
-            Path storageDir = Paths.get(this.storageDir);
-            try {
-                Files.createDirectory(storageDir);
-                LOGGER.info("directory created \n {} \n", storageDir);
-            } catch (FileAlreadyExistsException e) {
-                LOGGER.info("Directory " + e + " already exists \n");
-            } catch (IOException e) {
-                LOGGER.error("error creating directory " + e + "\n");
-            }
-        }*/
+
     }
 
     /**
@@ -307,10 +297,21 @@ public class FilterServiceImpl implements FilterService {
         if (m.channels() > 1) {
             type = BufferedImage.TYPE_3BYTE_BGR;
         }
-        BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
 
-        m.get(0, 0, ((DataBufferByte)image.getRaster().getDataBuffer()).getData());
-        return image;
 
+        bufferedImage = new BufferedImage(m.cols(), m.rows(), type);
+
+        m.get(0, 0, ((DataBufferByte)bufferedImage.getRaster().getDataBuffer()).getData());
+
+        m.release();
+        return bufferedImage;
+
+    }
+
+    @Override
+    public void clear(){
+        bufferedImage.flush();
+        bufferedImage = null;
+        System.gc();
     }
 }
