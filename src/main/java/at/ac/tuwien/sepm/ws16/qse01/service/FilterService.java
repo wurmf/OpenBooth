@@ -44,4 +44,9 @@ public interface FilterService {
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
     BufferedImage filter(String filterName,String imgPath) throws ServiceException;
+
+    /**
+     * free memeory of all used objects
+     */
+    void clear();
 }

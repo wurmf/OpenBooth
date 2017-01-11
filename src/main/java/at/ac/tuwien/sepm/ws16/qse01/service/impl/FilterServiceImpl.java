@@ -31,6 +31,7 @@ import java.util.Map;
 public class FilterServiceImpl implements FilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceImpl.class);
 
+    private BufferedImage bufferedImage;
     private String storageDir;
     private Shooting activeShooting;
 
@@ -128,7 +129,7 @@ public class FilterServiceImpl implements FilterService {
 
         Mat destination = new Mat(source.rows(),source.cols(),source.type());
         //Gaussian kernel size -> 15 - 15 -> sigmaX = 0
-        Imgproc.GaussianBlur(source, destination,new Size(15,15), 0);
+        Imgproc.GaussianBlur(source, destination,new Size(25,25), 0);
 
 
         return getBufferedImage(destination);
@@ -159,12 +160,14 @@ public class FilterServiceImpl implements FilterService {
 
             byte[] data1 = new byte[mat1.rows() * mat1.cols() * (int) (mat1.elemSize())];
             mat1.get(0, 0, data1);
-            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
-            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 
-            return image1;
+            bufferedImage = new BufferedImage(mat1.cols(), mat1.rows(), BufferedImage.TYPE_BYTE_GRAY);
+            bufferedImage.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
+
+
+            return bufferedImage;
         } catch (Exception e) {
-            LOGGER.error("GrayScaleFilter -> : " + e.getMessage());
+            LOGGER.error("GrayScaleFilter ->",e);
         }
         return null;
     }
@@ -191,11 +194,11 @@ public class FilterServiceImpl implements FilterService {
 
             byte[] data1 = new byte[mat1.rows()*mat1.cols()*(int)(mat1.elemSize())];
             mat1.get(0, 0, data1);
-            BufferedImage image1 = new BufferedImage(mat1.cols(), mat1.rows(), 5);
-            image1.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 
+            bufferedImage = new BufferedImage(mat1.cols(), mat1.rows(), 5);
+            bufferedImage.getRaster().setDataElements(0, 0, mat1.cols(), mat1.rows(), data1);
 
-            return image1;
+            return bufferedImage;
 
         } catch (Exception e) {
             LOGGER.error("ColorSpace -> : " + e.getMessage());
@@ -234,6 +237,7 @@ public class FilterServiceImpl implements FilterService {
 
         Imgproc.filter2D(source, destination, -1, kernel);
 
+
         return getBufferedImage(destination);
     }
 
@@ -268,6 +272,7 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
+
         return getBufferedImage(destination);
     }
 
@@ -280,20 +285,9 @@ public class FilterServiceImpl implements FilterService {
     public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
-       /* else
+        else
             throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
-            /*{
-            storageDir = System.getProperty("user.dir") + "/shooting" + activeShooting.getId() + "/";
-            Path storageDir = Paths.get(this.storageDir);
-            try {
-                Files.createDirectory(storageDir);
-                LOGGER.info("directory created \n {} \n", storageDir);
-            } catch (FileAlreadyExistsException e) {
-                LOGGER.info("Directory " + e + " already exists \n");
-            } catch (IOException e) {
-                LOGGER.error("error creating directory " + e + "\n");
-            }
-        }*/
+
     }
 
     /**
@@ -310,10 +304,21 @@ public class FilterServiceImpl implements FilterService {
         if (m.channels() > 1) {
             type = BufferedImage.TYPE_3BYTE_BGR;
         }
-        BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
 
-        m.get(0, 0, ((DataBufferByte)image.getRaster().getDataBuffer()).getData());
-        return image;
 
+        bufferedImage = new BufferedImage(m.cols(), m.rows(), type);
+
+        m.get(0, 0, ((DataBufferByte)bufferedImage.getRaster().getDataBuffer()).getData());
+
+        m.release();
+        return bufferedImage;
+
+    }
+
+    @Override
+    public void clear(){
+        bufferedImage.flush();
+        bufferedImage = null;
+        System.gc();
     }
 }

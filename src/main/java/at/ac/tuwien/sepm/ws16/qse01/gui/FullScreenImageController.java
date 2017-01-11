@@ -26,10 +26,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -454,6 +457,8 @@ public class FullScreenImageController {
 
                         if(changeActiveFilter(imgView)) {
                             ivfullscreenImage.setImage(filteredImage);
+                            filteredImage = null;
+                            filterService.clear();
                             ivfullscreenImage.setFitHeight(base.getHeight());
                             ivfullscreenImage.setFitWidth(base.getWidth());
                         }
@@ -484,7 +489,7 @@ public class FullScreenImageController {
 
 
         } catch (Exception e) {
-           LOGGER.error("Error: " + e.getMessage());
+           LOGGER.error("Error: ",e);
         }
     }
 
@@ -532,31 +537,58 @@ public class FullScreenImageController {
      */
     @FXML
     public void saveFilteredImg(){
+        LOGGER.info("Entering saveFilteredImg... "+filteredImgPath);
         try {
-            LOGGER.info("Filtered image saved in DB...");
+
 
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
 
-            activeFilterImageView = null;
-            saveFilteredButton.setVisible(false);
-            ivfullscreenImage.setId(filteredImgPath);
 
-            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+            saveFilteredButton.setVisible(false);
+
+            File outputfile = null;
+            System.out.println("storageDir ->"+activeShooting.getStorageDir());
+            try {
+                // retrieve image
+                BufferedImage bi = filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()); //SwingFXUtils.fromFXImage(ivfullscreenImage.getImage(),null);
+
+                //exporting image name from imagePath
+                String[] parts = ivfullscreenImage.getId().split("/");
+                String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
+                outputfile = new File(activeShooting.getStorageDir()+"/"+imgFilterName);
+
+                ImageIO.write(bi, "jpg", outputfile);
+            } catch (IOException e) {
+                LOGGER.error("Saving FilteredImage ->",e);
+            }
+
+
+
+            activeFilterImageView = null;
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(outputfile.getAbsolutePath(),activeShooting.getId()));
             refreshManager.notifyMiniatureFrameOfAdd(newImage);
             if((currentIndex+1)>=imageList.size())
                 imageList.add(newImage);
             else {
                 imageList.add(currentIndex + 1, newImage);
-                currentIndex = currentIndex + 1;
             }
+            currentIndex = currentIndex + 1;
+            button4.setVisible(true);
+            LOGGER.info("Filtered image saved in DB...");
 
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }
 
     }
+
+    /**
+     * deleting created mini preview images in filesystem
+     * @param imgPath imagepath to delete
+     */
     public void deletePreviews(String imgPath){
+        LOGGER.info("Entering deletePreviews -> with imgPath ="+imgPath);
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
