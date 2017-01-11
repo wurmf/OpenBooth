@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHelper;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
@@ -26,13 +27,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,15 +84,17 @@ public class FullScreenImageController {
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
     private RefreshManager refreshManager;
+    private ImageHelper imageHelper;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHelper imageHelper,RefreshManager refreshManager) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
         this.refreshManager=refreshManager;
+        this.imageHelper = imageHelper;
 
         this.activeShooting = shootingService.searchIsActive();
     }
@@ -482,10 +482,13 @@ public class FullScreenImageController {
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
 
+
+                mainPane.add(planbottom,0,2);
+
                 constraintInitialized = true;
             }
 
-            mainPane.add(planbottom,0,2);
+
 
 
         } catch (Exception e) {
@@ -547,32 +550,24 @@ public class FullScreenImageController {
 
             saveFilteredButton.setVisible(false);
 
-            File outputfile = null;
-            System.out.println("storageDir ->"+activeShooting.getStorageDir());
-            try {
-                // retrieve image
-                BufferedImage bi = filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()); //SwingFXUtils.fromFXImage(ivfullscreenImage.getImage(),null);
+            //exporting image name from imagePath
+            String[] parts = ivfullscreenImage.getId().split("/");
+            String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
 
-                //exporting image name from imagePath
-                String[] parts = ivfullscreenImage.getId().split("/");
-                String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
-                outputfile = new File(activeShooting.getStorageDir()+"/"+imgFilterName);
+            String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
 
-                ImageIO.write(bi, "jpg", outputfile);
-            } catch (IOException e) {
-                LOGGER.error("Saving FilteredImage ->",e);
-            }
-
-
+            imageHelper.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
 
             activeFilterImageView = null;
-            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(outputfile.getAbsolutePath(),activeShooting.getId()));
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
             refreshManager.notifyMiniatureFrameOfAdd(newImage);
+
             if((currentIndex+1)>=imageList.size())
                 imageList.add(newImage);
             else {
                 imageList.add(currentIndex + 1, newImage);
             }
+
             currentIndex = currentIndex + 1;
             button4.setVisible(true);
             LOGGER.info("Filtered image saved in DB...");

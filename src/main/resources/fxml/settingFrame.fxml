@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.AutoCompleteTextField?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-
+<?import java.lang.String?>
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
     <content>
         <VBox minHeight="2000"  alignment="TOP_CENTER">
@@ -148,6 +149,16 @@
            <content>
                <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                    <children>
+                       <ComboBox fx:id="greenscreenCategory" layoutX="15.0" layoutY="33.0" prefWidth="90.0" promptText="Kategorie Auswählen">
+                           <items>
+                               <FXCollections fx:factory="observableArrayList">
+                                   <String fx:value="Apple" />
+                                   <String fx:value="Orange" />
+                                   <String fx:value="Pear" />
+                               </FXCollections>
+                           </items>
+                       </ComboBox>
+
                        <TableView fx:id="tableBackground" prefHeight="427.0" prefWidth="450.0">
                            <columns>
                                <TableColumn fx:id="colBackgroundID" prefWidth="44.74237585067749" text="ID" />
