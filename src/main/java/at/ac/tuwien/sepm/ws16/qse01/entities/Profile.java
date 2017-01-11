@@ -11,6 +11,7 @@ public class Profile {
     private String name;
     private List<PairCameraPosition> pairCameraPositions;
     private List<PairLogoRelativeRectangle> pairLogoRelativeRectangles;
+    private List<Background.Category> backgroundCategories = new ArrayList<>();
     private boolean isMobilEnabled;
     private boolean isPrintEnabled;
     private boolean isFilerEnabled;
@@ -171,6 +172,14 @@ public class Profile {
 
     public void setMobilEnabled(boolean mobilEnabled) {
         isMobilEnabled = mobilEnabled;
+    }
+
+    public List<Background.Category> getBackgroundCategories() {
+        return backgroundCategories;
+    }
+
+    public void setBackgroundCategories(List<Background.Category> backgroundCategories) {
+        this.backgroundCategories = backgroundCategories;
     }
 
     public boolean isDeleted() {
