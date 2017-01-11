@@ -104,6 +104,7 @@ public class TestEnvironment {
 
     @Before public void setUp() throws Exception
     {
+        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
         /* Setup test mocks
         *  Please don't mess with these ones,
         *  if you don't understand completely what implications it has
@@ -131,7 +132,6 @@ public class TestEnvironment {
 
         /* Setup DAOs for all testing
          */
-        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
         logoDAO = new JDBCLogoDAO(H2EmbeddedHandler.getInstance());
         cameraDAO = new JDBCCameraDAO(H2EmbeddedHandler.getInstance());
         positionDAO = new JDBCPositionDAO(H2EmbeddedHandler.getInstance());
@@ -162,10 +162,12 @@ public class TestEnvironment {
         }
 
         //Run delete.sql, insert.sql
-        String sqlFolder=this.getClass().getResource(File.separator+"sql"+File.separator).getPath();
-        ResultSet rs= RunScript.execute(con, new FileReader(sqlFolder+"delete.sql"));
+        String deletePath=this.getClass().getResource("/sql/delete.sql").getPath();
+        String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
+
+        ResultSet rs= RunScript.execute(con, new FileReader(deletePath));
         if(rs!=null&&!rs.isClosed()) rs.close();
-        rs= RunScript.execute(con, new FileReader(sqlFolder+"insert.sql"));
+        rs= RunScript.execute(con, new FileReader(insertPath));
         if(rs!=null&&!rs.isClosed()) rs.close();
 
         /*
