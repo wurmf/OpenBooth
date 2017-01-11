@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -36,7 +37,7 @@ public class FilterServiceImpl implements FilterService {
     private List<String> filterList;
 
     @Autowired
-    public FilterServiceImpl(ShootingDAO shootingDAO) throws ServiceException {
+    public FilterServiceImpl(ShootingDAO shootingDAO, OpenCVLoader openCVLoader) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
         try {
@@ -45,14 +46,7 @@ public class FilterServiceImpl implements FilterService {
             throw new ServiceException("Error: "+e.getMessage());
         }
 
-        String lib= "/lib/libopencv_java320.dylib";
-        if(com.sun.javafx.PlatformUtil.isWindows())
-            lib = "/lib/opencv_java320.dll";
-        if(com.sun.javafx.PlatformUtil.isLinux())
-            lib = "/lib/libopencv_java320.so";
-
-        String libPath = this.getClass().getResource(lib).getPath();
-        System.load(libPath);
+        openCVLoader.loadLibrary();
 
         checkStorageDir();
     }
