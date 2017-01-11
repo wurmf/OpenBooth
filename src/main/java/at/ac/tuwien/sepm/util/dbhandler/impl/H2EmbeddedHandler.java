@@ -133,12 +133,14 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     private void firstStartup() throws FileNotFoundException, SQLException, PersistenceException{
         try {
-            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
-            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"create.sql"));
+            String createPath=this.getClass().getResource("/sql/create.sql").getPath();
+            String initPath=this.getClass().getResource("/sql/init.sql").getPath();
+
+            ResultSet rs=RunScript.execute(connection, new FileReader(createPath));
             if(rs!=null)
                 rs.close();
             if(!testState)
-                rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
+                rs=RunScript.execute(connection, new FileReader(initPath));
             if(rs!=null)
                 rs.close();
         } catch(FileNotFoundException|SQLException e){
@@ -161,8 +163,9 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     private void insertData() throws FileNotFoundException, SQLException{
         try {
-            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
-            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
+            String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
+
+            ResultSet rs=RunScript.execute(connection, new FileReader(insertPath));
             if(rs!=null)
                 rs.close();
         } catch(FileNotFoundException|SQLException e){
@@ -172,26 +175,21 @@ public class H2EmbeddedHandler  implements DBHandler {
     }
 
     private void setUpDefaultImgs() throws PersistenceException{
-        String fSep=File.separator;
-        String destPath = System.getProperty("user.home") + fSep + "fotostudio" + fSep + "BeispielBilder" + fSep;
-        String dummiesDir = this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
-        String logoDir = this.getClass().getResource(fSep +"images"+fSep +"logos"+fSep).getPath();
-        String image1 = "p1.jpg";
-        String image2 = "p2.jpg";
-        String logo1 = "logofamp.jpg";
-        String logo2 ="logo1.jpg";
+        String destPath = System.getProperty("user.home") + "/fotostudio/BeispielBilder/";
+        String image1 = this.getClass().getResource("/images/dummies/p1.jpg").getPath();
+        String image2 = this.getClass().getResource("/images/dummies/p2.jpg").getPath();
+        String logo1 = this.getClass().getResource("/images/logos/logofamp.jpg").getPath();
+        String logo2 =this.getClass().getResource("/images/logos/logo1.jpg").getPath();
 
-        LOGGER.info("workingDir: "+dummiesDir);
+        Path img1Source = Paths.get(image1);
+        Path img2Source = Paths.get(image2);
+        Path logo1Source= Paths.get(logo1);
+        Path logo2Source= Paths.get(logo2);
 
-        Path img1Source = Paths.get(dummiesDir+image1);
-        Path img2Source = Paths.get(dummiesDir+image2);
-        Path logo1Source= Paths.get(logoDir+logo1);
-        Path logo2Source= Paths.get(logoDir+logo2);
-
-        Path img1Dest= Paths.get(destPath+image1);
-        Path img2Dest= Paths.get(destPath+image2);
-        Path logo1Dest= Paths.get(destPath+logo1);
-        Path logo2Dest= Paths.get(destPath+logo2);
+        Path img1Dest= Paths.get(destPath+"p1.jpg");
+        Path img2Dest= Paths.get(destPath+"p2.jpg");
+        Path logo1Dest= Paths.get(destPath+"logofamp.jpg");
+        Path logo2Dest= Paths.get(destPath+"logo1.jpg");
 
         PreparedStatement stmt=null;
         try {
