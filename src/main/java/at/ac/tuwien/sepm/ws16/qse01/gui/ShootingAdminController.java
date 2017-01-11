@@ -22,14 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -61,7 +56,7 @@ public class ShootingAdminController {
     private Label storageDirLabel;//storageDirLabel.setText();
 
     @FXML
-    private ChoiceBox profileChoiceBox;
+    private ChoiceBox<Profile> profileChoiceBox;
 
     private String path =null;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
@@ -165,7 +160,7 @@ public class ShootingAdminController {
                 saveing.setVisible(true);
             }
         }catch (ServiceException e ){
-            e.printStackTrace();
+            LOGGER.error("inactivemode - ",e);
         }
 
     }
@@ -181,7 +176,7 @@ public class ShootingAdminController {
         LOGGER.info(path);
         if (profileChoiceBox.getValue() != null) {
                 try{
-                    Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                    Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
                         try {
@@ -190,16 +185,16 @@ public class ShootingAdminController {
                             showInformationDialog(s.getMessage());
                         }
                     }
-                        Shooting shouting = new Shooting(0, (int) profile.getId(), path, true);
+                    //TODO: add actual bgPath
+                    Shooting shouting = new Shooting(0, profile.getId(), path,"", true);
 
-                        //storageDirLabel.setText("");
-                        LOGGER.info("ShootingAdminController:", path);
-                        path = "";
+                    LOGGER.info("ShootingAdminController:", path);
+                    path = "";
 
-                        shootingService.addShooting(shouting);
+                    shootingService.addShooting(shouting);
 
-                        windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                        windowManager.initShotFrameManager();
+                    windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+                    windowManager.initShotFrameManager();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
                     showInformationDialog("Es konnte keine Shooting erstellt werden.");
@@ -216,9 +211,10 @@ public class ShootingAdminController {
     public void onDemolitionPressed(ActionEvent actionEvent) {
         try {
             if (shootingService.searchIsActive().getActive()) {
-                Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
                 if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
-                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
+                    //TODO: add actual bgPath
+                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "","", true);
                     shootingService.updateProfile(shooting);
                 }
                 windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
@@ -231,7 +227,7 @@ public class ShootingAdminController {
         }
     }
 
-    /*
+    /**
      * finds the directory of desire to save new project in
      *
      * catches NullPointer Exception that could be caused by empty files
@@ -243,7 +239,6 @@ public class ShootingAdminController {
         try{
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Speicherort wählen");
-            //directoryChooser.in
             File savefile =directoryChooser.showDialog(windowManager.getStage());
             path = savefile.getPath();
             storageDirLabel.setText(savefile.getPath());

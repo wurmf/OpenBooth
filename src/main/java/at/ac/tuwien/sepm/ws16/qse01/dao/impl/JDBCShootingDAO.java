@@ -28,34 +28,37 @@ public class JDBCShootingDAO implements ShootingDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
     @Override
-    public Shooting create(Shooting shouting) throws PersistenceException {
+    public Shooting create(Shooting shooting) throws PersistenceException {
         PreparedStatement stmt = null;
-        if(shouting==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
-        LOGGER.debug("caught nullpointerShooting");
+        if(shooting==null) {
+            LOGGER.debug("caught nullpointer Shooting");
+            throw new IllegalArgumentException("Error: Called create method with null pointer.");
+        }
 
 
         try {
-            String sql="insert into Shootings(profileId,  FOLDERPATH, isactive) values(?,?,?)";
+            String sql="INSERT INTO Shootings(profileId, folderpath, bgpicturefolder, isactive) VALUES (?,?,?,?)";
 
             stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            //stmt.setInt(1,profile.getId());
-            stmt.setInt(1,shouting.getProfileid());
-            stmt.setString(2,shouting.getStorageDir());
-            stmt.setBoolean(3,shouting.getActive());
+            stmt.setInt(1,shooting.getProfileid());
+            stmt.setString(2,shooting.getStorageDir());
+            stmt.setString(3,shooting.getBgPictureFolder());
+            stmt.setBoolean(4,shooting.getActive());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()){shouting.setId(rs.getInt(1));}
+            if (rs.next()){
+                shooting.setId(rs.getInt(1));
+            }
 
-        } catch (SQLException e) {
-            LOGGER.info("ShootingDAO",e.getMessage());
+        } catch (SQLException|IllegalArgumentException e) {
+            LOGGER.info("create - ",e);
             throw new PersistenceException(e);
-        } catch(IllegalArgumentException i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
-            throw new PersistenceException(i);
-        } catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
+        }
+        /* catch(AssertionError i) {
+            LOGGER.error("create - ",i);
             throw new PersistenceException("Ein Unerwarteter Fehler ist aufgetretten");
-        } finally{
+        } */
+        finally{
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -64,59 +67,60 @@ public class JDBCShootingDAO implements ShootingDAO {
                 }
             }
         }
-        return shouting;
+        return shooting;
     }
 
     @Override
     public Shooting searchIsActive() throws PersistenceException {
 
         PreparedStatement stmt =null;
-        Shooting shouting = new Shooting(0,0,"",false);
-        try {//exists
-            stmt = con.prepareStatement("select * from Shootings where isactive = true");
-            //stmt.setString(1,name);
+        Shooting shooting = new Shooting(0,0,"","",false);
+        try {
+            stmt = con.prepareStatement("SELECT * FROM Shootings WHERE isactive = true");
             ResultSet rst = stmt.executeQuery();
-            while (rst.next()){
-                shouting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getBoolean("ISACTIVE"));
+            if(rst.next()){
+                shooting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getString("BGPICTUREFOLDER"), rst.getBoolean("ISACTIVE"));
             }
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO",e.getMessage());
+            LOGGER.info("searchIsActive - ",e);
             throw new PersistenceException(e);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                   LOGGER.error("Select",e);
+                   LOGGER.error("searchIsAcitve - ",e);
                 }
             }
         }
-        return shouting;
+        return shooting;
     }
 
     @Override
     public void endShooting() throws PersistenceException {
-        PreparedStatement stmt=null;
+        Statement stmt=null;
         try {
-            String prepered="update Shootings set isactive=? where isactive= ?";
-            stmt = con.prepareStatement(prepered);
-
-            stmt.setBoolean(1,false);
-            stmt.setBoolean(2,true);
-            stmt.execute();
+            String query="UPDATE Shootings SET isactive=false WHERE isactive= true";
+            stmt = con.createStatement();
+            stmt.execute(query);
 
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO", e.getMessage());
-            throw new PersistenceException(e.getMessage());
-        } catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
+            LOGGER.info("endShooting - ", e);
+            throw new PersistenceException(e);
+        }
+
+        /* catch(AssertionError i) {
+            LOGGER.error("endshooting - ",i.getMessage());
             throw new PersistenceException("No Activ Shooting Found");
-        }finally {
+        }
+        */
+
+        finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("endShooting - ",e);
                 }
             }
         }
@@ -134,17 +138,21 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO", e.getMessage());
-            throw new PersistenceException(e.getMessage());
-        } catch(AssertionError i) {
+            LOGGER.info("updateProfile - ", e);
+            throw new PersistenceException(e);
+        }
+
+        /*catch(AssertionError i) {
             LOGGER.error("ShootingDAO",i.getMessage());
             throw new PersistenceException("Update des Profies war nicht möglich");
-        }finally {
+        }*/
+
+        finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("updateProfile - ",e);
                 }
             }
         }

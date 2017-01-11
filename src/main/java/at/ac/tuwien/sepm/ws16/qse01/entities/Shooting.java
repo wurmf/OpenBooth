@@ -1,19 +1,21 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
 /**
- * Shooting entety
+ * Shooting entity
  */
 public class Shooting {
-    int id;
-    String storageDir;
-    boolean isActive;
-    int profileid;
+    private int id;
+    private String storageDir;
+    private boolean isActive;
+    private int profileid;
+    private String bgPictureFolder;
 
-    public Shooting(int id,int profileid, String storageDir, boolean isActive) {
+    public Shooting(int id,int profileid, String storageDir, String bgPictureFolder, boolean isActive) {
         this.id = id;
         this.profileid=profileid;
         this.storageDir = storageDir;
         this.isActive = isActive;
+        this.bgPictureFolder = bgPictureFolder;
     }
 
     public int getProfileid() {
@@ -46,5 +48,13 @@ public class Shooting {
 
     public void setActive(boolean active) {
         this.isActive = active;
+    }
+
+    public String getBgPictureFolder() {
+        return bgPictureFolder;
+    }
+
+    public void setBgPictureFolder(String bgPictureFolder) {
+        this.bgPictureFolder = bgPictureFolder;
     }
 }

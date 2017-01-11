@@ -1,8 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
@@ -33,7 +32,7 @@ public class ShootingServiceImpl implements ShootingService {
 
     public ShootingServiceImpl() throws ServiceException{
         try {
-            this.shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
+            this.shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
         } catch (PersistenceException e) {
             throw new ServiceException(e);
         }
@@ -41,10 +40,6 @@ public class ShootingServiceImpl implements ShootingService {
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;
-    }
-
-    String getImageStorage(){
-        return "";
     }
 
     @Override
@@ -88,7 +83,7 @@ public class ShootingServiceImpl implements ShootingService {
     @Override
     public String createPath() throws ServiceException {
         String path=null;
-        Path storagepath = null;
+        Path storagepath;
 
         String resource = System.getProperty("user.home");
         storagepath = Paths.get(resource + "/fotostudio/Studio");
@@ -96,8 +91,8 @@ public class ShootingServiceImpl implements ShootingService {
             try {
                 Files.createDirectories(storagepath);
             }  catch (IOException e) {
-                LOGGER.error("createPath - creating initial folder", e);
-                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
+                LOGGER.error("createPath - creating initial folder - ", e);
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden", e);
             }
             DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
             Date date = new Date();
@@ -106,11 +101,11 @@ public class ShootingServiceImpl implements ShootingService {
             try {
                 Files.createDirectories(shootingstorage);
             } catch (FileAlreadyExistsException e) {
-                LOGGER.info("shooting folder already exists - " , e);
-                throw new ServiceException("Der Speicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
+                LOGGER.error("shooting folder already exists - " , e);
+                throw new ServiceException("Der Speicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist.",e);
             } catch (IOException e) {
                 LOGGER.error("creatin shooting folder file - ", e);
-                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden",e);
             }
             path = shootingstorage.toString();
         }

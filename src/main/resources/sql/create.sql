@@ -20,7 +20,7 @@ CREATE TABLE profiles (profileID BIGINT DEFAULT profiles_seq.nextval PRIMARY KEY
 
 CREATE TABLE shootings (shootingID BIGINT DEFAULT shootings_seq.nextval PRIMARY KEY,
                         profileID BIGINT REFERENCES profiles(profileID) ON DELETE SET NULL,
-                        folderpath VARCHAR(250) NOT NULL, isActive BOOLEAN DEFAULT true);
+                        folderpath VARCHAR(250) NOT NULL, bgpicturefolder VARCHAR(250), isActive BOOLEAN DEFAULT true);
 
 CREATE TABLE images (imageID BIGINT DEFAULT images_seq.nextval PRIMARY KEY, imagepath VARCHAR(250) NOT NULL,
                      shootingID BIGINT NOT NULL REFERENCES shootings(shootingID) ON DELETE CASCADE ON UPDATE CASCADE, time TIMESTAMP);
