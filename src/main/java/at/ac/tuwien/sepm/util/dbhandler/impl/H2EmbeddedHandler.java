@@ -191,6 +191,8 @@ public class H2EmbeddedHandler  implements DBHandler {
         Path logo1Dest= Paths.get(destPath+"logofamp.jpg");
         Path logo2Dest= Paths.get(destPath+"logo1.jpg");
 
+        String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";
+
         PreparedStatement stmt=null;
         try {
             if(!img1Dest.getParent().getParent().toFile().exists()){
@@ -198,6 +200,10 @@ public class H2EmbeddedHandler  implements DBHandler {
             }
             if(!img1Dest.getParent().toFile().exists()){
                 Files.createDirectory(img1Dest.getParent());
+            }
+            File shootingFolder=new File(shootingPath);
+            if(!shootingFolder.exists()){
+                Files.createDirectory(shootingFolder.toPath());
             }
             Files.copy(img1Source,img1Dest, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(img2Source,img2Dest, StandardCopyOption.REPLACE_EXISTING);
@@ -225,6 +231,12 @@ public class H2EmbeddedHandler  implements DBHandler {
             stmt.setString(1,destPath+"logo1.jpg");
             stmt.setString(2,"Beispiel-Logo");
             stmt.setInt(3,2);
+            stmt.execute();
+
+            stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE shootings SET folderpath=? WHERE shootingID=1");
+            stmt.setString(1,shootingPath);
             stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);
