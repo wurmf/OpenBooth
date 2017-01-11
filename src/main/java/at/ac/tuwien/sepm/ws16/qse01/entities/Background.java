@@ -102,6 +102,14 @@ public class Background extends Picture{
         }
 
         @Override
+        public boolean equals(Object obj) {
+            return obj instanceof Category
+                    && ((Category) obj).getId() == this.getId()
+                    && ((Category) obj).getName().equals(this.getName())
+                    && ((Category) obj).isDeleted() == this.isDeleted();
+        }
+
+        @Override
         public String toString() {
             return "Background.Category{" +
                     "id=" + id +

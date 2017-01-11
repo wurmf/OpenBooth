@@ -32,6 +32,11 @@ INSERT INTO profile_logo_relativeRectangles VALUES (2, 1, 2,  5.0, 10.0, 15.0, 2
 INSERT INTO profile_logo_relativeRectangles VALUES (3, 2, 1, 75.0, 95.0, 80.0, 90.0);
 INSERT INTO profile_logo_relativeRectangles VALUES (4, 2, 2, 15.0, 20.0, 25.0, 30.0);
 
+INSERT INTO backgroundcategories VALUES (1, 'Ostern', false);
+INSERT INTO backgroundcategories VALUES (2, 'Weihnachten', false);
+INSERT INTO backgroundcategories VALUES (3, 'Geburtstage', false);
+INSERT INTO backgroundcategories VALUES (4, 'Hochzeiten', false);
+
 ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 100;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
 ALTER SEQUENCE IF EXISTS images_seq RESTART WITH 5;
@@ -40,3 +45,5 @@ ALTER SEQUENCE IF EXISTS cameras_seq RESTART WITH 100;
 ALTER SEQUENCE IF EXISTS logos_seq RESTART WITH 100;
 ALTER SEQUENCE IF EXISTS profile_logo_relativeRectangles_seq RESTART WITH 100;
 ALTER SEQUENCE IF EXISTS profile_camera_positions_seq RESTART WITH 100;
+ALTER SEQUENCE IF EXISTS backgroundcategories_seq RESTART WITH 100;
+ALTER SEQUENCE IF EXISTS backgrounds_seq RESTART WITH 100;
