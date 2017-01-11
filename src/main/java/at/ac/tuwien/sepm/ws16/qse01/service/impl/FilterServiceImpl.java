@@ -283,34 +283,10 @@ public class FilterServiceImpl implements FilterService {
 
     }
 
-    /**
-     * converts given mat object to buffered image
-     *
-     * @param m - a mat object to convert buffered image
-     * @return BufferedImage converted buffered image
-     *
-     */
-    public BufferedImage getBufferedImage(Mat m) {
-
-
-        int type = BufferedImage.TYPE_BYTE_GRAY;
-        if (m.channels() > 1) {
-            type = BufferedImage.TYPE_3BYTE_BGR;
-        }
-
-
-        bufferedImage = new BufferedImage(m.cols(), m.rows(), type);
-
-        m.get(0, 0, ((DataBufferByte)bufferedImage.getRaster().getDataBuffer()).getData());
-
-        m.release();
-        return bufferedImage;
-
-    }
-
     @Override
     public void clear(){
-        bufferedImage.flush();
+        if(bufferedImage!=null)
+            bufferedImage.flush();
         bufferedImage = null;
         System.gc();
     }
