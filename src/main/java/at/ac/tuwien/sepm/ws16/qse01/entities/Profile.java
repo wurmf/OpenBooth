@@ -192,12 +192,14 @@ public class Profile {
 
     /**
      * Camera-Position Pair Entity
+     * Note: Contains private attribute filterName, that is not persisted
      */
     public static class PairCameraPosition {
         private int id;
         private int profileId;
         private Camera camera;
         private Position position;
+        private String filterName = "";
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(int id,
@@ -255,6 +257,14 @@ public class Profile {
 
         public void setPosition(Position position) {
             this.position = position;
+        }
+
+        public String getFilterName() {
+            return this.filterName;
+        }
+
+        public void setFilterName(String filteName) {
+            this.filterName = filterName;
         }
 
         public boolean isGreenScreenReady() {
