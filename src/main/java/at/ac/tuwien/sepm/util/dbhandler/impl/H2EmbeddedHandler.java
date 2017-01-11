@@ -193,6 +193,9 @@ public class H2EmbeddedHandler  implements DBHandler {
 
         PreparedStatement stmt=null;
         try {
+            if(!img1Dest.getParent().getParent().toFile().exists()){
+                Files.createDirectory(img1Dest.getParent().getParent());
+            }
             if(!img1Dest.getParent().toFile().exists()){
                 Files.createDirectory(img1Dest.getParent());
             }
@@ -203,23 +206,23 @@ public class H2EmbeddedHandler  implements DBHandler {
             Files.copy(logo2Source,logo2Dest, StandardCopyOption.REPLACE_EXISTING);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
-            stmt.setString(1,destPath+image1);
+            stmt.setString(1,destPath+"p1.jpg");
             stmt.setInt(2,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+image2);
+            stmt.setString(1,destPath+"p2.jpg");
             stmt.setInt(2,2);
             stmt.execute();
 
             stmt.close();
 
             stmt=connection.prepareStatement("UPDATE logos SET path=?, label=? where logoID=?;");
-            stmt.setString(1,destPath+logo1);
+            stmt.setString(1,destPath+"logofamp.jpg");
             stmt.setString(2,"Fotografie am Punkt");
             stmt.setInt(3,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+logo2);
+            stmt.setString(1,destPath+"logo1.jpg");
             stmt.setString(2,"Beispiel-Logo");
             stmt.setInt(3,2);
             stmt.execute();
