@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.ImageHelper;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.ws16.qse01.service.GreenscreenService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -27,21 +28,24 @@ public class GreenscreenServiceImpl implements GreenscreenService{
 
     private static Logger LOGGER = LoggerFactory.getLogger(GreenscreenServiceImpl.class);
 
+    private ImageHelper imageHelper;
+
 
     @Autowired
-    public GreenscreenServiceImpl(OpenCVLoader openCVLoader) throws ServiceException{
+    public GreenscreenServiceImpl(OpenCVLoader openCVLoader, ImageHelper imageHelper) throws ServiceException{
         openCVLoader.loadLibrary();
+        this.imageHelper = imageHelper;
     }
 
     @Override
     public BufferedImage getGreenscreenPreview(String srcImgPath, String backgroundPath) throws ServiceException {
 
 
-        BufferedImage srcImg = openImage(srcImgPath);
-        BufferedImage backgroundImg = openImage(backgroundPath);
+        BufferedImage srcImg = imageHelper.openImage(srcImgPath);
+        BufferedImage backgroundImg = imageHelper.openImage(backgroundPath);
 
-        Mat srcImgMat = convertBufferedImgToMat(srcImg);
-        Mat backgroundMat = convertBufferedImgToMat(backgroundImg);
+        Mat srcImgMat = imageHelper.convertBufferedImgToMat(srcImg);
+        Mat backgroundMat = imageHelper.convertBufferedImgToMat(backgroundImg);
 
         Mat yccMat = new Mat(srcImgMat.rows(), srcImgMat.cols(), CvType.CV_8UC3);
         Imgproc.cvtColor(srcImgMat,yccMat,Imgproc.COLOR_RGB2YCrCb);
@@ -79,7 +83,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
         }
 
 
-        return convertMatToBufferedImg(result);
+        return imageHelper.convertMatToBufferedImg(result);
     }
 
     private double calculateMask(double[] yccImgColor, double[] rgbImgColor, double[] yccKeyColor, double[]rgbKeyColor, double[] tolerances){
@@ -123,64 +127,6 @@ public class GreenscreenServiceImpl implements GreenscreenService{
         tolerances[0] = maxRadius / 4;
         tolerances[1] = maxRadius * (6.0/12.0);
         return tolerances;
-    }
-
-    private BufferedImage convertMatToBufferedImg(Mat srcMat) throws ServiceException{
-
-        if(srcMat.type() != CvType.CV_8UC3){
-            LOGGER.error("convertMatToBufferedImg - color type must be CV_8UC3 but was {}", srcMat.type());
-            throw new ServiceException("could not convert matrix to bufferedimage");
-        }
-
-        byte[] data = new byte[srcMat.rows() * srcMat.cols() * (int)(srcMat.elemSize())];
-        srcMat.get(0, 0, data);
-        BufferedImage result = new BufferedImage(srcMat.cols(),srcMat.rows(), BufferedImage.TYPE_3BYTE_BGR);
-
-        //Color Ordering for Mat is BGR but for BufferedImage is must be RGB so color ordering is changed
-        byte b;
-        for(int i=0; i<data.length; i=i+3) {
-            b = data[i];
-            data[i] = data[i+2];
-            data[i+2] = b;
-        }
-
-
-        result.getRaster().setDataElements(0, 0, srcMat.cols(), srcMat.rows(), data);
-
-        return result;
-    }
-
-    private Mat convertBufferedImgToMat(BufferedImage srcImg) throws ServiceException{
-        if(srcImg.getType() != BufferedImage.TYPE_3BYTE_BGR){
-            LOGGER.error("convertBufferedImgToMat - color type should be TYPE_3BYTE_BGR but was {}", srcImg.getType());
-            throw new ServiceException("could not convert BufferedImage to matrix");
-        }
-
-
-        byte[] data = ((DataBufferByte) srcImg.getRaster().getDataBuffer()).getData();
-
-        Mat mat = new Mat(srcImg.getHeight(), srcImg.getWidth(), CvType.CV_8UC3);
-        mat.put(0,0,data);
-
-        return mat;
-    }
-
-    private BufferedImage openImage(String srcImgPath) throws ServiceException{
-        if(srcImgPath == null || srcImgPath.isEmpty()){
-            LOGGER.error("openImage - srcImgPath is null or empty");
-            throw new ServiceException("srcImgPath is null or empty");
-        }
-
-        BufferedImage img;
-
-        try {
-            img = ImageIO.read(new File(srcImgPath));
-        } catch (IOException e) {
-            LOGGER.error("openImage - error loading given image " + e);
-            throw new ServiceException(e);
-        }
-        LOGGER.debug("Image at {} opened", srcImgPath);
-        return img;
     }
 
 }
