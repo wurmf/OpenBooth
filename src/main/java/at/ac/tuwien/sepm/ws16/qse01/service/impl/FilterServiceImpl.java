@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.ImageHelper;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
@@ -36,8 +37,10 @@ public class FilterServiceImpl implements FilterService {
 
     private List<String> filterList;
 
+    private ImageHelper imageHelper;
+
     @Autowired
-    public FilterServiceImpl(ShootingDAO shootingDAO, OpenCVLoader openCVLoader) throws ServiceException {
+    public FilterServiceImpl(ShootingDAO shootingDAO, OpenCVLoader openCVLoader, ImageHelper imageHelper) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
         try {
@@ -47,6 +50,8 @@ public class FilterServiceImpl implements FilterService {
         }
 
         openCVLoader.loadLibrary();
+
+        this.imageHelper = imageHelper;
 
         checkStorageDir();
     }
