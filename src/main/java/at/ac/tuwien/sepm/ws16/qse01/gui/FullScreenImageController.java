@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
@@ -84,17 +84,17 @@ public class FullScreenImageController {
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
     private RefreshManager refreshManager;
-    private ImageHelper imageHelper;
+    private ImageHandler imageHandler;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHelper imageHelper,RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
         this.refreshManager=refreshManager;
-        this.imageHelper = imageHelper;
+        this.imageHandler = imageHandler;
 
         this.activeShooting = shootingService.searchIsActive();
     }
@@ -555,7 +555,7 @@ public class FullScreenImageController {
 
             String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
 
-            imageHelper.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
+            imageHandler.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
 
             activeFilterImageView = null;
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));

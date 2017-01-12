@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -28,7 +28,7 @@ public abstract class LogoWatermarkServiceTest {
 
 
     private LogoWatermarkService logoWatermarkService;
-    private ImageHelper imageHelper;
+    private ImageHandler imageHandler;
     private ProfileService mockProfileService = mock(ProfileService.class);
     private Logo logo1;
     private Logo logo2;
@@ -48,8 +48,8 @@ public abstract class LogoWatermarkServiceTest {
         this.logoWatermarkService = logoWatermarkService;
     }
 
-    protected void setImageHelper(ImageHelper imageHelper){
-        this.imageHelper = imageHelper;
+    protected void setImageHandler(ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
     }
 
     protected ProfileService getMockProfileService(){
@@ -66,7 +66,7 @@ public abstract class LogoWatermarkServiceTest {
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
 
-        srcImg = imageHelper.openImage(srcImgPath);
+        srcImg = imageHandler.openImage(srcImgPath);
 
 
         logo1 = new Logo("testlogo1", logoPath1);
@@ -292,10 +292,10 @@ public abstract class LogoWatermarkServiceTest {
 
     private void testImage(String testImagePath, BufferedImage resultImage) throws  ServiceException{
 
-        BufferedImage testImage = imageHelper.openImage(testImagePath);
+        BufferedImage testImage = imageHandler.openImage(testImagePath);
 
-        imageHelper.saveImage(resultImage, destImgPath);
-        resultImage = imageHelper.openImage(destImgPath);
+        imageHandler.saveImage(resultImage, destImgPath);
+        resultImage = imageHandler.openImage(destImgPath);
 
         for(int y = 0; y < resultImage.getHeight(); y++){
             for(int x = 0; x < resultImage.getWidth(); x++){

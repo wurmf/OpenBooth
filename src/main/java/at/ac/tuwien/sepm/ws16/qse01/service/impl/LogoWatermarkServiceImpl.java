@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
@@ -29,14 +29,14 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoWatermarkServiceImpl.class);
 
     private final ProfileService profileService;
-    private final ImageHelper imageHelper;
+    private final ImageHandler imageHandler;
     private final Map<Logo, BufferedImage> cachedLogos = new HashMap<>();
     private String currentWatermarkPath = null;
     private BufferedImage cachedWatermark = null;
 
     @Autowired
-    public LogoWatermarkServiceImpl(ProfileService profileService, ImageHelper imageHelper){
-        this.imageHelper = imageHelper;
+    public LogoWatermarkServiceImpl(ProfileService profileService, ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
         this.profileService = profileService;
     }
 
@@ -168,7 +168,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             cachedWatermark = openImageFromLogo(watermark);
         }
 
-        BufferedImage img = imageHelper.openImage(srcImgPath);
+        BufferedImage img = imageHandler.openImage(srcImgPath);
 
         Graphics g = img.getGraphics();
 
