@@ -12,7 +12,7 @@ import org.junit.rules.TemporaryFolder;
 
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -88,7 +88,7 @@ public abstract class LogoWatermarkServiceTest {
     }
 
     @Test
-    public void addLogosWithValidParameters() throws ServiceException, IOException{
+    public void addLogosWithValidParameters() throws ServiceException{
 
         logoWatermarkService.addLogosToImage(srcImg);
 
@@ -117,7 +117,7 @@ public abstract class LogoWatermarkServiceTest {
     }
 
     @Test
-    public void addLogosWithScaledHeight() throws ServiceException, IOException{
+    public void addLogosWithScaledHeight() throws ServiceException{
         position1.setWidth(50D);
         position1.setHeight(-1D);
         logoWatermarkService.addLogosToImage(srcImg);
@@ -128,7 +128,7 @@ public abstract class LogoWatermarkServiceTest {
     }
 
     @Test
-    public void addLogosWithScaledWidth() throws ServiceException, IOException{
+    public void addLogosWithScaledWidth() throws ServiceException{
         position1.setHeight(40D);
         position1.setWidth(-1D);
         logoWatermarkService.addLogosToImage(srcImg);
@@ -138,9 +138,17 @@ public abstract class LogoWatermarkServiceTest {
         testImage(testImagePath, srcImg);
     }
 
+    @Test
+    public void addLogosWithNoLogosInProfile() throws ServiceException{
+        when(mockProfileService.getAllLogosOfProfile()).thenReturn(new ArrayList<>());
+        logoWatermarkService.addLogosToImage(srcImg);
+
+        testImage(srcImgPath, srcImg);
+    }
+
 
     @Test
-    public void addWatermarkWithValidParameters() throws ServiceException, IOException{
+    public void addWatermarkWithValidParameters() throws ServiceException{
         srcImg = logoWatermarkService.addWatermarkToImage(srcImgPath);
 
         String testImagePath = this.getClass().getResource("/images/result/test_watermark_normal.jpg").getPath();
@@ -163,7 +171,7 @@ public abstract class LogoWatermarkServiceTest {
 
 
     @Test
-    public void getPreviewForLogoWithValidParameters() throws ServiceException, IOException{
+    public void getPreviewForLogoWithValidParameters() throws ServiceException{
         srcImg = logoWatermarkService.getPreviewForLogo(logo1, position1, 1024, 768);
 
         String testImage = this.getClass().getResource("/images/result/test_preview_logo.jpg").getPath();
@@ -192,7 +200,7 @@ public abstract class LogoWatermarkServiceTest {
 
 
     @Test
-    public void getPreviewForMultipleLogosWithValidParameters() throws ServiceException, IOException{
+    public void getPreviewForMultipleLogosWithValidParameters() throws ServiceException{
         List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
         List<Logo> logoList = Arrays.asList(logo1, logo2);
 
