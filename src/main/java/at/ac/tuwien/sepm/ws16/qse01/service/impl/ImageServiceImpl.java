@@ -28,13 +28,6 @@ public class ImageServiceImpl implements ImageService {
     private String storageDir;
     private Shooting activeShooting;
 
-    public ImageServiceImpl() throws ServiceException{
-        try {
-            this.dao = new JDBCImageDAO(H2Handler.getInstance());
-        } catch (PersistenceException e) {
-            throw new ServiceException("Error: "+e.getMessage());
-        }
-    }
     @Autowired
     public ImageServiceImpl(ImageDAO imageDAO, ShootingDAO shootingDAO) throws ServiceException {
         this.dao = imageDAO;
