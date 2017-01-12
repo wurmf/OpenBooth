@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHelper;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
@@ -83,15 +84,17 @@ public class FullScreenImageController {
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
     private RefreshManager refreshManager;
+    private ImageHelper imageHelper;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService,FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHelper imageHelper,RefreshManager refreshManager) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
         this.windowManager=windowManager;
         this.imagePrinter=imagePrinter;
         this.refreshManager=refreshManager;
+        this.imageHelper = imageHelper;
 
         this.activeShooting = shootingService.searchIsActive();
     }
@@ -451,9 +454,10 @@ public class FullScreenImageController {
                     ImageView imgView =(ImageView) e.getSource();
                     try {
                         filteredImage = SwingFXUtils.toFXImage(filterService.filter(imgView.getId(),ivfullscreenImage.getId()),null);
-
+                        System.gc();
                         if(changeActiveFilter(imgView)) {
                             ivfullscreenImage.setImage(filteredImage);
+                            filteredImage = null;
                             ivfullscreenImage.setFitHeight(base.getHeight());
                             ivfullscreenImage.setFitWidth(base.getWidth());
                         }
@@ -477,14 +481,17 @@ public class FullScreenImageController {
                 con.setPrefWidth(imageFilterConstraint);
                 planbottom.getColumnConstraints().add(con);
 
+
+                mainPane.add(planbottom,0,2);
+
                 constraintInitialized = true;
             }
 
-            mainPane.add(planbottom,0,2);
+
 
 
         } catch (Exception e) {
-           LOGGER.error("Error: " + e.getMessage());
+           LOGGER.error("Error: ",e);
         }
     }
 
@@ -532,31 +539,50 @@ public class FullScreenImageController {
      */
     @FXML
     public void saveFilteredImg(){
+        LOGGER.info("Entering saveFilteredImg... "+filteredImgPath);
         try {
-            LOGGER.info("Filtered image saved in DB...");
+
 
             activeFilterImageView.setFitHeight(80);
             activeFilterImageView.setPreserveRatio(false);
 
-            activeFilterImageView = null;
-            saveFilteredButton.setVisible(false);
-            ivfullscreenImage.setId(filteredImgPath);
 
-            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(filteredImgPath,activeShooting.getId()));
+            saveFilteredButton.setVisible(false);
+
+            //exporting image name from imagePath
+            String[] parts = ivfullscreenImage.getId().split("/");
+            String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
+
+            String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
+
+            imageHelper.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
+
+            activeFilterImageView = null;
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
             refreshManager.notifyMiniatureFrameOfAdd(newImage);
+
             if((currentIndex+1)>=imageList.size())
                 imageList.add(newImage);
             else {
                 imageList.add(currentIndex + 1, newImage);
-                currentIndex = currentIndex + 1;
             }
+
+            currentIndex = currentIndex + 1;
+            button4.setVisible(true);
+            LOGGER.info("Filtered image saved in DB...");
 
         } catch (ServiceException e) {
             LOGGER.error("saveFilteredImg->"+e.getMessage());
         }
 
     }
+
+    /**
+     * deleting created mini preview images in filesystem
+     * @param imgPath imagepath to delete
+     */
     public void deletePreviews(String imgPath){
+        LOGGER.info("Entering deletePreviews -> with imgPath ="+imgPath);
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");

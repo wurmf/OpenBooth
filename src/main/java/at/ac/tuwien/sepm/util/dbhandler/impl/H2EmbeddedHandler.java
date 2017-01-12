@@ -90,6 +90,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @return a connection to the test-database.
      * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the default database.
      */
+    @Override
     public Connection getTestConnection() throws PersistenceException{
         if(connection==null){
             try {
@@ -132,11 +133,16 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     private void firstStartup() throws FileNotFoundException, SQLException, PersistenceException{
         try {
-            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
-            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"create.sql"));
-            if(rs!=null) rs.close();
-            if(!testState) rs=RunScript.execute(connection, new FileReader(sqlFolder+"init.sql"));
-            if(rs!=null) rs.close();
+            String createPath=this.getClass().getResource("/sql/create.sql").getPath();
+            String initPath=this.getClass().getResource("/sql/init.sql").getPath();
+
+            ResultSet rs=RunScript.execute(connection, new FileReader(createPath));
+            if(rs!=null)
+                rs.close();
+            if(!testState)
+                rs=RunScript.execute(connection, new FileReader(initPath));
+            if(rs!=null)
+                rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("firstStartup - ",e);
             throw e;
@@ -157,9 +163,11 @@ public class H2EmbeddedHandler  implements DBHandler {
      */
     private void insertData() throws FileNotFoundException, SQLException{
         try {
-            String sqlFolder=this.getClass().getResource(fileSep+"sql"+fileSep).getPath();
-            ResultSet rs=RunScript.execute(connection, new FileReader(sqlFolder+"insert.sql"));
-            if(rs!=null && !rs.isClosed())rs.close();
+            String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
+
+            ResultSet rs=RunScript.execute(connection, new FileReader(insertPath));
+            if(rs!=null)
+                rs.close();
         } catch(FileNotFoundException|SQLException e){
             LOGGER.error("insertData - ",e);
             throw e;
@@ -167,41 +175,69 @@ public class H2EmbeddedHandler  implements DBHandler {
     }
 
     private void setUpDefaultImgs() throws PersistenceException{
-        String fSep=File.separator;
-        String destPath = System.getProperty("user.home") + fSep + "fotostudio" + fSep + "BeispielBilder" + fSep;
-        String dummiesDir=this.getClass().getResource(fSep +"images"+fSep +"dummies"+fSep).getPath();
-        String image1 = "p1.jpg";
-        String image2 = "p2.jpg";
+        String destPath = System.getProperty("user.home") + "/fotostudio/BeispielBilder/";
+        String image1 = this.getClass().getResource("/images/dummies/p1.jpg").getPath();
+        String image2 = this.getClass().getResource("/images/dummies/p2.jpg").getPath();
+        String logo1 = this.getClass().getResource("/images/logos/logofamp.jpg").getPath();
+        String logo2 =this.getClass().getResource("/images/logos/logo1.jpg").getPath();
 
-        LOGGER.info("workingDir: "+dummiesDir);
+        Path img1Source = Paths.get(image1);
+        Path img2Source = Paths.get(image2);
+        Path logo1Source= Paths.get(logo1);
+        Path logo2Source= Paths.get(logo2);
 
-        Path img1Source = Paths.get(dummiesDir+image1);
-        Path img2Source = Paths.get(dummiesDir+image2);
+        Path img1Dest= Paths.get(destPath+"p1.jpg");
+        Path img2Dest= Paths.get(destPath+"p2.jpg");
+        Path logo1Dest= Paths.get(destPath+"logofamp.jpg");
+        Path logo2Dest= Paths.get(destPath+"logo1.jpg");
 
-        Path img1Dest= Paths.get(destPath+image1);
-        Path img2Dest= Paths.get(destPath+image2);
-
+        String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";
 
         PreparedStatement stmt=null;
         try {
+            if(!img1Dest.getParent().getParent().toFile().exists()){
+                Files.createDirectory(img1Dest.getParent().getParent());
+            }
             if(!img1Dest.getParent().toFile().exists()){
                 Files.createDirectory(img1Dest.getParent());
+            }
+            File shootingFolder=new File(shootingPath);
+            if(!shootingFolder.exists()){
+                Files.createDirectory(shootingFolder.toPath());
             }
             Files.copy(img1Source,img1Dest, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(img2Source,img2Dest, StandardCopyOption.REPLACE_EXISTING);
 
+            Files.copy(logo1Source,logo1Dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(logo2Source,logo2Dest, StandardCopyOption.REPLACE_EXISTING);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
-
-            stmt.setString(1,destPath+image1);
+            stmt.setString(1,destPath+"p1.jpg");
             stmt.setInt(2,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+image2);
+            stmt.setString(1,destPath+"p2.jpg");
             stmt.setInt(2,2);
             stmt.execute();
 
             stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE logos SET path=?, label=? where logoID=?;");
+            stmt.setString(1,destPath+"logofamp.jpg");
+            stmt.setString(2,"Fotografie am Punkt");
+            stmt.setInt(3,1);
+            stmt.execute();
+
+            stmt.setString(1,destPath+"logo1.jpg");
+            stmt.setString(2,"Beispiel-Logo");
+            stmt.setInt(3,2);
+            stmt.execute();
+
+            stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE shootings SET folderpath=? WHERE shootingID=1");
+            stmt.setString(1,shootingPath);
+            stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);
             throw new PersistenceException(e);

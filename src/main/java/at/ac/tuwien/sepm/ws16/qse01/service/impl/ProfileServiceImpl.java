@@ -598,4 +598,24 @@ public class ProfileServiceImpl implements ProfileService{
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
         return this.edit(profile);
     }
+
+    @Override
+    public Background.Category addBackgroundCategoryToProfile(int profileId, Background.Category backgroundCategory) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean eraseBackgroundCategoryFromProfile(int profileId, Background.Category backgroundCategory) throws ServiceException {
+        return false;
+    }
+
+    @Override
+    public Background.Category addBackgroundCategoryToProfile(Background.Category backgroundCategory) throws ServiceException {
+        return null;
+    }
+
+    @Override
+    public boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException {
+        return false;
+    }
 }

@@ -1,10 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
-import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
+import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
@@ -12,6 +9,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -59,6 +57,7 @@ public class SettingFrameController {
     private final ObservableList<Profile> profList = FXCollections.observableArrayList();
 
     private final ObservableList<Position> posList = FXCollections.observableArrayList();
+    private final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
 
     private final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
     private final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
@@ -186,11 +185,15 @@ public class SettingFrameController {
     @FXML
     private TableColumn colBackgroundAction;
 
+    @FXML
+    private ComboBox greenscreenCategory;
+
     /* Profile TEXTFIELDS for ADDING */
     @FXML
     private TextField txPositionName;
     @FXML
     private TextField txPositionBild;
+
 
     private Profile.PairLogoRelativeRectangle selectedLogo = null;
     private Profile selectedProfile = null;
@@ -843,6 +846,89 @@ public class SettingFrameController {
                 }
             });
 
+
+            /* ######################### */
+            /* INITIALIZING Greenscreen Background TABLE */
+            /* ######################### */
+            tableBackground.setEditable(true);
+            colBackgroundID.setCellValueFactory(new PropertyValueFactory<Background, Integer>("id"));
+
+            colBackgroundName.setCellValueFactory(new PropertyValueFactory<Background, String>("name"));
+            colBackgroundName.setCellFactory(TextFieldTableCell.forTableColumn());
+            colBackgroundName.setOnEditCommit(
+                    new EventHandler<TableColumn.CellEditEvent<Background, String>>() {
+                        @Override
+                        public void handle(TableColumn.CellEditEvent<Background, String> t) {
+                            try {
+                                Background p = ((Background) t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow())
+                                );
+                                if (t.getNewValue().compareTo("") != 0) {
+                                    p.setName(t.getNewValue());
+                                  //TODO:   pservice.editBackground(p);
+
+                                  //TODO:  refreshTableBackground(pservice.getAllBackgroundsOfCategoryAndProfile(selectedProfile.getId(),selectedCategory));
+                                } else {
+                                  //TODO: change this line on refreshTableBackground!
+                                    refreshTablePosition(pservice.getAllPositionsOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
+                                }
+
+                            } catch (ServiceException e) {
+                                /*try {
+                                    refreshTableProfiles(pservice.getAllProfiles());
+                                } catch (ServiceException e1) {
+                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                }*/
+
+                            }
+
+                        }
+                    });
+             /* Bild Column */
+            colBackgroundPath.setStyle("-fx-alignment: CENTER;");
+            colBackgroundPath.setSortable(false);
+            colBackgroundPath.setCellValueFactory(new PropertyValueFactory<Background, String>("path"));
+            colBackgroundPath.setCellFactory(new Callback<TableColumn, TableCell>() {
+                @Override
+                public TableCell call(TableColumn p) {
+
+                    return new BackgroundImgCell(backgroundList,pservice);
+
+                }
+            });
+            /* Aktion Column */
+            colBackgroundAction.setStyle("-fx-alignment: CENTER;");
+            colBackgroundAction.setSortable(false);
+            colBackgroundAction.setCellValueFactory(
+                    new Callback<TableColumn.CellDataFeatures<Background, Boolean>,
+                            ObservableValue<Boolean>>() {
+
+                        @Override
+                        public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Background, Boolean> p) {
+                            return new SimpleBooleanProperty(p.getValue() != null);
+                        }
+                    });
+
+            //Adding the X-Button to the cell
+            colBackgroundAction.setCellFactory(
+                    new Callback<TableColumn<Background, Boolean>, TableCell<Background, Boolean>>() {
+
+                        @Override
+                        public TableCell<Background, Boolean> call(TableColumn<Background, Boolean> p) {
+                           return new BackgroundButtonCell(backgroundList,pservice,windowManager.getStage());
+                        }
+
+                    });
+            //listener for greenscreen category combobox
+            greenscreenCategory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+                @Override public void changed(ObservableValue<? extends String> selected, String oldCat, String newCat) {
+                    LOGGER.info("Kategorie ausgewählt -> "+newCat);
+                    //TODO: refreshTableBackground(pservice.getAllBa);
+
+
+                }});
+
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -859,24 +945,16 @@ public class SettingFrameController {
         posList.addAll(positionList);
         tablePosition.setItems(posList);
     }
+    private void refreshTableBackground(List<Background> backgroundList){
+        LOGGER.info("refreshing the background table...");
+        this.backgroundList.clear();
+        this.backgroundList.addAll(backgroundList);
+        tableBackground.setItems(this.backgroundList);
+    }
 
     private void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
         LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
         this.kamPosList.removeAll(kamPosList);
-      /*  for(Profile.PairCameraPosition cp: camposList){
-            System.out.println("Kamera->"+cp.getCamera()+"_pos->"+cp.getPosition().getName());
-        }*/
-       /* this.kamPosList.add(new Profile.PairCameraPosition(new Camera(1,"camera1","22","asdf","asdf"),new Position("Oben"),true));
-        this.kamPosList.add(new Profile.PairCameraPosition(new Camera(2,"camera2","22","asdf","asdf"),new Position("Unten"),true));
-       pservice.get*/
-        /* for(Camera cam: camList){
-            LOGGER.debug("kamera => "+cam.getLable());
-            try {
-                this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }*/
         this.kamPosList.addAll(camposList);
         tableKamPos.setItems(this.kamPosList);
     }

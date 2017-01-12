@@ -16,9 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-
-//TODO: Remove everything Swing related! We have to use JavaFX-Classes
-
 /**
  * The controller for the mainFrame.
  *
@@ -69,7 +66,7 @@ public class MainFrameController {
      * @param actionEvent press action event
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        windowManager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_MAINSCENE);
+        windowManager.showScene(WindowManager.SHOW_SHOOTINGSCENE);
     }
 
     /**
