@@ -77,6 +77,7 @@ public class MiniaturFrameController {
         }else{
             return;
         }
+      //  listOfImages = imageService.getAllImages(1);
         //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
@@ -205,10 +206,6 @@ public class MiniaturFrameController {
         ImageView imageView = null;
         try {
             if(new File(img.getImagepath()).isFile()) {
-                imageView = createImageView(new File(img.getImagepath()));
-            }else if(new File(System.getProperty("user.dir") + "/src/main/resources/"+img.getImagepath()).isFile()){
-                img.setImagepath(System.getProperty("user.dir") + "/src/main/resources/"+img.getImagepath());
-                imageService.update(img);
                 imageView = createImageView(new File(img.getImagepath()));
             }else {
                 LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
