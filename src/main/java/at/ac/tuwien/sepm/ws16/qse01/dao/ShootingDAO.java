@@ -35,6 +35,11 @@ public interface ShootingDAO {
      */
      void endShooting() throws PersistenceException;
 
-     void updateProfile(Shooting shooting) throws PersistenceException;
+    /**
+     * Will update data saved for this shooting in the persistence.
+     * @param shooting Shooting-object with the same ID as the entry in the persistence that shall be updated.
+     * @throws PersistenceException if an error occurs while persisting the object.
+     */
+     void update(Shooting shooting) throws PersistenceException;
 
 }

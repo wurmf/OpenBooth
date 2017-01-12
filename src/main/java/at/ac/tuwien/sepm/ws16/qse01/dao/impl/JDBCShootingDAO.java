@@ -53,12 +53,7 @@ public class JDBCShootingDAO implements ShootingDAO {
         } catch (SQLException|IllegalArgumentException e) {
             LOGGER.info("create - ",e);
             throw new PersistenceException(e);
-        }
-        /* catch(AssertionError i) {
-            LOGGER.error("create - ",i);
-            throw new PersistenceException("Ein Unerwarteter Fehler ist aufgetretten");
-        } */
-        finally{
+        } finally{
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -107,15 +102,7 @@ public class JDBCShootingDAO implements ShootingDAO {
         } catch (SQLException e) {
             LOGGER.info("endShooting - ", e);
             throw new PersistenceException(e);
-        }
-
-        /* catch(AssertionError i) {
-            LOGGER.error("endshooting - ",i.getMessage());
-            throw new PersistenceException("No Activ Shooting Found");
-        }
-        */
-
-        finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -127,27 +114,26 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public void updateProfile(Shooting shooting) throws PersistenceException {
+    public void update(Shooting shooting) throws PersistenceException {
         PreparedStatement stmt=null;
         try {
-            String prepered="update Shootings set PROFILEID=? where SHOOTINGID= ?";
-            stmt = con.prepareStatement(prepered);
+            if(shooting.getBgPictureFolder()!=null && !shooting.getBgPictureFolder().isEmpty()){
+                stmt = con.prepareStatement("UPDATE Shootings SET PROFILEID=?, bgpicturefolder=? WHERE SHOOTINGID= ?");
+                stmt.setInt(1,shooting.getProfileid());
+                stmt.setString(2, shooting.getBgPictureFolder());
+                stmt.setInt(3,shooting.getId());
+            } else{
+                stmt = con.prepareStatement("UPDATE Shootings SET PROFILEID=? WHERE SHOOTINGID= ?");
+                stmt.setInt(1,shooting.getProfileid());
+                stmt.setInt(2,shooting.getId());
+            }
 
-            stmt.setInt(1,shooting.getProfileid());
-            stmt.setInt(2,shooting.getId());
             stmt.execute();
 
         } catch (SQLException e) {
             LOGGER.info("updateProfile - ", e);
             throw new PersistenceException(e);
-        }
-
-        /*catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
-            throw new PersistenceException("Update des Profies war nicht möglich");
-        }*/
-
-        finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
