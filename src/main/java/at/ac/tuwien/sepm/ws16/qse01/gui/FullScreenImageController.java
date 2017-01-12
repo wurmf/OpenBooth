@@ -454,11 +454,10 @@ public class FullScreenImageController {
                     ImageView imgView =(ImageView) e.getSource();
                     try {
                         filteredImage = SwingFXUtils.toFXImage(filterService.filter(imgView.getId(),ivfullscreenImage.getId()),null);
-
+                        System.gc();
                         if(changeActiveFilter(imgView)) {
                             ivfullscreenImage.setImage(filteredImage);
                             filteredImage = null;
-                            filterService.clear();
                             ivfullscreenImage.setFitHeight(base.getHeight());
                             ivfullscreenImage.setFitWidth(base.getWidth());
                         }

@@ -30,7 +30,7 @@ import java.util.Map;
 public class FilterServiceImpl implements FilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceImpl.class);
 
-    private BufferedImage bufferedImage;
+
     private String storageDir;
     private Shooting activeShooting;
 
@@ -279,12 +279,5 @@ public class FilterServiceImpl implements FilterService {
     }
 
 
-    @Override
-    public void clear(){
-        if(bufferedImage!=null)
-            bufferedImage.flush();
-        bufferedImage = null;
-        System.gc();
-    }
 
 }

@@ -45,8 +45,4 @@ public interface FilterService {
      */
     BufferedImage filter(String filterName,String imgPath) throws ServiceException;
 
-    /**
-     * free memeory of all used objects
-     */
-    void clear();
 }
