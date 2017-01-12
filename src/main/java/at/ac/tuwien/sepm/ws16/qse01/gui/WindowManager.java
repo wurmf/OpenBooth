@@ -26,6 +26,7 @@ import java.net.URL;
 public class WindowManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(WindowManager.class);
 
+    public static final int END_APPLICATION=0;
     public static final int SHOW_MAINSCENE=1;
     public static final int SHOW_SHOOTINGSCENE=2;
     public static final int SHOW_PROFILESCENE=3;
@@ -169,10 +170,9 @@ public class WindowManager {
 
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
-            showAdminLogin(SHOW_CUSTOMERSCENE,SHOW_MAINSCENE);
-            //initShotFrameManager();
+            showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
         } else {
-            showAdminLogin(SHOW_MAINSCENE, SHOW_MAINSCENE);
+            showAdminLogin(SHOW_MAINSCENE, END_APPLICATION);
         }
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
@@ -186,6 +186,8 @@ public class WindowManager {
      */
     public void showScene(int sceneToShow){
         switch (sceneToShow){
+            case END_APPLICATION: closeStages();
+                break;
             case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
                 break;
             case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
