@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.*;
-import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -45,20 +43,17 @@ import java.util.Map;
 @Controller
 public class SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileFrameController.class);
-    private SpringFXMLLoader springFXMLLoader;
+
     private WindowManager windowManager;
     @Resource
     private ProfileService pservice;
     @Resource
     private LogoWatermarkService logoService;
-    @Resource
-    private CameraService cameraService;
+
 
     private final ObservableList<Profile> profList = FXCollections.observableArrayList();
-
     private final ObservableList<Position> posList = FXCollections.observableArrayList();
     private final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
-
     private final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
     private final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
@@ -199,10 +194,8 @@ public class SettingFrameController {
     private Profile selectedProfile = null;
 
     @Autowired
-    public SettingFrameController(SpringFXMLLoader springFXMLLoader, ProfileService pservice,LogoWatermarkService logoService,CameraService cameraService,WindowManager windowmanager) throws ServiceException {
-        this.springFXMLLoader = springFXMLLoader;
+    public SettingFrameController(ProfileService pservice,LogoWatermarkService logoService,WindowManager windowmanager) throws ServiceException {
         this.pservice = pservice;
-        this.cameraService = cameraService;
         this.windowManager = windowmanager;
         this.logoService = logoService;
     }
@@ -211,7 +204,7 @@ public class SettingFrameController {
 
     @FXML
     private void initialize(){
-        LOGGER.debug("Initializing profil frame ...");
+        LOGGER.info("Initializing profil frame ...");
 
         try {
             /* ######################### */
@@ -235,7 +228,6 @@ public class SettingFrameController {
                                     p.setName(t.getNewValue());
                                     pservice.edit(p);
                                 } else {
-                                    //new EntityException("Vorname", "Vorname darf nicht leer sein.");
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 }
 
@@ -243,7 +235,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                   LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                   LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -404,25 +396,6 @@ public class SettingFrameController {
                             }
                         }
                     });
-            /*
-            profilList.getItems().addAll(pservice.getAllProfiles());
-            profilList.valueProperty().addListener(new ChangeListener<Profile>() {
-                @Override
-                public void changed(ObservableValue ov, Profile t, Profile selectedProfil) {
-                    try {
-                        refreshTablePosition(pservice.getAllPositions());
-                        int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfil.getId()));
-
-                        /* kamPosList.removeAll(kamPosList);
-                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
-                        tableKamPos.setItems(kamPosList);*/
-                 /*       refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfilID));
-                    } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });*/
 
             /* ######################### */
             /* INITIALIZING Position Table */
@@ -459,7 +432,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -497,47 +470,18 @@ public class SettingFrameController {
 
                         @Override
                         public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                           // int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
                             return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                         }
 
                     });
 
-           // this.refreshTablePosition(pservice.getAllPositionsOfProfile((Profile)profilList.getItems().get(0)));
 
              /* ######################### */
             /* INITIALIZING KameraPosition Zuweisung TABLE */
             /* ######################### */
             tableKamPos.setEditable(true);
             colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLable"));
-           /* colKamPosKamera.setCellFactory(TextFieldTableCell.forTableColumn());
-            colKamPosKamera.setOnEditCommit(
-                    new EventHandler<TableColumn.CellEditEvent<Position, String>>() {
-                        @Override
-                        public void handle(TableColumn.CellEditEvent<Position, String> t) {
-                            try {
-                                Profile.PairCameraPosition p = ((Profile.PairCameraPosition) t.getTableView().getItems().get(
-                                        t.getTablePosition().getRow())
-                                );
-                                if (t.getNewValue().compareTo("") != 0) {
-                                    p.getCamera().setLable(t.getNewValue());
-                                    cameraService.(p);
-                                } else {
-                                    //new EntityException("Vorname", "Vorname darf nicht leer sein.");
-                                    refreshTablePosition(pservice.getAllPositionsOfProfile(((Profile)profilList.getSelectionModel().getSelectedItem())));
-                                }
 
-                            } catch (ServiceException e) {
-                                try {
-                                    refreshTableProfiles(pservice.getAllProfiles());
-                                } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
-                                }
-
-                            }
-
-                        }
-                    });*/
             colKamPosPosition.setStyle("-fx-alignment: CENTER;");
             colKamPosPosition.setSortable(false);
             colKamPosPosition.setCellValueFactory(
@@ -561,8 +505,8 @@ public class SettingFrameController {
 
                     });
 
-              /* ######################### */
-            /* INITIALIZING Logo TABLE */
+            /* ######################### */
+            /* INITIALIZING Logo TABLE   */
             /* ######################### */
             tableLogo.setEditable(true);
 
@@ -604,7 +548,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -639,7 +583,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -674,7 +618,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -708,7 +652,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -741,7 +685,7 @@ public class SettingFrameController {
                                 try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }
 
                             }
@@ -810,7 +754,7 @@ public class SettingFrameController {
                         } catch (NumberFormatException e) {
                             LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
                         } catch (ServiceException e) {
-                            e.printStackTrace();
+                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
                         }
                     }else
                         LOGGER.info("No Logo is uploaded...");
@@ -818,32 +762,11 @@ public class SettingFrameController {
             });
 
             txPreviewHeight.textProperty().addListener((observable, oldValue, newValue) -> {
-                if(selectedLogo!=null){
-                    try {
-                        int height = Integer.parseInt(newValue);
-                        int width = Integer.parseInt(txPreviewWidth.getText());
-                        javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
-                        previewLogo.setImage(image);
-                    } catch (NumberFormatException e) {
-                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
-                    } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }
-                }
+                changePreviewSize(newValue,0);
+
             });
             txPreviewWidth.textProperty().addListener((observable, oldValue, newValue) -> {
-                if(selectedLogo!=null){
-                    try {
-                        int width = Integer.parseInt(newValue);
-                        int height = Integer.parseInt(txPreviewHeight.getText());
-                        javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
-                        previewLogo.setImage(image);
-                    } catch (NumberFormatException e) {
-                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
-                    } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }
-                }
+                changePreviewSize(newValue,1);
             });
 
 
@@ -877,7 +800,7 @@ public class SettingFrameController {
                                 /*try {
                                     refreshTableProfiles(pservice.getAllProfiles());
                                 } catch (ServiceException e1) {
-                                    LOGGER.debug("Error: could not refresh the profile table: "+e1.getMessage());
+                                    LOGGER.error("Error: could not refresh the profile table: ",e1);
                                 }*/
 
                             }
@@ -961,16 +884,6 @@ public class SettingFrameController {
     private void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList){
         LOGGER.info("refreshing the Logo table...");
         this.logoList.clear();
-       // this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("logo1","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
-       // this.logoList.add(new Profile.PairLogoRelativeRectangle(new Logo("Logo2","/images/noimage.png"),new RelativeRectangle(100,200,200,200)));
-       /* for(Camera cam: camList){
-            LOGGER.debug("kamera => "+cam.getLable());
-            try {
-                this.kamPosList.add(new Profile.PairCameraPosition(cam,pservice.getPositionOfCameraOfProfile(cam),true));
-            } catch (ServiceException e) {
-                e.printStackTrace();
-            }
-        }*/
         this.logoList.addAll(logoList);
         tableLogo.setItems(this.logoList);
     }
@@ -1041,10 +954,10 @@ public class SettingFrameController {
     }
     @FXML
     private void saveProfil(){
-        LOGGER.debug("Profil Add Button has been clicked");
+        LOGGER.error("Profil Add Button has been clicked");
         String name = txProfilName.getText();
         if(name.trim().compareTo("") == 0){
-            LOGGER.debug("in error");
+            LOGGER.error("in error");
             showError("Sie müssen einen Namen eingeben!");
         }else {
 
@@ -1068,16 +981,16 @@ public class SettingFrameController {
                 txProfilWatermark.setText("Hochladen...");
 
             } catch (ServiceException e) {
-               LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+               LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             }
         }
     }
     @FXML
     private void saveLogo(){
-        LOGGER.debug("Logo Add Button has been clicked");
+        LOGGER.error("Logo Add Button has been clicked");
         String name = txLogoName.getText();
         if(name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0){
-            LOGGER.debug("in error");
+            LOGGER.error("in error");
             showError("Sie müssen einen Namen eingeben und ein Logo hochladen!");
         }else {
             try {
@@ -1123,7 +1036,7 @@ public class SettingFrameController {
 
 
             } catch (ServiceException e) {
-                LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             } catch (NumberFormatException e){
                 showError("Bitte in Position Eingabefelder (Xstart,Ystart,Breite,Höhe) nur Zahlen eingeben.");
                 LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
@@ -1134,7 +1047,7 @@ public class SettingFrameController {
 
     @FXML
     private void savePosition(){
-        LOGGER.debug("Position Add Button has been clicked");
+        LOGGER.error("Position Add Button has been clicked");
         String name = txPositionName.getText();
         if(name.trim().compareTo("") == 0){
             showError("Sie müssen einen Namen eingeben!");
@@ -1158,7 +1071,7 @@ public class SettingFrameController {
 
 
             } catch (ServiceException e) {
-                LOGGER.debug("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             }
         }
     }
@@ -1210,8 +1123,6 @@ public class SettingFrameController {
             String logoPath;
             if(new File(logo.getPath()).isFile())
                 logoPath = logo.getPath();
-            else if(new File(System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath()).isFile())
-                logoPath = System.getProperty("user.dir")+"/src/main/resources/"+logo.getPath();
             else
                 logoPath = System.getProperty("user.dir")+"/src/main/resources/images/noimage.png";
 
@@ -1222,6 +1133,29 @@ public class SettingFrameController {
             ret.put(logo.getLabel().toLowerCase()+" #"+logo.getId(),imgView);
         }
         return ret;
+    }
+
+    public void changePreviewSize(String newValue,int textField){
+        if(selectedLogo!=null){
+            try {
+                int height = 0;
+                int width = 0;
+                if(textField==0) { //if textfield height changing
+                    height = Integer.parseInt(newValue);
+                    width  = Integer.parseInt(txPreviewWidth.getText());
+                }else{
+                    width = Integer.parseInt(newValue);
+                    height = Integer.parseInt(txPreviewHeight.getText());
+                }
+
+                javafx.scene.image.Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                previewLogo.setImage(image);
+            } catch (NumberFormatException e) {
+                LOGGER.error("Fehler: Bitte geben Sie eine Zahl an",e);
+            } catch (ServiceException e) {
+                LOGGER.error("Fehler: Bitte geben Sie eine Zahl an",e);
+            }
+        }
     }
 
 }
