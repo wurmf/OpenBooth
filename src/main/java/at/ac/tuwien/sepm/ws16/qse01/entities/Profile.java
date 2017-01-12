@@ -32,8 +32,9 @@ public class Profile {
                    String watermark
     ) {this(Integer.MIN_VALUE,
             name,
-            new ArrayList<PairCameraPosition>(),
-            new ArrayList<PairLogoRelativeRectangle>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
             isPrintEnabled,
             isFilterEnabled,
             isGreenscreenEnabled,
@@ -55,6 +56,7 @@ public class Profile {
                    String name,
                    List<PairCameraPosition> pairCameraPositions,
                    List<PairLogoRelativeRectangle> pairLogoRelativeRectangles,
+                   List<Background.Category> backgroundCategories,
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
@@ -67,11 +69,15 @@ public class Profile {
         if (pairCameraPositions != null)
             {this.pairCameraPositions = pairCameraPositions;}
         else
-            {this.pairCameraPositions = new ArrayList<PairCameraPosition>();}
+            {this.pairCameraPositions = new ArrayList<>();}
         if (pairLogoRelativeRectangles != null)
             {this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;}
         else
-            {this.pairLogoRelativeRectangles = new ArrayList<PairLogoRelativeRectangle>();}
+            {this.pairLogoRelativeRectangles = new ArrayList<>();}
+        if (backgroundCategories != null)
+            {this.backgroundCategories = backgroundCategories;}
+        else
+            {this.backgroundCategories = new ArrayList<>();}
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
@@ -89,11 +95,12 @@ public class Profile {
      *
      * @param name - no empty profile name
      */
-    public Profile(String name) {
+    public Profile(String name){
         this(Integer.MIN_VALUE,
                 name,
-                new ArrayList<PairCameraPosition>(),
-                new ArrayList<PairLogoRelativeRectangle>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false,
                 false,
                 false,
@@ -272,7 +279,7 @@ public class Profile {
             return this.filterName;
         }
 
-        public void setFilterName(String filteName) {
+        public void setFilterName(String filterName) {
             this.filterName = filterName;
         }
 

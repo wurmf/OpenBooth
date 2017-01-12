@@ -210,6 +210,7 @@ public class TestEnvironment {
                 "Profile C",
                 pairCameraPositions,
                 pairLogoRelativeRectangles,
+                new ArrayList<>(),
                 true,
                 true,
                 true,
