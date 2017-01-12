@@ -15,12 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -190,9 +193,9 @@ public class KameraFilterController {
     public void onsingelPressed() {
         unmark();
 
-        singel.setStyle("-fx-background-color: green;");
+        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
-       currentMode = 0;
+        currentMode = 0;
         kameraFilterService.setcurrent(index,currentMode);
 
     }
@@ -203,7 +206,7 @@ public class KameraFilterController {
     public void onserienPressed() {
         unmark();
 
-        serien.setStyle("-fx-background-color: green;");
+        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode =1;
         kameraFilterService.setcurrent(index,currentMode);
@@ -215,8 +218,8 @@ public class KameraFilterController {
     public void ontimerPressed() {
         unmark();
 
-        ontime.setStyle("-fx-background-color: green;");
-        singel.setStyle("-fx-background-color: green;");
+        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode=2;
         kameraFilterService.setcurrent(index,currentMode);
@@ -251,22 +254,22 @@ public class KameraFilterController {
 
                 switch (currentMode) {
                     case 0:
-                        singel.setStyle("-fx-background-color: green;");
-                        ontime.setStyle("-fx-background-color: TRANSPARENT;");
-                        serien.setStyle("-fx-background-color: TRANSPARENT;");
+                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                         break;
                     case 1:
-                        serien.setStyle("-fx-background-color: green;");
-                        ontime.setStyle("-fx-background-color: TRANSPARENT;");
-                        singel.setStyle("-fx-background-color: TRANSPARENT;");
+                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                         break;
                     case 2:
-                        ontime.setStyle("-fx-background-color: green;");
-                        singel.setStyle("-fx-background-color: green;");
-                        serien.setStyle("-fx-background-color: TRANSPARENT;");
+                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                         break;
                 }
-                if (greenscreen) {
+               if (greenscreen) {
                     titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Hintergrund auswahl");
                     titel.setVisible(true);
                     creatGreenscreenButton();
@@ -293,14 +296,14 @@ public class KameraFilterController {
             int i= currentMode;
             switch (i) {
                 case 0:
-                    singel.setStyle("-fx-background-color: TRANSPARENT;");
+                    singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                     break;
                 case 1:
-                    serien.setStyle("-fx-background-color: TRANSPARENT;");
+                    serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                     break;
                 case 2:
-                    ontime.setStyle("-fx-background-color: TRANSPARENT;");
-                    singel.setStyle("-fx-background-color: TRANSPARENT;");
+                    ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                    singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
                     break;
             }
         }catch (NullPointerException n){

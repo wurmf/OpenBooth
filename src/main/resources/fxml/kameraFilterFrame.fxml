@@ -31,7 +31,7 @@
             <Button fx:id="backbutton" mnemonicParsing="false" style="-fx-background-image: url('/images/arrowleft.png');" onAction="#onBackbuttonpressed" />
             <Button fx:id="singel" mnemonicParsing="false" style="-fx-background-image: url('/images/singleshot.png');" onAction="#onsingelPressed" GridPane.columnIndex="2" />
             <Button fx:id="serien" mnemonicParsing="false" style="-fx-background-image: url('/images/multishot.png');" onAction="#onserienPressed" GridPane.columnIndex="3" />
-            <Button fx:id="ontime" mnemonicParsing="false" onAction="#ontimerPressed" GridPane.columnIndex="4" />
+            <Button fx:id="ontime" mnemonicParsing="false" style="-fx-background-image: url('/images/timer.png');" onAction="#ontimerPressed" GridPane.columnIndex="4" />
          </children>
       </GridPane>
    </children>

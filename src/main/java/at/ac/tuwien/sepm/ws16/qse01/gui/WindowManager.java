@@ -163,9 +163,13 @@ public class WindowManager {
 
         SpringFXMLLoader.FXMLWrapper<Object, KameraFilterController> kameraFilterFXMLWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", KameraFilterController.class);
-        this.kamerafilterScene = new Scene((Parent) kameraFilterFXMLWrapper.getLoadedObject(),screenWidth,screenHeight);
+        Parent parentkaf = (Parent) kameraFilterFXMLWrapper.getLoadedObject();
+        URL csskaf= this.getClass().getResource("/css/camerafilter.css");
+        LOGGER.info("CSSKAF -"+csskaf);
+        parentkaf.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentkaf.getStylesheets().add(csskaf.toExternalForm());
+        this.kamerafilterScene = new Scene(parentkaf,screenWidth,screenHeight);
         kameraFilterController= kameraFilterFXMLWrapper.getController();
-
 
         try {
             miniWrapper.getController().init(mainStage);
