@@ -143,7 +143,9 @@ public abstract class LogoWatermarkServiceTest {
         when(mockProfileService.getAllLogosOfProfile()).thenReturn(new ArrayList<>());
         logoWatermarkService.addLogosToImage(srcImg);
 
-        testImage(srcImgPath, srcImg);
+        String testImagePath = this.getClass().getResource("/images/result/test_logo_no_logo.jpg").getPath();
+
+        testImage(testImagePath, srcImg);
     }
 
 
