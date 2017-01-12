@@ -39,16 +39,20 @@ public class ProfileServiceImpl implements ProfileService{
     private List<Position> positionList = new ArrayList<>();
     private List<Logo> logoList = new ArrayList<>();
     private List<Camera> cameraList = new ArrayList<>();
+    private Profile activeProfile;
     @Autowired
     public ProfileServiceImpl(ProfileDAO profileDAO,
                               PositionDAO positionDAO,
                               LogoDAO logoDAO,
-                              CameraDAO cameraDAO, ShootingService shootingService
+                              CameraDAO cameraDAO,
+                              ShootingService shootingService
     ) throws ServiceException {
         this.profileDAO = profileDAO;
         this.positionDAO = positionDAO;
         this.logoDAO = logoDAO;
         this.cameraDAO = cameraDAO;
+        this.shootingService = shootingService;
+        this.setActiveProfile(1);
 
         try {
             profileList.addAll(profileDAO.readAll());
@@ -359,7 +363,28 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public Profile getActiveProfile() throws ServiceException {
-        return this.get(this.shootingService.searchIsActive().getId());
+        Shooting activeShooting = this.shootingService.searchIsActive();
+
+        if (activeShooting != null && this.activeProfile != null)
+            {
+                if(activeShooting.getProfileid() == this.activeProfile.getId())
+                    {return this.activeProfile;}
+                else
+                    {return this.get(activeShooting.getProfileid());}
+            }
+        else if (activeShooting != null && this.activeProfile == null)
+            {return this.get(activeShooting.getProfileid());}
+        else
+            {return this.activeProfile;}
+    }
+
+    @Override
+    public void setActiveProfile(int id) throws ServiceException {
+        Shooting activeShooting = this.shootingService.searchIsActive();
+        if(activeShooting!=null)
+            {this.activeProfile = get(activeShooting.getProfileid());}
+        else
+            {this.activeProfile = this.get(id);}
     }
 
     @Override
@@ -617,5 +642,20 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException {
         return false;
+    }
+
+    @Override
+    public Profile.PairCameraPosition getPairCameraPosition(Camera camera) throws ServiceException {
+
+        Profile profile = this.getActiveProfile();
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+        {
+            if(auxPairCameraPosition.getCamera().equals(camera))
+            {
+               return auxPairCameraPosition;
+            }
+        }
+        return null;
     }
 }
