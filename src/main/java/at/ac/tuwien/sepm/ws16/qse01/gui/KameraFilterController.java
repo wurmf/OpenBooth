@@ -9,13 +9,18 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +40,8 @@ import java.util.Map;
 public class KameraFilterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
+    public ScrollPane filterscrollplanel;
+    private GridPane filtergrid;
 
     @FXML
     private GridPane root;
@@ -54,6 +61,10 @@ public class KameraFilterController {
     private GridPane grid = new GridPane();
     private ImageView[] chousenimage;
     private Profile profile;
+    private ImageView activiv=null;
+    private javafx.scene.image.Image activeim=null;
+    private ImageView oldactive=null;
+    private javafx.scene.image.Image oldactivim=null;
 
     private FilterService filterService;
     private ProfileService profileservice;
@@ -97,36 +108,78 @@ public class KameraFilterController {
     private void creatButtons(){
 
         try {
-            GridPane filter = new GridPane();
-            ScrollPane scrollPane = new ScrollPane();
-            scrollPane.setFitToWidth(true);
-            filter.prefWidth(scrollPane.getWidth() - scrollPane.getWidth() * 0.05);
+            filtergrid = new GridPane();
+            filtergrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            filterscrollplanel= new ScrollPane();
+            filtergrid.setStyle("-fx-background-color: black;");
+            filterscrollplanel.setStyle("-fx-background-color: black;");
+            filterscrollplanel.setFitToWidth(true);
+            filterscrollplanel.setFitToHeight(false);
+            filterscrollplanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
+
+            filtergrid.getColumnConstraints().add(0,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(0,new RowConstraints());
+            filtergrid.getColumnConstraints().add(1,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(1,new RowConstraints());
+            filtergrid.getColumnConstraints().add(2,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(2,new RowConstraints());
+            filtergrid.getColumnConstraints().add(3,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(3,new RowConstraints());
+            filtergrid.getColumnConstraints().add(4,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(4,new RowConstraints());
+            filtergrid.getColumnConstraints().add(5,new ColumnConstraints());
+            filtergrid.getRowConstraints().add(5,new RowConstraints());
+
+            filtergrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filtergrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+
             int columcount = 0;
             int rowcount = 0;
-            Map<String,BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1");
+
+           Map<String,BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1.jpg");
+            //List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
+           // for(Image im : imlist){
                 if (columcount == 6) {
                     rowcount++;
                     columcount = 0;
                 }
                 ImageView iv = new ImageView();
-                iv.setFitHeight((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
-                iv.setFitWidth((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);//imagefilter.get(i).getImagepath()
-                iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(),null));
+              iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
+              iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);//imagefilter.get(i).getImagepath()
+              iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(), null));
+              //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
+                    if(activiv!=null&& activeim!=null){
+                       activiv.setImage(activeim);
+                    }
+                    activiv=iv;
+                    activeim=iv.getImage();
+                    iv.setBlendMode(BlendMode.GREEN);
+
                    /* if(fId==){
 
                     }*/
                 });
-                filter.add(iv, columcount, rowcount);
+                filtergrid.add(iv, columcount, rowcount);
                 columcount++;
             }
-            scrollPane.setVisible(true);
-            scrollPane.setContent(filter);
-            grid.add(scrollPane, 0, 0);
-            root.add(grid, 0, 1);
+            filtergrid.setVisible(true);
+            filterscrollplanel.setVisible(true);
+            filterscrollplanel.setContent(filtergrid);
+            root.add(filterscrollplanel,0,1);
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOGGER.error("CreatButtons", e);
         }
     }
 
@@ -236,7 +289,7 @@ public class KameraFilterController {
     }
 
     /**
-     * desides whether an new fiter imge is chousen or green screen
+     * decides whether an new filter image is chosen or green screen
      * @param index current mode
      * @param idFilter current filter id
      * @param greenscreen boolean green screen or not
