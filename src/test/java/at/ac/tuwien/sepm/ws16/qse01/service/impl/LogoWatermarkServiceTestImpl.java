@@ -14,8 +14,12 @@ public class LogoWatermarkServiceTestImpl extends LogoWatermarkServiceTest {
 
     @Before
     public void setUp() throws ServiceException{
+        ImageHelper imageHelper = new ImageHelper(new OpenCVLoader());
+        setImageHelper(imageHelper);
+
         super.setUp();
-        LogoWatermarkService impl = new LogoWatermarkServiceImpl(getMockProfileService(), new ImageHelper(new OpenCVLoader()));
+
+        LogoWatermarkService impl = new LogoWatermarkServiceImpl(getMockProfileService(), imageHelper);
         setLogoWatermarkService(impl);
     }
 }
