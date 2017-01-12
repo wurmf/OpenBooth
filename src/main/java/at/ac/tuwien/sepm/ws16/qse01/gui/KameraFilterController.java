@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,10 +20,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Kamera Filter frame controller
@@ -48,19 +54,22 @@ public class KameraFilterController {
     GridPane grid = new GridPane();
     boolean first=false;
     ImageView[] chousenimage;
+    private Profile profile;
 
-
+    private FilterService filterService;
     private ProfileService profileservice;
     private WindowManager wm;
     private ImageService imageService;
     private ShootingService shootingService;
+
     @Autowired
 
-    public KameraFilterController(ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public KameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
+        this.filterService=filterService;
     }
 
     /**
@@ -76,7 +85,8 @@ public class KameraFilterController {
             filter.prefWidth(scrollPane.getWidth() - scrollPane.getWidth() * 0.05);
             int columcount = 0;
             int rowcount = 0;
-            for (int i = 0; i < 1; i++) {//imagefilter.size
+            Map<String,BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1");
+            for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
                 if (columcount == 6) {
                     rowcount++;
                     columcount = 0;
@@ -84,7 +94,7 @@ public class KameraFilterController {
                 ImageView iv = new ImageView();
                 iv.setFitHeight((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
                 iv.setFitWidth((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);//imagefilter.get(i).getImagepath()
-                iv.setImage(new javafx.scene.image.Image(new FileInputStream(""), iv.getFitWidth(), iv.getFitHeight(), true, true));
+                iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(),null));
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
                    /* if(fId==){
 
@@ -97,8 +107,8 @@ public class KameraFilterController {
             scrollPane.setContent(filter);
             grid.add(scrollPane, 0, 0);
             root.add(grid, 0, 1);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Filter panel", e.getMessage());
+        } catch (ServiceException e) {
+            e.printStackTrace();
         }
     }
 
@@ -163,6 +173,10 @@ public class KameraFilterController {
      * on single image pressed
      */
     public void onsingelPressed() {
+        unmark();
+
+        singel.setStyle("-fx-background-color: green;");
+
         currentMode[index]=0;
 
     }
@@ -171,6 +185,10 @@ public class KameraFilterController {
      * on serien pictures pressed
      */
     public void onserienPressed() {
+        unmark();
+
+        serien.setStyle("-fx-background-color: green;");
+
         currentMode[index]=1;
     }
 
@@ -178,6 +196,10 @@ public class KameraFilterController {
      * on time image pressed
      */
     public void ontimerPressed() {
+        unmark();
+
+        ontime.setStyle("-fx-background-color: green;");
+
         currentMode[index]=2;
     }
 
@@ -195,7 +217,7 @@ public class KameraFilterController {
     public void firstVisit() {
         try {
             buttonList = new ArrayList<>();
-            currentMode = new Integer[profileservice.getAllPairCameraPositionOfProfile().size()];
+            currentMode = new Integer[profile.getPairCameraPositions().size()];
             chousenimage = new ImageView[profileservice.getAllPairCameraPositionOfProfile().size()];
             first = true;
         }catch (ServiceException e) {
@@ -210,14 +232,27 @@ public class KameraFilterController {
      * @param greenscreen boolean green screen or not
      */
     public void currentlychousen(int index, int idFilter, boolean greenscreen){
+
         this.index=index;
+
+        LOGGER.debug("index"+index);
         fId=idFilter;
         titel.setText("");
         try {
+            if(profile==null){
+                profile=profileservice.get(shootingService.searchIsActive().getProfileid());
+            }
+            if(profile!=profileservice.get(shootingService.searchIsActive().getProfileid())){
+                profile=profileservice.get(shootingService.searchIsActive().getProfileid());
+                currentMode= new Integer[profile.getPairCameraPositions().size()];
+            }
             if (!first) {
                 firstVisit();
             }
-            switch (currentMode[index]) {
+            if(currentMode[this.index]==null){
+                currentMode[this.index]=1;
+            }
+            switch (currentMode[this.index]) {
                 case 0:
                     singel.setStyle("-fx-background-color: green;");
                     break;
@@ -242,7 +277,26 @@ public class KameraFilterController {
                 }
             }
         } catch (ServiceException e) {
-            LOGGER.debug("no camera pair found");
+            LOGGER.debug("no camera pair found", e);
+        }
+    }
+
+    private void unmark(){
+        try {
+            switch (currentMode[index]) {
+                case 0:
+                    singel.setStyle("-fx-background-color: TRANSPARENT;");
+                    break;
+                case 1:
+                    serien.setStyle("-fx-background-color: TRANSPARENT;");
+                    break;
+                case 2:
+                    ontime.setStyle("-fx-background-color: TRANSPARENT;");
+                    singel.setStyle("-fx-background-color: TRANSPARENT;");
+                    break;
+            }
+        }catch (NullPointerException n){
+            LOGGER.error("unmark ",n);
         }
     }
 }

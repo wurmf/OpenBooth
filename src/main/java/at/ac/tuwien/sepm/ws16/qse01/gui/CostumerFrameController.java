@@ -39,7 +39,8 @@ public class CostumerFrameController {
     private boolean buttoncreated;
     private Profile profile;
     private List<Button> buttonList;
-    GridPane grid = new GridPane();
+    private GridPane grid = new GridPane();
+    private Profile profileold =null;
 
     private WindowManager windowmanager;
     private ShootingService shootingservice;
@@ -67,6 +68,10 @@ public class CostumerFrameController {
                     LOGGER.debug("Profile id changed:" + profile.getId() + "");
                 }
             }
+            if(!profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
+                rightbutton.setVisible(false);
+            }
+
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
             LOGGER.error("initialise:",e.getMessage());
@@ -83,6 +88,7 @@ public class CostumerFrameController {
 
         try {
             windowmanager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_CUSTOMERSCENE);
+            rightbutton.setVisible(true);
             if (!allpicturesview.isVisible()) {
                 if (shootingservice.searchIsActive().getActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
@@ -91,41 +97,47 @@ public class CostumerFrameController {
                 if (pairList.isEmpty() || pairList.size() == 0) {
                     rightbutton.setVisible(false);
                 }
-                rightbutton.setVisible(true);
                 allpicturesview.setVisible(true);
                 gridpanel.setVisible(true);
                 leftbutton.setVisible(false);
                 setInvisible();
             }
         } catch (ServiceException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.error("switch to login",e);
         }
 }
 
-    public void switchToFilter(ActionEvent actionEvent) {
+    public void switchToFilter() {
         try {
             if(shootingservice.searchIsActive().getActive()){
                 profile=profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
-            rightbutton.setVisible(false);
-            allpicturesview.setVisible(false);
-            gridpanel.setVisible(false);
-            leftbutton.setVisible(true);
-            if (buttoncreated && profile.getId() == shootingservice.searchIsActive().getProfileid()) {
-                loadButton();
-            } else {
-                LOGGER.debug("Profile id:"+profile.getId()+"");
-                if(profile.getId() != shootingservice.searchIsActive().getProfileid()){
-                    profile= profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    LOGGER.debug("Profile id changed:"+profile.getId()+"");
+            if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
+                rightbutton.setVisible(false);
+                allpicturesview.setVisible(false);
+                gridpanel.setVisible(false);
+                leftbutton.setVisible(true);
+                if (profileold != null && buttoncreated && profileold.getId() == shootingservice.searchIsActive().getProfileid()) {
+                    loadButton();
+                } else {
+                    LOGGER.debug("Profile id:" + profile.getId() + "");
+                    if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                        profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                        LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                    }
+                    profileold = profile;
+                    creatButtons();
                 }
-                creatButtons();
+            }else {
+
+                // go over window manager!!!!!???
+                rightbutton.setVisible(false);
             }
         }catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden!");
-            LOGGER.error("load buttons:",e.getMessage());
+            LOGGER.error("load buttons:",e);
         }catch (NullPointerException n){
-            LOGGER.error("active shooting:",n.getMessage());
+            LOGGER.error("active shooting:",n);
         }
     }
 

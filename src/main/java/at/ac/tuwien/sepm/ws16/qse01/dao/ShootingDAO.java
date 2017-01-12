@@ -35,6 +35,12 @@ public interface ShootingDAO {
      */
      void endShooting() throws PersistenceException;
 
+    /**
+     * updates the shooting profile
+     *
+     * @param shooting shooting to be updated to
+     * @throws PersistenceException
+     */
      void updateProfile(Shooting shooting) throws PersistenceException;
 
 }
