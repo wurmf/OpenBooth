@@ -216,6 +216,7 @@ public class Profile {
         private Camera camera;
         private Position position;
         private String filterName = "";
+        private Background background;
         private boolean isGreenScreenReady;
 
         public PairCameraPosition(int id,
@@ -281,6 +282,14 @@ public class Profile {
 
         public void setFilterName(String filterName) {
             this.filterName = filterName;
+        }
+
+        public Background getBackground() {
+            return background;
+        }
+
+        public void setBackground(Background background) {
+            this.background = background;
         }
 
         public boolean isGreenScreenReady() {
