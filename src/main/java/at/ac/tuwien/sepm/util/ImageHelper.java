@@ -81,7 +81,7 @@ public class ImageHelper {
             }
             File newImage = new File(destPath);
             ImageIO.write(image, formatName, newImage);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             LOGGER.error("saveImage - error during saving image - ", e);
             throw new ServiceException(e);
         }
