@@ -16,19 +16,15 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,12 +47,12 @@ public class KameraFilterController {
     @FXML
     private Label titel;
 
-    int index;
-    int fId;
-    List buttonList;
-    int currentMode;
-    GridPane grid = new GridPane();
-    ImageView[] chousenimage;
+    private int index;
+    private int fId;
+    private List buttonList;
+    private int currentMode;
+    private GridPane grid = new GridPane();
+    private ImageView[] chousenimage;
     private Profile profile;
 
     private FilterService filterService;
@@ -78,6 +74,10 @@ public class KameraFilterController {
     }
 
 
+    /**
+     * inizialises chousenimage and buttonList
+     * and findes aktuell profile
+     */
     @FXML
     private void initialize(){
         try {
@@ -130,7 +130,9 @@ public class KameraFilterController {
         }
     }
 
-
+    /**
+     * loads the button
+     */
     private void loadButton() {
 
         grid.setVisible(true);
@@ -251,39 +253,23 @@ public class KameraFilterController {
                     profile = profileservice.get(shootingService.searchIsActive().getProfileid());
 
                 }
-
-                switch (currentMode) {
-                    case 0:
-                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        break;
-                    case 1:
-                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        break;
-                    case 2:
-                        ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-                        break;
-                }
-               if (greenscreen) {
-                    titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Hintergrund auswahl");
+                markfirst();
+                if (greenscreen) {
+                    titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Hintergrund auswahl");
                     titel.setVisible(true);
                     creatGreenscreenButton();
                 } else {
                     if (buttonList.isEmpty()) {
-                        titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
                         titel.setVisible(true);
                         creatButtons();
                     } else {
-                        titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
                         titel.setVisible(true);
                         loadButton();
                     }
                 }
+
 
             }
         } catch (ServiceException e) {
@@ -291,6 +277,34 @@ public class KameraFilterController {
         }
     }
 
+
+    /**
+     * markes the currently used item in gui
+     */
+    private void markfirst(){
+        switch (currentMode) {
+            case 0:
+                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                break;
+            case 1:
+                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                break;
+            case 2:
+                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+                break;
+        }
+    }
+
+    /**
+     * unmarks the old model
+     * so the new model can be marked
+     */
     private void unmark(){
         try {
             int i= currentMode;

@@ -1,6 +1,13 @@
 .root{
   -fx-background-color: black;
 }
+
+.label{
+  -fx-text-fill: white;
+  -fx-font-family: HP Simplified;
+  -fx-font-size: 2.5em;
+}
+
 #singel{
 -fx-pref-width: 4.5em;
    -fx-pref-height:4.5em;
