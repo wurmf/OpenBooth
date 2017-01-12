@@ -164,6 +164,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, KameraFilterController> kameraFilterFXMLWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", KameraFilterController.class);
         this.kamerafilterScene = new Scene((Parent) kameraFilterFXMLWrapper.getLoadedObject(),screenWidth,screenHeight);
+        kameraFilterController= kameraFilterFXMLWrapper.getController();
 
 
         try {

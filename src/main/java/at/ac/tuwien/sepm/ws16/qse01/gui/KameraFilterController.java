@@ -7,6 +7,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -24,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -49,9 +51,8 @@ public class KameraFilterController {
     int index;
     int fId;
     List buttonList;
-    Integer[] currentMode;
+    int currentMode;
     GridPane grid = new GridPane();
-    boolean first=false;
     ImageView[] chousenimage;
     private Profile profile;
 
@@ -60,23 +61,30 @@ public class KameraFilterController {
     private WindowManager wm;
     private ImageService imageService;
     private ShootingService shootingService;
+    private KameraFilterService kameraFilterService;
 
     @Autowired
 
-    public KameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public KameraFilterController(KameraFilterService kameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
+        this.kameraFilterService = kameraFilterService;
+    }
 
+
+    @FXML
+    private void initialize(){
         try {
-            profile = profileService.get(shootingService.searchIsActive().getProfileid());
-            currentMode = new Integer[profile.getPairCameraPositions().size()];
+            buttonList = new ArrayList<>();
+            profile = profileservice.get(shootingService.searchIsActive().getProfileid());
+            chousenimage = new ImageView[profile.getPairCameraPositions().size()];
+
         } catch (ServiceException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -184,7 +192,8 @@ public class KameraFilterController {
 
         singel.setStyle("-fx-background-color: green;");
 
-        currentMode[index]=0;
+       currentMode = 0;
+        kameraFilterService.setcurrent(index,currentMode);
 
     }
 
@@ -196,7 +205,8 @@ public class KameraFilterController {
 
         serien.setStyle("-fx-background-color: green;");
 
-        currentMode[index]=1;
+        currentMode =1;
+        kameraFilterService.setcurrent(index,currentMode);
     }
 
     /**
@@ -206,8 +216,10 @@ public class KameraFilterController {
         unmark();
 
         ontime.setStyle("-fx-background-color: green;");
+        singel.setStyle("-fx-background-color: green;");
 
-        currentMode[index]=2;
+        currentMode=2;
+        kameraFilterService.setcurrent(index,currentMode);
     }
 
     /**
@@ -215,21 +227,7 @@ public class KameraFilterController {
      * @return current mode (on time, single, serien)
      */
     public int getCurrentMode(){
-        return  currentMode[index];
-    }
-
-    /**
-     * initialisation of the frame
-     */
-    public void firstVisit() {
-        try {
-            buttonList = new ArrayList<>();
-            currentMode = new Integer[profile.getPairCameraPositions().size()];
-            chousenimage = new ImageView[profileservice.getAllPairCameraPositionOfProfile().size()];
-            first = true;
-        }catch (ServiceException e) {
-            LOGGER.debug("no camera pair found");
-        }
+        return  currentMode;
     }
 
     /**
@@ -241,50 +239,49 @@ public class KameraFilterController {
     public void currentlychousen(int index, int idFilter, boolean greenscreen){
 
         this.index=index;
-
+        currentMode=kameraFilterService.getcurrent(index);
         fId=idFilter;
         titel.setText("");
-        LOGGER.debug("current index:"+ index+ " current length "+ currentMode.length);
         try {
             if(index>-1) {
-                if (profile == null) {
-                    profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-                }
-                if (!first) {
-                    firstVisit();
-                    currentMode[this.index] = 1;
-                    singel.setStyle("-fx-background-color: green;");
-                }
                 if (profile != profileservice.get(shootingService.searchIsActive().getProfileid())) {
                     profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-                    currentMode = new Integer[profile.getPairCameraPositions().size()];
-                    currentMode[this.index]=1;
+
                 }
 
-                switch (currentMode[this.index]) {
+                switch (currentMode) {
                     case 0:
                         singel.setStyle("-fx-background-color: green;");
+                        ontime.setStyle("-fx-background-color: TRANSPARENT;");
+                        serien.setStyle("-fx-background-color: TRANSPARENT;");
                         break;
                     case 1:
                         serien.setStyle("-fx-background-color: green;");
+                        ontime.setStyle("-fx-background-color: TRANSPARENT;");
+                        singel.setStyle("-fx-background-color: TRANSPARENT;");
                         break;
                     case 2:
                         ontime.setStyle("-fx-background-color: green;");
                         singel.setStyle("-fx-background-color: green;");
+                        serien.setStyle("-fx-background-color: TRANSPARENT;");
                         break;
                 }
                 if (greenscreen) {
-                    titel = new Label("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Hintergrund auswahl");
+                    titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Hintergrund auswahl");
+                    titel.setVisible(true);
                     creatGreenscreenButton();
                 } else {
                     if (buttonList.isEmpty()) {
-                        titel = new Label("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setVisible(true);
                         creatButtons();
                     } else {
-                        titel = new Label("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setText("Kamera " + profileservice.getAllPairCameraPositionOfProfile().get(index).getCamera().getId() + " Filter auswahl");
+                        titel.setVisible(true);
                         loadButton();
                     }
                 }
+
             }
         } catch (ServiceException e) {
             LOGGER.debug("no camera pair found", e);
@@ -293,7 +290,7 @@ public class KameraFilterController {
 
     private void unmark(){
         try {
-            int i= currentMode[index];
+            int i= currentMode;
             switch (i) {
                 case 0:
                     singel.setStyle("-fx-background-color: TRANSPARENT;");
