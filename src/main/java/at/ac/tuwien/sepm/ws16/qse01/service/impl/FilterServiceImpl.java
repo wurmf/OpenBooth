@@ -19,9 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -80,13 +78,14 @@ public class FilterServiceImpl implements FilterService {
         Mat resizeimage = new Mat();
         Size sz = new Size(width,height);
         Imgproc.resize( source, resizeimage, sz );
+        source.release();
 
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
 
         Imgcodecs.imwrite(storageDir+imgFilterName, resizeimage);
-
+        resizeimage.release();
         return storageDir+imgFilterName;
 
     }
@@ -135,10 +134,11 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = new Mat(source.rows(),source.cols(),source.type());
         //Gaussian kernel size -> 15 - 15 -> sigmaX = 0
         Imgproc.GaussianBlur(source, destination,new Size(25,25), 0);
+        source.release();
 
-
-        return imageHelper.convertMatToBufferedImg(destination);
-
+        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        destination.release();
+        return image;
     }
 
     /**
@@ -148,28 +148,21 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterGrayScale(String imgPath){
+    public BufferedImage filterGrayScale(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterGrayScale->imgPath->"+imgPath);
 
-        try {
-            File input = new File(imgPath);
-            BufferedImage image = ImageIO.read(input);
 
-            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-            Mat mat = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
+        Mat mat = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
-            mat.put(0, 0, data);
-
-            Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC1);
-            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+        Mat mat1 = new Mat(mat.rows(), mat.cols(), CvType.CV_8UC1);
+        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2GRAY);
+        mat.release();
 
 
+        BufferedImage image = imageHelper.convertMatToBufferedImg(mat1);
+        mat1.release();
 
-            return imageHelper.convertMatToBufferedImg(mat1);
-        } catch (Exception e) {
-            LOGGER.error("GrayScaleFilter ->",e);
-        }
-        return null;
+        return image;
     }
 
     /**
@@ -179,26 +172,19 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterColorSpace(String imgPath){
+    public BufferedImage filterColorSpace(String imgPath) throws ServiceException{
         LOGGER.info("Entering filterColorSpace->imgPath->"+imgPath);
 
-        try {
-            File input = new File(imgPath);
-            BufferedImage image = ImageIO.read(input);
-            byte[] data = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-            Mat mat = new Mat(image.getHeight(),image.getWidth(), CvType.CV_8UC3);
-            mat.put(0, 0, data);
+        Mat mat = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
+        Mat mat1 = new Mat(mat.rows(), mat.cols(), CvType.CV_8UC3);
+        Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
+        mat.release();
 
-            Mat mat1 = new Mat(image.getHeight(), image.getWidth(), CvType.CV_8UC3);
-            Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
+        BufferedImage image = imageHelper.convertMatToBufferedImg(mat1);
+        mat1.release();
 
+        return image;
 
-            return imageHelper.convertMatToBufferedImg(mat1);
-
-        } catch (Exception e) {
-            LOGGER.error("ColorSpace -> : " + e.getMessage());
-        }
-        return null;
     }
 
     /**
@@ -231,8 +217,12 @@ public class FilterServiceImpl implements FilterService {
         };
 
         Imgproc.filter2D(source, destination, -1, kernel);
+        source.release();
 
-        return imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image =  imageHelper.convertMatToBufferedImg(destination);
+        destination.release();
+
+        return image;
     }
 
     /**
@@ -249,7 +239,10 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
-        return imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        destination.release();
+
+        return image;
     }
 
     /**
@@ -266,7 +259,9 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
-        return imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        destination.release();
+        return image;
     }
 
     /**
@@ -283,6 +278,7 @@ public class FilterServiceImpl implements FilterService {
 
     }
 
+
     @Override
     public void clear(){
         if(bufferedImage!=null)
@@ -290,4 +286,5 @@ public class FilterServiceImpl implements FilterService {
         bufferedImage = null;
         System.gc();
     }
+
 }
