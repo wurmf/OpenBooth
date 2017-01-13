@@ -500,4 +500,10 @@ public interface ProfileService {
 
     Profile.PairCameraPosition getPairCameraPosition(Camera camera)throws ServiceException;
 
+    List<Background.Category> getAllCategoryOfProfile(int profileID);
+    List<Background.Category> getAllCategoryOfProfile();
+
+    List<Background> getAllBackgroundOfProfile(int profileID);
+    List<Background> getAllBackgroundOfProfile();
+
 }
