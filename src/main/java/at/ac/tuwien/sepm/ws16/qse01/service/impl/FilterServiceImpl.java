@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,13 +42,14 @@ public class FilterServiceImpl implements FilterService {
     public FilterServiceImpl(ShootingService shootingService, OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
+
         activeShooting = shootingService.searchIsActive();
 
         openCVLoader.loadLibrary();
 
         this.imageHandler = imageHandler;
 
-        checkStorageDir();
+        storageDir = activeShooting.getStorageDir()+"/";
     }
     @Override
     public List<String> getExistingFilters(){
@@ -111,7 +111,7 @@ public class FilterServiceImpl implements FilterService {
                 filteredImage = filterThreshBinaryInvert(imgPath);
                 break;
             default:
-                filteredImage = SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                filteredImage = imageHandler.convertMatToBufferedImg(Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR)); //SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
         }
         return filteredImage;
     }
@@ -267,13 +267,13 @@ public class FilterServiceImpl implements FilterService {
      *
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public void checkStorageDir() throws ServiceException {
+  /*  public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
         else
             throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
 
-    }
+    }*/
 
 
 

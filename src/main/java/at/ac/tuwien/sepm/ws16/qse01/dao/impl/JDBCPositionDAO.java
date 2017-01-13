@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
@@ -24,7 +25,12 @@ public class JDBCPositionDAO implements PositionDAO{
     @Autowired
     public JDBCPositionDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
-        con = handler.getConnection();
+        try {
+            con = handler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
     }
 
     @Override

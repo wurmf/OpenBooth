@@ -658,4 +658,24 @@ public class ProfileServiceImpl implements ProfileService{
         }
         return null;
     }
+
+    @Override
+    public List<Background.Category> getAllCategoryOfProfile(int profileID) {
+        return null;
+    }
+
+    @Override
+    public List<Background.Category> getAllCategoryOfProfile() {
+        return null;
+    }
+
+    @Override
+    public List<Background> getAllBackgroundOfProfile(int profileID) {
+        return null;
+    }
+
+    @Override
+    public List<Background> getAllBackgroundOfProfile() {
+        return null;
+    }
 }
