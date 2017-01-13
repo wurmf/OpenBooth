@@ -20,13 +20,13 @@ import java.util.List;
  * and converting buffered images to mat and back
  */
 @Component
-public class ImageHelper {
+public class ImageHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ImageHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ImageHandler.class);
 
     private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
 
-    public ImageHelper(OpenCVLoader openCVLoader) throws ServiceException {
+    public ImageHandler(OpenCVLoader openCVLoader) throws ServiceException {
         openCVLoader.loadLibrary();
     }
 
@@ -81,7 +81,7 @@ public class ImageHelper {
             }
             File newImage = new File(destPath);
             ImageIO.write(image, formatName, newImage);
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             LOGGER.error("saveImage - error during saving image - ", e);
             throw new ServiceException(e);
         }

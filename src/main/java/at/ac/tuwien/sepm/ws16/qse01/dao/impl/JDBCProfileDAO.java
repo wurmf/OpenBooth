@@ -8,6 +8,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 
 import org.slf4j.Logger;
@@ -234,6 +235,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                         rs.getString("name"),
                         pairCameraPositionDAO.readAllWithProfileID(id),
                         pairLogoRelativeRectangleDAO.readAllWithProfileID(id),
+                        new ArrayList<>(),
                         rs.getBoolean("isPrintEnabled"),
                         rs.getBoolean("isFilterEnabled"),
                         rs.getBoolean("isGreenscreenEnabled"),

@@ -110,15 +110,12 @@ public interface LogoWatermarkService {
     BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException;
 
     /*
-     precondition:  a valid image at srcImgPath exists, all logos must be a valid images,
-                    the location at destImgPath must exists, destImgPath must end with valid image identifier
-
-     postcondition: a modified image is saved at destImgPath
+     precondition:  a valid image is given, all logos must be a valid images,
     */
     /**
      * Adds the logos specified by the logo paths and logo positions given by the profile of the
-     * active shooting to the image specified by the given image path und save it to the location specified
-     * by destImgPath
+     * active shooting to the given image, the given image will therefore be modified
+     *
      * The logos are cached, so if the logo changes during a shooting it must have a different filename/path.
      *
      * If the width or the height of a relative rectangle, representing a logo position is set to
@@ -126,28 +123,21 @@ public interface LogoWatermarkService {
      *
      * If both width and length are set to -1 the absolute pixel values will be used
      *
-     * If srcImgPath = destImgPath, the image located at srcImgPath will be overwritten.
-     * Example for destImgPath /home/fabian/shooting1/img1_with_logos.jpg
-     * @param srcImgPath the image to which the logos will be added.
+     * @return the given image with the logos included
      * @throws ServiceException if an error during image processing, saving or opening occurs
      */
-     void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException;
+     BufferedImage addLogosToImage(BufferedImage srcImg) throws ServiceException;
 
      /*
      precondition:  a valid image at srcImgPath exists, the watermark must be a valid image,
-                    the location at destImgPath must exists, destImgPath must end with valid image identifier
-
-     postcondition: a modified image is saved at destImgPath
       */
     /**
      * Adds a watermark specified by the profile of the active shooting
-     * to the image specified by the srcImgPath and saves it to the location specified by destImgPath.
+     * to the image specified by the srcImgPath
      *
-     * If srcImgPath = destImgPath, the image located at srcImgPath will be overwritten.
-     * Example for destImgPath /home/fabian/shooting1/img1_with_watermark.jpg
      * @param srcImgPath specifies the image where the watermark should be added
-     * @param destImgPath specifies the path and filename of the resulting image
+     * @return the given image with the watermark included
      * @throws ServiceException if an error during the image processing, saving or opening occurs
      */
-     void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException;
+     BufferedImage addWatermarkToImage(String srcImgPath) throws ServiceException;
 }
