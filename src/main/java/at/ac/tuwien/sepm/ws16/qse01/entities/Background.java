@@ -52,6 +52,12 @@ public class Background extends Picture{
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return  obj instanceof Background
+                && ((Background) obj).getId() == this.getId();
+    }
+
+    @Override
     public String toString() {
         return "Background{" +
                 "name='" + name + '\'' +
