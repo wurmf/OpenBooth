@@ -1,6 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.ws16.qse01.service.GreenscreenService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -12,11 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.IOException;
 
 import static java.lang.Math.*;
 
@@ -28,24 +24,24 @@ public class GreenscreenServiceImpl implements GreenscreenService{
 
     private static Logger LOGGER = LoggerFactory.getLogger(GreenscreenServiceImpl.class);
 
-    private ImageHelper imageHelper;
+    private ImageHandler imageHandler;
 
 
     @Autowired
-    public GreenscreenServiceImpl(OpenCVLoader openCVLoader, ImageHelper imageHelper) throws ServiceException{
+    public GreenscreenServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException{
         openCVLoader.loadLibrary();
-        this.imageHelper = imageHelper;
+        this.imageHandler = imageHandler;
     }
 
     @Override
     public BufferedImage getGreenscreenPreview(String srcImgPath, String backgroundPath) throws ServiceException {
 
 
-        BufferedImage srcImg = imageHelper.openImage(srcImgPath);
-        BufferedImage backgroundImg = imageHelper.openImage(backgroundPath);
+        BufferedImage srcImg = imageHandler.openImage(srcImgPath);
+        BufferedImage backgroundImg = imageHandler.openImage(backgroundPath);
 
-        Mat srcImgMat = imageHelper.convertBufferedImgToMat(srcImg);
-        Mat backgroundMat = imageHelper.convertBufferedImgToMat(backgroundImg);
+        Mat srcImgMat = imageHandler.convertBufferedImgToMat(srcImg);
+        Mat backgroundMat = imageHandler.convertBufferedImgToMat(backgroundImg);
 
         Mat yccMat = new Mat(srcImgMat.rows(), srcImgMat.cols(), CvType.CV_8UC3);
         Imgproc.cvtColor(srcImgMat,yccMat,Imgproc.COLOR_RGB2YCrCb);
@@ -83,7 +79,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
         }
 
 
-        return imageHelper.convertMatToBufferedImg(result);
+        return imageHandler.convertMatToBufferedImg(result);
     }
 
     private double calculateMask(double[] yccImgColor, double[] rgbImgColor, double[] yccKeyColor, double[]rgbKeyColor, double[] tolerances){
