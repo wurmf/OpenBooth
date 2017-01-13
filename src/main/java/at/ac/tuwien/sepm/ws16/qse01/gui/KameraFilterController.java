@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
@@ -9,14 +8,10 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -62,9 +57,6 @@ public class KameraFilterController {
     private ImageView[] chousenimage;
     private Profile profile;
     private ImageView activiv=null;
-    private javafx.scene.image.Image activeim=null;
-    private ImageView oldactive=null;
-    private javafx.scene.image.Image oldactivim=null;
 
     private FilterService filterService;
     private ProfileService profileservice;
@@ -147,7 +139,7 @@ public class KameraFilterController {
             int rowcount = 0;
 
            Map<String,BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1.jpg");
-            //List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
+           // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
            // for(Image im : imlist){
                 if (columcount == 6) {
@@ -156,16 +148,26 @@ public class KameraFilterController {
                 }
                 ImageView iv = new ImageView();
               iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
-              iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);//imagefilter.get(i).getImagepath()
+              iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+
+                iv.setStyle("-fx-background-color: green;");
+                iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
               iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(), null));
+
               //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                    if(activiv!=null&& activeim!=null){
-                       activiv.setImage(activeim);
+                    if(activiv!=null){
+                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
+                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+                        //activiv.setStyle("-fx-background-color: black;");
+                       //activiv.setBlendMode(BlendMode.BLUE);
                     }
                     activiv=iv;
-                    activeim=iv.getImage();
-                    iv.setBlendMode(BlendMode.GREEN);
+                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-30);
+                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-30);
+
+                    //iv.setStyle("-fx-background-color: green;");
+                    //iv.setBlendMode(BlendMode.GREEN);
 
                    /* if(fId==){
 
@@ -173,6 +175,7 @@ public class KameraFilterController {
                 });
                 filtergrid.add(iv, columcount, rowcount);
                 columcount++;
+                buttonList.add(iv);
             }
             filtergrid.setVisible(true);
             filterscrollplanel.setVisible(true);
@@ -195,7 +198,7 @@ public class KameraFilterController {
      * creats image buttons for green screen image and marks chousen one
      */
     private void creatGreenscreenButton(){
-        try {
+       /* try {
             if (shootingService.searchIsActive().getActive()) {
                 List<Image> greenScreenImages = imageService.getAllImages(shootingService.searchIsActive().getId());
                 //greenScreenImages.add();
@@ -232,6 +235,92 @@ public class KameraFilterController {
             wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
         } catch (FileNotFoundException e) {
             LOGGER.error("greenScreenButoon:",e);
+        }*/
+
+        try {
+            filtergrid = new GridPane();
+            filtergrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            filterscrollplanel = new ScrollPane();
+            filtergrid.setStyle("-fx-background-color: black;");
+            filterscrollplanel.setStyle("-fx-background-color: black;");
+            filterscrollplanel.setFitToWidth(true);
+            filterscrollplanel.setFitToHeight(false);
+            filterscrollplanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
+
+            filtergrid.getColumnConstraints().add(0, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(0, new RowConstraints());
+            filtergrid.getColumnConstraints().add(1, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(1, new RowConstraints());
+            filtergrid.getColumnConstraints().add(2, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(2, new RowConstraints());
+            filtergrid.getColumnConstraints().add(3, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(3, new RowConstraints());
+            filtergrid.getColumnConstraints().add(4, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(4, new RowConstraints());
+            filtergrid.getColumnConstraints().add(5, new ColumnConstraints());
+            filtergrid.getRowConstraints().add(5, new RowConstraints());
+
+            filtergrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
+            filtergrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+
+            int columcount = 0;
+            int rowcount = 0;
+
+            Map<String, BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1.jpg");
+            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
+            for (Map.Entry<String, BufferedImage> filterentety : filtermap.entrySet()) {//imagefilter.size
+                // for(Image im : imlist){
+                if (columcount == 6) {
+                    rowcount++;
+                    columcount = 0;
+                }
+                ImageView iv = new ImageView();
+                iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+                iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+
+                iv.setStyle("-fx-background-color: green;");
+                iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
+                iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(), null));
+
+                //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
+                iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
+                    if (activiv != null) {
+                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+                        //activiv.setStyle("-fx-background-color: black;");
+                        //activiv.setBlendMode(BlendMode.BLUE);
+                    }
+                    activiv = iv;
+                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 30);
+                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 30);
+
+                    //iv.setStyle("-fx-background-color: green;");
+                    //iv.setBlendMode(BlendMode.GREEN);
+
+                   /* if(fId==){
+
+                    }*/
+                });
+                filtergrid.add(iv, columcount, rowcount);
+                columcount++;
+                buttonList.add(iv);
+            }
+            filtergrid.setVisible(true);
+            filterscrollplanel.setVisible(true);
+            filterscrollplanel.setContent(filtergrid);
+            root.add(filterscrollplanel, 0, 1);
+        } catch (ServiceException e) {
+            e.printStackTrace();
         }
     }
 
@@ -304,7 +393,7 @@ public class KameraFilterController {
             if(index>-1) {
                 if (profile != profileservice.get(shootingService.searchIsActive().getProfileid())) {
                     profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-
+                    buttonList.clear();
                 }
                 markfirst();
                 if (greenscreen) {
