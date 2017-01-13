@@ -347,6 +347,9 @@ public interface ProfileService {
      */
     Profile getActiveProfile() throws ServiceException;
 
+    void setActiveProfile(int id) throws ServiceException;
+
+
     /**
      * Get all Camera-position pairs of given profile
      * @param profileId - id of given profile
@@ -494,5 +497,13 @@ public interface ProfileService {
     Background.Category addBackgroundCategoryToProfile(Background.Category backgroundCategory) throws ServiceException;
 
     boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException;
+
+    Profile.PairCameraPosition getPairCameraPosition(Camera camera)throws ServiceException;
+
+    List<Background.Category> getAllCategoryOfProfile(int profileID);
+    List<Background.Category> getAllCategoryOfProfile();
+
+    List<Background> getAllBackgroundOfProfile(int profileID);
+    List<Background> getAllBackgroundOfProfile();
 
 }

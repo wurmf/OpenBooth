@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -30,13 +28,6 @@ public class ShootingServiceImpl implements ShootingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     private ShootingDAO shootingDAO;
 
-    public ShootingServiceImpl() throws ServiceException{
-        try {
-            this.shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
-        } catch (PersistenceException e) {
-            throw new ServiceException(e);
-        }
-    }
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;
@@ -83,7 +74,7 @@ public class ShootingServiceImpl implements ShootingService {
     @Override
     public String createPath() throws ServiceException {
         String path=null;
-        Path storagepath;
+        Path storagepath = null;
 
         String resource = System.getProperty("user.home");
         storagepath = Paths.get(resource + "/fotostudio/Studio");

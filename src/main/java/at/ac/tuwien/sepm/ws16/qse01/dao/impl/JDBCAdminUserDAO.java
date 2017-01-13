@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.AdminUserDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.AdminUser;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
@@ -30,7 +31,12 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
      */
     @Autowired
     public JDBCAdminUserDAO(DBHandler handler) throws PersistenceException{
-        con=handler.getConnection();
+        try {
+            con=handler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
     }
 
     @Override
