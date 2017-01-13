@@ -13,7 +13,7 @@ import org.junit.Before;
  */
 public class AdminUserServiceTestImpl extends AbstractAdminUserServiceTest{
     @Before
-    public void setUp() throws PersistenceException, DatabaseException{
+    public void setUp() throws DatabaseException, PersistenceException {
         H2EmbeddedHandler.getInstance().getTestConnection();
         setAdminUserService(new AdminUserServiceImpl(new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance())));
     }
