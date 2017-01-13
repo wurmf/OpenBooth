@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -39,14 +40,10 @@ public class FilterServiceImpl implements FilterService {
     private ImageHandler imageHandler;
 
     @Autowired
-    public FilterServiceImpl(ShootingDAO shootingDAO, OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException {
+    public FilterServiceImpl(ShootingService shootingService, OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
-        try {
-            activeShooting = shootingDAO.searchIsActive();
-        } catch (PersistenceException e) {
-            throw new ServiceException("Error: "+e.getMessage());
-        }
+        activeShooting = shootingService.searchIsActive();
 
         openCVLoader.loadLibrary();
 

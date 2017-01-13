@@ -1,4 +1,4 @@
-package at.ac.tuwien.sepm.util.imageprocessing;
+package at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -22,6 +22,9 @@ public interface ImageProcessor {
      * by using the ImageService. MiniaturFrame and FullScreenFrame will be refreshed and the
      * image will be passed to the correct ShotFrame
      * The ShotFrame is set by the implementation
+     *
+     * If an image is filtered the both the filtered version and the non filtered version
+     * are saved and persisted in the database
      * @param image must specify a valid image
      */
     void processShot(Image image) throws ServiceException;

@@ -3,9 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.application;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
-import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,10 +10,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,34 +26,20 @@ public class ShotFrameManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
     private List<ShotFrameController> shotframes;
     private List<Stage> shotStages;
-    private boolean isClosed=false;
-    @Resource
-    private ProfileService profileService;
-    @Resource
-    private ShootingService shootingService;
-    @Resource
-    private CameraService cameraService;
 
 
-    @Autowired
-    public ShotFrameManager(ProfileService profileService, ShootingService shootingService, CameraService cameraService) throws ServiceException {
-        this.profileService = profileService;
-        this.shootingService = shootingService;
-        this.cameraService = cameraService;
+
+    public ShotFrameManager() throws ServiceException {
         shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
     }
-    public void init(){
+    public void init(List<Camera> cameraList){
 
          /* Creating shotFrame */
-        List<Camera> cameraList=null;
         int numberOfCameras = 1;
-        try {
-             cameraList=cameraService.getActiveCameras();
-            numberOfCameras += cameraList.size();
-        } catch (ServiceException e) {
-           LOGGER.debug("Fehler: die anzahl der kameras konnte nicht gelesen werden");
-        }
+
+        numberOfCameras += cameraList.size();
+
         int x = 200;
         for(int i=1; i<numberOfCameras; i++) { // Anzahl der Kameras...
             Stage stage = new Stage();
@@ -105,12 +86,7 @@ public class ShotFrameManager {
         return null;
     }
     public void closeFrames(){
-        isClosed=true;
         for(Stage stage: shotStages)
             stage.close();
-    }
-
-    public boolean isClosed() {
-        return isClosed;
     }
 }
