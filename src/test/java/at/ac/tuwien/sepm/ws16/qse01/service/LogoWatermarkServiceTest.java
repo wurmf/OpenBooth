@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
-import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
 import org.junit.Before;
@@ -12,11 +11,10 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -30,6 +28,7 @@ public abstract class LogoWatermarkServiceTest {
 
 
     private LogoWatermarkService logoWatermarkService;
+    private ImageHandler imageHandler;
     private ProfileService mockProfileService = mock(ProfileService.class);
     private Logo logo1;
     private Logo logo2;
@@ -40,15 +39,17 @@ public abstract class LogoWatermarkServiceTest {
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
-    private String logoPath1;
-    private String logoPath2;
-    private String watermarkPath;
+
     private String srcImgPath;
+    private BufferedImage srcImg;
     private String destImgPath;
-    private String destFileFormat;
 
     protected void setLogoWatermarkService(LogoWatermarkService logoWatermarkService){
         this.logoWatermarkService = logoWatermarkService;
+    }
+
+    protected void setImageHandler(ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
     }
 
     protected ProfileService getMockProfileService(){
@@ -57,13 +58,15 @@ public abstract class LogoWatermarkServiceTest {
 
     @Before
     public void setUp() throws  ServiceException{
-        logoPath1 = this.getClass().getResource("/logos/logofamp.jpg").getPath();
-        logoPath2 = logoPath1;
-        watermarkPath = this.getClass().getResource("/watermark/watermark.png").getPath();
+        String logoPath1 = this.getClass().getResource("/logos/logofamp.jpg").getPath();
+        String logoPath2 = this.getClass().getResource("/logos/logofamp.jpg").getPath();
+
+        String watermarkPath = this.getClass().getResource("/watermark/watermark.png").getPath();
 
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
-        destFileFormat = "jpg";
+
+        srcImg = imageHandler.openImage(srcImgPath);
 
 
         logo1 = new Logo("testlogo1", logoPath1);
@@ -85,97 +88,97 @@ public abstract class LogoWatermarkServiceTest {
     }
 
     @Test
-    public void addLogosWithValidParameters() throws ServiceException, IOException{
+    public void addLogosWithValidParameters() throws ServiceException{
 
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addLogosToImage(srcImg);
 
         String testImagePath = this.getClass().getResource("/images/result/test_logo_normal.jpg").getPath();
 
-        testImage(testImagePath, destImgPath);
+        testImage(testImagePath, srcImg);
 
     }
 
     @Test (expected = ServiceException.class)
-    public void addLogosWithInvalidSourceImage() throws ServiceException{
-        logoWatermarkService.addLogosCreateNewImage("/this/is/not/a/valid/path/image.dnf", destImgPath);
-    }
-
-    @Test (expected = ServiceException.class)
-    public void addLogosWithInvalidDestImagePath() throws ServiceException{
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, "/this/is/no/path/image.xxx");
+    public void addLogosWithNullSourceImage() throws ServiceException{
+        logoWatermarkService.addLogosToImage(null);
     }
 
     @Test (expected = ServiceException.class)
     public void addLogosWithInvalidLogoDimensions() throws ServiceException{
         position1.setHeight(-100D);
         position1.setWidth(-100D);
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addLogosToImage(srcImg);
     }
 
     @Test (expected = ServiceException.class)
     public void addLogosWithInvalidLogoPath() throws ServiceException{
         logo1.setPath("/this/is/no/valid/path");
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addLogosToImage(srcImg);
     }
 
     @Test
-    public void addLogosWithScaledHeight() throws ServiceException, IOException{
+    public void addLogosWithScaledHeight() throws ServiceException{
         position1.setWidth(50D);
         position1.setHeight(-1D);
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addLogosToImage(srcImg);
 
         String testImagePath = this.getClass().getResource("/images/result/test_logo_scaled_height.jpg").getPath();
 
-        testImage(testImagePath, destImgPath);
+        testImage(testImagePath, srcImg);
     }
 
     @Test
-    public void addLogosWithScaledWidth() throws ServiceException, IOException{
+    public void addLogosWithScaledWidth() throws ServiceException{
         position1.setHeight(40D);
         position1.setWidth(-1D);
-        logoWatermarkService.addLogosCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addLogosToImage(srcImg);
 
         String testImagePath = this.getClass().getResource("/images/result/test_logo_scaled_width.jpg").getPath();
 
-        testImage(testImagePath, destImgPath);
+        testImage(testImagePath, srcImg);
+    }
+
+    @Test
+    public void addLogosWithNoLogosInProfile() throws ServiceException{
+        when(mockProfileService.getAllLogosOfProfile()).thenReturn(new ArrayList<>());
+        logoWatermarkService.addLogosToImage(srcImg);
+
+        String testImagePath = this.getClass().getResource("/images/result/test_logo_no_logo.jpg").getPath();
+
+        testImage(testImagePath, srcImg);
     }
 
 
     @Test
-    public void addWatermarkWithValidParameters() throws ServiceException, IOException{
-        logoWatermarkService.addWatermarkCreateNewImage(srcImgPath, destImgPath);
+    public void addWatermarkWithValidParameters() throws ServiceException{
+        srcImg = logoWatermarkService.addWatermarkToImage(srcImgPath);
 
         String testImagePath = this.getClass().getResource("/images/result/test_watermark_normal.jpg").getPath();
 
-        testImage(testImagePath, destImgPath);
+        testImage(testImagePath, srcImg);
     }
 
     @Test (expected = ServiceException.class)
     public void addWatermarkWithInvalidSourceImage() throws ServiceException{
-        logoWatermarkService.addWatermarkCreateNewImage("/this/is/no/path", destImgPath);
+        logoWatermarkService.addWatermarkToImage("/this/is/no/path");
     }
 
-    @Test (expected = ServiceException.class)
-    public void addWatermarkWithInvalidDestImagePath() throws ServiceException{
-        logoWatermarkService.addWatermarkCreateNewImage(srcImgPath, "/this/is/no/path");
-    }
 
     @Test (expected = ServiceException.class)
     public void addWatermarkWithInvalidWatermarkPath() throws ServiceException{
         watermark.setPath("/this/is/no/path");
-        logoWatermarkService.addWatermarkCreateNewImage(srcImgPath, destImgPath);
+        logoWatermarkService.addWatermarkToImage(srcImgPath);
     }
 
 
 
     @Test
-    public void getPreviewForLogoWithValidParameters() throws ServiceException, IOException{
-        BufferedImage img = logoWatermarkService.getPreviewForLogo(logo1, position1, 1024, 768);
-        ImageIO.write(img, destFileFormat, new File(destImgPath));
+    public void getPreviewForLogoWithValidParameters() throws ServiceException{
+        srcImg = logoWatermarkService.getPreviewForLogo(logo1, position1, 1024, 768);
 
         String testImage = this.getClass().getResource("/images/result/test_preview_logo.jpg").getPath();
 
-        testImage(testImage, destImgPath);
+        testImage(testImage, srcImg);
     }
 
     @Test (expected = ServiceException.class)
@@ -199,16 +202,15 @@ public abstract class LogoWatermarkServiceTest {
 
 
     @Test
-    public void getPreviewForMultipleLogosWithValidParameters() throws ServiceException, IOException{
+    public void getPreviewForMultipleLogosWithValidParameters() throws ServiceException{
         List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
         List<Logo> logoList = Arrays.asList(logo1, logo2);
 
-        BufferedImage img = logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
-        ImageIO.write(img, destFileFormat, new File(destImgPath));
+        srcImg = logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
 
         String testImage = this.getClass().getResource("/images/result/test_preview_multiple_logos.jpg").getPath();
 
-        testImage(testImage, destImgPath);
+        testImage(testImage, srcImg);
 
     }
 
@@ -242,7 +244,7 @@ public abstract class LogoWatermarkServiceTest {
 
     @Test (expected = ServiceException.class)
     public void getPreviewForMultipleLogosWithInvalidLists() throws ServiceException{
-        List<RelativeRectangle> positionList = Arrays.asList(position1);
+        List<RelativeRectangle> positionList = Collections.singletonList(position1);
         List<Logo> logoList = Arrays.asList(logo1, logo2);
 
         logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
@@ -298,10 +300,12 @@ public abstract class LogoWatermarkServiceTest {
     }
 
 
-    private void testImage(String testImagePath, String resultImagePath) throws  IOException{
-        BufferedImage testImage = ImageIO.read(new File(testImagePath));
+    private void testImage(String testImagePath, BufferedImage resultImage) throws  ServiceException{
 
-        BufferedImage resultImage = ImageIO.read(new File(resultImagePath));
+        BufferedImage testImage = imageHandler.openImage(testImagePath);
+
+        imageHandler.saveImage(resultImage, destImgPath);
+        resultImage = imageHandler.openImage(destImgPath);
 
         for(int y = 0; y < resultImage.getHeight(); y++){
             for(int x = 0; x < resultImage.getWidth(); x++){

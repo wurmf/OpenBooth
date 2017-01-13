@@ -151,7 +151,7 @@ public class TestEnvironment {
                 new JDBCPositionDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCCameraDAO(H2EmbeddedHandler.getInstance()),
-                new ShootingServiceImpl());
+                new ShootingServiceImpl(shootingDAO));
 
         try {
             con.setAutoCommit(false);
@@ -210,6 +210,7 @@ public class TestEnvironment {
                 "Profile C",
                 pairCameraPositions,
                 pairLogoRelativeRectangles,
+                new ArrayList<>(),
                 true,
                 true,
                 true,

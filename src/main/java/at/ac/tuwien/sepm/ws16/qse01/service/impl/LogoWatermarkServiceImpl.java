@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
@@ -15,7 +16,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +29,14 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoWatermarkServiceImpl.class);
 
     private final ProfileService profileService;
+    private final ImageHandler imageHandler;
     private final Map<Logo, BufferedImage> cachedLogos = new HashMap<>();
     private String currentWatermarkPath = null;
     private BufferedImage cachedWatermark = null;
 
-    private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
-
     @Autowired
-    public LogoWatermarkServiceImpl(ProfileService profileService){
+    public LogoWatermarkServiceImpl(ProfileService profileService, ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
         this.profileService = profileService;
     }
 
@@ -119,14 +119,18 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
-        LOGGER.debug("Entering addLogosCreateNewImage method");
-        BufferedImage img = openImage(srcImgPath);
+    public BufferedImage addLogosToImage(BufferedImage srcImg) throws ServiceException {
+        LOGGER.debug("Entering addLogosToImage method");
+
+        if(srcImg == null){
+            LOGGER.error("addLogosToImage - given image is null");
+            throw new ServiceException("given image is null");
+        }
 
         List<Logo> logos = profileService.getAllLogosOfProfile();
 
         if(logos == null){
-            LOGGER.error("addLogosCreateNewImage - logolist is null");
+            LOGGER.error("addLogosToImage - logolist is null");
             throw new ServiceException("logolist is null");
         }
 
@@ -140,19 +144,19 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             }
             //add current logo
             RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfProfile(logo);
-            addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
+            addLogoAtPosition(srcImg, cachedLogos.get(logo), curLogoPosition);
         }
 
-        saveImage(img, destImgPath);
+        return srcImg;
     }
 
     @Override
-    public void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
+    public BufferedImage addWatermarkToImage(String srcImgPath) throws ServiceException {
 
         Logo watermark = profileService.getProfileWaterMark();
 
         if(watermark == null || watermark.getPath() == null){
-            LOGGER.error("addWatermarkCreateNewImage - watermark or watermarkpath is null");
+            LOGGER.error("addWatermarkToImage - watermark or watermarkpath is null");
             throw new ServiceException("watermark or watermarkpath is null");
         }
 
@@ -164,14 +168,13 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             cachedWatermark = openImageFromLogo(watermark);
         }
 
-        BufferedImage img = openImage(srcImgPath);
+        BufferedImage img = imageHandler.openImage(srcImgPath);
 
         Graphics g = img.getGraphics();
 
         g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), null);
 
-        //save image
-        saveImage(img, destImgPath);
+        return img;
 
     }
 
@@ -205,6 +208,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         Graphics2D g = img.createGraphics();
 
         g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+        g.dispose();
         LOGGER.debug("logo with width {} and height {} added at X: {} Y: {} | Imagewidth: {} Imageheight: {}", absoluteLogoWidth, absoluteLogoHeight, absoluteXPosition, absoluteYPosition, imgWidth, imgHeight);
     }
 
@@ -288,43 +292,4 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         return img;
     }
 
-    private void saveImage(BufferedImage img, String destImgPath) throws ServiceException{
-        if(destImgPath == null || destImgPath.isEmpty()){
-            LOGGER.error("saveImage - destImgPath is null or empty");
-            throw new ServiceException("destImgPath is null or empty");
-        }
-
-        try {
-            String formatName = destImgPath.substring(destImgPath.lastIndexOf('.') + 1);
-            if(!supportedImageFormats.contains(formatName)){
-                LOGGER.error("Image format {} not supported", formatName);
-                throw new ServiceException("Image format not supported");
-            }
-            File newImage = new File(destImgPath);
-            ImageIO.write(img, formatName, newImage);
-        } catch (IOException e) {
-            LOGGER.error("saveImage - error during saving image - " , e);
-            throw new ServiceException(e);
-        }
-
-        LOGGER.debug("Image saved to {}", destImgPath);
-    }
-
-    private BufferedImage openImage(String srcImgPath) throws ServiceException{
-        if(srcImgPath == null || srcImgPath.isEmpty()){
-            LOGGER.error("openImage - srcImgPath is null or empty");
-            throw new ServiceException("srcImgPath is null or empty");
-        }
-
-        BufferedImage img;
-
-        try {
-            img = ImageIO.read(new File(srcImgPath));
-        } catch (IOException e) {
-            LOGGER.error("openImage - error loading given image " , e);
-            throw new ServiceException(e);
-        }
-        LOGGER.debug("Image at {} opened", srcImgPath);
-        return img;
-    }
 }
