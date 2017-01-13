@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -22,7 +23,12 @@ public class JDBCShootingDAO implements ShootingDAO {
 
     @Autowired
     public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {
-        con = dbHandler.getConnection();
+        try {
+            con = dbHandler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);

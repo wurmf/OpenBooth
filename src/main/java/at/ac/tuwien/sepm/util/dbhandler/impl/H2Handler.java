@@ -1,10 +1,9 @@
 package at.ac.tuwien.sepm.util.dbhandler.impl;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,20 +31,20 @@ public class H2Handler implements DBHandler {
      */
     /**
      * Opens a new connection to an H2-database of the name "fotostudio" with username "sa" and empty password
-     * @throws PersistenceException if either the driver-class is not found or the DriverManager can't establish a connection to the specified database with the given login credentials.
+     * @throws DatabaseException if either the driver-class is not found or the DriverManager can't establish a connection to the specified database with the given login credentials.
      */
-    private void openConnection() throws PersistenceException{
+    private void openConnection() throws DatabaseException{
         try {
             Class.forName("org.h2.Driver");
             connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/fotostudio", "sa","");
         } catch(ClassNotFoundException|SQLException e){
             LOGGER.error("openConnection - ",e);
-            throw new PersistenceException(e);
+            throw new DatabaseException(e);
         }
     }
 
     @Override
-    public Connection getConnection() throws PersistenceException {
+    public Connection getConnection() throws DatabaseException {
         if(connection==null){
             openConnection();
         }
@@ -66,7 +65,7 @@ public class H2Handler implements DBHandler {
     }
 
     @Override
-    public Connection getTestConnection() throws PersistenceException {
+    public Connection getTestConnection() throws DatabaseException {
         return null;
     }
 }
