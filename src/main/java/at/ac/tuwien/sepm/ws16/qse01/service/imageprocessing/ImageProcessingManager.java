@@ -14,6 +14,7 @@ import at.ac.tuwien.sepm.ws16.qse01.gui.RefreshManager;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.FilterServiceImpl;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.GreenscreenServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.LogoWatermarkServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,8 +82,9 @@ public class ImageProcessingManager {
 
             LogoWatermarkService logoWatermarkService = new LogoWatermarkServiceImpl(profileService, imageHandler);
             FilterService filterService = new FilterServiceImpl(shootingService, openCVLoader, imageHandler);
+            GreenscreenService greenscreenService = new GreenscreenServiceImpl(openCVLoader, imageHandler);
 
-            ImageProcessor imageProcessor = new ImageProcessorImpl(shotFrameController, shootingService, profileService, imageService, logoWatermarkService, filterService, position, imageHandler, refreshManager);
+            ImageProcessor imageProcessor = new ImageProcessorImpl(shotFrameController, shootingService, profileService, imageService, logoWatermarkService, filterService, greenscreenService, position, imageHandler, refreshManager);
 
             cameraThread.setImageService(imageService);
             cameraThread.setShootingService(shootingService);
