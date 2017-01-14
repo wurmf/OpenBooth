@@ -26,11 +26,11 @@
                       <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                    <children>
-                       <fx:include fx:id="paneProfil" source="profileFrame.fxml"/>
-                       <fx:include fx:id="panePosition" source="positionFrame.fxml"/>
-                       <fx:include fx:id="paneKamPos" source="cameraPositionFrame.fxml"/>
-                       <fx:include fx:id="paneLogo" source="logoFrame.fxml"/>
-                       <fx:include fx:id="paneBackground" source="greenscreenFrame.fxml"/>
+                       <fx:include fx:id="profil" source="profileFrame.fxml"/>
+                       <fx:include fx:id="position" source="positionFrame.fxml"/>
+                       <fx:include fx:id="kamPos" source="cameraPositionFrame.fxml"/>
+                       <fx:include fx:id="logo" source="logoFrame.fxml"/>
+                       <fx:include fx:id="greenscreen" source="greenscreenFrame.fxml"/>
 
 
 

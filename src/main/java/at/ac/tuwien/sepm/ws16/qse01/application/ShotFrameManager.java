@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
-import at.ac.tuwien.sepm.ws16.qse01.gui.MainFrameController;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXMLLoader;
@@ -14,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class manages all shotframes
@@ -23,48 +21,55 @@ import java.util.List;
 
 @Component
 public class ShotFrameManager {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameManager.class);
     private List<ShotFrameController> shotframes;
     private List<Stage> shotStages;
-
+    private Map<Position, ShotFrameController> positonShotFrameMap;
 
 
     public ShotFrameManager() throws ServiceException {
         shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
+        positonShotFrameMap = new HashMap<>();
     }
-    public void init(List<Camera> cameraList){
+    public Map<Position,ShotFrameController> init(List<Position> positionList){
+        Set<Position> oldPositions = positonShotFrameMap.keySet();
 
          /* Creating shotFrame */
-        int numberOfCameras = 1;
+        int numberOfPosition = 1;
 
-        numberOfCameras += cameraList.size();
+        numberOfPosition += positionList.size();
 
         int x = 200;
-        for(int i=1; i<numberOfCameras; i++) { // Anzahl der Kameras...
-            Stage stage = new Stage();
-            stage.setTitle("Shot Frame "+i);
+        for(int i=1; i<numberOfPosition; i++) { // Anzahl der Kameras...
+            Position position = positionList.get(i-1);
+            if(!oldPositions.contains(position)) {
+                Stage stage = new Stage();
+                stage.setTitle("Shot Frame " + position.getName());
 
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                        "/fxml/shotFrame.fxml"));
-                Parent root = loader.load();
-                ShotFrameController shotFrameController = loader.getController();
-                shotFrameController.initShotFrame(cameraList.get(i-1).getId());
-                shotframes.add(shotFrameController);
+                try {
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                            "/fxml/shotFrame.fxml"));
+                    Parent root = loader.load();
+                    ShotFrameController shotFrameController = loader.getController();
+                    shotFrameController.initShotFrame(position.getId());
+                    //shotframes.add(shotFrameController);
+                    positonShotFrameMap.put(position,shotFrameController);
+                    stage.setScene(new Scene(root, 400, 400));
+                } catch (IOException e) {
+                    LOGGER.debug("shotFrame.xml kann nicht geladen werden +" + e.getMessage());
+                }
+                stage.setFullScreen(false);
+                stage.setX(x);
+                stage.show();
 
-                stage.setScene(new Scene(root ,400,400));
-            } catch (IOException e) {
-               LOGGER.debug("shotFrame.xml kann nicht geladen werden +"+e.getMessage());
+                shotStages.add(stage);
+
+                x += 200;
             }
-            stage.setFullScreen(false);
-            stage.setX(x);
-            stage.show();
-
-            shotStages.add(stage);
-
-            x += 200;
         }
+        return positonShotFrameMap;
+
     }
 
     public void refreshShot(int cameraID,String imgPath) {
@@ -77,11 +82,26 @@ public class ShotFrameManager {
         getShotframe(cameraID).refreshShot(img);
 
     }
+
+
+    public void refreshShot(Position position, BufferedImage img){
+        LOGGER.debug("ShotFrameManager->refreshshot with position="+position.getName());
+        getShotframe(position).refreshShot(img);
+    }
+
     public ShotFrameController getShotframe(int cameraID){
         for(ShotFrameController shotFrameController: shotframes){
             if(shotFrameController.getFrameID()==cameraID){
                return shotFrameController;
             }
+        }
+        return null;
+    }
+
+    public ShotFrameController getShotframe(Position position){
+        for(Position pos: positonShotFrameMap.keySet()){
+            if(pos.equals(position))
+                return positonShotFrameMap.get(pos);
         }
         return null;
     }
