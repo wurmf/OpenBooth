@@ -119,20 +119,20 @@ public class ShootingAdminController {
      * @throws ServiceException if an error occurs while retrieving the active shooting from the service layer.
      */
     private void setButtons() throws ServiceException{
-        if (shootingService.searchIsActive().getActive()) {
+        Shooting activeShooting=shootingService.searchIsActive();
+        if (activeShooting!=null&&activeShooting.getActive()) {
             startButton.setVisible(false);
             stopButton.setVisible(true);
             storage.setVisible(false);
             canclebutton.setText("Fortsetzen");
             storageDirLabel.setVisible(false);
             gridSave.setVisible(false);
-            finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
+            finallsavingplace.setText(activeShooting.getStorageDir());
             finallsavingplace.setVisible(true);
             save1.setVisible(true);
             saveing.setVisible(false);
-            String bgPathAcitveShooting=shootingService.searchIsActive().getBgPictureFolder();
-            if(bgPathAcitveShooting!=null && !bgPathAcitveShooting.isEmpty()){
-                bgStorageDirLabel.setText(bgPathAcitveShooting);
+            if(activeShooting.getBgPictureFolder()!=null && !activeShooting.getBgPictureFolder().isEmpty()){
+                bgStorageDirLabel.setText(activeShooting.getBgPictureFolder());
             }
 
         } else {
@@ -193,8 +193,9 @@ public class ShootingAdminController {
         try {
             if (shootingService.searchIsActive().getActive()) {
                 Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
-                if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
+                if(shootingService.searchIsActive().getProfileid()==profile.getId()) {
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "",bgPath, true);
+                    LOGGER.debug("Trying to persist shooting. shootingId: "+shooting.getId()+" | bgPath: "+shooting.getBgPictureFolder());
                     shootingService.update(shooting);
                 }
                 windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
