@@ -25,4 +25,10 @@ public interface CameraHandler {
      * @throws CameraException if something goes wrong during the detecting of the cameras
      * */
     List<Camera> getCameras() throws CameraException;
+
+    /**
+     * Removes a camera that is connected but cannot be assigned to a position from the list.
+     * @param camera the camera that shall be removed.
+     */
+    void removeCameraFromList(Camera camera);
 }

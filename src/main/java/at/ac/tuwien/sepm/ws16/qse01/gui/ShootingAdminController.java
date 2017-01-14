@@ -58,7 +58,7 @@ public class ShootingAdminController {
     private ChoiceBox profileChoiceBox;
 
     private String path =null;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingAdminController.class);
 
 
     private ShootingService shootingService;
@@ -172,30 +172,31 @@ public class ShootingAdminController {
      */
     @FXML
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        LOGGER.info(path);
+        LOGGER.info("onStartShootingPressed - Path: "+path);
         if (profileChoiceBox.getValue() != null) {
                 try{
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
-                        try {
-                            path = shootingService.createPath();
-                        }catch (ServiceException s){
-                            showInformationDialog(s.getMessage());
-                        }
+                        path = shootingService.createPath();
                     }
-                        Shooting shouting = new Shooting(0, (int) profile.getId(), path, true);
+                    Shooting shouting = new Shooting(0, profile.getId(), path, true);
 
-                        //storageDirLabel.setText("");
-                        LOGGER.info("ShootingAdminController:", path);
-                        path = "";
+                    LOGGER.info("onStartShootingPressed - "+ path);
+                    //path = "";
 
-                        shootingService.addShooting(shouting);
+                    shootingService.addShooting(shouting);
 
+
+                    boolean camerasFitPosition=windowManager.initImageProcessing();
+                    if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                        windowManager.initImageProcessing();
+                    } else{
+                        showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
+                    }
+
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.debug( serviceExeption.getMessage());
+                    LOGGER.debug("onStartShootingPressed - ", serviceExeption);
                     showInformationDialog("Es konnte kein Shooting erstellt werden.");
                 }
         } else {
