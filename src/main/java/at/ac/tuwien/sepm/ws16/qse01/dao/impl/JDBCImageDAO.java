@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
@@ -26,7 +27,12 @@ public class JDBCImageDAO implements ImageDAO {
 
     @Autowired
     public JDBCImageDAO(DBHandler dbHandler) throws PersistenceException {
-       con = dbHandler.getConnection();
+        try {
+            con = dbHandler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
     }
 
     @Override

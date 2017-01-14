@@ -22,14 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -72,7 +66,7 @@ public class ShootingAdminController {
     private WindowManager windowManager;
 
     @Autowired
-    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) throws Exception {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) {
         this.shootingService = shootingService;
         this.profileService= profileService;
         this.windowManager = windowManager;
@@ -199,10 +193,10 @@ public class ShootingAdminController {
                         shootingService.addShooting(shouting);
 
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                        windowManager.initShotFrameManager();
+                        windowManager.initImageProcessing();
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug( serviceExeption.getMessage());
-                    showInformationDialog("Es konnte keine Shooting erstellt werden.");
+                    showInformationDialog("Es konnte kein Shooting erstellt werden.");
                 }
         } else {
             showInformationDialog("Bitte erstellen Sie ein neues Profil");

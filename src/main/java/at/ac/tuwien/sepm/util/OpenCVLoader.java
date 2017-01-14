@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.util;
 
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.opencv.core.Core;
 import org.slf4j.Logger;
@@ -18,9 +19,9 @@ public class OpenCVLoader {
 
     /**
      * This method loads the OpenCVLibrary from the Ressource Lib folder
-     * @throws ServiceException if the operating System is not supported
+     * @throws LibraryLoadingException if the operating System is not supported
      */
-    public void loadLibrary() throws ServiceException{
+    public void loadLibrary() throws LibraryLoadingException{
         if(!isLoaded) {
 
             try {
@@ -29,9 +30,6 @@ public class OpenCVLoader {
                 LOGGER.info("Library {} loaded from system library path", Core.NATIVE_LIBRARY_NAME);
             } catch (UnsatisfiedLinkError e) {
                 LOGGER.error("Library not found in system library path , trying to load from resources",e);
-            }
-
-            if(!isLoaded){
                 String lib;
 
                 String operatingSystem = System.getProperty("os.name").toLowerCase();
@@ -44,7 +42,7 @@ public class OpenCVLoader {
                     lib = "/lib/libopencv_java320.so";
                 }else {
                     LOGGER.error("Operating System: {} not supported", operatingSystem);
-                    throw new ServiceException("Operating System not supported");
+                    throw new LibraryLoadingException("Operating System not supported");
                 }
 
 

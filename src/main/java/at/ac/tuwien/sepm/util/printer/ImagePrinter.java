@@ -26,12 +26,14 @@ public class ImagePrinter {
     /**
      * Prints the image defined in the path saved in the given Image-Entity.
      * @param image the Image-Entity that shall be printed.
-     * @throws IOException if an error occurs while reading the file in which the actual image is stored.
      * @throws PrinterException if an error occurs while printing.
      */
     public void print(Image image) throws PrinterException {
-        if(image==null||image.getImagepath()==null){
-            throw new PrinterException("Null or Empty Image-Object not allowed.");
+        if(image==null){
+            throw new PrinterException("Input of null instead of Image-object not allowed.");
+        }
+        if(image.getImagepath()==null||image.getImagepath().isEmpty()){
+            throw new PrinterException("No imagepath defined in Image-object.");
         }
         try {
             File imageFile=new File(image.getImagepath());

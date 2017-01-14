@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.Before;
@@ -53,7 +55,7 @@ public abstract class FilterServiceTest{
     }
 
     @Before
-    public void setUp() throws  ServiceException{
+    public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException{
 
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
@@ -66,7 +68,7 @@ public abstract class FilterServiceTest{
     }
 
     @Test
-    public void checkGaussianFilter() throws ServiceException {
+    public void checkGaussianFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("gaussian",srcImgPath);
 
@@ -79,7 +81,7 @@ public abstract class FilterServiceTest{
 
     }
     @Test
-    public void checkGrayscaleFilter() throws ServiceException {
+    public void checkGrayscaleFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("grayscale",srcImgPath);
 
@@ -92,7 +94,7 @@ public abstract class FilterServiceTest{
 
     }
     @Test
-    public void checkColorspaceFilter() throws ServiceException {
+    public void checkColorspaceFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("colorspace",srcImgPath);
 
@@ -105,7 +107,7 @@ public abstract class FilterServiceTest{
 
     }
     @Test
-    public void checkSobelFilter() throws ServiceException {
+    public void checkSobelFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("sobel",srcImgPath);
 
@@ -137,7 +139,7 @@ public abstract class FilterServiceTest{
     }
 
     @Test
-    public void checkTreshzeroFilter() throws ServiceException {
+    public void checkTreshzeroFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("threshzero",srcImgPath);
 
@@ -152,7 +154,7 @@ public abstract class FilterServiceTest{
     }
 
     @Test
-    public void checkTreshbinaryinvertFilter() throws ServiceException {
+    public void checkTreshbinaryinvertFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("threshbinaryinvert",srcImgPath);
 
@@ -166,13 +168,13 @@ public abstract class FilterServiceTest{
 
     }
     @Test
-    public void check_Not_Existing_Filter() throws ServiceException {
+    public void check_Not_Existing_Filter() throws ServiceException, ImageHandlingException {
 
         //If a not existing filter -> then it will return the original image.
         BufferedImage filteredImage = filterService.filter("notExistingFilter",srcImgPath);
 
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(Imgcodecs.imread(srcImgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR));
+        BufferedImage image = imageHandler.openImage(srcImgPath);
 
         testImage(filteredImage,image);
 

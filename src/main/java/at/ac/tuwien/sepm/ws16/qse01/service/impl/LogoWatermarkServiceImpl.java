@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
@@ -168,7 +169,12 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             cachedWatermark = openImageFromLogo(watermark);
         }
 
-        BufferedImage img = imageHandler.openImage(srcImgPath);
+        BufferedImage img;
+        try {
+            img = imageHandler.openImage(srcImgPath);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
 
         Graphics g = img.getGraphics();
 

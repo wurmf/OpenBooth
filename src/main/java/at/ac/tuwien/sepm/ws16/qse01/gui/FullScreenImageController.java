@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
@@ -9,7 +10,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.animation.FadeTransition;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -31,6 +31,7 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -126,9 +127,8 @@ public class FullScreenImageController {
         if(result.isPresent()&&result.get()==ButtonType.OK){
             boolean failure=false;
             try {
-                at.ac.tuwien.sepm.ws16.qse01.entities.Image img= new at.ac.tuwien.sepm.ws16.qse01.entities.Image();
                 if(!imageList.isEmpty()&&imageList.size()>currentIndex&&currentIndex>=0) {
-                    imagePrinter.print(img);
+                    imagePrinter.print(imageList.get(currentIndex));
                 } else{
                     LOGGER.error("onPrintPressed - Index out of bounds or list empty.");
                     failure=true;
@@ -155,11 +155,9 @@ public class FullScreenImageController {
      *
      * catches ServiceException which can be drown by all service methodes
      * catches FileNotFoundException witch can be drown by all file methodes
-     *
-     * @param actionEvent press action event
      */
     @FXML
-    public void onDeletePressed(ActionEvent actionEvent) {
+    public void onDeletePressed() {
         try {
             if(ivfullscreenImage!=null&&imageList!=null){
             Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
@@ -206,31 +204,6 @@ public class FullScreenImageController {
         windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
-    @FXML
-    public void onFilter4Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter3Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter5Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter2Pressed(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
-    public void onFilter1Pressed(ActionEvent actionEvent) {
-
-    }
-
     /**
      * information dialog for error messages
      *
@@ -272,6 +245,7 @@ public class FullScreenImageController {
     public void onLastImagePressed() {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
+        FileInputStream fips=null;
         try {
             deletePreviews(ivfullscreenImage.getId());
 
@@ -287,15 +261,29 @@ public class FullScreenImageController {
                     b3=true;
                     button3.setVisible(true);
                 }
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), base.getWidth(), base.getHeight(), true, true));
+                fips=new FileInputStream(imageList.get(currentIndex).getImagepath());
+                ivfullscreenImage.setImage(new Image(fips, base.getWidth(), base.getHeight(), true, true));
                 ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
             } else {
                 windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            LOGGER.error("onLastImagePressed - ",e);
+            Alert alertError= new Alert(Alert.AlertType.ERROR,
+                    "Das vorhergehende Bild konnte nicht gelesen werden.");
+            alertError.setHeaderText("Fehler beim Lesevorgang");
+            alertError.initOwner(windowManager.getStage());
+            alertError.show();
+        } finally{
+            if(fips!=null){
+                try {
+                    fips.close();
+                } catch (IOException e) {
+                    LOGGER.error("onLastImagePressed - ",e);
+                }
+            }
         }
 
     }
@@ -310,6 +298,7 @@ public class FullScreenImageController {
     public void onNextImage() {
         LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
+        FileInputStream fips=null;
         try {
             deletePreviews(ivfullscreenImage.getId());
 
@@ -325,8 +314,8 @@ public class FullScreenImageController {
                     b4=true;
                     button4.setVisible(true);
                 }
-
-                ivfullscreenImage.setImage(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()),  base.getWidth(), base.getHeight(), true, true));
+                fips=new FileInputStream(imageList.get(currentIndex).getImagepath());
+                ivfullscreenImage.setImage(new Image(fips,  base.getWidth(), base.getHeight(), true, true));
                 ivfullscreenImage.setId(imageList.get(currentIndex).getImagepath());
                 makePreviewFilter(imageList.get(currentIndex).getImagepath());
                 saveFilteredButton.setVisible(false);
@@ -335,7 +324,20 @@ public class FullScreenImageController {
                 windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            LOGGER.error("onNextImage - ",e);
+            Alert alertError= new Alert(Alert.AlertType.ERROR,
+                    "Das nächste Bild konnte nicht gelesen werden.");
+            alertError.setHeaderText("Fehler beim Lesevorgang");
+            alertError.initOwner(windowManager.getStage());
+            alertError.show();
+        } finally{
+            if(fips!=null){
+                try {
+                    fips.close();
+                } catch (IOException e) {
+                    LOGGER.error("onNextImage - ",e);
+                }
+            }
         }
 
     }
@@ -344,9 +346,8 @@ public class FullScreenImageController {
      * to get an full screen image without buttons
      * and reload the buttons when pressed again
      * this is achieved by seting visiblety
-     * @param actionEvent press action event
      */
-    public void onfullScreenPressed (ActionEvent actionEvent) {
+    public void onfullScreenPressed () {
 
         if (!upperbutton) {
             if (planbottom.isVisible()) {
@@ -374,6 +375,7 @@ public class FullScreenImageController {
      */
     public void changeImage(int imgID){
        activ = -1;
+       FileInputStream fips=null;
         try {
 
             if (shootingService.searchIsActive().getActive()) {
@@ -382,7 +384,6 @@ public class FullScreenImageController {
             }
             if (imageList != null) {
                 LOGGER.debug("hear" + imageList.size());
-                //currentIndex = imageList.indexOf(firstImage);
                 for (int i = 0; i <imageList.size() ; i++) {
                     if(imageList.get(i).getImageID()==imgID){
                         currentIndex=i;
@@ -392,13 +393,13 @@ public class FullScreenImageController {
 
                 if(currentIndex==0){
                     button4.setVisible(false);
-                }if(currentIndex==imageList.size()-1){
+                }if(currentIndex==(imageList.size()-1)){
                     button3.setVisible(false);
                 }
 
                 at.ac.tuwien.sepm.ws16.qse01.entities.Image img = imageService.read(imgID);
-
-                ivfullscreenImage.setImage(new Image(new FileInputStream(img.getImagepath()), base.getWidth(), base.getHeight(), true, true));
+                fips=new FileInputStream(img.getImagepath());
+                ivfullscreenImage.setImage(new Image(fips, base.getWidth(), base.getHeight(), true, true));
                 ivfullscreenImage.setId(img.getImagepath());
 
                 makePreviewFilter(img.getImagepath());
@@ -406,14 +407,22 @@ public class FullScreenImageController {
                 windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
             }
         } catch (ServiceException e) {
-            informationDialog("Bitte wenden Sie sich an den Betreiber");
-            LOGGER.debug(e.getMessage());
+            informationDialog("Bitte wenden Sie sich an den Betreiber.");
+            LOGGER.error("changeImage - ",e);
         } catch (FileNotFoundException e) {
-            LOGGER.debug(e.getMessage());
-            informationDialog("Foto konnte nicht gefunden werden");
-           // windowManager.showMiniatureFrame();
+            LOGGER.error("changeImage - ",e);
+            informationDialog("Foto konnte nicht gefunden werden.");
         }catch (NullPointerException e){
-            LOGGER.error("no active shooting");
+            LOGGER.error("changeImage - no active shooting - ",e);
+            informationDialog("Ein Fehler ist im Programm aufgetreten.");
+        } finally{
+            if(fips!=null){
+                try {
+                    fips.close();
+                } catch (IOException e) {
+                    LOGGER.error("changeImage - ", e);
+                }
+            }
         }
 
     }
@@ -463,7 +472,7 @@ public class FullScreenImageController {
                         }
 
                     } catch (ServiceException e2) {
-                        LOGGER.error("FilterOnClick-> "+e2.getMessage());
+                        LOGGER.error("makePreviewFilter - FilterOnClick-> ",e2);
                     }
 
                 });
@@ -523,10 +532,20 @@ public class FullScreenImageController {
 
             activeFilterImageView = original;
             saveFilteredButton.setVisible(false);
+            FileInputStream fips=null;
             try {
-                ivfullscreenImage.setImage(new Image(new FileInputStream(ivfullscreenImage.getId()), base.getWidth(), base.getHeight(),true,true));
+                fips=new FileInputStream(ivfullscreenImage.getId());
+                ivfullscreenImage.setImage(new Image(fips, base.getWidth(), base.getHeight(),true,true));
             } catch (FileNotFoundException e) {
-                LOGGER.error("changeActiveFilter ->"+e.getMessage());
+                LOGGER.error("changeActiveFilter - ",e);
+            } finally{
+                if(fips!=null){
+                    try {
+                        fips.close();
+                    } catch (IOException e) {
+                        LOGGER.error("changeActiveFilter - ",e);
+                    }
+                }
             }
             return false;
         }
@@ -571,8 +590,8 @@ public class FullScreenImageController {
             button4.setVisible(true);
             LOGGER.info("Filtered image saved in DB...");
 
-        } catch (ServiceException e) {
-            LOGGER.error("saveFilteredImg->"+e.getMessage());
+        } catch (ImageHandlingException | ServiceException e) {
+            LOGGER.error("saveFilteredImg - ",e);
         }
 
     }
