@@ -1,6 +1,11 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -14,24 +19,39 @@ import java.io.IOException;
 public abstract class GreenscreenServiceTest {
 
     private GreenscreenService greenscreenService;
+    private ImageHandler imageHandler;
+
+    private String srcImgPath;
+    private String backgroundImgPath;
+
+    private Background background;
 
     protected void setGreenscreenService(GreenscreenService greenscreenService){
         this.greenscreenService = greenscreenService;
     }
 
+    protected void setImageHandler(ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
+    }
+
+    @Before
+    public void setUp() throws ServiceException, LibraryLoadingException{
+        srcImgPath = this.getClass().getResource("/greenscreen/images/greenscreen_ufo.jpeg").getPath();
+        backgroundImgPath = this.getClass().getResource("/greenscreen/background/test_background3.jpg").getPath();
+
+        Background.Category category = new Background.Category(1, "testcategory", false);
+        background = new Background(1, "testbackground", backgroundImgPath, category, false);
+    }
+
     @Test
-    public void getPreviewWithValidParameters() throws ServiceException{
-        String srcImgPath = this.getClass().getResource("/greenscreen/images/greenscreen_woman2.jpg").getPath();
-        String backgroundImgPath = this.getClass().getResource("/greenscreen/background/greenscreen_background2.png").getPath();
+    public void getPreviewWithValidParameters() throws ServiceException, ImageHandlingException{
 
-        BufferedImage result = greenscreenService.getGreenscreenPreview(srcImgPath, backgroundImgPath);
+        BufferedImage srcImg = imageHandler.openImage(srcImgPath);
 
-        File newImage = new File("/home/fabian/test.jpg");
-        try {
-            ImageIO.write(result, "jpg", newImage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        BufferedImage result = greenscreenService.applyGreenscreen(srcImg, background);
+
+        imageHandler.saveImage(result, "/home/fabian/greenscreen_test_result3.jpg");
+
 
     }
 
