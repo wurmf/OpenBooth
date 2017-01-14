@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
@@ -76,7 +77,11 @@ public class ImageProcessorImpl implements ImageProcessor {
             preview = filterService.filter(filterName, imgPath);
             LOGGER.debug("processPreview - Filter {} for position {} added to preview image", filterName, position);
         }else {
-            preview = imageHandler.openImage(imgPath);
+            try {
+                preview = imageHandler.openImage(imgPath);
+            } catch (ImageHandlingException e) {
+                throw new ServiceException(e);
+            }
             LOGGER.debug("processPreview - No filter or greenscreen detected for position {}", position);
         }
 
@@ -104,11 +109,19 @@ public class ImageProcessorImpl implements ImageProcessor {
             String backGroundPath = pairCameraPosition.getBackground().getPath();
             shot = null;
         } else if (isFilter){
-            shot = imageHandler.openImage(imgPath);
+            try {
+                shot = imageHandler.openImage(imgPath);
+            } catch (ImageHandlingException e) {
+                throw new ServiceException(e);
+            }
 
             if(logosEnabled){
                 logoWatermarkService.addLogosToImage(shot);
-                imageHandler.saveImage(shot, imgPath);  //TODO: Change if cameraHandlerThread stores img in temp folder
+                try {
+                    imageHandler.saveImage(shot, imgPath);  //TODO: Change if cameraHandlerThread stores img in temp folder
+                } catch (ImageHandlingException e) {
+                    throw new ServiceException(e);
+                }
                 LOGGER.debug("processShot - {} overwritten with logo image before filtering");
             }
 
@@ -117,7 +130,11 @@ public class ImageProcessorImpl implements ImageProcessor {
             LOGGER.debug("processShot - Filter {} for position {} added to shot", filterName, position);
 
         }else {
-            shot = imageHandler.openImage(imgPath);
+            try {
+                shot = imageHandler.openImage(imgPath);
+            } catch (ImageHandlingException e) {
+                throw new ServiceException(e);
+            }
         }
 
         logoWatermarkService.addLogosToImage(shot);
@@ -131,7 +148,11 @@ public class ImageProcessorImpl implements ImageProcessor {
             String fileEnding = imgPath.substring(imgPath.lastIndexOf('.') + 1);
             String directoryAndName = imgPath.substring(0, imgPath.lastIndexOf('.'));
             String newImgPath = directoryAndName + "_" + pairCameraPosition.getFilterName() + fileEnding;
-            imageHandler.saveImage(shot, newImgPath);
+            try {
+                imageHandler.saveImage(shot, newImgPath);
+            } catch (ImageHandlingException e) {
+                throw new ServiceException(e);
+            }
             LOGGER.debug("processShot - filtered image saved");
 
             //Persist filtered image in database
@@ -145,7 +166,11 @@ public class ImageProcessorImpl implements ImageProcessor {
             LOGGER.debug("processShot - filteredImage {} persistet in database", filteredImage);
 
         } else {
-            imageHandler.saveImage(shot, imgPath);
+            try {
+                imageHandler.saveImage(shot, imgPath);
+            } catch (ImageHandlingException e) {
+                throw new ServiceException(e);
+            }
             LOGGER.debug("processShot - processed image saved");
         }
 
