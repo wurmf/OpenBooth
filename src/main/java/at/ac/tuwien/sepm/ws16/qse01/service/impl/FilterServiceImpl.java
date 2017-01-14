@@ -2,6 +2,8 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -45,7 +47,12 @@ public class FilterServiceImpl implements FilterService {
 
         activeShooting = shootingService.searchIsActive();
 
-        openCVLoader.loadLibrary();
+        try {
+            openCVLoader.loadLibrary();
+        } catch (LibraryLoadingException e) {
+            LOGGER.error("error loading opencv library - ", e);
+            throw new ServiceException("error loading opencv library - ", e);
+        }
 
         this.imageHandler = imageHandler;
 
@@ -111,7 +118,11 @@ public class FilterServiceImpl implements FilterService {
                 filteredImage = filterThreshBinaryInvert(imgPath);
                 break;
             default:
-                filteredImage = imageHandler.convertMatToBufferedImg(Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR)); //SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                try {
+                    filteredImage = imageHandler.openImage(imgPath); //SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                } catch (ImageHandlingException e) {
+                    throw new ServiceException(e);
+                }
         }
         return filteredImage;
     }
@@ -133,7 +144,12 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.GaussianBlur(source, destination,new Size(25,25), 0);
         source.release();
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
         return image;
     }
@@ -156,7 +172,12 @@ public class FilterServiceImpl implements FilterService {
         mat.release();
 
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(mat1);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(mat1);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         mat1.release();
 
         return image;
@@ -177,7 +198,12 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
         mat.release();
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(mat1);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(mat1);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         mat1.release();
 
         return image;
@@ -216,7 +242,13 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.filter2D(source, destination, -1, kernel);
         source.release();
 
-        BufferedImage image =  imageHandler.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            LOGGER.error("filterSobel -", e);
+            throw new ServiceException(e);
+        }
         destination.release();
 
         return image;
@@ -236,7 +268,12 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
 
         return image;
@@ -256,7 +293,12 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
-        BufferedImage image = imageHandler.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
         return image;
     }

@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessorImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
@@ -59,7 +60,13 @@ public class ImageProcessingManager {
         for(CameraThread cameraThread : cameraThreadList){
             Camera camera  = cameraThread.getCamera();
 
-            ImageHandler imageHandler = new ImageHandler(openCVLoader);
+            ImageHandler imageHandler = null;
+            try {
+                imageHandler = new ImageHandler(openCVLoader);
+            } catch (LibraryLoadingException e) {
+                LOGGER.error("initImageProcessing - Could not load opencv library", e);
+                throw new ServiceException("Could not load opencv library", e);
+            }
 
             LogoWatermarkService logoWatermarkService = new LogoWatermarkServiceImpl(profileService, imageHandler);
             FilterService filterService = new FilterServiceImpl(shootingService, openCVLoader, imageHandler);
