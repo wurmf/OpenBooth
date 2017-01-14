@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
@@ -589,7 +590,7 @@ public class FullScreenImageController {
             button4.setVisible(true);
             LOGGER.info("Filtered image saved in DB...");
 
-        } catch (ServiceException e) {
+        } catch (ImageHandlingException | ServiceException e) {
             LOGGER.error("saveFilteredImg - ",e);
         }
 

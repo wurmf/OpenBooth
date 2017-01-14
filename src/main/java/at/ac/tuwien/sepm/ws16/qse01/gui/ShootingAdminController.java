@@ -112,7 +112,6 @@ public class ShootingAdminController {
         }catch (ServiceException e ){
             LOGGER.error("inactivemode - ",e);
         }
-
     }
 
     /**
@@ -148,6 +147,7 @@ public class ShootingAdminController {
             saveing.setVisible(true);
         }
     }
+
     /**
      * when pressed a new shooting starts
      * to successfully start a new shooting a storage path gets selected and a profile must be selected
@@ -238,6 +238,7 @@ public class ShootingAdminController {
             storageDirLabel.setText("Keine Hintergründe definiert");
         }
     }
+
     /**
      * information dialog
      *

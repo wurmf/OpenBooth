@@ -21,11 +21,9 @@ public class RefreshManager {
 
     /**
      * Notifies the ShotFrameManager and the MiniatureFrameController of a newly shot image.
-     * @param cameraID the ID of the camera that shot the image.
      * @param image the Image-Object representing the new image.
      */
-    public synchronized void refreshFrames(int cameraID, Image image){
-        shotFrameManager.refreshShot(cameraID,image.getImagepath());
+    public synchronized void refreshFrames(Image image){
         miniaturFrameController.notifyOfNewImage(image);
     }
 

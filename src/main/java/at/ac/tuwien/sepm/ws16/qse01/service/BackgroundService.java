@@ -9,8 +9,23 @@ import java.util.List;
  * BackgroundService
  */
 public interface BackgroundService {
+
+    /**
+     * add background to persistence store
+     * @param background - non null background object
+     * @return added background object
+     * @throws ServiceException if action fails
+     */
     Background add(Background background) throws ServiceException;
+
+    /**
+     * edit background stored in persistence store
+     * @param background - non null background object
+     * @return true, if edit has been successful, else false
+     * @throws ServiceException if action fails
+     */
     boolean edit(Background background) throws ServiceException;
+
     Background get(int id) throws ServiceException;
     List<Background> getAll() throws ServiceException;
     List<Background> getAllWithCategory(int id) throws ServiceException;
@@ -19,7 +34,7 @@ public interface BackgroundService {
 
     Background.Category addCategory(Background.Category category) throws ServiceException;
     boolean editCategory(Background.Category category) throws ServiceException;
-    List<Background.Category> getCategory(int id) throws ServiceException;
+    Background.Category getCategory(int id) throws ServiceException;
     List<Background.Category> getAllCategories() throws ServiceException;
-    boolean eraseCategory(int id) throws ServiceException;
+    boolean eraseCategory(Background.Category category) throws ServiceException;
 }

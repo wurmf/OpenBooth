@@ -1,11 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.CameraDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.LogoDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
+import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -35,6 +33,13 @@ public class ProfileServiceImpl implements ProfileService{
     private CameraDAO cameraDAO;
     @Resource
     private ShootingService shootingService;
+    @Resource
+    private BackgroundDAO backgroundDAO;
+    @Resource
+    private BackgroundCategoryDAO backgroundCategoryDAO;
+    @Resource
+    private BackgroundService backgroundService;
+
     private List<Profile> profileList = new ArrayList<>();
     private List<Position> positionList = new ArrayList<>();
     private List<Logo> logoList = new ArrayList<>();
@@ -626,22 +631,44 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public Background.Category addBackgroundCategoryToProfile(int profileId, Background.Category backgroundCategory) throws ServiceException {
-        return null;
+        if(backgroundCategory.getId()==Integer.MIN_VALUE)
+            {
+                try {
+                    backgroundCategory = backgroundCategoryDAO.create(backgroundCategory);
+                    Profile profile = this.get(profileId);
+                    List<Background.Category> backgroundCategories = profile.getBackgroundCategories();
+                    backgroundCategories.add(backgroundCategory);
+                    profile.setBackgroundCategories(backgroundCategories);
+                    this.edit(profile);
+                } catch (PersistenceException e) {
+                    throw new ServiceException("Error! add background object to profile object in service layer has failed.:" + e);
+                }
+            }
+        return backgroundCategory;
     }
 
     @Override
     public boolean eraseBackgroundCategoryFromProfile(int profileId, Background.Category backgroundCategory) throws ServiceException {
-        return false;
+        Profile profile = this.get(profileId);
+        List<Background.Category> backgroundCategories = profile.getBackgroundCategories();
+        if(backgroundCategories.contains(backgroundCategory))
+            {
+                backgroundCategories.remove(backgroundCategory);
+                profile.setBackgroundCategories(backgroundCategories);
+                return this.edit(profile);
+            }
+        else
+            {return false;}
     }
 
     @Override
     public Background.Category addBackgroundCategoryToProfile(Background.Category backgroundCategory) throws ServiceException {
-        return null;
+        return this.addBackgroundCategoryToProfile(this.activeProfile.getId(),backgroundCategory);
     }
 
     @Override
     public boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException {
-        return false;
+        return this.eraseBackgroundCategoryFromProfile(this.activeProfile.getId(),backgroundCategory);
     }
 
     @Override
@@ -660,22 +687,32 @@ public class ProfileServiceImpl implements ProfileService{
     }
 
     @Override
-    public List<Background.Category> getAllCategoryOfProfile(int profileID) {
-        return null;
+    public List<Background.Category> getAllCategoryOfProfile(int profileId) throws ServiceException{
+        try {
+            return this.get(profileId).getBackgroundCategories();
+        } catch (ServiceException e) {
+            throw new ServiceException("Error! getting background categories from profile object in service layer has failed.:" + e);
+        }
     }
 
     @Override
-    public List<Background.Category> getAllCategoryOfProfile() {
-        return null;
+    public List<Background.Category> getAllCategoryOfProfile() throws ServiceException{
+        return this.getAllCategoryOfProfile(this.activeProfile.getId());
     }
 
     @Override
-    public List<Background> getAllBackgroundOfProfile(int profileID) {
-        return null;
+    public List<Background> getAllBackgroundOfProfile(int profileId) throws ServiceException{
+        List<Background> backgrounds = new ArrayList<>();
+        Profile profile = this.get(profileId);
+        for (Background.Category backgroundCategory:profile.getBackgroundCategories())
+            {
+                backgrounds.addAll(backgroundService.getAllWithCategory(backgroundCategory.getId()));
+            }
+        return backgrounds;
     }
 
     @Override
-    public List<Background> getAllBackgroundOfProfile() {
-        return null;
+    public List<Background> getAllBackgroundOfProfile() throws ServiceException{
+        return this.getAllBackgroundOfProfile(this.activeProfile.getId());
     }
 }

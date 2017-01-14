@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
-import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
-import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
@@ -252,17 +251,9 @@ public class WindowManager {
         return this.mainStage;
     }
 
-    public void initShotFrameManager(){
-        try {
-            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            cameraHandler.getCameras();
-            shotFrameManager.init();
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("initShotFrameManager - Getting camera - ",e);
-        } catch (UnsatisfiedLinkError e){
-            LOGGER.error("initshotFrameManager - ",e);
-        }
+    public void initImageProcessing() throws  ServiceException{
+        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
+        imageProcessingManager.initImageProcessing();
     }
 
     /**
