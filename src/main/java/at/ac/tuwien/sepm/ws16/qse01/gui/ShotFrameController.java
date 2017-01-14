@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 /*@Controller*/
 
 public class ShotFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MainFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
 
     @FXML
     private ImageView shotView;

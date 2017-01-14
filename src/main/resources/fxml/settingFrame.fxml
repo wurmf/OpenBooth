@@ -8,203 +8,59 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import java.lang.String?>
+
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
     <content>
         <VBox minHeight="2000"  alignment="TOP_CENTER">
             <children>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1500.0" prefWidth="1400.0" >
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
-      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="504.0" />
-      <ColumnConstraints />
-  </columnConstraints>
-  <rowConstraints>
-      <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="89.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="525.2872924804688" valignment="TOP" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
-      <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-
-
-      <TitledPane animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1">
-        <content>
-          <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
-               <children>
-                  <TableView fx:id="tableProfil" prefHeight="427.0">
-                     <columns>
-                        <TableColumn fx:id="colProfilID" prefWidth="44.74237585067749" text="ID" />
-                        <TableColumn fx:id="colProfilName" prefWidth="207.93091201782227" text="Name" />
-                        <TableColumn fx:id="colProfilMobil" prefWidth="101.0" text="MobileVersion" />
-                        <TableColumn fx:id="colProfilGreen" minWidth="0.0" prefWidth="109.83737182617188" text="Greenscreen" />
-                        <TableColumn fx:id="colProfilFilter" minWidth="0.0" prefWidth="57.7298583984375" text="Filter" />
-                        <TableColumn fx:id="colProfilDrucken" minWidth="0.0" prefWidth="67.4625244140625" text="Drucken" />
-                        <TableColumn fx:id="colProfilWatermark" minWidth="0.0" prefWidth="100.59320068359375" text="Watermark" />
-                        <TableColumn fx:id="colProfilAktion" minWidth="0.0" prefWidth="74.4259033203125" text="Aktion" />
-                     </columns>
-                  </TableView>
-                  <TextField fx:id="txProfilName" layoutX="36.0" layoutY="435.0" prefHeight="27.0" prefWidth="205.0" />
-                  <CheckBox fx:id="txProfilMobil" layoutX="285.0" layoutY="439.0" mnemonicParsing="false" />
-                  <CheckBox fx:id="txProfilGreen" layoutX="394.0" layoutY="439.0" mnemonicParsing="false" />
-                  <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
-                   <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
-
-                   <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                  <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
-                   <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
-
-                   <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </AnchorPane>
-        </content>
-         <padding>
-            <Insets left="20.0" />
-         </padding>
-      </TitledPane>
-      <TitledPane animated="false" prefHeight="522.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         <content>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
-               <children>
-                  <TableView fx:id="tablePosition" prefHeight="427.0" prefWidth="450.0">
-                     <columns>
-                        <TableColumn fx:id="colPositionID" prefWidth="44.74237585067749" text="ID" />
-                        <TableColumn fx:id="colPositionName" prefWidth="189.813720703125" text="Name" />
-                        <TableColumn fx:id="colPositionBild" minWidth="0.0" prefWidth="136.0037841796875" text="Bild" />
-                        <TableColumn fx:id="colPositionAktion" minWidth="0.0" prefWidth="58.9962158203125" text="Aktion" />
-
-                     </columns>
-                  </TableView>
-                  <TextField fx:id="txPositionName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
-                  <TextField fx:id="txPositionBild" editable="false" layoutX="242.0" layoutY="435.0" onAction="#positionUpload" onMouseClicked="#positionUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                  <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
-                  <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
-               </children>
-            </AnchorPane>
-         </content>
-         <padding>
-            <Insets left="20.0" right="20.0" />
-         </padding>
-      </TitledPane>
-      <TitledPane animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2">
-         <content>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
-               <children>
-                  <TableView fx:id="tableKamPos" prefHeight="405.0" prefWidth="453.0">
-                     <columns>
-                        <TableColumn fx:id="colKamPosKamera" prefWidth="185.41546630859375" text="Kamera" />
-                        <TableColumn fx:id="colKamPosPosition" minWidth="0.0" prefWidth="202.0" text="Position" />
-                     </columns>
-                  </TableView>
-               </children>
-            </AnchorPane>
-         </content>
-         <GridPane.margin>
-            <Insets left="20.0" />
-         </GridPane.margin>
-         <padding>
-            <Insets right="20.0" />
-         </padding>
-      </TitledPane>
-
-      <TitledPane animated="false" prefHeight="717.0" text="Logoverwaltung" GridPane.rowIndex="2">
-         <content>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
-               <children>
-
-                              <TableView fx:id="tableLogo" prefHeight="405.0">
-                                 <columns>
-                                    <TableColumn fx:id="colLogoID" prefWidth="44.74237585067749" text="ID" />
-                                    <TableColumn fx:id="colLogoName" prefWidth="188.0234603881836" text="Name" />
-                                    <TableColumn fx:id="colLogoX" minWidth="0.0" prefWidth="56.378875732421875" text="Xstart" />
-                                    <TableColumn fx:id="colLogoY" minWidth="0.0" prefWidth="56.276123046875" text="Ystart" />
-                                    <TableColumn fx:id="colLogoBreite" minWidth="0.0" prefWidth="57.76214599609375" text="Breite" />
-                                    <TableColumn fx:id="colLogoHoehe" minWidth="0.0" prefWidth="63.359771728515625" text="Höhe" />
-                                    <TableColumn fx:id="colLogoLogo" prefWidth="113.64022827148438" text="Logo" />
-                                    <TableColumn fx:id="colLogoAktion" minWidth="0.0" prefWidth="67.089599609375" text="Aktion" />
-                                 </columns>
-                              </TableView>
-                              <AutoCompleteTextField fx:id="txLogoName" layoutX="44.0" layoutY="414.0" />
-
-                              <TextField fx:id="txLogoX" layoutX="234.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
-                              <TextField fx:id="txLogoY" layoutX="290.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
-                              <TextField fx:id="txLogoBreite" layoutX="350.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
-                              <TextField fx:id="txLogoHoehe" layoutX="409.0" layoutY="412.0" prefHeight="27.0" prefWidth="52.0" />
-                              <TextField fx:id="txLogoLogo" editable="false" layoutX="473.0" layoutY="412.0" onAction="#logoUpload" onMouseClicked="#logoUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                              <Button layoutX="605.0" layoutY="414.0" mnemonicParsing="false" onAction="#saveLogo" text="ADD" />
-                              <Button layoutX="564.0" layoutY="412.0" mnemonicParsing="false" onAction="#logoUpload" prefHeight="30.0" text="+" />
-                              <ImageView fx:id="previewLogo" fitHeight="157.0" fitWidth="165.0" layoutX="696.0" layoutY="54.0" onMouseClicked="#fullScreenPreview" pickOnBounds="true" preserveRatio="true" />
-                              <TextField fx:id="txPreviewWidth" layoutX="699.0" layoutY="16.0" prefHeight="27.0" prefWidth="75.0" text="1024" />
-                              <TextField fx:id="txPreviewHeight" layoutX="785.0" layoutY="16.0" prefHeight="27.0" prefWidth="73.0" text="800" />
-
-               </children>
-            </AnchorPane>
-         </content>
-         <padding>
-            <Insets left="20.0" />
-         </padding>
-      </TitledPane>
-
-       <TitledPane animated="false" prefHeight="522.0" text="Greenscreen->Hintergrundverwaltung" GridPane.columnIndex="0" GridPane.rowIndex="3">
-           <content>
-               <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1500.0" prefWidth="1400.0" >
+                  <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="504.0" />
+                      <ColumnConstraints />
+                  </columnConstraints>
+                  <rowConstraints>
+                      <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="89.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="525.2872924804688" valignment="TOP" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
                    <children>
-                       <ComboBox fx:id="greenscreenCategory" layoutX="15.0" layoutY="33.0" prefWidth="90.0" promptText="Kategorie Auswählen">
-                           <items>
-                               <FXCollections fx:factory="observableArrayList">
-                                   <String fx:value="Apple" />
-                                   <String fx:value="Orange" />
-                                   <String fx:value="Pear" />
-                               </FXCollections>
-                           </items>
-                       </ComboBox>
+                       <fx:include fx:id="profil" source="profileFrame.fxml"/>
+                       <fx:include fx:id="position" source="positionFrame.fxml"/>
+                       <fx:include fx:id="kamPos" source="cameraPositionFrame.fxml"/>
+                       <fx:include fx:id="logo" source="logoFrame.fxml"/>
+                       <fx:include fx:id="greenscreen" source="greenscreenFrame.fxml"/>
 
-                       <TableView fx:id="tableBackground" prefHeight="427.0" prefWidth="450.0">
-                           <columns>
-                               <TableColumn fx:id="colBackgroundID" prefWidth="44.74237585067749" text="ID" />
-                               <TableColumn fx:id="colBackgroundName" prefWidth="189.813720703125" text="Name" />
-                               <TableColumn fx:id="colBackgroundPath" minWidth="0.0" prefWidth="136.0037841796875" text="Bild" />
-                               <TableColumn fx:id="colBackgroundAction" minWidth="0.0" prefWidth="58.9962158203125" text="Aktion" />
 
-                           </columns>
-                       </TableView>
-                       <TextField fx:id="txBackgroundName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
-                       <TextField fx:id="txBackgroundPath" editable="false" layoutX="242.0" layoutY="435.0" onAction="#backgroundUpload" onMouseClicked="#backgroundUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                       <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
-                       <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
+
+
+                      <Label text="Einstellungen" textFill="#362d2d">
+                         <padding>
+                            <Insets left="100.0" />
+                         </padding>
+                         <font>
+                            <Font name="System Bold" size="31.0" />
+                         </font>
+                      </Label>
+                      <ImageView fx:id="backButton" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openMainFrame" onMousePressed="#openMainFrame" onTouchPressed="#openMainFrame" pickOnBounds="true" preserveRatio="true">
+                         <image>
+                            <Image url="@/images/back.png" />
+                         </image>
+                         <GridPane.margin>
+                            <Insets />
+                         </GridPane.margin>
+                         <viewport>
+                            <Rectangle2D />
+                         </viewport>
+                      </ImageView>
+
+
+
+
+
                    </children>
-               </AnchorPane>
-           </content>
-           <padding>
-               <Insets left="20.0" right="20.0" />
-           </padding>
-       </TitledPane>
-      <Label text="Einstellungen" textFill="#362d2d">
-         <padding>
-            <Insets left="100.0" />
-         </padding>
-         <font>
-            <Font name="System Bold" size="31.0" />
-         </font>
-      </Label>
-      <ImageView fx:id="backButton" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openMainFrame" onMousePressed="#openMainFrame" onTouchPressed="#openMainFrame" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@/images/back.png" />
-         </image>
-         <GridPane.margin>
-            <Insets />
-         </GridPane.margin>
-         <viewport>
-            <Rectangle2D />
-         </viewport>
-      </ImageView>
-
-
-
-
-
-   </children>
-</GridPane>
+                </GridPane>
             </children>
         </VBox>
     </content>
