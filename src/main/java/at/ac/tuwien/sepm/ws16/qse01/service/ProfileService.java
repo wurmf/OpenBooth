@@ -489,15 +489,71 @@ public interface ProfileService {
     boolean erasePairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle)
             throws ServiceException;
 
-
+    /**
+     * Add background category to given profile
+     * @param profileId - id to identify given profile
+     * @param backgroundCategory - Background category to be added to profile
+     * @return added background category
+     * @throws ServiceException if this action can't be completed
+     */
     Background.Category addBackgroundCategoryToProfile(int profileId, Background.Category backgroundCategory) throws ServiceException;
 
+    /**
+     * Erase background category from given profile
+     * @param profileId - id to identify given profile
+     * @param backgroundCategory - Background category to be erased from profile
+     * @return true, if action has been successful
+     * @throws ServiceException if this action can't be completed
+     */
     boolean eraseBackgroundCategoryFromProfile(int profileId, Background.Category backgroundCategory) throws ServiceException;
 
+    /**
+     * Add background category to active profile
+     * @param backgroundCategory - Background category to be added active profile
+     * @return added background category
+     * @throws ServiceException if this action can't be completed
+     */
     Background.Category addBackgroundCategoryToProfile(Background.Category backgroundCategory) throws ServiceException;
 
+    /**
+     * Erase background category from active profile
+     * @param backgroundCategory - Background category to be erased from given profile
+     * @return true, if action has been successful
+     * @throws ServiceException if this action can't be completed
+     */
     boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException;
 
+    /**
+     * Get pairCameraPosition object that contains given camera object in active profile
+     * @param camera - given camera object
+     * @return pairCameraPosition object that contains given camera
+     * @throws ServiceException if this action can't be completed
+     */
     Profile.PairCameraPosition getPairCameraPosition(Camera camera)throws ServiceException;
 
+    /**
+     * Get all background categories added to given profile
+     * @param profileId - id of given profile
+     * @return list of all added categories
+     */
+    List<Background.Category> getAllCategoryOfProfile(int profileId) throws ServiceException;
+
+    /**
+     * Get all background categories added to active profile
+     * @return list of all added categories
+     */
+    List<Background.Category> getAllCategoryOfProfile() throws ServiceException;
+
+    /**
+     * Get all backgrounds available of given profile
+     * @param profileId - id of given profile
+     * @return list of all available backgrounds
+     */
+    List<Background> getAllBackgroundOfProfile(int profileId) throws ServiceException;
+
+    /**
+     * Get all backgrounds available of active profile
+     * @return list of all available backgrounds
+     */
+    List<Background> getAllBackgroundOfProfile() throws ServiceException;
 }

@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.BackgroundCategoryDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PairLogoRelativeRectangleDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
@@ -28,13 +30,20 @@ public class JDBCProfileDAO implements ProfileDAO {
     private Connection con;
     private PairCameraPositionDAO pairCameraPositionDAO;
     private PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
+    private BackgroundCategoryDAO backgroundCategoryDAO;
 
     @Autowired
     public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
-        con = handler.getConnection();
+        try {
+            con = handler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
         pairCameraPositionDAO = new JDCBPairCameraPositionDAO(handler);
         pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(handler);
+        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(handler);
     }
 
     @Override
@@ -100,6 +109,17 @@ public class JDBCProfileDAO implements ProfileDAO {
             }
             profile.setPairCameraPositions(returnPairCameraPositionList);
             profile.setPairLogoRelativeRectangles(returnPairLogoRelativeRectangleList);
+
+            // add Profile-Backgroundcategory Relations
+            for (Background.Category backgroundCategory: profile.getBackgroundCategories()) {
+                String sqlString = "INSERT INTO"
+                        + " profile_backgroundcategories (profileID,backgroundcategoryID)"
+                        + " VALUES (?,?);";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1,profile.getId());
+                stmt.setInt(2,backgroundCategory.getId());
+                stmt.executeUpdate();
+            }
             LOGGER.debug("Completed Profile creation persistence successfully " + profile.getId());
         }
         catch (SQLException e) {
@@ -188,6 +208,25 @@ public class JDBCProfileDAO implements ProfileDAO {
                             pairLogoRelativeRectangleDAO.delete(pairLogoRelativeRectangle);
                         }
                     }
+
+                // delete Profile-Backgroundcategory Relations
+                    sqlString = "DELETE FROM "
+                            + " profile_backgroundcategories"
+                            + " WHERE profileID = ?;";
+                    stmt = this.con.prepareStatement(sqlString);
+                    stmt.setInt(1, profile.getId());
+                    stmt.executeUpdate();
+
+                // add Profile-Backgroundcategory Relations
+                for (Background.Category backgroundCategory: profile.getBackgroundCategories()) {
+                    sqlString = "INSERT INTO"
+                            + " profile_backgroundcategories (profileID,backgroundcategoryID)"
+                            + " VALUES (?,?);";
+                    stmt = this.con.prepareStatement(sqlString);
+                    stmt.setInt(1, profile.getId());
+                    stmt.setInt(2, backgroundCategory.getId());
+                    stmt.executeUpdate();
+                }
                 return true;
             }
             else if (returnUpdateCount == 0) {
@@ -239,7 +278,18 @@ public class JDBCProfileDAO implements ProfileDAO {
             );
             if(profile.getWatermark() == null)
                 {profile.setWatermark("");}
-            return profile;
+
+                // read Profile-Backgroundcategory Relations
+                sqlString = "SELECT * FROM "
+                        + " profile_backgroundcategories"
+                        + " WHERE profileID = ?;";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1, profile.getId());
+                rs = stmt.executeQuery();
+                if (rs.next()) {
+                    profile.getBackgroundCategories().add(backgroundCategoryDAO.read(rs.getInt("backgroundcategoryID")));
+                }
+                return profile;
             }
             else {
                 LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
@@ -306,6 +356,15 @@ public class JDBCProfileDAO implements ProfileDAO {
 
             // Check, if row has been deleted and return suitable boolean value
             if (returnUpdateCount == 1){
+
+                // delete Profile-Backgroundcategory Relations
+                sqlString = "DELETE FROM "
+                        + " profile_backgroundcategories"
+                        + " WHERE profileID = ?;";
+                stmt = this.con.prepareStatement(sqlString);
+                stmt.setInt(1, profile.getId());
+                stmt.executeUpdate();
+
                 LOGGER.debug("Delete has been successfully(returned value true)");
                 return true;
             }
