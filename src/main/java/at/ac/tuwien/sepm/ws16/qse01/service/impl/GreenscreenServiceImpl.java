@@ -23,7 +23,7 @@ import java.util.Map;
 import static java.lang.Math.*;
 
 /**
- * Created by fabian on 04.01.17.
+ * This class implements a greenscreen service
  */
 @Service
 public class GreenscreenServiceImpl implements GreenscreenService{
@@ -41,7 +41,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
             openCVLoader.loadLibrary();
         } catch (LibraryLoadingException e) {
             LOGGER.error("error loading opencv library - ", e);
-            throw new ServiceException("error loading opencv library - ", e);
+            throw new ServiceException("error loading opencv library");
         }
 
         this.imageHandler = imageHandler;
@@ -60,8 +60,8 @@ public class GreenscreenServiceImpl implements GreenscreenService{
         try {
             srcImgMat = imageHandler.convertBufferedImgToMat(srcImg);
         } catch (ImageHandlingException e) {
-            LOGGER.error("applyGreenscreen - could not convert given image");
-            throw new ServiceException("Could not convert given image", e);
+            LOGGER.error("applyGreenscreen - could not convert given image", e);
+            throw new ServiceException("Could not convert given image");
         }
 
         Mat backgroundMat = getCachedBackground(srcImg, background);
@@ -104,7 +104,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
             newImage = imageHandler.convertMatToBufferedImg(resultMat);
         } catch (ImageHandlingException e) {
             LOGGER.error("applyGreenscreen - Could not convert result Mat to image", e);
-            throw new ServiceException("Could not convert result Mat", e);
+            throw new ServiceException("Could not convert result Mat");
         }
 
         return newImage;
@@ -171,7 +171,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
                 backgroundImg = imageHandler.openImage(background.getPath());
             } catch (ImageHandlingException e) {
                 LOGGER.error("applyGreenscreen - could not open background image", e);
-                throw new ServiceException("Could not open background image", e);
+                throw new ServiceException("Could not open background image");
             }
 
             //Convert backgroundimage to Mat
@@ -179,7 +179,7 @@ public class GreenscreenServiceImpl implements GreenscreenService{
                 backgroundMat = imageHandler.convertBufferedImgToMat(backgroundImg);
             } catch (ImageHandlingException e) {
                 LOGGER.error("applyGreenscreen - could not convert background image", e);
-                throw new ServiceException("Could not convert background image", e);
+                throw new ServiceException("Could not convert background image");
             }
             //resize background if it is not the same size as the source image
             if(!imageSize.isSameSizeAs(backgroundMat)){

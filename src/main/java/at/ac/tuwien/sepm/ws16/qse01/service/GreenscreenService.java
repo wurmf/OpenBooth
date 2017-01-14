@@ -11,8 +11,7 @@ import java.awt.image.BufferedImage;
 public interface GreenscreenService {
 
     /**
-     * Applies the given background to the given image using an greenscreen algorithm
-     * The image specified by background must have the same dimensions as the image given by srcImg
+     * Applies the given background to the given image using a greenscreen algorithm
      * The given image will not be modified
      * @param srcImg the given image
      * @param background the given background object

@@ -8,10 +8,9 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by fabian on 04.01.17.
@@ -22,6 +21,7 @@ public abstract class GreenscreenServiceTest {
     private ImageHandler imageHandler;
 
     private String srcImgPath;
+    private BufferedImage srcImg;
     private String backgroundImgPath;
 
     private Background background;
@@ -35,24 +35,53 @@ public abstract class GreenscreenServiceTest {
     }
 
     @Before
-    public void setUp() throws ServiceException, LibraryLoadingException{
+    public void setUp() throws ServiceException, LibraryLoadingException, ImageHandlingException{
         srcImgPath = this.getClass().getResource("/greenscreen/images/greenscreen_ufo.jpeg").getPath();
-        backgroundImgPath = this.getClass().getResource("/greenscreen/background/test_background3.jpg").getPath();
+        backgroundImgPath = this.getClass().getResource("/greenscreen/background/test_background2.png").getPath();
+
+        srcImg = imageHandler.openImage(srcImgPath);
 
         Background.Category category = new Background.Category(1, "testcategory", false);
         background = new Background(1, "testbackground", backgroundImgPath, category, false);
     }
 
     @Test
-    public void getPreviewWithValidParameters() throws ServiceException, ImageHandlingException{
-
-        BufferedImage srcImg = imageHandler.openImage(srcImgPath);
+    public void applyGreenscreenWithValidParameters() throws ServiceException{
 
         BufferedImage result = greenscreenService.applyGreenscreen(srcImg, background);
 
-        imageHandler.saveImage(result, "/home/fabian/greenscreen_test_result3.jpg");
-
+        assertTrue(result != null);
 
     }
+
+    @Test
+    public void applyGreenscreenWithDifferentBackgroundSize() throws ServiceException{
+
+        String newBackgroundPath = this.getClass().getResource("/greenscreen/background/test_background1.jpg").getPath();
+
+        background.setPath(newBackgroundPath);
+
+        BufferedImage result = greenscreenService.applyGreenscreen(srcImg, background);
+
+        assertTrue(result != null);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void applyGreenscreenWithNullImage() throws ServiceException{
+        greenscreenService.applyGreenscreen(null, background);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void applyGreenscreenWithNullBackground() throws ServiceException{
+        greenscreenService.applyGreenscreen(srcImg, null);
+    }
+
+    @Test(expected = ServiceException.class)
+    public void applyGreenscreenWithInvalidBackgroundPath() throws ServiceException{
+        background.setPath("/this/is/no/valid/path.jpg");
+        greenscreenService.applyGreenscreen(srcImg, background);
+    }
+
+
 
 }
