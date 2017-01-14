@@ -247,15 +247,10 @@ public class WindowManager {
         return this.mainStage;
     }
 
-<<<<<<< HEAD
+
     public boolean initImageProcessing() throws  ServiceException{
-        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
-        return imageProcessingManager.initImageProcessing();
-=======
-    public void initImageProcessing() throws  ServiceException{
         ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
-        imageProcessingManager.initImageProcessing();
->>>>>>> dev
+        return imageProcessingManager.initImageProcessing();
     }
 
     /**

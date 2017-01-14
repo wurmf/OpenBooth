@@ -57,14 +57,33 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     }
 
     @Override
-    public void initImageProcessing() throws ServiceException{
-        LOGGER.debug("entering initImageProcessing method ");
+    public boolean initImageProcessing() throws ServiceException{
+        LOGGER.debug("initImageProcessing - entering initImageProcessing method ");
         List<Camera> cameraList = cameraHandler.getCameras();
         List<Position> positionList = new ArrayList<>();
+
         for(Camera c : cameraList){
             Position p = profileService.getPositionOfCameraOfProfile(c);
-            positionList.add(p);
+            if(p!=null){
+                LOGGER.debug("initImageProcessing - camera added");
+                positionList.add(p);
+            } else{
+                LOGGER.info("initImageProcessing - no position for this camera: "+c.getId());
+                cameraHandler.removeCameraFromList(c);
+            }
         }
+        int positionNumber=profileService.getActiveProfile().getPairCameraPositions().size();
+
+        //If you want to test without cameras attached, comment out
+        //TODO: make sure to remove the comments before deploying
+        /*
+        if(positionList.size()!=positionNumber){
+            LOGGER.info("initImageProcessing - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
+            return false;
+        }
+        */
+        LOGGER.info("initImageProcessing - attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
+
 
         Map<Position, ShotFrameController> positionShotFrameMap = shotFrameManager.init(positionList);
 
@@ -98,12 +117,13 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
             cameraThread.start();
         }
         LOGGER.debug("image processing initialised");
+        return true;
     }
 
     @Override
     public void stopImageProcessing(){
         if(cameraThreadList == null) {
-            LOGGER.debug("No CameraThreads running - nothing to stop");
+            LOGGER.debug("stopImageProcessing - No CameraThreads running - nothing to stop");
         }else {
             for(CameraThread cameraThread : cameraThreadList){
                 cameraThread.setStop(true);

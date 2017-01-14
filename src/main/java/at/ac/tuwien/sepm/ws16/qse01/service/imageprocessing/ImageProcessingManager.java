@@ -14,7 +14,7 @@ public interface ImageProcessingManager {
      * Instantiates ImageProcessor objects for each CameraThread
      * @throws ServiceException if the opencv library cannot be loaded, no CameraThreads or ShotFrames will be initialised
      */
-     void initImageProcessing() throws ServiceException;
+     boolean initImageProcessing() throws ServiceException;
 
     /**
      * Stops all Threads related to image processing including the CameraThreads
