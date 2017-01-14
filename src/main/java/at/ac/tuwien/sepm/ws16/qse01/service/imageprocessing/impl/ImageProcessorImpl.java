@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
-import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.gui.RefreshManager;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
@@ -22,14 +21,14 @@ public class ImageProcessorImpl implements ImageProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
 
     private ShotFrameController shotFrameController;
+
     private ShootingService shootingService;
     private ProfileService profileService;
     private ImageService imageService;
 
     private LogoWatermarkService logoWatermarkService;
     private FilterService filterService;
-    //private GreenscreenService greenscreenService;
-    //TODO: adapt for greenscreenService
+    private GreenscreenService greenscreenService;
 
     private Position position;
     private Profile.PairCameraPosition pairCameraPosition;
@@ -38,14 +37,16 @@ public class ImageProcessorImpl implements ImageProcessor {
     private RefreshManager refreshManager;
 
 
-    public ImageProcessorImpl(ShotFrameController shotFrameController, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, Position position, ImageHandler imageHandler, RefreshManager refreshManager){
+    public ImageProcessorImpl(ShotFrameController shotFrameController, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, GreenscreenService greenscreenService, Position position, ImageHandler imageHandler, RefreshManager refreshManager){
         this.shotFrameController = shotFrameController;
+
         this.shootingService = shootingService;
         this.profileService = profileService;
         this.imageService = imageService;
+
         this.logoWatermarkService = logoWatermarkService;
         this.filterService = filterService;
-
+        this.greenscreenService = greenscreenService;
 
         this.position = position;
 
@@ -70,19 +71,23 @@ public class ImageProcessorImpl implements ImageProcessor {
         boolean isFilter = "".equals(pairCameraPosition.getFilterName());
 
         if(isGreenscreen){
-            String backGroundPath = pairCameraPosition.getBackground().getPath();
-            preview = null;
+            Background background = pairCameraPosition.getBackground();
+
+            preview =openImageThrowException(imgPath);
+
+            if(background == null){
+                LOGGER.info("processPreview - greenscreen activated for position {} but no background set", position);
+            }else {
+                preview = greenscreenService.applyGreenscreen(preview, background);
+                LOGGER.debug("processShot - Background {} applied to shot from position {}", background, position);
+            }
         } else if (isFilter){
 
             String filterName = pairCameraPosition.getFilterName();
             preview = filterService.filter(filterName, imgPath);
             LOGGER.debug("processPreview - Filter {} for position {} added to preview image", filterName, position);
         }else {
-            try {
-                preview = imageHandler.openImage(imgPath);
-            } catch (ImageHandlingException e) {
-                throw new ServiceException(e);
-            }
+            preview = openImageThrowException(imgPath);
             LOGGER.debug("processPreview - No filter or greenscreen detected for position {}", position);
         }
 
@@ -104,74 +109,39 @@ public class ImageProcessorImpl implements ImageProcessor {
 
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
         boolean isFilter = "".equals(pairCameraPosition.getFilterName());
-        boolean logosEnabled = profileService.getAllPairLogoRelativeRectangle().isEmpty();
 
         if(isGreenscreen){
-            String backGroundPath = pairCameraPosition.getBackground().getPath();
-            shot = null;
+            Background background = pairCameraPosition.getBackground();
+
+            shot = openImageThrowException(imgPath);
+
+            if(background == null){
+                LOGGER.info("processShot - greenscreen activated for position {} but no background set", position);
+            }else {
+                shot = greenscreenService.applyGreenscreen(shot, background);
+                LOGGER.debug("processShot - Background {} applied to shot from position {}", background, position);
+            }
         } else if (isFilter){
-            try {
-                shot = imageHandler.openImage(imgPath);
-            } catch (ImageHandlingException e) {
-                throw new ServiceException(e);
-            }
 
-            if(logosEnabled){
-                logoWatermarkService.addLogosToImage(shot);
-                try {
-                    imageHandler.saveImage(shot, imgPath);  //TODO: Change if cameraHandlerThread stores img in temp folder
-                } catch (ImageHandlingException e) {
-                    throw new ServiceException(e);
-                }
-                LOGGER.debug("processShot - {} overwritten with logo image before filtering");
-            }
-
-            String filterName = pairCameraPosition.getFilterName();
-            shot = filterService.filter(filterName, imgPath);
-            LOGGER.debug("processShot - Filter {} for position {} added to shot", filterName, position);
+            shot = saveUnfilterdImageAndApplyFilter(imgPath);
 
         }else {
-            try {
-                shot = imageHandler.openImage(imgPath);
-            } catch (ImageHandlingException e) {
-                throw new ServiceException(e);
-            }
+
+            shot = openImageThrowException(imgPath);
         }
 
         logoWatermarkService.addLogosToImage(shot);
         shotFrameController.refreshShot(shot);
 
 
-
         Image filteredImage = null;
         if(isFilter){
-            //Save filtered image in same path as original path
-            String fileEnding = imgPath.substring(imgPath.lastIndexOf('.') + 1);
-            String directoryAndName = imgPath.substring(0, imgPath.lastIndexOf('.'));
-            String newImgPath = directoryAndName + "_" + pairCameraPosition.getFilterName() + fileEnding;
-            try {
-                imageHandler.saveImage(shot, newImgPath);
-            } catch (ImageHandlingException e) {
-                throw new ServiceException(e);
-            }
-            LOGGER.debug("processShot - filtered image saved");
 
-            //Persist filtered image in database
-            Shooting activeShooting = shootingService.searchIsActive();
-            if(activeShooting == null){
-                LOGGER.error("processShot - No active shooting during saving of filtered image");
-                throw new ServiceException("No active Shooting");
-            }
-            filteredImage = new Image(newImgPath, activeShooting.getId());
-            imageService.create(filteredImage);
-            LOGGER.debug("processShot - filteredImage {} persistet in database", filteredImage);
+            filteredImage = persistFilteredImage(imgPath, shot);
 
         } else {
-            try {
-                imageHandler.saveImage(shot, imgPath);
-            } catch (ImageHandlingException e) {
-                throw new ServiceException(e);
-            }
+
+            saveImageThrowException(shot, imgPath);
             LOGGER.debug("processShot - processed image saved");
         }
 
@@ -183,5 +153,65 @@ public class ImageProcessorImpl implements ImageProcessor {
             refreshManager.refreshFrames(filteredImage);
         }
 
+    }
+
+    private Image persistFilteredImage(String originalImgPath, BufferedImage shot) throws ServiceException{
+        //Save filtered image in same path as original path
+        String fileEnding = originalImgPath.substring(originalImgPath.lastIndexOf('.') + 1);
+        String directoryAndName = originalImgPath.substring(0, originalImgPath.lastIndexOf('.'));
+        String newImgPath = directoryAndName + "_" + pairCameraPosition.getFilterName() + fileEnding;
+        try {
+            imageHandler.saveImage(shot, newImgPath);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
+        LOGGER.debug("processShot - filtered image saved");
+
+        //Persist filtered image in database
+        Shooting activeShooting = shootingService.searchIsActive();
+        if(activeShooting == null){
+            LOGGER.error("processShot - No active shooting during saving of filtered image");
+            throw new ServiceException("No active Shooting");
+        }
+        Image filteredImage = new Image(newImgPath, activeShooting.getId());
+        imageService.create(filteredImage);
+        LOGGER.debug("processShot - filteredImage {} persistet in database", filteredImage);
+        return filteredImage;
+    }
+
+    private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException{
+        BufferedImage shot;
+        boolean logosEnabled = profileService.getAllPairLogoRelativeRectangle().isEmpty();
+
+        shot = openImageThrowException(originalImgPath);
+
+        if(logosEnabled){
+            logoWatermarkService.addLogosToImage(shot);
+
+            saveImageThrowException(shot, originalImgPath);     //Change if cameraHandlerThread stores img in temp folder
+            LOGGER.debug("processShot - {} overwritten with logo image before filtering");
+        }
+
+        String filterName = pairCameraPosition.getFilterName();
+        shot = filterService.filter(filterName, originalImgPath);
+        LOGGER.debug("processShot - Filter {} for position {} added to shot", filterName, position);
+
+        return shot;
+    }
+
+    private BufferedImage openImageThrowException(String imgPath) throws ServiceException{
+        try {
+            return imageHandler.openImage(imgPath);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    private void saveImageThrowException(BufferedImage image, String imgPath) throws ServiceException{
+        try {
+            imageHandler.saveImage(image, imgPath);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
     }
 }
