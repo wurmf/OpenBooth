@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
@@ -20,7 +21,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
 
-    private ShotFrameManager shotFrameManager;
+    private ShotFrameController shotFrameController;
     private ShootingService shootingService;
     private ProfileService profileService;
     private ImageService imageService;
@@ -30,15 +31,15 @@ public class ImageProcessorImpl implements ImageProcessor {
     //private GreenscreenService greenscreenService;
     //TODO: adapt for greenscreenService
 
-    private Camera camera;
+    private Position position;
     private Profile.PairCameraPosition pairCameraPosition;
 
     private ImageHandler imageHandler;
     private RefreshManager refreshManager;
 
 
-    public ImageProcessorImpl(ShotFrameManager shotFrameManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, Camera camera, ImageHandler imageHandler, RefreshManager refreshManager){
-        this.shotFrameManager = shotFrameManager;
+    public ImageProcessorImpl(ShotFrameController shotFrameController, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, Position position, ImageHandler imageHandler, RefreshManager refreshManager){
+        this.shotFrameController = shotFrameController;
         this.shootingService = shootingService;
         this.profileService = profileService;
         this.imageService = imageService;
@@ -46,7 +47,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         this.filterService = filterService;
 
 
-        this.camera = camera;
+        this.position = position;
 
         this.imageHandler = imageHandler;
         this.refreshManager = refreshManager;
@@ -55,10 +56,10 @@ public class ImageProcessorImpl implements ImageProcessor {
     @Override
     public void processPreview(String imgPath) throws ServiceException{
         if(pairCameraPosition == null){
+            Camera camera = profileService.getCameraOfPositionOfProfile(position);
             pairCameraPosition = profileService.getPairCameraPosition(camera);
         }
 
-        Position position = profileService.getPositionOfCameraOfProfile(camera);
 
         LOGGER.debug("entering processPreview method for position {}", position);
 
@@ -85,17 +86,17 @@ public class ImageProcessorImpl implements ImageProcessor {
             LOGGER.debug("processPreview - No filter or greenscreen detected for position {}", position);
         }
 
-        shotFrameManager.refreshShot(camera.getId(), preview);
+        shotFrameController.refreshShot(preview);
     }
 
     @Override
     public void processShot(Image image) throws ServiceException{
         String imgPath = image.getImagepath();
         if(pairCameraPosition == null){
+            Camera camera = profileService.getCameraOfPositionOfProfile(position);
             pairCameraPosition = profileService.getPairCameraPosition(camera);
         }
 
-        Position position = profileService.getPositionOfCameraOfProfile(camera);
 
         LOGGER.debug("entering processShot method for position {}", position);
 
@@ -138,7 +139,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         }
 
         logoWatermarkService.addLogosToImage(shot);
-        shotFrameManager.refreshShot(camera.getId(), shot);
+        shotFrameController.refreshShot(shot);
 
 
 

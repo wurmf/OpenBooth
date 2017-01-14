@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+    <TitledPane animated="false" prefHeight="522.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.PositionFrameController">
+        <content>
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+                <children>
+                    <TableView fx:id="tablePosition" prefHeight="427.0" prefWidth="450.0">
+                        <columns>
+                            <TableColumn fx:id="colPositionID" prefWidth="44.74237585067749" text="ID" />
+                            <TableColumn fx:id="colPositionName" prefWidth="189.813720703125" text="Name" />
+                            <TableColumn fx:id="colPositionBild" minWidth="0.0" prefWidth="136.0037841796875" text="Bild" />
+                            <TableColumn fx:id="colPositionAktion" minWidth="0.0" prefWidth="58.9962158203125" text="Aktion" />
+
+                        </columns>
+                    </TableView>
+                    <TextField fx:id="txPositionName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
+                    <TextField fx:id="txPositionBild" editable="false" layoutX="242.0" layoutY="435.0" onAction="#positionUpload" onMouseClicked="#positionUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
+                    <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
+                    <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
+                </children>
+            </AnchorPane>
+        </content>
+        <padding>
+            <Insets left="20.0" right="20.0" />
+        </padding>
+    </TitledPane>

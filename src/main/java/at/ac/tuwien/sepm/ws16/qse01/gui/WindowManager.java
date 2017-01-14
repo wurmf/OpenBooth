@@ -114,10 +114,6 @@ public class WindowManager {
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
         this.shootingAdminController = shootingWrapper.getController();
 
-        //Creating Profile-Scene
-        SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
-        this.profileScene = new Scene((Parent) profileWrapper.getLoadedObject(),screenWidth,screenHeight);
 
         //Creating Setting-Scene
         SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =

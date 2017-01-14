@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<TitledPane animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CameraPositionFrameController">
+
+<content>
+    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+        <children>
+            <TableView fx:id="tableKamPos" prefHeight="405.0" prefWidth="453.0">
+                <columns>
+                    <TableColumn fx:id="colKamPosKamera" prefWidth="185.41546630859375" text="Kamera" />
+                    <TableColumn fx:id="colKamPosPosition" minWidth="0.0" prefWidth="202.0" text="Position" />
+                </columns>
+            </TableView>
+        </children>
+    </AnchorPane>
+</content>
+<GridPane.margin>
+    <Insets left="20.0" />
+</GridPane.margin>
+<padding>
+    <Insets right="20.0" />
+</padding>
+</TitledPane>
