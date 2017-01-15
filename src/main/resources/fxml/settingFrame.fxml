@@ -13,24 +13,26 @@
     <content>
         <VBox minHeight="2000"  alignment="TOP_CENTER">
             <children>
-                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1500.0" prefWidth="1400.0" >
+                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1700.0" prefWidth="1400.0" >
                   <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="504.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1700.0" minWidth="10.0" prefWidth="504.0" />
                       <ColumnConstraints />
                   </columnConstraints>
                   <rowConstraints>
                       <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="89.0" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="525.2872924804688" valignment="TOP" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="400.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="500.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                    <children>
-                       <fx:include fx:id="profil" source="profileFrame.fxml"/>
+                       <fx:include fx:id="profile" source="profileFrame.fxml"/>
                        <fx:include fx:id="position" source="positionFrame.fxml"/>
                        <fx:include fx:id="kamPos" source="cameraPositionFrame.fxml"/>
                        <fx:include fx:id="logo" source="logoFrame.fxml"/>
-                       <fx:include fx:id="greenscreen" source="greenscreenFrame.fxml"/>
+                       <fx:include fx:id="greenscreenBackground" source="greenscreenBackgroundFrame.fxml"/>
+                       <fx:include fx:id="greenscreenCategory" source="greenscreenCategoryFrame.fxml"/>
+
 
 
 

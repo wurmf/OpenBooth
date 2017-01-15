@@ -19,16 +19,16 @@ import java.util.Optional;
 /**
  * Created by macdnz on 16.12.16.
  */
-public class BackgroundButtonCell extends TableCell<Background, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(BackgroundButtonCell.class);
+public class CategoryButtonCell extends TableCell<Background.Category, Boolean> {
+    final static Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
 
-    private  ObservableList<Background> backgroundList;
+    private  ObservableList<Background.Category> categories;
     private BackgroundService bservice;
 
     private final Button cellButton = new Button("X");
 
-    public BackgroundButtonCell(ObservableList<Background> backgroundList, BackgroundService bservice, Stage primaryStage) {
-        this.backgroundList = backgroundList;
+    public CategoryButtonCell(ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
+        this.categories = categories;
         this.bservice = bservice;
 
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -47,18 +47,19 @@ public class BackgroundButtonCell extends TableCell<Background, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background currentBackground = (Background) BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
+                    Background.Category currentCategory = (Background.Category) CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    backgroundList.remove(currentBackground);
+                    categories.remove(currentCategory);
                     try {
 
-                        bservice.erase(currentBackground);
+                        bservice.eraseCategory(currentCategory);
 
 
                     } catch (ServiceException e) {
-                        LOGGER.error("hintergrund konnte nicht von db gelöscht werden",e);
+                        LOGGER.error("Kategorie konnte nicht von db gelöscht werden",e);
                     }
+
 
 
                     setGraphic(null);

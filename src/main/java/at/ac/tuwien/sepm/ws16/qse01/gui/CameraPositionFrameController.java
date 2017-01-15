@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.CamPosComboBoxCell;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
@@ -8,6 +9,8 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -27,6 +30,7 @@ import java.util.List;
 @Component("cameraposition")
 public class CameraPositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraPositionFrameController.class);
+    public final ObservableList<Position> posList = FXCollections.observableArrayList();
 
     @FXML
     private TableView tableKamPos;
@@ -41,8 +45,8 @@ public class CameraPositionFrameController extends SettingFrameController {
         super(pservice, logoService, bservice, windowmanager);
     }
 
-    @Override
-    protected void initialize() {
+    @FXML
+    private void initialize() {
 
         tableKamPos.setEditable(true);
         colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLable"));
@@ -64,55 +68,18 @@ public class CameraPositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Profile.PairCameraPosition, Boolean> call(TableColumn<Profile.PairCameraPosition, Boolean> p) {
-
+                        System.out.println("camerapos initiliaztion now...");
                         return new CamPosComboBoxCell(kamPosList,pservice,posList);
                     }
 
                 });
     }
 
-    @Override
-    protected void backgroundUpload() {
-
-    }
-
-    @Override
-    protected void positionUpload() {
-
-    }
-
-    @Override
-    protected void savePosition() {
-
-    }
-
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
-    @Override
-    protected void watermarkUpload() {
-
-    }
-
-    @Override
-    protected void saveProfil() {
-
-    }
-
-    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
+    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList,Profile selected){
         LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
+        selectedProfile = selected;
+        this.posList.clear();
+        this.posList.addAll(posList);
         this.kamPosList.removeAll(kamPosList);
         this.kamPosList.addAll(camposList);
         tableKamPos.setItems(this.kamPosList);
