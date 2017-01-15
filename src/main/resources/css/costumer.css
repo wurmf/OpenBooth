@@ -1,5 +1,14 @@
-.root{}
-
+#basicpane{
+ -fx-background-repeat: no-repeat;
+   -fx-background-position: center;
+   -fx-background-size: 100%;
+   -fx-background-color: transparent;
+   -fx-background-image: url('/images/studio.jpg');
+}
+#logo{
+ -fx-fit-width: 15em;
+   -fx-fit-height:15em;
+}
 .button{
    -fx-text-fill: black;
    -fx-font-family: HP Simplified;

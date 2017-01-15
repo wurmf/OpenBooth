@@ -1,14 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
-import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
+import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.GreenscreenServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -35,8 +34,7 @@ import java.util.Map;
 public class KameraFilterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
-    public ScrollPane filterscrollplanel;
-    private GridPane filtergrid;
+
 
     @FXML
     private GridPane root;
@@ -48,7 +46,12 @@ public class KameraFilterController {
     private Button ontime;
     @FXML
     private Label titel;
+    @FXML
+    private ScrollPane filterscrollplanel;
 
+
+    private GridPane filtergrid;
+    private GridPane greengrid;
     private int index;
     private int fId;
     private List buttonList;
@@ -64,15 +67,17 @@ public class KameraFilterController {
     private ImageService imageService;
     private ShootingService shootingService;
     private KameraFilterService kameraFilterService;
+    private GreenscreenService greenscreenService;
 
     @Autowired
 
-    public KameraFilterController(KameraFilterService kameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public KameraFilterController(GreenscreenService greenscreenService, KameraFilterService kameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
+        this.greenscreenService=greenscreenService;
         this.kameraFilterService = kameraFilterService;
     }
 
@@ -148,6 +153,11 @@ public class KameraFilterController {
                     rowcount++;
                     columcount = 0;
                 }
+                if(rowcount>=6){
+                    filtergrid.getRowConstraints().add(rowcount,new RowConstraints());
+
+                    filtergrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+                }
                 ImageView iv = new ImageView();
               iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
               iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
@@ -185,6 +195,7 @@ public class KameraFilterController {
             root.add(filterscrollplanel,0,1);
         } catch (ServiceException e) {
             LOGGER.error("CreatButtons", e);
+            showInformationDialog("Es konnte keine Filterauswahl erstellt werden");
         }
     }
 
@@ -193,7 +204,7 @@ public class KameraFilterController {
      */
     private void loadButton() {
 
-        grid.setVisible(true);
+        filtergrid.setVisible(true);
     }
 
     /**
@@ -240,55 +251,62 @@ public class KameraFilterController {
         }*/
 
         try {
-            filtergrid = new GridPane();
-            filtergrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            greengrid = new GridPane();
+            greengrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
             filterscrollplanel = new ScrollPane();
-            filtergrid.setStyle("-fx-background-color: black;");
+            greengrid.setStyle("-fx-background-color: black;");
             filterscrollplanel.setStyle("-fx-background-color: black;");
             filterscrollplanel.setFitToWidth(true);
             filterscrollplanel.setFitToHeight(false);
             filterscrollplanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
 
-            filtergrid.getColumnConstraints().add(0, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(0, new RowConstraints());
-            filtergrid.getColumnConstraints().add(1, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(1, new RowConstraints());
-            filtergrid.getColumnConstraints().add(2, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(2, new RowConstraints());
-            filtergrid.getColumnConstraints().add(3, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(3, new RowConstraints());
-            filtergrid.getColumnConstraints().add(4, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(4, new RowConstraints());
-            filtergrid.getColumnConstraints().add(5, new ColumnConstraints());
-            filtergrid.getRowConstraints().add(5, new RowConstraints());
+            greengrid.getColumnConstraints().add(0, new ColumnConstraints());
+            greengrid.getRowConstraints().add(0, new RowConstraints());
+            greengrid.getColumnConstraints().add(1, new ColumnConstraints());
+            greengrid.getRowConstraints().add(1, new RowConstraints());
+            greengrid.getColumnConstraints().add(2, new ColumnConstraints());
+            greengrid.getRowConstraints().add(2, new RowConstraints());
+            greengrid.getColumnConstraints().add(3, new ColumnConstraints());
+            greengrid.getRowConstraints().add(3, new RowConstraints());
+            greengrid.getColumnConstraints().add(4, new ColumnConstraints());
+            greengrid.getRowConstraints().add(4, new RowConstraints());
+         //   filtergrid.getColumnConstraints().add(5, new ColumnConstraints());
+            greengrid.getRowConstraints().add(5, new RowConstraints());
 
-            filtergrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 6);
-            filtergrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greengrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greengrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greengrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greengrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greengrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+           // filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greengrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
 
             int columcount = 0;
             int rowcount = 0;
+
 
             Map<String, BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1.jpg");
             // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety : filtermap.entrySet()) {//imagefilter.size
                 // for(Image im : imlist){
-                if (columcount == 6) {
+                if (columcount == 5) {
                     rowcount++;
                     columcount = 0;
+                    if(rowcount>=6){
+                        greengrid.getRowConstraints().add(rowcount,new RowConstraints());
+                        greengrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+                    }
                 }
+
+
                 ImageView iv = new ImageView();
-                iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
-                iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+                iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
+                iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
 
                 iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
@@ -297,14 +315,14 @@ public class KameraFilterController {
                 //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
                     if (activiv != null) {
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 10);
+                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
+                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
                         //activiv.setStyle("-fx-background-color: black;");
                         //activiv.setBlendMode(BlendMode.BLUE);
                     }
                     activiv = iv;
-                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 6 - 30);
-                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 6 - 30);
+                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 30);
+                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 30);
 
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
@@ -313,13 +331,12 @@ public class KameraFilterController {
 
                     }*/
                 });
-                filtergrid.add(iv, columcount, rowcount);
+                greengrid.add(iv, columcount, rowcount);
                 columcount++;
-                buttonList.add(iv);
             }
-            filtergrid.setVisible(true);
+            greengrid.setVisible(true);
             filterscrollplanel.setVisible(true);
-            filterscrollplanel.setContent(filtergrid);
+            filterscrollplanel.setContent(greengrid);
             root.add(filterscrollplanel, 0, 1);
         } catch (ServiceException e) {
             e.printStackTrace();
@@ -399,15 +416,21 @@ public class KameraFilterController {
                 }
                 markfirst();
                 if (greenscreen) {
+                    filtergrid.setVisible(false);
+                    greengrid.setVisible(true);
                     titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Hintergrund auswahl");
                     titel.setVisible(true);
                     creatGreenscreenButton();
                 } else {
                     if (buttonList.isEmpty()) {
+                        greengrid.setVisible(false);
+                        filtergrid.setVisible(true);
                         titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
                         titel.setVisible(true);
                         creatButtons();
                     } else {
+                        greengrid.setVisible(false);
+                        filtergrid.setVisible(true);
                         titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
                         titel.setVisible(true);
                         loadButton();
@@ -418,6 +441,7 @@ public class KameraFilterController {
             }
         } catch (ServiceException e) {
             LOGGER.debug("no camera pair found", e);
+            showInformationDialog("Es konnte keine Kamera gefunden werden.");
         }
     }
 
@@ -465,7 +489,18 @@ public class KameraFilterController {
                     break;
             }
         }catch (NullPointerException n){
-            LOGGER.error("unmark ",n);
+            LOGGER.error("unmark Button",n);
         }
+    }
+
+    /**
+     * information dialog
+     *
+     * @param info String to be shown as error message to the user
+     */
+    public void showInformationDialog(String info){
+        Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+        information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.show();
     }
 }

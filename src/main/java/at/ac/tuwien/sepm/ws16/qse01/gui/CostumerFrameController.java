@@ -62,10 +62,10 @@ public class CostumerFrameController {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
             if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-                LOGGER.debug("Profile id:" + profile.getId() + "");
+              //  LOGGER.debug("Profile id:" + profile.getId() + "");
                 if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                //    LOGGER.debug("Profile id changed:" + profile.getId() + "");
                 }
             }
             if(!profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
@@ -74,9 +74,9 @@ public class CostumerFrameController {
 
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
-            LOGGER.error("initialise:",e.getMessage());
+            LOGGER.error("initialise:",e);
         } catch (NullPointerException n){
-            LOGGER.error("no active shooting:",n.getMessage());
+            LOGGER.error("no active shooting:",n);
         }
     }
 
@@ -120,10 +120,10 @@ public class CostumerFrameController {
                 if (profileold != null && buttoncreated && profileold.getId() == shootingservice.searchIsActive().getProfileid()) {
                     loadButton();
                 } else {
-                    LOGGER.debug("Profile id:" + profile.getId() + "");
+                 //   LOGGER.debug("Profile id:" + profile.getId() + "");
                     if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                        LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                  //      LOGGER.debug("Profile id changed:" + profile.getId() + "");
                     }
                     profileold = profile;
                     creatButtons();
@@ -159,8 +159,8 @@ public class CostumerFrameController {
             if (pairList==null||pairList.isEmpty()) {
                 rightbutton.setVisible(false);
             }else {
-                LOGGER.debug("buttons:" + buttonList.size() + "");
-                LOGGER.debug("pair:"+pairList.size()+"");
+              //  LOGGER.debug("buttons:" + buttonList.size() + "");
+               // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
                 int width = (int) ((float) gridpanel.getWidth() / (float) column) - 5;
                 int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
@@ -185,7 +185,7 @@ public class CostumerFrameController {
                         if (countcolumn < column) {
                             countcolumn++;
                         } else {
-                            LOGGER.debug("not enoth columns" + column);
+                         //   LOGGER.debug("not enoth columns" + column);
                         }
                     }
                     Button filter = new Button();
@@ -194,7 +194,7 @@ public class CostumerFrameController {
                     filter.setPrefWidth(width - 20);
                     filter.setPrefHeight(high);
                     String url = pairList.get(i).getCameraLable();
-                    LOGGER.debug("url costumer: " + url);
+                   // LOGGER.debug("url costumer: " + url);
                     filter.setStyle("-fx-background-image: url('" + url + "'); " +
                             "   -fx-background-size: 100%;" +
                             "   -fx-background-color: transparent;" +
@@ -211,7 +211,7 @@ public class CostumerFrameController {
                     gp.add(imageView, 1, 0);
                     grid.add(gp, countcolumn, countrow);
                     // Image image = new Image(pairList.get(i).getCameraLable());
-                    LOGGER.debug("count calls "+i+"");
+                  //  LOGGER.debug("count calls "+i+"");
                 }
                 basicpane.add(grid, 1, 0);
                 buttoncreated = true;
