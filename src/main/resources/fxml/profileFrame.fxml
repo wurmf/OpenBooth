@@ -1,48 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
-   <center>
-      <TableView fx:id="tv_profiles" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <columns>
-          <TableColumn fx:id="tc_id" prefWidth="75.0" text="Id" />
-          <TableColumn fx:id="tc_name" prefWidth="75.0" text="Name" />
-        </columns>
-      </TableView>
-   </center>
-   <bottom>
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <buttons>
-            <Button fx:id="bt_Add" mnemonicParsing="false" onAction="#bt_AddClicked" text="Hinzufügen" />
-          <Button fx:id="bt_Edit" mnemonicParsing="false" onAction="#bt_EditClicked" text="Ändern" />
-            <Button fx:id="bt_Erase" mnemonicParsing="false" onAction="#bt_EraseClicked" text="Löschen" />
-        </buttons>
-      </ButtonBar>
-   </bottom>
-   <top>
-      <GridPane BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label fx:id="label_profileName" alignment="CENTER_RIGHT" prefHeight="17.0" prefWidth="172.0" text="Profilname" GridPane.rowIndex="1" />
-            <TextField fx:id="tf_profileName" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-         </children>
-      </GridPane>
-   </top>
-</BorderPane>
+<TitledPane animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
+<content>
+    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+        <children>
+            <TableView fx:id="tableProfil" prefHeight="427.0">
+                <columns>
+                    <TableColumn fx:id="colProfilID" prefWidth="44.74237585067749" text="ID" />
+                    <TableColumn fx:id="colProfilName" prefWidth="207.93091201782227" text="Name" />
+                    <TableColumn fx:id="colProfilMobil" prefWidth="101.0" text="MobileVersion" />
+                    <TableColumn fx:id="colProfilGreen" minWidth="0.0" prefWidth="109.83737182617188" text="Greenscreen" />
+                    <TableColumn fx:id="colProfilFilter" minWidth="0.0" prefWidth="57.7298583984375" text="Filter" />
+                    <TableColumn fx:id="colProfilDrucken" minWidth="0.0" prefWidth="67.4625244140625" text="Drucken" />
+                    <TableColumn fx:id="colProfilWatermark" minWidth="0.0" prefWidth="100.59320068359375" text="Watermark" />
+                    <TableColumn fx:id="colProfilAktion" minWidth="0.0" prefWidth="74.4259033203125" text="Aktion" />
+                </columns>
+            </TableView>
+            <TextField fx:id="txProfilName" layoutX="36.0" layoutY="435.0" prefHeight="27.0" prefWidth="205.0" />
+            <CheckBox fx:id="txProfilMobil" layoutX="285.0" layoutY="439.0" mnemonicParsing="false" />
+            <CheckBox fx:id="txProfilGreen" layoutX="394.0" layoutY="439.0" mnemonicParsing="false" />
+            <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
+            <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
+
+            <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
+            <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
+            <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
+
+            <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
+        </children>
+    </AnchorPane>
+</content>
+<padding>
+    <Insets left="20.0" />
+</padding>
+</TitledPane>

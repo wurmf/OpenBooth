@@ -22,14 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 
@@ -64,7 +58,7 @@ public class ShootingAdminController {
     private ChoiceBox profileChoiceBox;
 
     private String path =null;
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingAdminController.class);
 
 
     private ShootingService shootingService;
@@ -72,7 +66,7 @@ public class ShootingAdminController {
     private WindowManager windowManager;
 
     @Autowired
-    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) throws Exception {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) {
         this.shootingService = shootingService;
         this.profileService= profileService;
         this.windowManager = windowManager;
@@ -178,31 +172,32 @@ public class ShootingAdminController {
      */
     @FXML
     public void onStartShootingPressed(ActionEvent actionEvent) {
-        LOGGER.info(path);
+        LOGGER.info("onStartShootingPressed - Path: "+path);
         if (profileChoiceBox.getValue() != null) {
                 try{
                     Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
-                        try {
-                            path = shootingService.createPath();
-                        }catch (ServiceException s){
-                            showInformationDialog(s.getMessage());
-                        }
+                        path = shootingService.createPath();
                     }
-                        Shooting shouting = new Shooting(0, (int) profile.getId(), path, true);
+                    Shooting shouting = new Shooting(0, profile.getId(), path, true);
 
-                        //storageDirLabel.setText("");
-                        LOGGER.info("ShootingAdminController:", path);
-                        path = "";
+                    LOGGER.info("onStartShootingPressed - "+ path);
+                    //path = "";
 
-                        shootingService.addShooting(shouting);
+                    shootingService.addShooting(shouting);
 
+
+                    boolean camerasFitPosition=windowManager.initImageProcessing();
+                    if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                        windowManager.initShotFrameManager();
+                    } else{
+                        showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
+                    }
+
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.debug( serviceExeption.getMessage());
-                    showInformationDialog("Es konnte keine Shooting erstellt werden.");
+                    LOGGER.debug("onStartShootingPressed - ", serviceExeption);
+                    showInformationDialog("Es konnte kein Shooting erstellt werden.");
                 }
         } else {
             showInformationDialog("Bitte erstellen Sie ein neues Profil");

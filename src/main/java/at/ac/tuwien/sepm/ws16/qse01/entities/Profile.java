@@ -32,8 +32,9 @@ public class Profile {
                    String watermark
     ) {this(Integer.MIN_VALUE,
             name,
-            new ArrayList<PairCameraPosition>(),
-            new ArrayList<PairLogoRelativeRectangle>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
+            new ArrayList<>(),
             isPrintEnabled,
             isFilterEnabled,
             isGreenscreenEnabled,
@@ -55,6 +56,7 @@ public class Profile {
                    String name,
                    List<PairCameraPosition> pairCameraPositions,
                    List<PairLogoRelativeRectangle> pairLogoRelativeRectangles,
+                   List<Background.Category> backgroundCategories,
                    boolean isPrintEnabled,
                    boolean isFilterEnabled,
                    boolean isGreenscreenEnabled,
@@ -67,11 +69,15 @@ public class Profile {
         if (pairCameraPositions != null)
             {this.pairCameraPositions = pairCameraPositions;}
         else
-            {this.pairCameraPositions = new ArrayList<PairCameraPosition>();}
+            {this.pairCameraPositions = new ArrayList<>();}
         if (pairLogoRelativeRectangles != null)
             {this.pairLogoRelativeRectangles = pairLogoRelativeRectangles;}
         else
-            {this.pairLogoRelativeRectangles = new ArrayList<PairLogoRelativeRectangle>();}
+            {this.pairLogoRelativeRectangles = new ArrayList<>();}
+        if (backgroundCategories != null)
+            {this.backgroundCategories = backgroundCategories;}
+        else
+            {this.backgroundCategories = new ArrayList<>();}
         this.isPrintEnabled = isPrintEnabled;
         this.isFilerEnabled = isFilterEnabled;
         this.isGreenscreenEnabled = isGreenscreenEnabled;
@@ -89,11 +95,12 @@ public class Profile {
      *
      * @param name - no empty profile name
      */
-    public Profile(String name) {
+    public Profile(String name){
         this(Integer.MIN_VALUE,
                 name,
-                new ArrayList<PairCameraPosition>(),
-                new ArrayList<PairLogoRelativeRectangle>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 false,
                 false,
                 false,
@@ -201,7 +208,7 @@ public class Profile {
 
     /**
      * Camera-Position Pair Entity
-     * Note: Contains private attribute filterName, that is not persisted
+     * Note: Contains private attribute filterName, background and shotType that are not persisted
      */
     public static class PairCameraPosition {
         private int id;
@@ -209,7 +216,12 @@ public class Profile {
         private Camera camera;
         private Position position;
         private String filterName = "";
+        private Background background;
         private boolean isGreenScreenReady;
+        private static final int SHOT_TYPE_TIMED = 0;
+        private static final int SHOT_TYPE_SINGLE = 1;
+        private static final int SHOT_TYPE_MULTIPLE = 2;
+        private int shotType;
 
         public PairCameraPosition(int id,
                                   int profileId,
@@ -272,8 +284,36 @@ public class Profile {
             return this.filterName;
         }
 
-        public void setFilterName(String filteName) {
+        public void setFilterName(String filterName) {
             this.filterName = filterName;
+        }
+
+        public static int getShotTypeTimed() {
+            return SHOT_TYPE_TIMED;
+        }
+
+        public static int getShotTypeSingle() {
+            return SHOT_TYPE_SINGLE;
+        }
+
+        public static int getShotTypeMultiple() {
+            return SHOT_TYPE_MULTIPLE;
+        }
+
+        public int getShotType() {
+            return shotType;
+        }
+
+        public void setShotType(int shotType) {
+            this.shotType = shotType;
+        }
+
+        public Background getBackground() {
+            return background;
+        }
+
+        public void setBackground(Background background) {
+            this.background = background;
         }
 
         public boolean isGreenScreenReady() {

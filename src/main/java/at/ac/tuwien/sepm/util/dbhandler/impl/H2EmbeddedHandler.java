@@ -1,7 +1,7 @@
 package at.ac.tuwien.sepm.util.dbhandler.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
-import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.h2.tools.RunScript;
@@ -30,13 +30,11 @@ public class H2EmbeddedHandler  implements DBHandler {
     private Connection connection;
     private boolean testState;
     private Server h2Server;
-    private String fileSep;
 
 
     private H2EmbeddedHandler() {
         this.connection=null;
         this.testState=false;
-        this.fileSep=File.separator;
     }
     public static H2EmbeddedHandler getInstance() {
         return ourInstance;
@@ -49,7 +47,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws ClassNotFoundException if the driver class is not found.
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
-    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, FileNotFoundException, PersistenceException{
+    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, FileNotFoundException, DatabaseException{
         LOGGER.info("Trying to open connection to database "+dbName);
         try {
             Class.forName("org.h2.Driver");
@@ -71,15 +69,15 @@ public class H2EmbeddedHandler  implements DBHandler {
     /**
      * Returns a connection to the default database. If there is no open connection, the method calls {@link #openConnection(String dbName)} to start the database-server and create a connection.
      * @return a connection to the default database.
-     * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the test-database.
+     * @throws DatabaseException if an error occured while opening a new connection or if there is an open connection to the test-database.
      */
     @Override
-    public Connection getConnection() throws PersistenceException {
+    public Connection getConnection() throws DatabaseException {
         if(connection==null){
             try {
                 openConnection("fotostudio");
             } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
-                throw new PersistenceException(e);
+                throw new DatabaseException(e);
             }
         }
         return connection;
@@ -88,20 +86,20 @@ public class H2EmbeddedHandler  implements DBHandler {
     /**
      * Returns a connection to the test-database. If there is no open connection, the method calls {@link #openConnection(String dbName)} to start the database-server and create a connection.
      * @return a connection to the test-database.
-     * @throws PersistenceException if an error occured while opening a new connection or if there is an open connection to the default database.
+     * @throws DatabaseException if an error occured while opening a new connection or if there is an open connection to the default database.
      */
     @Override
-    public Connection getTestConnection() throws PersistenceException{
+    public Connection getTestConnection() throws DatabaseException{
         if(connection==null){
             try {
                 testState=true;
                 openConnection("fotostudioTest");
             } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
-                throw new PersistenceException(e);
+                throw new DatabaseException(e);
             }
         } else if(!testState){
             LOGGER.error("getConnection - tried to open Connection to test-DB but there is already a connection established to the default-DB");
-            throw new PersistenceException("tried to open Connection to test-DB but there is already a connection established to the default-DB");
+            throw new DatabaseException("tried to open Connection to test-DB but there is already a connection established to the default-DB");
         }
         return connection;
     }
@@ -131,7 +129,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if the create-script is not found in the specified folder.
      * @throws SQLException if an error occurs while running the script on the database.
      */
-    private void firstStartup() throws FileNotFoundException, SQLException, PersistenceException{
+    private void firstStartup() throws FileNotFoundException, SQLException, DatabaseException{
         try {
             String createPath=this.getClass().getResource("/sql/create.sql").getPath();
             String initPath=this.getClass().getResource("/sql/init.sql").getPath();
@@ -174,7 +172,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         }
     }
 
-    private void setUpDefaultImgs() throws PersistenceException{
+    private void setUpDefaultImgs() throws DatabaseException {
         String destPath = System.getProperty("user.home") + "/fotostudio/BeispielBilder/";
         String image1 = this.getClass().getResource("/images/dummies/p1.jpg").getPath();
         String image2 = this.getClass().getResource("/images/dummies/p2.jpg").getPath();
@@ -240,14 +238,14 @@ public class H2EmbeddedHandler  implements DBHandler {
             stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);
-            throw new PersistenceException(e);
+            throw new DatabaseException(e);
         } finally {
             if(stmt!=null){
                 try {
                     stmt.close();
                 } catch (SQLException e) {
                     LOGGER.error("setUpDefaultImgs - ",e);
-                    throw new PersistenceException(e);
+                    throw new DatabaseException(e);
                 }
             }
         }

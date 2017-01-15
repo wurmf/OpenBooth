@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.util;
 
 import javafx.fxml.FXMLLoader;
+import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +105,14 @@ public class SpringFXMLLoader {
         FXMLLoader fxmlLoader = this.getFXMLLoader();
         LOGGER.trace("Loading and wrapping object of type {} with controller of type {} from fxml resource {}",
                 loadType.getCanonicalName(), controllerType.getCanonicalName(), inputStream);
+        fxmlLoader.setLocation(Class.class.getResource(("/fxml/settingFrame.fxml")));
+        fxmlLoader.setControllerFactory(new Callback<Class<?>, Object>() {
+            @Override
+            public Object call(Class<?> clazz) {
+                return applicationContext.getBean(clazz);
+            }
+        });
+
         return new FXMLWrapper<>(
                 fxmlLoader.load(inputStream),
                 fxmlLoader.getController());

@@ -33,13 +33,6 @@ public class ShootingServiceImpl implements ShootingService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     private ShootingDAO shootingDAO;
 
-    public ShootingServiceImpl() throws ServiceException{
-        try {
-            this.shootingDAO = new JDBCShootingDAO(H2Handler.getInstance());
-        } catch (PersistenceException e) {
-            throw new ServiceException(e);
-        }
-    }
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;

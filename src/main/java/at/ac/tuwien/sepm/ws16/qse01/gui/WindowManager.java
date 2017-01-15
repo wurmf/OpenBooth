@@ -1,9 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
-import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
-import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraHandlerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
@@ -117,10 +116,6 @@ public class WindowManager {
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
         this.shootingAdminController = shootingWrapper.getController();
 
-        //Creating Profile-Scene
-        SpringFXMLLoader.FXMLWrapper<Object, ProfileFrameController> profileWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/profileFrame.fxml", ProfileFrameController.class);
-        this.profileScene = new Scene((Parent) profileWrapper.getLoadedObject(),screenWidth,screenHeight);
 
         //Creating Setting-Scene
         SpringFXMLLoader.FXMLWrapper<Object, SettingFrameController> settingWrapper =
@@ -269,17 +264,10 @@ public class WindowManager {
         return this.mainStage;
     }
 
-    public void initShotFrameManager(){
-        try {
-            CameraHandler cameraHandler = this.applicationContext.getBean(CameraHandlerImpl.class);
-            cameraHandler.getCameras();
-            shotFrameManager.init();
-            cameraHandler.getImages();
-        } catch (Exception e) {
-            LOGGER.info("initShotFrameManager - Getting camera - ",e);
-        } catch (UnsatisfiedLinkError e){
-            LOGGER.error("initshotFrameManager - ",e);
-        }
+
+    public boolean initImageProcessing() throws  ServiceException{
+        ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
+        return imageProcessingManager.initImageProcessing();
     }
 
     /**

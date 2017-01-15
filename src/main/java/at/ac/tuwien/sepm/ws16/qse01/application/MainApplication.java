@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
+import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.WindowManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -18,6 +19,7 @@ import java.io.IOException;
 @Configuration
 @ComponentScan("at.ac.tuwien.sepm")
 public class MainApplication extends Application {
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainApplication.class);
 
@@ -40,10 +42,13 @@ public class MainApplication extends Application {
     public void stop() throws Exception {
         LOGGER.info("Stopping Application");
 
-        H2EmbeddedHandler h2EmbeddedHandler=applicationContext.getBean(H2EmbeddedHandler.class);
-        if(h2EmbeddedHandler!=null) {
-            h2EmbeddedHandler.closeConnection();
+        DBHandler dbHandler = applicationContext.getBean(DBHandler.class);
+        if(dbHandler!=null) {
+            dbHandler.closeConnection();
         }
+
+        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
+        imageProcessingManager.stopImageProcessing();
 
         if (this.applicationContext != null && applicationContext.isRunning()) {
             this.applicationContext.close();

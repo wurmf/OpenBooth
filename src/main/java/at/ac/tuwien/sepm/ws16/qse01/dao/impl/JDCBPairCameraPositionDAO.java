@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.CameraDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PairCameraPositionDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.PositionDAO;
@@ -35,7 +36,12 @@ public class JDCBPairCameraPositionDAO implements PairCameraPositionDAO {
     @Autowired
     public JDCBPairCameraPositionDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
-        con = handler.getConnection();
+        try {
+            con = handler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
         cameraDAO = new JDBCCameraDAO(handler);
         positionDAO = new JDBCPositionDAO(handler);
     }

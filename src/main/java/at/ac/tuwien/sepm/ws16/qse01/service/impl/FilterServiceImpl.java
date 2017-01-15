@@ -1,11 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
+import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -20,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -36,23 +38,25 @@ public class FilterServiceImpl implements FilterService {
 
     private List<String> filterList;
 
-    private ImageHelper imageHelper;
+    private ImageHandler imageHandler;
 
     @Autowired
-    public FilterServiceImpl(ShootingDAO shootingDAO, OpenCVLoader openCVLoader, ImageHelper imageHelper) throws ServiceException {
+    public FilterServiceImpl(ShootingService shootingService, OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
+
+        activeShooting = shootingService.searchIsActive();
+
         try {
-            activeShooting = shootingDAO.searchIsActive();
-        } catch (PersistenceException e) {
-            throw new ServiceException("Error: "+e.getMessage());
+            openCVLoader.loadLibrary();
+        } catch (LibraryLoadingException e) {
+            LOGGER.error("error loading opencv library - ", e);
+            throw new ServiceException("error loading opencv library - ", e);
         }
 
-        openCVLoader.loadLibrary();
+        this.imageHandler = imageHandler;
 
-        this.imageHelper = imageHelper;
-
-        checkStorageDir();
+        storageDir = activeShooting.getStorageDir()+"/";
     }
     @Override
     public List<String> getExistingFilters(){
@@ -114,7 +118,11 @@ public class FilterServiceImpl implements FilterService {
                 filteredImage = filterThreshBinaryInvert(imgPath);
                 break;
             default:
-                filteredImage = SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                try {
+                    filteredImage = imageHandler.openImage(imgPath); //SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                } catch (ImageHandlingException e) {
+                    throw new ServiceException(e);
+                }
         }
         return filteredImage;
     }
@@ -136,7 +144,12 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.GaussianBlur(source, destination,new Size(25,25), 0);
         source.release();
 
-        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
         return image;
     }
@@ -159,7 +172,12 @@ public class FilterServiceImpl implements FilterService {
         mat.release();
 
 
-        BufferedImage image = imageHelper.convertMatToBufferedImg(mat1);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(mat1);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         mat1.release();
 
         return image;
@@ -180,7 +198,12 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.cvtColor(mat, mat1, Imgproc.COLOR_RGB2HSV);
         mat.release();
 
-        BufferedImage image = imageHelper.convertMatToBufferedImg(mat1);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(mat1);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         mat1.release();
 
         return image;
@@ -219,7 +242,13 @@ public class FilterServiceImpl implements FilterService {
         Imgproc.filter2D(source, destination, -1, kernel);
         source.release();
 
-        BufferedImage image =  imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            LOGGER.error("filterSobel -", e);
+            throw new ServiceException(e);
+        }
         destination.release();
 
         return image;
@@ -239,7 +268,12 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
-        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
 
         return image;
@@ -259,7 +293,12 @@ public class FilterServiceImpl implements FilterService {
         Mat destination = source;
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
-        BufferedImage image = imageHelper.convertMatToBufferedImg(destination);
+        BufferedImage image;
+        try {
+            image = imageHandler.convertMatToBufferedImg(destination);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
         destination.release();
         return image;
     }
@@ -270,13 +309,13 @@ public class FilterServiceImpl implements FilterService {
      *
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public void checkStorageDir() throws ServiceException {
+  /*  public void checkStorageDir() throws ServiceException {
         if(new File(activeShooting.getStorageDir()).isDirectory())
             storageDir = activeShooting.getStorageDir()+"/";
         else
             throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
 
-    }
+    }*/
 
 
 

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.ImageHelper;
+import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
@@ -16,7 +17,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,14 +30,14 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoWatermarkServiceImpl.class);
 
     private final ProfileService profileService;
-    private final ImageHelper imageHelper;
+    private final ImageHandler imageHandler;
     private final Map<Logo, BufferedImage> cachedLogos = new HashMap<>();
     private String currentWatermarkPath = null;
     private BufferedImage cachedWatermark = null;
 
     @Autowired
-    public LogoWatermarkServiceImpl(ProfileService profileService, ImageHelper imageHelper){
-        this.imageHelper = imageHelper;
+    public LogoWatermarkServiceImpl(ProfileService profileService, ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
         this.profileService = profileService;
     }
 
@@ -120,14 +120,18 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public void addLogosCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
-        LOGGER.debug("Entering addLogosCreateNewImage method");
-        BufferedImage img = imageHelper.openImage(srcImgPath);
+    public BufferedImage addLogosToImage(BufferedImage srcImg) throws ServiceException {
+        LOGGER.debug("Entering addLogosToImage method");
+
+        if(srcImg == null){
+            LOGGER.error("addLogosToImage - given image is null");
+            throw new ServiceException("given image is null");
+        }
 
         List<Logo> logos = profileService.getAllLogosOfProfile();
 
         if(logos == null){
-            LOGGER.error("addLogosCreateNewImage - logolist is null");
+            LOGGER.error("addLogosToImage - logolist is null");
             throw new ServiceException("logolist is null");
         }
 
@@ -141,19 +145,19 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             }
             //add current logo
             RelativeRectangle curLogoPosition = profileService.getRelativeRectangleOfLogoOfProfile(logo);
-            addLogoAtPosition(img, cachedLogos.get(logo), curLogoPosition);
+            addLogoAtPosition(srcImg, cachedLogos.get(logo), curLogoPosition);
         }
 
-        imageHelper.saveImage(img, destImgPath);
+        return srcImg;
     }
 
     @Override
-    public void addWatermarkCreateNewImage(String srcImgPath, String destImgPath) throws ServiceException {
+    public BufferedImage addWatermarkToImage(String srcImgPath) throws ServiceException {
 
         Logo watermark = profileService.getProfileWaterMark();
 
         if(watermark == null || watermark.getPath() == null){
-            LOGGER.error("addWatermarkCreateNewImage - watermark or watermarkpath is null");
+            LOGGER.error("addWatermarkToImage - watermark or watermarkpath is null");
             throw new ServiceException("watermark or watermarkpath is null");
         }
 
@@ -165,14 +169,18 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             cachedWatermark = openImageFromLogo(watermark);
         }
 
-        BufferedImage img = imageHelper.openImage(srcImgPath);
+        BufferedImage img;
+        try {
+            img = imageHandler.openImage(srcImgPath);
+        } catch (ImageHandlingException e) {
+            throw new ServiceException(e);
+        }
 
         Graphics g = img.getGraphics();
 
         g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), null);
 
-        //save image
-        imageHelper.saveImage(img, destImgPath);
+        return img;
 
     }
 
@@ -206,6 +214,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         Graphics2D g = img.createGraphics();
 
         g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
+        g.dispose();
         LOGGER.debug("logo with width {} and height {} added at X: {} Y: {} | Imagewidth: {} Imageheight: {}", absoluteLogoWidth, absoluteLogoHeight, absoluteXPosition, absoluteYPosition, imgWidth, imgHeight);
     }
 

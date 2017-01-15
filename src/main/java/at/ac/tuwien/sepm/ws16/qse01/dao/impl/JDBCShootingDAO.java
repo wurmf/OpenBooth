@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
 
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -19,19 +20,26 @@ import java.sql.*;
 public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
     @Autowired
     public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {
-        con = dbHandler.getConnection();
+        try {
+            con = dbHandler.getConnection();
+        } catch (DatabaseException e) {
+            LOGGER.error("Constructor - ",e);
+            throw new PersistenceException(e);
+        }
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
     @Override
     public Shooting create(Shooting shouting) throws PersistenceException {
         PreparedStatement stmt = null;
-        if(shouting==null) throw new IllegalArgumentException("Error!:Called create method with null pointer.");
-        LOGGER.debug("caught nullpointerShooting");
+        if(shouting==null) {
+            LOGGER.debug("create - caught nullpointerShooting");
+            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        }
+
 
 
         try {
@@ -47,14 +55,11 @@ public class JDBCShootingDAO implements ShootingDAO {
             if (rs.next()){shouting.setId(rs.getInt(1));}
 
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO",e.getMessage());
+            LOGGER.info("create - ",e);
             throw new PersistenceException(e);
         } catch(IllegalArgumentException i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
+            LOGGER.error("create - ",i);
             throw new PersistenceException(i);
-        } catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
-            throw new PersistenceException("Ein Unerwarteter Fehler ist aufgetretten");
         } finally{
             if (stmt != null) {
                 try {
@@ -80,14 +85,14 @@ public class JDBCShootingDAO implements ShootingDAO {
                 shouting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getBoolean("ISACTIVE"));
             }
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO",e.getMessage());
+            LOGGER.error("searchIsActive - ",e);
             throw new PersistenceException(e);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                   LOGGER.error("Select",e);
+                   LOGGER.error("searchIsActive - ",e);
                 }
             }
         }
@@ -106,17 +111,17 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO", e.getMessage());
-            throw new PersistenceException(e.getMessage());
+            LOGGER.error("endShooting - ", e);
+            throw new PersistenceException(e);
         } catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
+            LOGGER.error("endShooting - ",i);
             throw new PersistenceException("No Activ Shooting Found");
         }finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("endShooting - ",e);
                 }
             }
         }
@@ -134,17 +139,14 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.info("ShootingDAO", e.getMessage());
-            throw new PersistenceException(e.getMessage());
-        } catch(AssertionError i) {
-            LOGGER.error("ShootingDAO",i.getMessage());
-            throw new PersistenceException("Update des Profies war nicht möglich");
-        }finally {
+            LOGGER.info("updateProfile - ", e);
+            throw new PersistenceException(e);
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("updateProfile - ",e);
                 }
             }
         }
