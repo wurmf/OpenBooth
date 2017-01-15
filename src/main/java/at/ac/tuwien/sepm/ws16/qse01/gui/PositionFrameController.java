@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionImgCell;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
@@ -9,6 +10,8 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
@@ -34,7 +37,6 @@ import java.util.List;
 @Component("position")
 public class PositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionFrameController.class);
-
 
 
     /* BEGINN OF Position Table Column FXML */
@@ -66,10 +68,8 @@ public class PositionFrameController extends SettingFrameController {
 
 
     @FXML
-    protected void initialize(){
-         /* ######################### */
-            /* INITIALIZING Position Table */
-            /* ######################### */
+    private void initialize(){
+
 
         tablePosition.setEditable(true);
 
@@ -89,12 +89,9 @@ public class PositionFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 pservice.editPosition(p);
 
-                               /* int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-                                kamPosList.removeAll(kamPosList);
-                                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));*/
+
                                 refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
                             } else {
-                                //new EntityException("Vorname", "Vorname darf nicht leer sein.");
                                 refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
                             }
 
@@ -140,27 +137,23 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        System.out.println("selectedProfil->"+selectedProfileID);
-                        return new PositionButtonCell(posList,kamPosList,selectedProfileID,pservice,windowManager.getStage());
+                        System.out.println("selectedProfil->"+selectedProfile.getId());
+                        return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                     }
 
                 });
 
 
 
+        System.out.println("position initialization finito!");
 
-    }
 
-
-    @Override
-    protected void backgroundUpload() {
 
     }
 
 
     @FXML
-    @Override
-    protected void savePosition(){
+    private void savePosition(){
         LOGGER.error("Position Add Button has been clicked");
         String name = txPositionName.getText();
         if(name.trim().compareTo("") == 0){
@@ -190,34 +183,9 @@ public class PositionFrameController extends SettingFrameController {
         }
     }
 
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
-    @Override
-    protected void watermarkUpload() {
-
-    }
-
-    @Override
-    protected void saveProfil() {
-
-    }
 
     @FXML
-    @Override
-    protected void positionUpload(){
+    private void positionUpload(){
         fileChooser.setTitle("Bild für Position Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -233,11 +201,18 @@ public class PositionFrameController extends SettingFrameController {
         }
     }
 
-    protected void refreshTablePosition(List<Position> positionList){
+    protected void refreshTablePosition(List<Position> positionList,Profile selected){
         LOGGER.info("refreshing the position table...");
+        selectedProfile = selected;
         posList.clear();
         posList.addAll(positionList);
         tablePosition.setItems(posList);
+
     }
+
+    protected ObservableList<Position> getPosList(){
+        return this.posList;
+    }
+
 
 }

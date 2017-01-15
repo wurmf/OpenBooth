@@ -86,7 +86,7 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     @FXML
-    protected void initialize(){
+    private void initialize(){
         LOGGER.debug("Initializing profile frame ...");
         try {
            /* ######################### */
@@ -265,19 +265,21 @@ public class ProfileFrameController extends SettingFrameController{
             tableProfil.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
                     selectedProfile = (Profile) newSelection;
-                    selectedProfileID = selectedProfile.getId();
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
                     System.out.println("profile selected....");
                     try {
                         refreshTablePosition(pservice.getAllPositions());
+
                         refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
 
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfileID));
+                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
+                        refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
+                       // System.out.println("test int value ->"+getPosList().size());
 
                     } catch (ServiceException e) {
                         e.printStackTrace();
@@ -291,7 +293,7 @@ public class ProfileFrameController extends SettingFrameController{
     }
 
 
-    @Override
+    @FXML
     protected void saveProfil(){
         LOGGER.error("Profil Add Button has been clicked");
         String name = txProfilName.getText();
@@ -325,8 +327,8 @@ public class ProfileFrameController extends SettingFrameController{
         }
     }
 
-    @Override
-    protected void watermarkUpload(){
+    @FXML
+    private void watermarkUpload(){
         fileChooser.setTitle("Watermark Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -344,44 +346,15 @@ public class ProfileFrameController extends SettingFrameController{
 
 
 
-
-
-    @Override
-    protected void backgroundUpload() {
-
-    }
-
-    @Override
-    protected void positionUpload() {
-        System.out.println("klicked...");
-
-    }
-
-    @Override
-    protected void savePosition() {
-
-    }
-
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
     protected void refreshTableProfiles(List<Profile> profileList){
         LOGGER.info("refreshing the profil table...");
         profList.clear();
         profList.addAll(profileList);
         tableProfil.setItems(profList);
 
+    }
+
+    protected Profile getSelectedProfile(){
+        return this.selectedProfile;
     }
 }

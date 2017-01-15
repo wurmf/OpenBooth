@@ -117,10 +117,10 @@ public class Background extends Picture{
 
         @Override
         public String toString() {
-            return "Background.Category{" +
+            return name;/*"Background.Category{" +
                     "id=" + id +
                     ", name='" + name + '\'' +
-                    '}';
+                    '}';*/
         }
     }
 }
