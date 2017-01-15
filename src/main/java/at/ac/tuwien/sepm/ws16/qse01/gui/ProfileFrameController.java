@@ -277,7 +277,7 @@ public class ProfileFrameController extends SettingFrameController{
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
+                        refreshTableCategory(bservice.getAllCategories());
                         refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
                        // System.out.println("test int value ->"+getPosList().size());
 

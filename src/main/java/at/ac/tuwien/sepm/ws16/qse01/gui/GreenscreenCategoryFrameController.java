@@ -56,6 +56,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
     @FXML
     private void initialize() {
+
         tableCategory.setEditable(true);
         colCategoryID.setCellValueFactory(new PropertyValueFactory<Background.Category, Integer>("id"));
 
