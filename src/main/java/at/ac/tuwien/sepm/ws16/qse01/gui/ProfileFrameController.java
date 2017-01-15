@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileCheckboxCell;
@@ -80,8 +81,8 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     @Autowired
-    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice,logoService,bservice,windowmanager);
+    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice,logoService,bservice,windowmanager,imageHandler);
     }
 
 
@@ -227,7 +228,7 @@ public class ProfileFrameController extends SettingFrameController{
                 @Override
                 public TableCell call(TableColumn p) {
 
-                    return new ProfileImgCell(profList,pservice);
+                    return new ProfileImgCell(profList,pservice,imageHandler,windowManager.getStage());
 
                 }
             });

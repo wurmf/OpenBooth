@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by macdnz on 16.12.16.
@@ -37,7 +37,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
     final Button cellButton = new Button("edit");
     private Desktop desktop;
 
-    public LogoImgCell(ObservableList<Profile.PairLogoRelativeRectangle> logoList, ProfileService pservice) {
+    public LogoImgCell(ObservableList<Profile.PairLogoRelativeRectangle> logoList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
         this.logoList = logoList;
         this.pservice = pservice;
 
@@ -99,16 +99,10 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
 
             @Override
             public void handle(MouseEvent event) {
-                try {
-
-
-                    if(logoList.get(getIndex()).getLogo().getPath()==null)
-                        desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png"));
-                    else
-                        desktop.getDesktop().open(new File(logoList.get(getIndex()).getLogo().getPath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if(logoList.get(getIndex()).getPath()==null)
+                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                else
+                    imageHandler.popupImage(logoList.get(getIndex()).getLogo().getPath(),primaryStage);
 
             }
 
@@ -124,19 +118,6 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
         }else
           return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
 
-        /*
-        if (new File(path).isFile())
-            return new javafx.scene.image.Image("file: "+path, true);
-        else if (new File(System.getProperty("user.dir") + "/src/main/resources/" + path).isFile())
-            return new javafx.scene.image.Image("file: "+new File(System.getProperty("user.dir") + "/src/main/resources/" + path).getAbsolutePath());
-        else{
-            if(new File("/src/main/resources/images/noimage.png").isFile())
-                return new javafx.scene.image.Image("file: /src/main/resources/images/noimage.png");
-            else if(new File(System.getProperty("user.dir")+"/src/main/resources/images/noimage.png").isFile())
-                return new javafx.scene.image.Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
-
-        }
-        return null;*/
 
     }
 

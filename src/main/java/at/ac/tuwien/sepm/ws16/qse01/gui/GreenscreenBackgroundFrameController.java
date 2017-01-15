@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.BackgroundButtonCell;
@@ -61,8 +62,8 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
 
     @Autowired
-    public GreenscreenBackgroundFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public GreenscreenBackgroundFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
     @FXML
@@ -112,7 +113,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
             @Override
             public TableCell call(TableColumn p) {
 
-                return new BackgroundImgCell(backgroundList,bservice);
+                return new BackgroundImgCell(backgroundList,bservice,imageHandler,windowManager.getStage());
 
             }
         });

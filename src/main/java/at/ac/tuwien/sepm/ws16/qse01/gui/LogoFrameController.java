@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
@@ -92,8 +93,8 @@ public class LogoFrameController extends SettingFrameController {
     private ImageView previewLogo;
 
     @Autowired
-    public LogoFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public LogoFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
     @FXML
@@ -300,7 +301,7 @@ public class LogoFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new LogoImgCell(logoList,pservice);
+                return new LogoImgCell(logoList,pservice,imageHandler,windowManager.getStage());
 
             }
         });
