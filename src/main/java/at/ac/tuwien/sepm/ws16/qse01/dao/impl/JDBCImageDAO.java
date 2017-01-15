@@ -258,7 +258,7 @@ public class JDBCImageDAO implements ImageDAO {
         try {
             ImageIO.write(bufferedImage, "jpg", outputfile);
         } catch (IOException e) {
-           LOGGER.debug("createAndSave" + e);
+           LOGGER.debug("createAndSave", e);
             throw new PersistenceException(e.getMessage());
         }
         return ret;

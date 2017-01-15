@@ -6,9 +6,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.shape.Rectangle?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+<AnchorPane fx:id="anchorPane" prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
    <children>
       <ImageView fx:id="ivfullscreenImage" fitHeight="1079.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" smooth="true" />
       <BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: TRANSPARENT;">
@@ -17,7 +16,7 @@
                <children>
                   <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
                      <graphic>
-                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="deleteButton" fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/images/bin.png" />
                            </image>
@@ -35,18 +34,27 @@
                   </Button>
                   <Button fx:id="button11" layoutX="250.0" mnemonicParsing="false" onAction="#onPrintPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
                      <graphic>
-                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="printButton" fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/images/print.png" />
                            </image>
                         </ImageView>
                      </graphic>
                   </Button>
-                  <Button fx:id="cropButton" layoutX="497.0" layoutY="-1.0" mnemonicParsing="false" onAction="#onCropPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                  <Button fx:id="button12" layoutX="497.0" layoutY="-1.0" mnemonicParsing="false" onAction="#onCropPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
                      <graphic>
-                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="cropButton" fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/images/crop.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="button13" layoutY="-1.0" mnemonicParsing="false" onAction="#onCheckPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;" visible="false">
+                     <graphic>
+                        <ImageView fx:id="checkButton" fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/check.png" />
                            </image>
                         </ImageView>
                      </graphic>

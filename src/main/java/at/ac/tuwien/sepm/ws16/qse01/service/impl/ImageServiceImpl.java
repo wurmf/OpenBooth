@@ -100,10 +100,20 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image crop(Image original, int x1, int x2, int y1, int y2) throws ServiceException {
+    public Image crop(Image original, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException {
         try {
             BufferedImage bufOriginal = ImageIO.read(new File(original.getImagepath()));
-            BufferedImage bufCropped = bufOriginal.getSubimage(x1, y1, x2-x1, y2-y1);
+
+            int width=bufOriginal.getWidth();
+            int height=bufOriginal.getHeight();
+            double ratioX = width/(double)maxX;
+            double ratioY = height/(double)maxY;
+            int newX1 = (int)(x1 * ratioX);
+            int newX2 = (int)(x2 * ratioX);
+            int newY1 = (int)(y1 * ratioY);
+            int newY2 = (int)(y2 * ratioY);
+
+            BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2-newX1, newY2-newY1);
             Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
             return imageDAO.createAndSave(img, bufCropped);
 
@@ -117,4 +127,5 @@ public class ImageServiceImpl implements ImageService {
             throw new ServiceException(e.getMessage());
         }
     }
+
 }

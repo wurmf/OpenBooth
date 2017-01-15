@@ -71,8 +71,10 @@ public interface ImageService {
      * @param x2 stop point on x axis
      * @param y1 start point on y axis
      * @param y2 stop point on y axis
+     * @param maxX x resolution of the displayed image
+     * @param maxY y resolution of the displayed image
      * @return reference to the cropped image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public Image crop(Image original, int x1, int x2, int y1, int y2) throws ServiceException;
+    public Image crop(Image original, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException;
 }
