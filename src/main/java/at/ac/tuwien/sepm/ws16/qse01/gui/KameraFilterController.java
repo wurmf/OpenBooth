@@ -84,10 +84,12 @@ public class KameraFilterController {
     @FXML
     private void initialize(){
         try {
-            buttonList = new ArrayList<>();
-            profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-            chousenimage = new ImageView[profile.getPairCameraPositions().size()];
+            if(shootingService.searchIsActive().getActive()) {
+                buttonList = new ArrayList<>();
+                profile = profileservice.get(shootingService.searchIsActive().getProfileid());
+                chousenimage = new ImageView[profile.getPairCameraPositions().size()];
 
+            }
         } catch (ServiceException e) {
             e.printStackTrace();
         }

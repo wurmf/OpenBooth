@@ -156,7 +156,7 @@ public class CostumerFrameController {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
-            if (pairList.isEmpty()||pairList.size()==0) {
+            if (pairList==null||pairList.isEmpty()) {
                 rightbutton.setVisible(false);
             }else {
                 LOGGER.debug("buttons:" + buttonList.size() + "");

@@ -25,8 +25,10 @@ public class KameraFilterService {
         this.shootingService = shootingService;
         this.profileService = profileService;
         try {
-            profile = profileService.get(shootingService.searchIsActive().getProfileid());
-            current = new Integer[profile.getPairCameraPositions().size()];
+            if(shootingService.searchIsActive().getActive()) {
+                profile = profileService.get(shootingService.searchIsActive().getProfileid());
+                current = new Integer[profile.getPairCameraPositions().size()];
+            }
         } catch (ServiceException e) {
             e.printStackTrace();
         }
