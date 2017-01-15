@@ -12,16 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,12 +29,10 @@ public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     private ShootingDAO shootingDAO;
-    private Map<String, BufferedImage> userBgMap;
 
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;
-        this.userBgMap=null;
     }
 
     @Override
