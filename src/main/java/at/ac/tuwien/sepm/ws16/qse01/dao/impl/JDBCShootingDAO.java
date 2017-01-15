@@ -33,8 +33,6 @@ public class JDBCShootingDAO implements ShootingDAO {
         }
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
-
     @Override
     public Shooting create(Shooting shooting) throws PersistenceException {
         PreparedStatement stmt = null;
