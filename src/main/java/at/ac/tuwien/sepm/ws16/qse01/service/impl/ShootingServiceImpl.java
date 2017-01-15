@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Shooting service impl
@@ -29,16 +32,17 @@ public class ShootingServiceImpl implements ShootingService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingServiceImpl.class);
     private ShootingDAO shootingDAO;
+    private Map<String, BufferedImage> userBgMap;
 
     @Autowired
     public ShootingServiceImpl(ShootingDAO jdbcShootingDAO) {
         shootingDAO = jdbcShootingDAO;
+        this.userBgMap=null;
     }
 
     @Override
     public void addShooting(Shooting shooting) throws ServiceException {
         try {
-
             shootingDAO.create(shooting);
         } catch (PersistenceException e) {
             throw new ServiceException(e);
@@ -65,6 +69,15 @@ public class ShootingServiceImpl implements ShootingService {
     }
 
     @Override
+    public Map<String, BufferedImage> getUserBackgrounds() throws ServiceException{
+        try {
+            return shootingDAO.getUserBackgrounds();
+        } catch (PersistenceException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+    @Override
     public void update(Shooting shooting) throws ServiceException{
         try {
             shootingDAO.update(shooting);
@@ -72,6 +85,8 @@ public class ShootingServiceImpl implements ShootingService {
             throw new ServiceException(e);
         }
     }
+
+
 
     @Override
     public String createPath() throws ServiceException {

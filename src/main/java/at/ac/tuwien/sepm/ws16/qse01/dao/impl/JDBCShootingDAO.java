@@ -11,7 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ShootingDaoImpl
@@ -20,6 +29,8 @@ import java.sql.*;
 public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
+    private String currentBgPath;
+    private Map<String, BufferedImage> currentBackgrounds;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 
@@ -31,6 +42,8 @@ public class JDBCShootingDAO implements ShootingDAO {
             LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
+        currentBgPath=null;
+        currentBackgrounds=null;
     }
 
     @Override
@@ -148,6 +161,38 @@ public class JDBCShootingDAO implements ShootingDAO {
                 }
             }
         }
+    }
+
+    @Override
+    public Map<String, BufferedImage> getUserBackgrounds() throws PersistenceException {
+        Shooting activeShooting=this.searchIsActive();
+        if(activeShooting==null || activeShooting.getBgPictureFolder()==null || activeShooting.getBgPictureFolder().isEmpty()){
+            return null;
+        } else if(currentBgPath!=null && activeShooting.getBgPictureFolder().equals(currentBgPath)){
+            return currentBackgrounds;
+        }
+        FileFilter filter= c-> c.getName().endsWith(".jpg")|c.getName().endsWith(".png");
+        File bgFolder= new File(activeShooting.getBgPictureFolder());
+        File[] pictureFiles= bgFolder.listFiles(filter);
+        if(pictureFiles==null||pictureFiles.length==0)
+            return null;
+        List<File> filesList=Arrays.asList(pictureFiles);
+        Map<String, BufferedImage> result=new HashMap<>();
+        String filePath;
+        BufferedImage image;
+        try {
+            for (File file : filesList) {
+                filePath = file.getCanonicalPath();
+                image = ImageIO.read(file);
+                result.put(filePath,image);
+            }
+        } catch(IOException e){
+            LOGGER.error("getUserBackgrounds",e);
+            throw new PersistenceException("Unable to load images",e);
+        }
+        currentBgPath=activeShooting.getBgPictureFolder();
+        currentBackgrounds=result;
+        return result;
     }
 
 }
