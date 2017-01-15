@@ -727,24 +727,22 @@ public class FullScreenImageController {
     }
 
     private Rectangle createDraggableRectangle(double x, double y, double width, double height) {
-        final double handleRadius = 10;
+        final double handleRadius = 10 ;
 
         Rectangle rect = new Rectangle(x, y, width, height);
-        rect.setVisible(true);
-        rect.setFill(Color.BLACK);
         rect.setOpacity(0.1);
+
         // top left resize handle:
-        resizeHandleNW = new Circle(handleRadius, Color.BLACK);
+        Circle resizeHandleNW = new Circle(handleRadius, Color.BLACK);
         // bind to top left corner of Rectangle:
         resizeHandleNW.centerXProperty().bind(rect.xProperty());
         resizeHandleNW.centerYProperty().bind(rect.yProperty());
 
         // bottom right resize handle:
-        resizeHandleSE = new Circle(handleRadius, Color.BLACK);
+        Circle resizeHandleSE = new Circle(handleRadius, Color.BLACK);
         // bind to bottom right corner of Rectangle:
         resizeHandleSE.centerXProperty().bind(rect.xProperty().add(rect.widthProperty()));
         resizeHandleSE.centerYProperty().bind(rect.yProperty().add(rect.heightProperty()));
-
 
         // force circles to live in same parent as rectangle:
         rect.parentProperty().addListener((obs, oldParent, newParent) -> {
@@ -757,9 +755,7 @@ public class FullScreenImageController {
             }
         });
 
-
         Wrapper<Point2D> mouseLocation = new Wrapper<>();
-
 
         setUpDragging(resizeHandleNW, mouseLocation) ;
         setUpDragging(resizeHandleSE, mouseLocation) ;
@@ -800,27 +796,6 @@ public class FullScreenImageController {
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
             }
-        });
-
-        rect.setOnMouseDragged(event -> {
-            if (mouseLocation.value != null) {
-                double deltaX = event.getSceneX() - mouseLocation.value.getX();
-                double deltaY = event.getSceneY() - mouseLocation.value.getY();
-                double newX = rect.getX() + deltaX ;
-                double newMaxX = newX + rect.getWidth();
-                if (newX >= handleRadius
-                        && newMaxX <= rect.getParent().getBoundsInLocal().getWidth() - handleRadius) {
-                    rect.setX(newX);
-                }
-                double newY = rect.getY() + deltaY ;
-                double newMaxY = newY + rect.getHeight();
-                if (newY >= handleRadius
-                        && newMaxY <= rect.getParent().getBoundsInLocal().getHeight() - handleRadius) {
-                    rect.setY(newY);
-                }
-                mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
-            }
-
         });
 
         return rect ;
