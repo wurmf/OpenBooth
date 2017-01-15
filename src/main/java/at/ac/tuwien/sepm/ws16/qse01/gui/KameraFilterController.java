@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.GreenscreenServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
@@ -21,8 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -408,6 +405,10 @@ public class KameraFilterController {
         currentMode=kameraFilterService.getcurrent(index);
         fId=idFilter;
         titel.setText("");
+        greengrid=new GridPane();
+        if(filtergrid==null){
+            filtergrid = new GridPane();
+        }
         try {
             if(index>-1) {
                 if (profile != profileservice.get(shootingService.searchIsActive().getProfileid())) {
