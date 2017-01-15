@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane fx:id="base" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+<GridPane fx:id="base" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
   <columnConstraints>
     <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
   </columnConstraints>
@@ -16,7 +16,7 @@
   </rowConstraints>
    <children>
       <ImageView fx:id="ivfullscreenImage" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" />
-      <GridPane>
+      <GridPane fx:id="wholePane">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
          </columnConstraints>
@@ -51,7 +51,7 @@
                         <Button fx:id="button12" mnemonicParsing="false" onAction="#onCropPressed" style="-fx-background-image: url('/images/crop.png');" GridPane.columnIndex="2" />
 
                          <!--prefHeight="100.0" prefWidth="620.0"-->
-                        <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg"  text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="3">
+                        <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg" prefHeight="40.0" prefWidth="213.0" text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="3">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font></Button>

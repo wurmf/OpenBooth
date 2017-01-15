@@ -54,11 +54,11 @@ public class FullScreenImageController {
     @FXML
     private GridPane mainPane;
     @FXML
+    private GridPane wholePane;
+    @FXML
     private Pane planetop;
 
     private GridPane planbottom;
-
-    private Pane anchorPane;
     @FXML
     private Button button5;
     @FXML
@@ -117,8 +117,8 @@ public class FullScreenImageController {
     private WindowManager windowManager;
     private ImagePrinter imagePrinter;
     private Rectangle cropRectangle = null;
-    Circle resizeHandleNW = null;
-    Circle resizeHandleSE = null;
+    private Circle resizeHandleNW = null;
+    private Circle resizeHandleSE = null;
     private boolean cropping=false;
     private RefreshManager refreshManager;
     private ImageHandler imageHandler;
@@ -231,13 +231,34 @@ public class FullScreenImageController {
     }
 
     /**
+     * if cropping then stop cropping else
      * closes full screen and opens miniatur sceen again
      * before doing so it sets currentIndex to -1 to overcome possible null pointer exeptions
-     *
      */
     @FXML
     public void onClosePressed(){
-        windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
+        if(cropping)
+        {
+            cropping = false;
+            image3.setVisible(true);
+            image4.setVisible(true);
+            button1.setVisible(true);
+            button11.setVisible(true);
+            button12.setVisible(true);
+            button5.setCancelButton(true);
+            button6.setCancelButton(true);
+            button7.setCancelButton(true);
+            button8.setCancelButton(true);
+            button9.setCancelButton(true);
+            button13.setVisible(false);
+            cropRectangle.setVisible(false);
+            resizeHandleNW.setVisible(false);
+            resizeHandleSE.setVisible(false);
+        }
+        else
+        {
+            windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
+        }
     }
 
     /**
@@ -594,42 +615,48 @@ public class FullScreenImageController {
      */
     @FXML
     public void saveFilteredImg(){
-        LOGGER.info("Entering saveFilteredImg... "+filteredImgPath);
-        try {
-
-
-            activeFilterImageView.setFitHeight(80);
-            activeFilterImageView.setPreserveRatio(false);
-
-
-            saveFilteredButton.setVisible(false);
-
-            //exporting image name from imagePath
-            String[] parts = ivfullscreenImage.getId().split("/");
-            String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
-
-            String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
-
-            imageHandler.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
-
-            activeFilterImageView = null;
-            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
-            refreshManager.notifyMiniatureFrameOfAdd(newImage);
-
-            if((currentIndex+1)>=imageList.size())
-                imageList.add(newImage);
-            else {
-                imageList.add(currentIndex + 1, newImage);
-            }
-
-            currentIndex = currentIndex + 1;
-            button4.setVisible(true);
-            LOGGER.info("Filtered image saved in DB...");
-
-        } catch (ImageHandlingException | ServiceException e) {
-            LOGGER.error("saveFilteredImg - ",e);
+        if(cropping)
+        {
+            onCheckPressed();
         }
+        else
+        {
+            LOGGER.info("Entering saveFilteredImg... "+filteredImgPath);
+            try {
 
+
+                activeFilterImageView.setFitHeight(80);
+                activeFilterImageView.setPreserveRatio(false);
+
+
+                saveFilteredButton.setVisible(false);
+
+                //exporting image name from imagePath
+                String[] parts = ivfullscreenImage.getId().split("/");
+                String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
+
+                String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
+
+                imageHandler.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
+
+                activeFilterImageView = null;
+                at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
+                refreshManager.notifyMiniatureFrameOfAdd(newImage);
+
+                if((currentIndex+1)>=imageList.size())
+                    imageList.add(newImage);
+                else {
+                    imageList.add(currentIndex + 1, newImage);
+                }
+
+                currentIndex = currentIndex + 1;
+                button4.setVisible(true);
+                LOGGER.info("Filtered image saved in DB...");
+
+            } catch (ImageHandlingException | ServiceException e) {
+                LOGGER.error("saveFilteredImg - ",e);
+            }
+        }
     }
 
     /**
@@ -648,22 +675,18 @@ public class FullScreenImageController {
     public void onCropPressed()
     {
         cropping=true;
-        image3.setVisible(false);
-        image4.setVisible(false);
-        button1.setVisible(false);
+        /*button1.setVisible(false);
+        button3.setVisible(false);
+        button4.setVisible(false);
         button11.setVisible(false);
         button12.setVisible(false);
-        button5.setCancelButton(false);
-        button6.setCancelButton(false);
-        button7.setCancelButton(false);
-        button8.setCancelButton(false);
-        button9.setCancelButton(false);
-        button13.setVisible(true);
+        button13.setVisible(true);*/
+        saveFilteredButton.setVisible(true);
         LOGGER.info("Crop Button clicked");
         if(cropRectangle==null)
         {
             cropRectangle=createDraggableRectangle(200, 200, 500, 500);
-            anchorPane.getChildren().add(cropRectangle);
+            wholePane.getChildren().add(cropRectangle);
         }
         else
         {
@@ -673,12 +696,12 @@ public class FullScreenImageController {
         }
     }
 
-    public void onCheckPressed()
+    private void onCheckPressed()
     {
         cropping = false;
-        image3.setVisible(true);
-        image4.setVisible(true);
-        button1.setVisible(true);
+        /*button1.setVisible(true);
+        button3.setVisible(true);
+        button4.setVisible(true);
         button11.setVisible(true);
         button12.setVisible(true);
         button5.setCancelButton(true);
@@ -686,11 +709,12 @@ public class FullScreenImageController {
         button7.setCancelButton(true);
         button8.setCancelButton(true);
         button9.setCancelButton(true);
-        button13.setVisible(false);
+        button13.setVisible(false);*/
         cropRectangle.setVisible(false);
         resizeHandleNW.setVisible(false);
         resizeHandleSE.setVisible(false);
-        currentIndex = 0;
+        //saveFilteredButton.setVisible(true);
+
         int x = (int)cropRectangle.localToScene(cropRectangle.getBoundsInLocal()).getMinX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int y = (int)cropRectangle.localToScene(cropRectangle.getBoundsInLocal()).getMinY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         int maxX =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
@@ -708,7 +732,7 @@ public class FullScreenImageController {
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setVisible(true);
         rect.setFill(Color.BLACK);
-        rect.setOpacity(0.2);
+        rect.setOpacity(0.1);
         // top left resize handle:
         resizeHandleNW = new Circle(handleRadius, Color.BLACK);
         // bind to top left corner of Rectangle:

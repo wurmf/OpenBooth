@@ -64,7 +64,6 @@ public class CameraThread extends Thread{
 
                         imageSaved=true;
 
-                        LOGGER.debug(image.getImageID() + "");
                         LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
                     }else{
                         LOGGER.error("no active shooting during capture");
