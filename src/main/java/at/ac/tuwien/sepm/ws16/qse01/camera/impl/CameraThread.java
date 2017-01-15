@@ -57,7 +57,6 @@ public class CameraThread extends Thread{
                         String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
                         image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
                         image = imageService.create(image);
-
                         cf.save(new File(imagePath).getAbsolutePath());
 
                         imageSaved=true;

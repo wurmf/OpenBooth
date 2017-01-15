@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" snapToPixel="false" style="-fx-background-color: dimgray;" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.FullScreenImageController">
+   <children>
+      <ImageView fx:id="ivfullscreenImage" fitHeight="1079.0" fitWidth="1920.0" pickOnBounds="true" preserveRatio="true" smooth="true" />
+      <BorderPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: TRANSPARENT;">
+         <top>
+            <Pane fx:id="planetop" prefHeight="150.0" prefWidth="1948.0" style="-fx-background-color: rgba(50,50, 50, 0.5);" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                     <graphic>
+                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/bin.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="button2" layoutX="1687.0" layoutY="4.0" mnemonicParsing="false" onAction="#onClosePressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                     <graphic>
+                        <ImageView fitHeight="135.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/cross.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="button11" layoutX="250.0" mnemonicParsing="false" onAction="#onPrintPressed" prefHeight="150.0" prefWidth="240.0" snapToPixel="false" style="-fx-background-color: TRANSPARENT;">
+                     <graphic>
+                        <ImageView fitHeight="135.0" fitWidth="140.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/images/print.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </Pane>
+         </top>
+         <bottom>
+            <Pane fx:id="planbottom" prefHeight="150.0" prefWidth="600.0" style="-fx-background-color: rgba(50,50, 50, 0.5);" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="button5" layoutX="1078.0" mnemonicParsing="false" onAction="#onFilter4Pressed" prefHeight="150.0" prefWidth="100.0" />
+                  <Button fx:id="button6" layoutX="628.0" mnemonicParsing="false" onAction="#onFilter3Pressed" prefHeight="150.0" prefWidth="100.0" />
+                  <Button fx:id="button9" layoutX="928.0" mnemonicParsing="false" onAction="#onFilter5Pressed" prefHeight="150.0" prefWidth="100.0" />
+                  <Button fx:id="button7" layoutX="1228.0" mnemonicParsing="false" onAction="#onFilter2Pressed" prefHeight="150.0" prefWidth="100.0" />
+                  <Button fx:id="button8" layoutX="778.0" mnemonicParsing="false" onAction="#onFilter1Pressed" prefHeight="150.0" prefWidth="100.0" />
+                  <Pane layoutX="728.0" prefHeight="150.0" prefWidth="50.0" />
+               </children>
+            </Pane>
+         </bottom>
+         <left>
+            <Button fx:id="button3" mnemonicParsing="false" onAction="#onfullscreen1" onSwipeLeft="#onGetLastImage" prefHeight="780.0" prefWidth="980.0" style="-fx-background-color: TRANSPARENT;" BorderPane.alignment="CENTER">
+               <graphic>
+                  <ImageView fx:id="image3" fitHeight="262.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/images/arrowleft.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </left>
+         <right>
+            <Button fx:id="button4" mnemonicParsing="false" onAction="#onfullscreen2" onSwipeRight="#onGetNextImage" prefHeight="780.0" prefWidth="948.0" style="-fx-background-color: TRANSPARENT;" BorderPane.alignment="CENTER">
+               <graphic>
+                  <ImageView fx:id="image4" fitHeight="150.0" fitWidth="274.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@/images/arrowright.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

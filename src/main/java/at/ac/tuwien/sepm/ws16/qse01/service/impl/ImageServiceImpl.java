@@ -14,6 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -97,7 +101,6 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-
     @Override
     public int getNextImageID() throws ServiceException {
         try {
@@ -108,6 +111,28 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    @Override
+    public Image crop(Image original, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException {
+        try {
+            BufferedImage bufOriginal = ImageIO.read(new File(original.getImagepath()));
 
+            int width=bufOriginal.getWidth();
+            int height=bufOriginal.getHeight();
+            double ratioX = width/(double)maxX;
+            double ratioY = height/(double)maxY;
+            int newX1 = (int)(x1 * ratioX);
+            int newX2 = (int)(x2 * ratioX);
+            int newY1 = (int)(y1 * ratioY);
+            int newY2 = (int)(y2 * ratioY);
+
+            BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2-newX1, newY2-newY1);
+            Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
+            return imageDAO.createAndSave(img, bufCropped);
+
+        } catch (IOException | PersistenceException e) {
+            LOGGER.debug("crop: ", e);
+            throw new ServiceException(e.getMessage());
+        }
+    }
 
 }

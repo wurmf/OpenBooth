@@ -3,6 +3,8 @@ package at.ac.tuwien.sepm.ws16.qse01.dao;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 
+
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
@@ -42,6 +44,13 @@ public interface ImageDAO {
      */
     String getLastImgPath(int shootingid) throws PersistenceException;
 
+    /**
+     *
+     * @param image the image that shall be saved in database and filesystem
+     * @return Image with right id.
+     * @throws PersistenceException if error occurs
+     */
+    Image createAndSave(Image image, BufferedImage bufferedImage) throws PersistenceException;
 
     /**
      * Returns the next imageID
