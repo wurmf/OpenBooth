@@ -117,13 +117,8 @@ public class ImageServiceImpl implements ImageService {
             Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
             return imageDAO.createAndSave(img, bufCropped);
 
-        } catch (IOException e) {
-            LOGGER.debug("crop: " + e);
-            throw new ServiceException(e.getMessage());
-        }
-        catch (PersistenceException e)
-        {
-            LOGGER.debug("crop: " + e);
+        } catch (IOException | PersistenceException e) {
+            LOGGER.debug("crop: ", e);
             throw new ServiceException(e.getMessage());
         }
     }
