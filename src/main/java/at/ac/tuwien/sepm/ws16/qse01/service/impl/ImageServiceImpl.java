@@ -127,7 +127,7 @@ public class ImageServiceImpl implements ImageService {
 
             BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2-newX1, newY2-newY1);
             Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
-            return imageDAO.createAndSave(img, bufCropped);
+            return dao.createAndSave(img, bufCropped);
 
         } catch (IOException | PersistenceException e) {
             LOGGER.debug("crop: ", e);

@@ -36,7 +36,6 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.sql.Wrapper;
 import java.util.Arrays;
 import java.io.IOException;
 import java.util.List;
@@ -75,8 +74,6 @@ public class FullScreenImageController {
     @FXML
     private Button button4;
     @FXML
-    private Button button1;
-    @FXML
     private Button button2;
     @FXML
     private Button button13;
@@ -89,11 +86,11 @@ public class FullScreenImageController {
     @FXML
     private Button saveFilteredButton;
     @FXML
-    private ImageView deleteButton;
+    private Button button1;
     @FXML
-    private ImageView printButton;
+    private Button button11;
     @FXML
-    private ImageView cropButton;
+    private Button button12;
 
 
 
@@ -653,9 +650,9 @@ public class FullScreenImageController {
         cropping=true;
         image3.setVisible(false);
         image4.setVisible(false);
-        deleteButton.setVisible(false);
-        printButton.setVisible(false);
-        cropButton.setVisible(false);
+        button1.setVisible(false);
+        button11.setVisible(false);
+        button12.setVisible(false);
         button5.setCancelButton(false);
         button6.setCancelButton(false);
         button7.setCancelButton(false);
@@ -681,9 +678,9 @@ public class FullScreenImageController {
         cropping = false;
         image3.setVisible(true);
         image4.setVisible(true);
-        deleteButton.setVisible(true);
-        printButton.setVisible(true);
-        cropButton.setVisible(true);
+        button1.setVisible(true);
+        button11.setVisible(true);
+        button12.setVisible(true);
         button5.setCancelButton(true);
         button6.setCancelButton(true);
         button7.setCancelButton(true);
