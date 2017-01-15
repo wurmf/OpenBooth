@@ -11,12 +11,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * Created by macdnz on 14.01.17.
@@ -25,6 +28,8 @@ import org.springframework.stereotype.Component;
 public class CameraPositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraPositionFrameController.class);
 
+    @FXML
+    private TableView tableKamPos;
     @FXML
     private TableColumn colKamPosKamera;
     @FXML
@@ -104,5 +109,12 @@ public class CameraPositionFrameController extends SettingFrameController {
     @Override
     protected void saveProfil() {
 
+    }
+
+    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
+        LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
+        this.kamPosList.removeAll(kamPosList);
+        this.kamPosList.addAll(camposList);
+        tableKamPos.setItems(this.kamPosList);
     }
 }

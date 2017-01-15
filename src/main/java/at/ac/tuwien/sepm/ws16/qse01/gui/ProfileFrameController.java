@@ -12,10 +12,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -28,6 +25,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Controller;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * The controller for the profileFrame.
@@ -42,6 +40,8 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     /* BEGINN OF PROFILE Table Column FXML */
+    @FXML
+    private TableView tableProfil;
 
     @FXML
     private TableColumn colProfilID;
@@ -84,9 +84,6 @@ public class ProfileFrameController extends SettingFrameController{
         super(pservice,logoService,bservice,windowmanager);
     }
 
-    public ProfileFrameController(){
-        super();
-    }
 
     @FXML
     protected void initialize(){
@@ -268,6 +265,7 @@ public class ProfileFrameController extends SettingFrameController{
             tableProfil.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
                     selectedProfile = (Profile) newSelection;
+                    selectedProfileID = selectedProfile.getId();
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
                     System.out.println("profile selected....");
@@ -278,9 +276,9 @@ public class ProfileFrameController extends SettingFrameController{
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
-                       /* txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
-                        txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
-                        txLogoName.setTxLogoPath(txLogoLogo);*/
+
+                        refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfileID));
+
                     } catch (ServiceException e) {
                         e.printStackTrace();
                     }
@@ -376,6 +374,14 @@ public class ProfileFrameController extends SettingFrameController{
 
     @Override
     protected void logoUpload() {
+
+    }
+
+    protected void refreshTableProfiles(List<Profile> profileList){
+        LOGGER.info("refreshing the profil table...");
+        profList.clear();
+        profList.addAll(profileList);
+        tableProfil.setItems(profList);
 
     }
 }

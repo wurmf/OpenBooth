@@ -28,6 +28,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
         this.camPosList = camPosList;
         this.posList = posList;
         this.pservice = pservice;
+        System.out.println("Poslist -> Anzahl ->"+posList.size());
         this.comboBox.setItems(posList);
         this.comboBox.setPromptText("Position auswählen");
 

@@ -1,10 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
-import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.AutoCompleteTextField;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -13,10 +11,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import org.slf4j.Logger;
@@ -25,11 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Controller for Setting Frame .
@@ -49,6 +39,8 @@ public abstract class SettingFrameController {
 
     protected final ObservableList<Profile> profList = FXCollections.observableArrayList();
     protected final ObservableList<Position> posList = FXCollections.observableArrayList();
+
+
     protected final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
@@ -60,27 +52,29 @@ public abstract class SettingFrameController {
 
 
 
-    @FXML
-    protected TableView tableBackground;
-    @FXML
-    protected TableView tablePosition;
-    @FXML
-    protected TableView tableLogo;
-    @FXML
-    protected TableView tableProfil;
-    @FXML
-    protected TableView tableKamPos;
+
+
+
 
     @FXML
-    protected AutoCompleteTextField txLogoName;
+    private ProfileFrameController profilController;
     @FXML
-    protected TextField txLogoLogo;
+    private PositionFrameController positionController;
+    @FXML
+    private CameraPositionFrameController kamPosController;
+    @FXML
+    private LogoFrameController logoController;
+    @FXML
+    private GreenscreenFrameController greenscreenController;
+
+
 
 
 
 
     protected Profile.PairLogoRelativeRectangle selectedLogo = null;
     protected Profile selectedProfile = null;
+    protected int selectedProfileID = 0;
 
     @Autowired
     public SettingFrameController(ProfileService pservice,LogoWatermarkService logoService,BackgroundService bservice,WindowManager windowmanager) throws ServiceException {
@@ -101,42 +95,48 @@ public abstract class SettingFrameController {
     protected abstract void initialize();
 
     protected void refreshTableProfiles(List<Profile> profileList){
-        LOGGER.info("refreshing the profil table...");
+        profilController.refreshTableProfiles(profileList);
+       /* LOGGER.info("refreshing the profil table...");
         profList.clear();
         profList.addAll(profileList);
-        tableProfil.setItems(profList);
+        tableProfil.setItems(profList);*/
 
     }
     protected void refreshLogoAutoComplete(Profile selectedProfile) throws ServiceException {
-        txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
+        logoController.refreshLogoAutoComplete(selectedProfile);
+       /* txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
         txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
-        txLogoName.setTxLogoPath(txLogoLogo);
+        txLogoName.setTxLogoPath(txLogoLogo);*/
     }
 
     protected void refreshTablePosition(List<Position> positionList){
-        LOGGER.info("refreshing the position table...");
+        positionController.refreshTablePosition(positionList);
+       /* LOGGER.info("refreshing the position table...");
         posList.clear();
         posList.addAll(positionList);
-        tablePosition.setItems(posList);
+        tablePosition.setItems(posList);*/
     }
     protected void refreshTableBackground(List<Background> backgroundList){
-        LOGGER.info("refreshing the background table...");
+        greenscreenController.refreshTableBackground(backgroundList);
+      /*  LOGGER.info("refreshing the background table...");
         this.backgroundList.clear();
         this.backgroundList.addAll(backgroundList);
-        tableBackground.setItems(this.backgroundList);
+        tableBackground.setItems(this.backgroundList);*/
     }
 
     protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
-        LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
+        kamPosController.refreshTableKameraPosition(camposList);
+      /*  LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
         this.kamPosList.removeAll(kamPosList);
         this.kamPosList.addAll(camposList);
-        tableKamPos.setItems(this.kamPosList);
+        tableKamPos.setItems(this.kamPosList);*/
     }
     protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList){
-        LOGGER.info("refreshing the Logo table...");
+        logoController.refreshTableLogo(logoList);
+        /*LOGGER.info("refreshing the Logo table...");
         this.logoList.clear();
         this.logoList.addAll(logoList);
-        tableLogo.setItems(this.logoList);
+        tableLogo.setItems(this.logoList);*/
     }
 
 
@@ -162,30 +162,6 @@ public abstract class SettingFrameController {
         alert.initOwner(windowManager.getStage());
         alert.show();
     }
-    protected List<String> logo2StringArray(List<Logo> logos){
-        List<String> ret = new ArrayList<>();
-        for (Logo logo:logos){
-            ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
-        }
-        return ret;
-    }
-    protected Map<String,ImageView> logo2imgViews(List<Logo> logos){
-        Map<String,ImageView> ret = new HashMap<>();
-        for (Logo logo:logos){
-            String logoPath;
-            if(new File(logo.getPath()).isFile())
-                logoPath = logo.getPath();
-            else
-                logoPath = System.getProperty("user.dir")+"/src/main/resources/images/noimage.png";
-
-            ImageView imgView =new ImageView(new Image("file:"+logoPath,30,30,true,true));
-
-            imgView.setId((logoPath.contains("noimage.png")?"":logoPath));
-
-            ret.put(logo.getLabel().toLowerCase()+" #"+logo.getId(),imgView);
-        }
-        return ret;
-    }
 
     @FXML
     protected abstract void positionUpload();
@@ -201,6 +177,7 @@ public abstract class SettingFrameController {
     protected abstract void watermarkUpload();
     @FXML
     protected abstract void saveProfil();
+
 
 
 

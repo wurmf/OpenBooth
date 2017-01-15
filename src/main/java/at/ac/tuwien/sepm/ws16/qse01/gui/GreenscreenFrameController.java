@@ -12,10 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -27,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by macdnz on 13.01.17.
@@ -44,6 +42,8 @@ public class GreenscreenFrameController extends SettingFrameController {
 
 
     /* BEGINN OF Category-Background Table Column FXML */
+    @FXML
+    private TableView tableBackground;
     @FXML
     private TableColumn colBackgroundID;
     @FXML
@@ -201,6 +201,13 @@ public class GreenscreenFrameController extends SettingFrameController {
         if (file != null) {
             txBackgroundPath.setText(file.getAbsolutePath());
         }
+    }
+
+    protected void refreshTableBackground(List<Background> backgroundList){
+        LOGGER.info("refreshing the background table..."+backgroundList.size());
+        this.backgroundList.clear();
+        this.backgroundList.addAll(backgroundList);
+        tableBackground.setItems(this.backgroundList);
     }
 
 }

@@ -3,6 +3,9 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionImgCell;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -10,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -18,9 +22,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by osboxes on 11.12.16.
@@ -30,8 +36,10 @@ public class PositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionFrameController.class);
 
 
-    /* BEGINN OF Position Table Column FXML */
 
+    /* BEGINN OF Position Table Column FXML */
+    @FXML
+    private TableView tablePosition;
     @FXML
     private TableColumn colPositionID;
     @FXML
@@ -50,15 +58,12 @@ public class PositionFrameController extends SettingFrameController {
     @FXML
     private TextField txPositionBild;
 
-   /* @Autowired
+    @Autowired
     public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
         super(pservice, logoService, bservice, windowmanager);
         System.out.println("Camera initiliasierit tableview..n #########");
-    }*/
-
-    public PositionFrameController(){
-        super();
     }
+
 
     @FXML
     protected void initialize(){
@@ -135,7 +140,8 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
+                        System.out.println("selectedProfil->"+selectedProfileID);
+                        return new PositionButtonCell(posList,kamPosList,selectedProfileID,pservice,windowManager.getStage());
                     }
 
                 });
@@ -226,4 +232,12 @@ public class PositionFrameController extends SettingFrameController {
             txPositionBild.setText(file.getAbsolutePath());
         }
     }
+
+    protected void refreshTablePosition(List<Position> positionList){
+        LOGGER.info("refreshing the position table...");
+        posList.clear();
+        posList.addAll(positionList);
+        tablePosition.setItems(posList);
+    }
+
 }
