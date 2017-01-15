@@ -760,6 +760,7 @@ public class FullScreenImageController {
 
         Wrapper<Point2D> mouseLocation = new Wrapper<>();
 
+
         setUpDragging(resizeHandleNW, mouseLocation) ;
         setUpDragging(resizeHandleSE, mouseLocation) ;
 
