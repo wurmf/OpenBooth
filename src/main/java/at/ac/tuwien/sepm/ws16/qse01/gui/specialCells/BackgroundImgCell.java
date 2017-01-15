@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -28,16 +29,16 @@ public class BackgroundImgCell extends TableCell<Background, String> {
     final static Logger LOGGER = LoggerFactory.getLogger(BackgroundImgCell.class);
 
     private  ObservableList<Background> backgroundList;
-    private ProfileService pservice;
+    private BackgroundService bservice;
 
 
     final ImageView img = new ImageView();
     final Button cellButton = new Button("edit");
     private Desktop desktop;
 
-    public BackgroundImgCell(ObservableList<Background> backgroundList, ProfileService pservice) {
+    public BackgroundImgCell(ObservableList<Background> backgroundList, BackgroundService bservice) {
         this.backgroundList = backgroundList;
-        this.pservice = pservice;
+        this.bservice = bservice;
 
         img.setFitHeight(35);
         img.setFitWidth(35);
@@ -60,7 +61,7 @@ public class BackgroundImgCell extends TableCell<Background, String> {
                 );
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
-                   // try {
+                    try {
 
                         Background p = backgroundList.get(getIndex());
 
@@ -77,12 +78,12 @@ public class BackgroundImgCell extends TableCell<Background, String> {
                         hb.setAlignment(Pos.CENTER);
                         setGraphic(hb);
 
-                      //TODO:  pservice.editBackground(p);
+                        bservice.edit(p);
 
 
-                 /*   } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }*/
+                    } catch (ServiceException e) {
+                        LOGGER.error("background bild konnte nicht in db gespeichert werden",e);
+                    }
                 }
 
             }

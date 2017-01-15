@@ -88,18 +88,17 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
                                 p.setName(t.getNewValue());
                                 bservice.edit(p);
 
-                                // refreshTableBackground(bservice.get getAllBackgroundsOfCategoryAndProfile(selectedProfile.getId(),selectedCategory));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             } else {
-                                //TODO: change this line on refreshTableBackground!
-                                refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             }
 
                         } catch (ServiceException e) {
-                            /*try {
-                                refreshTableProfiles(pservice.getAllProfiles());
+                            try {
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             } catch (ServiceException e1) {
                                 LOGGER.error("Error: could not refresh the profile table: ",e1);
-                            }*/
+                            }
 
                         }
 
@@ -113,7 +112,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
             @Override
             public TableCell call(TableColumn p) {
 
-                return new BackgroundImgCell(backgroundList,pservice);
+                return new BackgroundImgCell(backgroundList,bservice);
 
             }
         });
@@ -136,7 +135,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
                     @Override
                     public TableCell<Background, Boolean> call(TableColumn<Background, Boolean> p) {
-                        return new BackgroundButtonCell(backgroundList,pservice,windowManager.getStage());
+                        return new BackgroundButtonCell(backgroundList,bservice,windowManager.getStage());
                     }
 
                 });

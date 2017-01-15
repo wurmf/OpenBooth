@@ -1,7 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -22,13 +23,13 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
     final static Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
 
     private  ObservableList<Background.Category> categories;
-    private ProfileService pservice;
+    private BackgroundService bservice;
 
     private final Button cellButton = new Button("X");
 
-    public CategoryButtonCell(ObservableList<Background.Category> categories, ProfileService pservice, Stage primaryStage) {
+    public CategoryButtonCell(ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
         this.categories = categories;
-        this.pservice = pservice;
+        this.bservice = bservice;
 
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
@@ -50,14 +51,15 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
 
                     //remove selected item from the table list
                     categories.remove(currentCategory);
-                 /*   try {
+                    try {
 
-                       //TODO: pservice.eraseBackground(currentBackground);
+                        bservice.eraseCategory(currentCategory);
 
 
                     } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }*/
+                        LOGGER.error("Kategorie konnte nicht von db gelöscht werden",e);
+                    }
+
 
 
                     setGraphic(null);

@@ -56,10 +56,6 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
     @FXML
     private void initialize() {
-
-            /* ######################### */
-            /* INITIALIZING Greenscreen Background TABLE */
-            /* ######################### */
         tableCategory.setEditable(true);
         colCategoryID.setCellValueFactory(new PropertyValueFactory<Background.Category, Integer>("id"));
 
@@ -77,18 +73,15 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 bservice.editCategory(p);
 
-                                // refreshTableBackground(bservice.get getAllBackgroundsOfCategoryAndProfile(selectedProfile.getId(),selectedCategory));
+                                 refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
                             } else {
-                                //TODO: change this line on refreshTableBackground!
-                                refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
+                                refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
                             }
 
                         } catch (ServiceException e) {
-                            /*try {
-                                refreshTableProfiles(pservice.getAllProfiles());
-                            } catch (ServiceException e1) {
-                                LOGGER.error("Error: could not refresh the profile table: ",e1);
-                            }*/
+
+                            LOGGER.error("Error: could not refresh the profile table: ",e);
+
 
                         }
 
@@ -114,7 +107,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background.Category, Boolean> call(TableColumn<Background.Category, Boolean> p) {
-                        return new CategoryButtonCell(categoryList,pservice,windowManager.getStage());
+                        return new CategoryButtonCell(categoryList,bservice,windowManager.getStage());
                     }
 
                 });
