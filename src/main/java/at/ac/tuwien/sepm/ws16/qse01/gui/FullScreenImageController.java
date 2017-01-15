@@ -332,7 +332,7 @@ public class FullScreenImageController {
      *
      */
     public void onNextImage() {
-        LOGGER.debug("reach"+currentIndex);
+        //LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         FileInputStream fips=null;
         try {
@@ -419,12 +419,12 @@ public class FullScreenImageController {
                 imageList = imageService.getAllImages(activ);
             }
             if (imageList != null) {
-                LOGGER.debug("hear" + imageList.size());
+               // LOGGER.debug("hear" + imageList.size());
                 for (int i = 0; i <imageList.size() ; i++) {
                     if(imageList.get(i).getImageID()==imgID){
                         currentIndex=i;
                     }
-                    LOGGER.debug("hear" + imageList.get(i).getImageID());
+                //    LOGGER.debug("hear" + imageList.get(i).getImageID());
                 }
 
                 if(currentIndex==0){
@@ -468,7 +468,7 @@ public class FullScreenImageController {
      * @param imgOriginalPath path of the image to show
      */
     public void makePreviewFilter(String imgOriginalPath){
-        LOGGER.info("Entering makePreviewFilter with imgPath->"+imgOriginalPath);
+        LOGGER.info("Entering makePreviewFilter with imgPath->", imgOriginalPath);
 
         try {
             String imgPath = filterService.resize(imgOriginalPath,80,80);

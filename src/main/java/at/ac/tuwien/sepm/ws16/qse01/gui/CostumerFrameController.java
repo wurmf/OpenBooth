@@ -39,7 +39,8 @@ public class CostumerFrameController {
     private boolean buttoncreated;
     private Profile profile;
     private List<Button> buttonList;
-    GridPane grid = new GridPane();
+    private GridPane grid = new GridPane();
+    private Profile profileold =null;
 
     private WindowManager windowmanager;
     private ShootingService shootingservice;
@@ -61,17 +62,21 @@ public class CostumerFrameController {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
             if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-                LOGGER.debug("Profile id:" + profile.getId() + "");
+              //  LOGGER.debug("Profile id:" + profile.getId() + "");
                 if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                //    LOGGER.debug("Profile id changed:" + profile.getId() + "");
                 }
             }
+            if(!profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
+                rightbutton.setVisible(false);
+            }
+
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
-            LOGGER.error("initialise:",e.getMessage());
+            LOGGER.error("initialise:",e);
         } catch (NullPointerException n){
-            LOGGER.error("no active shooting:",n.getMessage());
+            LOGGER.error("no active shooting:",n);
         }
     }
 
@@ -83,6 +88,7 @@ public class CostumerFrameController {
 
         try {
             windowmanager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_CUSTOMERSCENE);
+            rightbutton.setVisible(true);
             if (!allpicturesview.isVisible()) {
                 if (shootingservice.searchIsActive().getActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
@@ -91,41 +97,47 @@ public class CostumerFrameController {
                 if (pairList.isEmpty() || pairList.size() == 0) {
                     rightbutton.setVisible(false);
                 }
-                rightbutton.setVisible(true);
                 allpicturesview.setVisible(true);
                 gridpanel.setVisible(true);
                 leftbutton.setVisible(false);
                 setInvisible();
             }
         } catch (ServiceException e) {
-            LOGGER.debug(e.getMessage());
+            LOGGER.error("switch to login",e);
         }
 }
 
-    public void switchToFilter(ActionEvent actionEvent) {
+    public void switchToFilter() {
         try {
             if(shootingservice.searchIsActive().getActive()){
                 profile=profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
-            rightbutton.setVisible(false);
-            allpicturesview.setVisible(false);
-            gridpanel.setVisible(false);
-            leftbutton.setVisible(true);
-            if (buttoncreated && profile.getId() == shootingservice.searchIsActive().getProfileid()) {
-                loadButton();
-            } else {
-                LOGGER.debug("Profile id:"+profile.getId()+"");
-                if(profile.getId() != shootingservice.searchIsActive().getProfileid()){
-                    profile= profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    LOGGER.debug("Profile id changed:"+profile.getId()+"");
+            if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
+                rightbutton.setVisible(false);
+                allpicturesview.setVisible(false);
+                gridpanel.setVisible(false);
+                leftbutton.setVisible(true);
+                if (profileold != null && buttoncreated && profileold.getId() == shootingservice.searchIsActive().getProfileid()) {
+                    loadButton();
+                } else {
+                 //   LOGGER.debug("Profile id:" + profile.getId() + "");
+                    if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                        profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                  //      LOGGER.debug("Profile id changed:" + profile.getId() + "");
+                    }
+                    profileold = profile;
+                    creatButtons();
                 }
-                creatButtons();
+            }else {
+
+                // go over window manager!!!!!???
+                rightbutton.setVisible(false);
             }
         }catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden!");
-            LOGGER.error("load buttons:",e.getMessage());
+            LOGGER.error("load buttons:",e);
         }catch (NullPointerException n){
-            LOGGER.error("active shooting:",n.getMessage());
+            LOGGER.error("active shooting:",n);
         }
     }
 
@@ -144,11 +156,11 @@ public class CostumerFrameController {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
-            if (pairList.isEmpty()||pairList.size()==0) {
+            if (pairList==null||pairList.isEmpty()) {
                 rightbutton.setVisible(false);
             }else {
-                LOGGER.debug("buttons:" + buttonList.size() + "");
-                LOGGER.debug("pair:"+pairList.size()+"");
+              //  LOGGER.debug("buttons:" + buttonList.size() + "");
+               // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
                 int width = (int) ((float) gridpanel.getWidth() / (float) column) - 5;
                 int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
@@ -173,7 +185,7 @@ public class CostumerFrameController {
                         if (countcolumn < column) {
                             countcolumn++;
                         } else {
-                            LOGGER.debug("not enoth columns" + column);
+                         //   LOGGER.debug("not enoth columns" + column);
                         }
                     }
                     Button filter = new Button();
@@ -182,13 +194,15 @@ public class CostumerFrameController {
                     filter.setPrefWidth(width - 20);
                     filter.setPrefHeight(high);
                     String url = pairList.get(i).getCameraLable();
-                    LOGGER.debug("url costumer: " + url);
+                   // LOGGER.debug("url costumer: " + url);
                     filter.setStyle("-fx-background-image: url('" + url + "'); " +
                             "   -fx-background-size: 100%;" +
                             "   -fx-background-color: transparent;" +
                             "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                        //kamera Filter controller
+                        //kamera Filter controller fiter id
+                        windowmanager.showKameraFilterSceen(index,1,pairList.get(index).isGreenScreenReady());
                     });
                     buttonList.add(filter);
                     gp.prefWidth(width);
@@ -197,7 +211,7 @@ public class CostumerFrameController {
                     gp.add(imageView, 1, 0);
                     grid.add(gp, countcolumn, countrow);
                     // Image image = new Image(pairList.get(i).getCameraLable());
-                    LOGGER.debug("count calls "+i+"");
+                  //  LOGGER.debug("count calls "+i+"");
                 }
                 basicpane.add(grid, 1, 0);
                 buttoncreated = true;

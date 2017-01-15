@@ -1,0 +1,43 @@
+.root{
+  -fx-background-color: black;
+}
+
+.label{
+  -fx-text-fill: white;
+  -fx-font-family: HP Simplified;
+  -fx-font-size: 2.5em;
+}
+
+#singel{
+-fx-pref-width: 4.5em;
+   -fx-pref-height:4.3em;
+ -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: 100%;
+    -fx-background-color: transparent;
+}
+#serien{
+-fx-pref-width: 4.5em;
+   -fx-pref-height:4.3em;
+   -fx-background-repeat: no-repeat;
+      -fx-background-position: center;
+      -fx-background-size: 100%;
+    -fx-background-color: transparent;
+}
+
+#ontime{
+-fx-pref-width: 4.5em;
+   -fx-pref-height:4.3em;
+   -fx-background-repeat: no-repeat;
+      -fx-background-position: center;
+      -fx-background-size: 100%;
+    -fx-background-color: transparent;
+}
+#backbutton{
+-fx-pref-width: 4.5em;
+   -fx-pref-height:4.5em;
+   -fx-background-repeat: no-repeat;
+      -fx-background-position: center;
+      -fx-background-size: 100%;
+    -fx-background-color: transparent;
+}
