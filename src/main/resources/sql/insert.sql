@@ -1,4 +1,4 @@
-INSERT INTO profiles (profileID, name) VALUES (1,'Profile 1');
+INSERT INTO profiles (profileID, name,isPrintEnabled,isFilterEnabled,isGreenscreenEnabled) VALUES (1,'Profile 1',true,true,true);
 INSERT INTO profiles (profileID, name) VALUES (2,'Profile 2');
 INSERT INTO profiles (profileID, name) VALUES (3,'Profile 3');
 INSERT INTO profiles (profileID, name) VALUES (4,'Profile 4');
