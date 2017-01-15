@@ -48,5 +48,6 @@ public interface ShootingService {
      * @throws ServiceException when ever an IOException or a FolderAlreadyExists Exception occurs.
      */
      String createPath() throws ServiceException;
+
 }
 

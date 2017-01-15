@@ -1,15 +1,22 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionImgCell;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -18,9 +25,11 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by osboxes on 11.12.16.
@@ -31,7 +40,8 @@ public class PositionFrameController extends SettingFrameController {
 
 
     /* BEGINN OF Position Table Column FXML */
-
+    @FXML
+    private TableView tablePosition;
     @FXML
     private TableColumn colPositionID;
     @FXML
@@ -50,21 +60,16 @@ public class PositionFrameController extends SettingFrameController {
     @FXML
     private TextField txPositionBild;
 
-   /* @Autowired
-    public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    @Autowired
+    public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
         System.out.println("Camera initiliasierit tableview..n #########");
-    }*/
-
-    public PositionFrameController(){
-        super();
     }
 
+
     @FXML
-    protected void initialize(){
-         /* ######################### */
-            /* INITIALIZING Position Table */
-            /* ######################### */
+    private void initialize(){
+
 
         tablePosition.setEditable(true);
 
@@ -84,12 +89,9 @@ public class PositionFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 pservice.editPosition(p);
 
-                               /* int selectedProfilID = ((Profile)profilList.getSelectionModel().getSelectedItem())==null?0:((Profile)profilList.getSelectionModel().getSelectedItem()).getId();
-                                kamPosList.removeAll(kamPosList);
-                                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));*/
+
                                 refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
                             } else {
-                                //new EntityException("Vorname", "Vorname darf nicht leer sein.");
                                 refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
                             }
 
@@ -112,7 +114,7 @@ public class PositionFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new PositionImgCell(posList,pservice);
+                return new PositionImgCell(posList,pservice,imageHandler,windowManager.getStage());
 
             }
         });
@@ -135,6 +137,7 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
+                        System.out.println("selectedProfil->"+selectedProfile.getId());
                         return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                     }
 
@@ -142,19 +145,15 @@ public class PositionFrameController extends SettingFrameController {
 
 
 
+        System.out.println("position initialization finito!");
 
-    }
 
-
-    @Override
-    protected void backgroundUpload() {
 
     }
 
 
     @FXML
-    @Override
-    protected void savePosition(){
+    private void savePosition(){
         LOGGER.error("Position Add Button has been clicked");
         String name = txPositionName.getText();
         if(name.trim().compareTo("") == 0){
@@ -184,34 +183,9 @@ public class PositionFrameController extends SettingFrameController {
         }
     }
 
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
-    @Override
-    protected void watermarkUpload() {
-
-    }
-
-    @Override
-    protected void saveProfil() {
-
-    }
 
     @FXML
-    @Override
-    protected void positionUpload(){
+    private void positionUpload(){
         fileChooser.setTitle("Bild für Position Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -226,4 +200,19 @@ public class PositionFrameController extends SettingFrameController {
             txPositionBild.setText(file.getAbsolutePath());
         }
     }
+
+    protected void refreshTablePosition(List<Position> positionList,Profile selected){
+        LOGGER.info("refreshing the position table...");
+        selectedProfile = selected;
+        posList.clear();
+        posList.addAll(positionList);
+        tablePosition.setItems(posList);
+
+    }
+
+    protected ObservableList<Position> getPosList(){
+        return this.posList;
+    }
+
+
 }

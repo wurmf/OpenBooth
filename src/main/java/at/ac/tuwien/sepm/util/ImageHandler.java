@@ -2,6 +2,11 @@ package at.ac.tuwien.sepm.util;
 
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
@@ -169,5 +174,33 @@ public class ImageHandler {
         mat.put(0,0,data);
 
         return mat;
+    }
+
+    /**
+     * shows the given image in own stage (popup window)
+     * @param imgPath path of the image
+     * @param stage primary stage - owner of this window
+     */
+    public void popupImage(String imgPath,Stage stage){
+        try {
+            Stage previewStage = new Stage();
+            Group root = new Group();
+            Scene scene = new Scene(root);
+
+            ImageView prevView = new ImageView(new Image("file:"+imgPath));
+            /*prevView.setFitHeight(previewLogo.getImage().getHeight());
+            prevView.setFitWidth(previewLogo.getImage().getWidth());*/
+            root.getChildren().add(prevView);
+
+            previewStage.setTitle("Preview Image");
+            previewStage.setWidth(prevView.getImage().getWidth());
+            previewStage.setHeight(prevView.getImage().getHeight());
+            previewStage.setScene(scene);
+            previewStage.setFullScreen(false);
+            previewStage.initOwner(stage);
+            previewStage.show();
+        }catch(NullPointerException e){
+            LOGGER.error("popupImage ->",e);
+        }
     }
 }

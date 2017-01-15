@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -62,7 +60,7 @@ public class ShootingAdminController {
 
     private String path =null;
     private String bgPath="";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingAdminController.class);
 
 
     private ShootingService shootingService;
@@ -154,31 +152,32 @@ public class ShootingAdminController {
      */
     @FXML
     public void onStartShootingPressed() {
-        LOGGER.info(path);
+        LOGGER.info("onStartShootingPressed - "+path);
         if (profileChoiceBox.getValue() != null) {
                 try{
                     Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
-                        try {
-                            path = shootingService.createPath();
-                        }catch (ServiceException s){
-                            LOGGER.error("onStartShootingPressed - ",s);
-                            showInformationDialog("Beim erstellen des Speicherpfades ist ein Fehler aufgetreten.");
-                        }
+                        path = shootingService.createPath();
                     }
                     Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
-                    LOGGER.info("ShootingAdminController:", path);
-                    path = "";
+                    LOGGER.info("onStartShootingPressed - ", path);
+                    //path = "";
 
                     shootingService.addShooting(shouting);
 
-                    windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                    windowManager.initImageProcessing();
+
+                    boolean camerasFitPosition=windowManager.initImageProcessing();
+                    if(camerasFitPosition){
+                        windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+                    } else{
+                        showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
+                    }
+
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.debug("onStartShootingPressed - ",serviceExeption);
-                    showInformationDialog("Es konnte keine Shooting erstellt werden.");
+                    LOGGER.debug("onStartShootingPressed - ", serviceExeption);
+                    showInformationDialog("Es konnte kein Shooting erstellt werden.");
                 }
         } else {
             showInformationDialog("Bitte erstellen Sie ein neues Profil");

@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
-import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -19,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by macdnz on 16.12.16.
@@ -28,16 +29,16 @@ public class BackgroundImgCell extends TableCell<Background, String> {
     final static Logger LOGGER = LoggerFactory.getLogger(BackgroundImgCell.class);
 
     private  ObservableList<Background> backgroundList;
-    private ProfileService pservice;
+    private BackgroundService bservice;
 
 
     final ImageView img = new ImageView();
     final Button cellButton = new Button("edit");
     private Desktop desktop;
 
-    public BackgroundImgCell(ObservableList<Background> backgroundList, ProfileService pservice) {
+    public BackgroundImgCell(ObservableList<Background> backgroundList, BackgroundService bservice, ImageHandler imageHandler, Stage primaryStage) {
         this.backgroundList = backgroundList;
-        this.pservice = pservice;
+        this.bservice = bservice;
 
         img.setFitHeight(35);
         img.setFitWidth(35);
@@ -60,7 +61,7 @@ public class BackgroundImgCell extends TableCell<Background, String> {
                 );
                 File file = fileChooser.showOpenDialog(new Stage());
                 if (file != null) {
-                   // try {
+                    try {
 
                         Background p = backgroundList.get(getIndex());
 
@@ -77,12 +78,12 @@ public class BackgroundImgCell extends TableCell<Background, String> {
                         hb.setAlignment(Pos.CENTER);
                         setGraphic(hb);
 
-                      //TODO:  pservice.editBackground(p);
+                        bservice.edit(p);
 
 
-                 /*   } catch (ServiceException e) {
-                        e.printStackTrace();
-                    }*/
+                    } catch (ServiceException e) {
+                        LOGGER.error("background bild konnte nicht in db gespeichert werden",e);
+                    }
                 }
 
             }
@@ -91,16 +92,10 @@ public class BackgroundImgCell extends TableCell<Background, String> {
 
             @Override
             public void handle(MouseEvent event) {
-                try {
-
-
-                    if(backgroundList.get(getIndex()).getPath()==null)
-                        desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png"));
-                    else
-                        desktop.getDesktop().open(new File(backgroundList.get(getIndex()).getPath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if(backgroundList.get(getIndex()).getPath()==null)
+                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                else
+                    imageHandler.popupImage(backgroundList.get(getIndex()).getPath(),primaryStage);
 
             }
 

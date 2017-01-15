@@ -1,8 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
+import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.AutoCompleteTextField;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.Double2String;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.LogoButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.LogoImgCell;
@@ -20,6 +22,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -34,6 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by macdnz on 13.01.17.
@@ -44,7 +51,8 @@ public class LogoFrameController extends SettingFrameController {
 
 
     /* Beginn of Logo Table Column FXML */
-
+    @FXML
+    private TableView tableLogo;
     @FXML
     private TableColumn colLogoID;
     @FXML
@@ -61,6 +69,10 @@ public class LogoFrameController extends SettingFrameController {
     private TableColumn colLogoLogo;
     @FXML
     private TableColumn colLogoAktion;
+    @FXML
+    private AutoCompleteTextField txLogoName;
+    @FXML
+    private TextField txLogoLogo;
 
     /* LOGO TextFIELDS */
     @FXML
@@ -81,12 +93,12 @@ public class LogoFrameController extends SettingFrameController {
     private ImageView previewLogo;
 
     @Autowired
-    public LogoFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public LogoFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
-    @Override
-    protected void initialize() {
+    @FXML
+    private void initialize() {
          /* ######################### */
             /* INITIALIZING Logo TABLE   */
             /* ######################### */
@@ -289,7 +301,7 @@ public class LogoFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new LogoImgCell(logoList,pservice);
+                return new LogoImgCell(logoList,pservice,imageHandler,windowManager.getStage());
 
             }
         });
@@ -355,42 +367,29 @@ public class LogoFrameController extends SettingFrameController {
 
 
 
-    @Override
-    protected void backgroundUpload() {
 
-    }
+    @FXML
+    private void fullScreenPreview(){
+        try {
+            Stage previewStage = new Stage();
+            Group root = new Group();
+            Scene scene = new Scene(root);
 
-    @Override
-    protected void positionUpload() {
+            ImageView prevView = new ImageView(previewLogo.getImage());
+            prevView.setFitHeight(previewLogo.getImage().getHeight());
+            prevView.setFitWidth(previewLogo.getImage().getWidth());
+            root.getChildren().add(prevView);
 
-    }
-
-    @Override
-    protected void savePosition() {
-
-    }
-
-
-
-    @Override
-    protected void fullScreenPreview(){
-
-        Stage previewStage = new Stage();
-        Group root = new Group();
-        Scene scene = new Scene(root);
-
-        ImageView prevView = new ImageView(previewLogo.getImage());
-        prevView.setFitHeight(prevView.getImage().getHeight());
-        prevView.setFitWidth(prevView.getImage().getWidth());
-        root.getChildren().add(prevView);
-
-        previewStage.setTitle("Preview Logo");
-        previewStage.setWidth(prevView.getImage().getWidth());
-        previewStage.setHeight(prevView.getImage().getHeight());
-        previewStage.setScene(scene);
-        previewStage.setFullScreen(false);
-        previewStage.initOwner(windowManager.getStage());
-        previewStage.show();
+            previewStage.setTitle("Preview Logo");
+            previewStage.setWidth(prevView.getImage().getWidth());
+            previewStage.setHeight(prevView.getImage().getHeight());
+            previewStage.setScene(scene);
+            previewStage.setFullScreen(false);
+            previewStage.initOwner(windowManager.getStage());
+            previewStage.show();
+        }catch(NullPointerException e){
+            LOGGER.info("fullScreenPreview ->",e);
+        }
     }
 
 
@@ -417,8 +416,8 @@ public class LogoFrameController extends SettingFrameController {
         }
     }
 
-    @Override
-    protected void saveLogo(){
+    @FXML
+    private void saveLogo(){
         LOGGER.error("Logo Add Button has been clicked");
         String name = txLogoName.getText();
         if(name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0){
@@ -477,8 +476,8 @@ public class LogoFrameController extends SettingFrameController {
         }
     }
 
-    @Override
-    protected void logoUpload(){
+    @FXML
+    private void logoUpload(){
         fileChooser.setTitle("Logo Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -494,14 +493,43 @@ public class LogoFrameController extends SettingFrameController {
         }
     }
 
-    @Override
-    protected void watermarkUpload() {
-
+    protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList,Profile selected){
+        LOGGER.info("refreshing the Logo table...");
+        selectedProfile = selected;
+        this.logoList.clear();
+        this.logoList.addAll(logoList);
+        tableLogo.setItems(this.logoList);
+    }
+    protected void refreshLogoAutoComplete(Profile selected) throws ServiceException {
+        selectedProfile = selected;
+        txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
+        txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
+        txLogoName.setTxLogoPath(txLogoLogo);
     }
 
-    @Override
-    protected void saveProfil() {
+    protected List<String> logo2StringArray(List<Logo> logos){
+        List<String> ret = new ArrayList<>();
+        for (Logo logo:logos){
+            ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
+        }
+        return ret;
+    }
+    protected Map<String,ImageView> logo2imgViews(List<Logo> logos){
+        Map<String,ImageView> ret = new HashMap<>();
+        for (Logo logo:logos){
+            String logoPath;
+            if(new File(logo.getPath()).isFile())
+                logoPath = logo.getPath();
+            else
+                logoPath = System.getProperty("user.dir")+"/src/main/resources/images/noimage.png";
 
+            ImageView imgView =new ImageView(new Image("file:"+logoPath,30,30,true,true));
+
+            imgView.setId((logoPath.contains("noimage.png")?"":logoPath));
+
+            ret.put(logo.getLabel().toLowerCase()+" #"+logo.getId(),imgView);
+        }
+        return ret;
     }
 
 }

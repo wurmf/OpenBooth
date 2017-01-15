@@ -20,6 +20,8 @@ import java.sql.*;
 public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+
 
     @Autowired
     public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {

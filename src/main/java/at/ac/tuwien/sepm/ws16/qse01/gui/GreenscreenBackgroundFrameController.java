@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.BackgroundButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.BackgroundImgCell;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
@@ -12,10 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -27,13 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by macdnz on 13.01.17.
  */
-@Component("greenscreen")
-public class GreenscreenFrameController extends SettingFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GreenscreenFrameController.class);
+@Component("greenscreenBackground")
+public class GreenscreenBackgroundFrameController extends SettingFrameController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GreenscreenBackgroundFrameController.class);
+
+    private Background.Category selectedCategory = null;
 
     /* Profile TEXTFIELDS for ADDING */
     @FXML
@@ -45,6 +47,8 @@ public class GreenscreenFrameController extends SettingFrameController {
 
     /* BEGINN OF Category-Background Table Column FXML */
     @FXML
+    private TableView tableBackground;
+    @FXML
     private TableColumn colBackgroundID;
     @FXML
     private TableColumn colBackgroundName;
@@ -54,16 +58,16 @@ public class GreenscreenFrameController extends SettingFrameController {
     private TableColumn colBackgroundAction;
 
     @FXML
-    private ComboBox greenscreenCategory;
+    private ComboBox categoryCombo;
 
 
     @Autowired
-    public GreenscreenFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public GreenscreenBackgroundFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
-    @Override
-    protected void initialize() {
+    @FXML
+    private void initialize() {
 
             /* ######################### */
             /* INITIALIZING Greenscreen Background TABLE */
@@ -85,18 +89,17 @@ public class GreenscreenFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 bservice.edit(p);
 
-                                // refreshTableBackground(bservice.get getAllBackgroundsOfCategoryAndProfile(selectedProfile.getId(),selectedCategory));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             } else {
-                                //TODO: change this line on refreshTableBackground!
-                                refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             }
 
                         } catch (ServiceException e) {
-                            /*try {
-                                refreshTableProfiles(pservice.getAllProfiles());
+                            try {
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
                             } catch (ServiceException e1) {
                                 LOGGER.error("Error: could not refresh the profile table: ",e1);
-                            }*/
+                            }
 
                         }
 
@@ -110,7 +113,7 @@ public class GreenscreenFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new BackgroundImgCell(backgroundList,pservice);
+                return new BackgroundImgCell(backgroundList,bservice,imageHandler,windowManager.getStage());
 
             }
         });
@@ -133,15 +136,21 @@ public class GreenscreenFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background, Boolean> call(TableColumn<Background, Boolean> p) {
-                        return new BackgroundButtonCell(backgroundList,pservice,windowManager.getStage());
+                        return new BackgroundButtonCell(backgroundList,bservice,windowManager.getStage());
                     }
 
                 });
+
         //listener for greenscreen category combobox
-        greenscreenCategory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override public void changed(ObservableValue<? extends String> selected, String oldCat, String newCat) {
+        categoryCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Background.Category>() {
+            @Override public void changed(ObservableValue selected, Background.Category oldCat, Background.Category newCat) {
                 LOGGER.info("Kategorie ausgewählt -> "+newCat);
-                //TODO: refreshTableBackground(pservice.getAllBa);
+                selectedCategory = newCat;
+                try {
+                    refreshTableBackground(bservice.getAllWithCategory(newCat.getId()));
+                } catch (ServiceException e) {
+                    LOGGER.error("Backgroundservice couldnt get categories ->"+newCat.getId(),e);
+                }
 
 
             }});
@@ -151,43 +160,9 @@ public class GreenscreenFrameController extends SettingFrameController {
 
 
 
-    @Override
-    protected void positionUpload() {
 
-    }
-
-    @Override
-    protected void savePosition() {
-
-    }
-
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
-    @Override
-    protected void watermarkUpload() {
-
-    }
-
-    @Override
-    protected void saveProfil() {
-
-    }
-
-    @Override
-    protected void backgroundUpload(){
+    @FXML
+    private void backgroundUpload(){
         fileChooser.setTitle("Hintergrund Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -202,5 +177,47 @@ public class GreenscreenFrameController extends SettingFrameController {
             txBackgroundPath.setText(file.getAbsolutePath());
         }
     }
+    @FXML
+    private void saveBackground(){
+        LOGGER.error("Position Add Button has been clicked");
+        String name = txBackgroundName.getText();
+        if(name.trim().compareTo("") == 0 || txBackgroundPath.getText().compareTo("Hochladen...") == 0){
+            showError("Sie müssen einen Namen eingeben und ein Hintergrundbild hochladen!");
+        }else {
+            Background p = new Background(name,txBackgroundPath.getText(),selectedCategory);
 
+
+            try {
+                LOGGER.info("adding the new background to tableView...");
+
+                bservice.add(p);
+                backgroundList.add(p);
+
+
+                txBackgroundPath.setText("Hochladen...");
+                txBackgroundName.clear();
+
+
+            } catch (ServiceException e) {
+                LOGGER.error("Fehler: Hintergrund konnte nicht erstellt werden...",e);
+            }
+        }
+    }
+
+    protected void refreshTableBackground(List<Background> backgroundList){
+        LOGGER.info("refreshing the background table..."+backgroundList.size());
+        this.backgroundList.clear();
+        this.backgroundList.addAll(backgroundList);
+        tableBackground.setItems(this.backgroundList);
+    }
+
+    protected void refreshCategoryComboBox(List<Background.Category> categories,Profile selected){
+        LOGGER.info("refreshing the categoryComboBox..."+categories.size());
+        selectedProfile = selected;
+        categoryList.clear();
+        categoryList.addAll(categories);
+        categoryCombo.setItems(categoryList);
+        if(selectedCategory!=null)
+            categoryCombo.getSelectionModel().select(selectedCategory);
+    }
 }

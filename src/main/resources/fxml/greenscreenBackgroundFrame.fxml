@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
-<?import java.lang.String?>
-<TitledPane animated="false" prefHeight="522.0" text="Greenscreen->Hintergrundverwaltung" GridPane.columnIndex="0" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenFrameController">
+
+<TitledPane fx:id="greenscreenBackground" animated="false" prefHeight="522.0" text="Greenscreen-&gt;Hintergrundverwaltung" GridPane.columnIndex="0" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenBackgroundFrameController">
 <content>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                 <children>
-                    <ComboBox fx:id="greenscreenCategory" layoutX="15.0" layoutY="33.0" prefWidth="90.0" promptText="Kategorie Auswählen">
+                    <ComboBox fx:id="categoryCombo" layoutX="15.0" layoutY="10.0" prefHeight="27.0" prefWidth="189.0" promptText="Kategorie Auswählen">
                         <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <String fx:value="Apple" />
-                                <String fx:value="Orange" />
-                                <String fx:value="Pear" />
-                            </FXCollections>
                         </items>
                     </ComboBox>
 
-                    <TableView fx:id="tableBackground" prefHeight="427.0" prefWidth="450.0">
+                    <TableView fx:id="tableBackground" layoutY="50.0" prefHeight="370.0" >
                         <columns>
                             <TableColumn fx:id="colBackgroundID" prefWidth="44.74237585067749" text="ID" />
                             <TableColumn fx:id="colBackgroundName" prefWidth="189.813720703125" text="Name" />
@@ -32,8 +30,8 @@
                     </TableView>
                     <TextField fx:id="txBackgroundName" layoutX="51.0" layoutY="435.0" prefHeight="27.0" prefWidth="181.0" />
                     <TextField fx:id="txBackgroundPath" editable="false" layoutX="242.0" layoutY="435.0" onAction="#backgroundUpload" onMouseClicked="#backgroundUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-                    <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#savePosition" text="ADD" />
-                    <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#positionUpload" prefHeight="30.0" text="+" />
+                    <Button layoutX="378.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveBackground" text="ADD" />
+                    <Button layoutX="333.0" layoutY="433.0" mnemonicParsing="false" onAction="#backgroundUpload" prefHeight="30.0" text="+" />
                 </children>
             </AnchorPane>
         </content>

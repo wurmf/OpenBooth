@@ -62,12 +62,12 @@ public class CameraHandlerImpl implements CameraHandler {
         try {
             cameraService.setAllCamerasInactive();
         } catch (ServiceException e) {
-            LOGGER.debug("could not set cameras inactive", e);
+            LOGGER.debug("getCameras - could not set cameras inactive", e);
         }
         int count=0;
         final CameraList cl = new CameraList();
         try {
-            LOGGER.debug("Cameras: " + cl);
+            LOGGER.debug("getCameras - Cameras: " + cl);
 
             count=cl.getCount();
             Camera camera;
@@ -77,7 +77,7 @@ public class CameraHandlerImpl implements CameraHandler {
                 Pointer pInfo=cl.getPortInfo(i);
                 cameraPortList.add(cl.getPort(i));
                 cameraModelList.add(cl.getModel(i));
-                LOGGER.debug(pInfo.toString());
+                LOGGER.debug("getCamera - PortInfo: "+pInfo.toString());
 
                 cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
 
@@ -96,7 +96,7 @@ public class CameraHandlerImpl implements CameraHandler {
                 }
                 catch (ServiceException ex)
                 {
-                    LOGGER.error("Could not create camera entity", ex);
+                    LOGGER.error("getCameras - Could not create camera entity - ", ex);
                     throw new CameraException(ex.getMessage(), -1);
                 }
             }
@@ -105,5 +105,18 @@ public class CameraHandlerImpl implements CameraHandler {
             CameraUtils.closeQuietly(cl);
         }
         return cameraList;
+    }
+
+    @Override
+    public void removeCameraFromList(Camera camera){
+        if(cameraList.isEmpty()){
+            return;
+        }
+        int index=cameraList.indexOf(camera);
+        cameraList.remove(index);
+        cameraGphotoList.remove(index);
+        cameraModelList.remove(index);
+        cameraPortList.remove(index);
+
     }
 }
