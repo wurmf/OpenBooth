@@ -185,7 +185,7 @@ public class CostumerFrameController {
                         if (countcolumn < column) {
                             countcolumn++;
                         } else {
-                         //   LOGGER.debug("not enoth columns" + column);
+                           LOGGER.debug("not enoth columns" + column);
                         }
                     }
                     Button filter = new Button();
