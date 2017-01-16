@@ -20,14 +20,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -339,21 +337,50 @@ public class LogoFrameController extends SettingFrameController {
             if (newSelection != null) {
                 Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
                 LOGGER.info("Logo row selected..."+selectedLogo.getLogo().getPath());
+                if(this.selectedLogo == selectedLogo){
+                    tableLogo.getSelectionModel().clearSelection();
+                }else {
+                    this.selectedLogo = selectedLogo;
+                    if (!selectedLogo.getLogo().getPath().isEmpty() && !selectedLogo.getLogo().getPath().equals("/images/noimage.png") && new File(selectedLogo.getLogo().getPath()).isFile()) {
+                        try {
+                            int width = Integer.parseInt(txPreviewWidth.getText());
+                            int height = Integer.parseInt(txPreviewHeight.getText());
+                            Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                            previewLogo.setImage(image);
+                        } catch (NumberFormatException e) {
+                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                        } catch (ServiceException e) {
+                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                        }
+                    } else
+                        LOGGER.info("No Logo is uploaded...");
+                }
+            }
+        });
 
-                this.selectedLogo = selectedLogo;
-                if (!selectedLogo.getLogo().getPath().isEmpty() && !selectedLogo.getLogo().getPath().equals("/images/noimage.png") && new File(selectedLogo.getLogo().getPath()).isFile()) {
-                    try {
-                        int width = Integer.parseInt(txPreviewWidth.getText());
-                        int height = Integer.parseInt(txPreviewHeight.getText());
-                        Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
-                        previewLogo.setImage(image);
-                    } catch (NumberFormatException e) {
-                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
-                    } catch (ServiceException e) {
-                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+        tableLogo.setRowFactory(new Callback<TableView<Logo>, TableRow<Logo>>() {
+            @Override
+            public TableRow<Logo> call(TableView<Logo> tableView2) {
+                final TableRow<Logo> row = new TableRow<>();
+                final int[] click = {0};
+                row.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        click[0]++;
+                        final int index = row.getIndex();
+                        if (click[0]==3 && index >= 0 && index < tableLogo.getItems().size() && tableLogo.getSelectionModel().isSelected(index)  ) {
+                            tableLogo.getSelectionModel().clearSelection();
+                            click[0] = 0;
+                            event.consume();
+                            try {
+                                previewLogo.setImage( SwingFXUtils.toFXImage(logoService.getPreviewForMultipleLogos(logoList,Integer.valueOf(txPreviewWidth.getText()),Integer.valueOf(txPreviewHeight.getText())),null));
+                            } catch (ServiceException e) {
+                                LOGGER.error("rowSelected->Error",e);
+                            }
+                        }
                     }
-                }else
-                    LOGGER.info("No Logo is uploaded...");
+                });
+                return row;
             }
         });
 
