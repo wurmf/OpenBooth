@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -324,7 +325,7 @@ public class CameraFilterController {
                 iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
                 iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
 
-                iv.setStyle("-fx-background-color: green;");
+                //iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
                 iv.setImage(new javafx.scene.image.Image(new FileInputStream(backround.getPath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
@@ -430,6 +431,7 @@ public class CameraFilterController {
     public void currentlyChosen(int index, int idFilter, boolean greenscreen){
         try{
 
+            buttonList = new LinkedList<>();
         this.index=index;
             fId=idFilter;
         titel.setText("");
