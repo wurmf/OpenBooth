@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -177,8 +178,6 @@ public class CustomerFrameController {
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
 
-                    //imageView.setImage(camera.getFiler);
-                    //imageView.setImage(new javafx.scene.image.Image(new FileInputStream(pairList.get(i).getCameraLable()), width, high, true, true));
                     if (countrow < 2) {
                         countrow++;
                     } else {

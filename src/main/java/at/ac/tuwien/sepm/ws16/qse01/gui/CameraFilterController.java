@@ -180,8 +180,8 @@ public class CameraFilterController {
                     if (filterentety.getKey().equals(profile.getPairCameraPositions().get(index).getFilterName())) {
 
                         activiv = iv;
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
+                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
                     }
                 }
               //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
@@ -331,8 +331,8 @@ public class CameraFilterController {
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
                     if (backround.getPath().equals(profile.getPairCameraPositions().get(index).getBackground())) {
                         activiv = iv;
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/5-40);
+                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/5-40);
                     }
                 }
                 //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
@@ -383,7 +383,6 @@ public class CameraFilterController {
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode = 0;
-        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
@@ -396,7 +395,6 @@ public class CameraFilterController {
         serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode =1;
-        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
@@ -411,7 +409,6 @@ public class CameraFilterController {
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode=2;
-        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
@@ -440,8 +437,8 @@ public class CameraFilterController {
             filtergrid = new GridPane();
         }
             if(index>-1) {
-                if (profile != profileservice.get(shootingService.searchIsActive().getProfileid())) {
-                    profile = profileservice.get(shootingService.searchIsActive().getProfileid());
+                if (profile.getId()!=profileservice.getActiveProfile().getId()){
+                    profile = profileservice.getActiveProfile();
                     buttonList.clear();
                 }
                 currentMode=profile.getPairCameraPositions().get(index).getShotType();
@@ -453,19 +450,19 @@ public class CameraFilterController {
                     titel.setVisible(true);
                     createGreenscreenButton();
                 } else {
-                    if (buttonList.isEmpty()) {
+                   // if (buttonList.isEmpty()) {
                         greengrid.setVisible(false);
                         filtergrid.setVisible(true);
                         titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
                         titel.setVisible(true);
                         creatButtons();
-                    } else {
+                    /*} else {
                         greengrid.setVisible(false);
                         filtergrid.setVisible(true);
                         titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
                         titel.setVisible(true);
                         loadButton();
-                    }
+                    }*/
                 }
             }
         } catch (ServiceException e) {
