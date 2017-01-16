@@ -25,7 +25,7 @@ public class OpenCVLoader {
         if(!isLoaded) {
 
             try {
-                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
                 isLoaded = true;
                 LOGGER.info("Library {} loaded from system library path", Core.NATIVE_LIBRARY_NAME);
             } catch (UnsatisfiedLinkError e) {
@@ -48,7 +48,7 @@ public class OpenCVLoader {
 
 
                 String libPath = this.getClass().getResource(lib).getPath();
-                System.load(libPath);
+               // System.load(libPath);
 
                 isLoaded = true;
                 LOGGER.info("OpenCV Library loaded at: {}", libPath);
