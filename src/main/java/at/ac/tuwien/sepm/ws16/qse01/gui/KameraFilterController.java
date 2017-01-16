@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -141,8 +142,17 @@ public class KameraFilterController {
 
             int columcount = 0;
             int rowcount = 0;
-
-           Map<String,BufferedImage> filtermap = filterService.getAllFilteredImages("/images/dummies/p1.jpg");
+            Image image1 = null;
+            if ( imageService.getAllImages(shootingService.searchIsActive().getId())!=null&&!imageService.getAllImages(shootingService.searchIsActive().getId()).isEmpty() ){
+                image1= imageService.getAllImages(shootingService.searchIsActive().getId()).get(1);
+            }
+            Map<String,BufferedImage> filtermap=null;
+            if(image1!=null){
+                filtermap = filterService.getAllFilteredImages(image1.getImagepath());
+            }else {
+                String resource = System.getProperty("user.home");
+                filtermap = filterService.getAllFilteredImages(resource+"/images/studio.jpg");
+            }
            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
            // for(Image im : imlist){

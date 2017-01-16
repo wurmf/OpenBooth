@@ -188,7 +188,8 @@ public class ShootingAdminController {
                     shootingService.addShooting(shouting);
 
 
-                    boolean camerasFitPosition=windowManager.initImageProcessing();
+                    boolean camerasFitPosition=true;
+                    //camerasFitPosition =windowManager.initImageProcessing();
                     if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                     } else{

@@ -24,11 +24,12 @@
         </columnConstraints>
         <rowConstraints>
           <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
-          <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="32.5" valignment="CENTER" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="17.5" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="allpicturesview" mnemonicParsing="false" onAction="#switchtoMiniaturFrame" text="Alle Bilder ansehen" GridPane.rowIndex="1" />
-            <ImageView fx:id="logo" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
+            <Button fx:id="allpicturesview" mnemonicParsing="false" onAction="#switchtoMiniaturFrame" text="Alle Bilder ansehen" GridPane.rowIndex="2" />
+            <ImageView fx:id="logo" fitHeight="400.0" fitWidth="500.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/images/logo.png" />
                </image>

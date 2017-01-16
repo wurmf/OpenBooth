@@ -122,10 +122,10 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/settingFrame.fxml", SettingFrameController.class);
         Parent parentsett = (Parent) settingWrapper.getLoadedObject();
         //Anmerkung: Css für Einstellungen wird erst dann hinzugefügt, wenn einstellungen-gui fertig ist. - Deniz
-      /*  URL csssett = this.getClass().getResource("/css/basicstyle.css");
+        URL csssett = this.getClass().getResource("/css/profilesetting.css");
         LOGGER.info("CSSSETT:"+csssett);
         parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
-        parentsett.getStylesheets().add(csssett.toExternalForm());*/
+        parentsett.getStylesheets().add(csssett.toExternalForm());
         this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
 
         //Creating Login-Scene
@@ -141,10 +141,10 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, MiniaturFrameController> miniWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         Parent parentmin = (Parent) miniWrapper.getLoadedObject();
-        URL csssett = this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.info("CSSSETT:"+csssett);
+        URL cssmin = this.getClass().getResource("/css/miniatur.css");
+        LOGGER.info("CSSSETT:"+cssmin);
         parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
-        parentmin.getStylesheets().add(csssett.toExternalForm());
+        parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
         //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
