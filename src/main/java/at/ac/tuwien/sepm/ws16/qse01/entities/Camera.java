@@ -58,6 +58,17 @@ public class Camera {
     }
 
     @Override
+    public String toString() {
+        return "Camera{" +
+                "id=" + id +
+                ", lable='" + lable + '\'' +
+                ", port='" + port + '\'' +
+                ", model='" + model + '\'' +
+                ", serialnumber='" + serialnumber + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object object){
         if(object instanceof Camera
                 && ((Camera) object).getId()==this.getId()
