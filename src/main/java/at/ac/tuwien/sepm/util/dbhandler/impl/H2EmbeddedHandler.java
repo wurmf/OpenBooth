@@ -148,7 +148,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         //TODO: Delete following before building module for client.
         if(!testState) {
             insertData();
-            //setUpDefaultImgs();
+            setUpDefaultImgs();
             LOGGER.info("Data inserted into DB, dummy images copied to filesystem");
         }
         LOGGER.info("Database initialized.");
@@ -252,14 +252,17 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             stmt.close();
 
-            stmt=connection.prepareStatement("UPDATE backgrounds SET path=? WHERE backgroundID=1");
+            stmt=connection.prepareStatement("UPDATE backgrounds SET path=? WHERE backgroundID=?");
             stmt.setString(1,destPath+"greenBg1.jpg");
+            stmt.setInt(2,1);
             stmt.execute();
 
             stmt.setString(1,destPath+"greenBg2.png");
+            stmt.setInt(2,2);
             stmt.execute();
 
             stmt.setString(1,destPath+"greenBg3.jpg");
+            stmt.setInt(2,3);
             stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);

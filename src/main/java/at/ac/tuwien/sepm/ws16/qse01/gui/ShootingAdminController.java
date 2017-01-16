@@ -188,14 +188,13 @@ public class ShootingAdminController {
 
 
                     windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-/*
+
                     boolean camerasFitPosition =windowManager.initImageProcessing();
                     if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                     } else{
                         showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
                     }
-*/
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug("onStartShootingPressed - ", serviceExeption);
                     showInformationDialog("Es konnte kein Shooting erstellt werden.");
