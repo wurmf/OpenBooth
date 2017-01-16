@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.util;
 
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
-import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.opencv.core.Core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,7 @@ public class OpenCVLoader {
         if(!isLoaded) {
 
             try {
-                //System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
                 isLoaded = true;
                 LOGGER.info("Library {} loaded from system library path", Core.NATIVE_LIBRARY_NAME);
             } catch (UnsatisfiedLinkError e) {
@@ -48,10 +47,10 @@ public class OpenCVLoader {
 
 
                 String libPath = this.getClass().getResource(lib).getPath();
-               // System.load(libPath);
+                System.load(libPath);
 
                 isLoaded = true;
-                LOGGER.info("OpenCV Library loaded at: {}", libPath);
+                LOGGER.info("OpenCV Library for {} loaded at: {}", operatingSystem,libPath);
             }
 
         }
