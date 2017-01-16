@@ -137,17 +137,10 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        System.out.println("selectedProfil->"+selectedProfile.getId());
                         return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                     }
 
                 });
-
-
-
-        System.out.println("position initialization finito!");
-
-
 
     }
 

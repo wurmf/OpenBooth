@@ -141,7 +141,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Kategorie konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Kategorie konnte nicht erstellt werden...",e);
             }
         }
     }

@@ -99,9 +99,7 @@ public class LogoFrameController extends SettingFrameController {
 
     @FXML
     private void initialize() {
-         /* ######################### */
-            /* INITIALIZING Logo TABLE   */
-            /* ######################### */
+
         tableLogo.setEditable(true);
 
         colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("id"));
@@ -168,6 +166,7 @@ public class LogoFrameController extends SettingFrameController {
 
                                 p.getRelativeRectangle().setX(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
+                                changePreviewSize(txPreviewHeight.getText(),0);
 
                             } else {
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
@@ -204,6 +203,7 @@ public class LogoFrameController extends SettingFrameController {
 
                                 p.getRelativeRectangle().setY(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
+                                changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
                             }
@@ -238,6 +238,7 @@ public class LogoFrameController extends SettingFrameController {
                             if (!t.getNewValue().isNaN()) {
                                 p.getRelativeRectangle().setWidth(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
+                                changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
                             }
@@ -271,6 +272,7 @@ public class LogoFrameController extends SettingFrameController {
                             if (!t.getNewValue().isNaN()) {
                                 p.getRelativeRectangle().setHeight(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
+                                changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
                                 refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
                             }
@@ -445,7 +447,10 @@ public class LogoFrameController extends SettingFrameController {
 
                 LOGGER.info("adding the new pairLogo to tableView...");
 
-                newLogo = pservice.addLogo(newLogo);
+                if(txLogoLogo.getId().isEmpty()) //if given logo is not an existing logo
+                    newLogo = pservice.addLogo(newLogo);
+                else
+                    newLogo = pservice.getLogo(Integer.valueOf(txLogoLogo.getId()));
 
                 Profile.PairLogoRelativeRectangle p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
 
@@ -490,6 +495,7 @@ public class LogoFrameController extends SettingFrameController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txLogoLogo.setText(file.getAbsolutePath());
+            txLogoLogo.setId("");
         }
     }
 
