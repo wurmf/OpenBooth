@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
 
 <TitledPane fx:id="profile" animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
 <content>
@@ -21,17 +27,16 @@
                     <TableColumn fx:id="colProfilAktion" minWidth="0.0" prefWidth="74.4259033203125" text="Aktion" />
                 </columns>
             </TableView>
-            <TextField fx:id="txProfilName" layoutX="36.0" layoutY="435.0" prefHeight="27.0" prefWidth="205.0" />
+            <TextField fx:id="txProfilName" layoutX="36.0" layoutY="439.0" prefHeight="27.0" prefWidth="205.0" />
             <CheckBox fx:id="txProfilMobil" layoutX="285.0" layoutY="439.0" mnemonicParsing="false" />
             <CheckBox fx:id="txProfilGreen" layoutX="394.0" layoutY="439.0" mnemonicParsing="false" />
             <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
             <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
+            <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="439.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
+            <Button layoutX="678.0" layoutY="437.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
+            <Button layoutX="726.0" layoutY="439.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
 
-            <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="433.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-            <Button layoutX="678.0" layoutY="431.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
-            <Button layoutX="726.0" layoutY="435.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
-
-            <ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />
+            <!--<ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />-->
         </children>
     </AnchorPane>
 </content>

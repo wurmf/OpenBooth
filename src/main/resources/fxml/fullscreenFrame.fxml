@@ -51,7 +51,7 @@
                         <Button fx:id="button12" mnemonicParsing="false" onAction="#onCropPressed" style="-fx-background-image: url('/images/crop.png');" GridPane.columnIndex="2" />
 
                          <!--prefHeight="100.0" prefWidth="620.0"-->
-                        <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg" prefHeight="40.0" prefWidth="213.0" text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="3">
+                        <Button fx:id="saveFilteredButton" mnemonicParsing="false" onAction="#saveFilteredImg"  text="ALS NEUES FOTO SPEICHERN" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="3">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font></Button>

@@ -12,8 +12,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +58,8 @@ public abstract class SettingFrameController {
     protected Background.Category selectedCategory = null;
 
 
-
+    @FXML
+    protected GridPane containerGrid;
 
     @FXML
     protected PositionFrameController positionController;
@@ -88,7 +91,13 @@ public abstract class SettingFrameController {
         this.imageHandler = imageHandler;
     }
     
-
+    @FXML
+    private void initialize(){
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        containerGrid.setMinHeight(screenHeight-50);
+        containerGrid.setPrefWidth(screenWidth);
+    }
 
 
     protected void refreshTableProfiles(List<Profile> profileList){

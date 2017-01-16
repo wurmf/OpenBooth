@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.slf4j.Logger;
@@ -89,10 +90,13 @@ public class ProfileFrameController extends SettingFrameController{
     @FXML
     private void initialize(){
         LOGGER.debug("Initializing profile frame ...");
+
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        containerGrid.setMinHeight(screenHeight-50);
+        containerGrid.setPrefWidth(screenWidth-30);
+
         try {
-           /* ######################### */
-            /* INITIALIZING PROFIL TABLE */
-            /* ######################### */
             tableProfil.setEditable(true);
 
             colProfilID.setCellValueFactory(new PropertyValueFactory<Profile, Integer>("id"));

@@ -20,12 +20,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -101,6 +103,33 @@ public class LogoFrameController extends SettingFrameController {
         tableLogo.setEditable(true);
 
         colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("id"));
+        colLogoID.setCellFactory(tc -> {
+                    TableCell<Profile.PairLogoRelativeRectangle, Integer> cell = new TableCell<Profile.PairLogoRelativeRectangle, Integer>() {
+                        @Override
+                        protected void updateItem(Integer item, boolean empty) {
+                            super.updateItem(item, empty);
+                            setText(empty ? null : String.valueOf(item));
+                        }
+                    };
+                    cell.setOnMouseClicked(e -> {
+                        if (!cell.isEmpty() && selectedLogo != null) {
+                            if (selectedLogo.getLogo().getId() == cell.getItem()) {
+                                LOGGER.info("Logo Zeile auswählen oder abwählen -> selectedLogo->"+selectedLogo.getLogo().getId());
+                                tableLogo.getSelectionModel().clearSelection();
+                                selectedLogo = null;
+                                try {
+                                    previewLogo.setImage(SwingFXUtils.toFXImage(logoService.getPreviewForMultipleLogos(logoList, Integer.valueOf(txPreviewWidth.getText()), Integer.valueOf(txPreviewHeight.getText())), null));
+                                } catch (ServiceException e1) {
+                                    LOGGER.error("rowSelected->Error", e1);
+                                }
+                            }
+
+
+                        }
+                    });
+                return cell;
+
+                });
 
         colLogoName.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Logo>("logo"));
         colLogoName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Profile.PairLogoRelativeRectangle, String>, ObservableValue<String>>() {
@@ -336,29 +365,27 @@ public class LogoFrameController extends SettingFrameController {
         tableLogo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
-                LOGGER.info("Logo row selected..."+selectedLogo.getLogo().getPath());
-                if(this.selectedLogo == selectedLogo){
-                    tableLogo.getSelectionModel().clearSelection();
-                }else {
-                    this.selectedLogo = selectedLogo;
-                    if (!selectedLogo.getLogo().getPath().isEmpty() && !selectedLogo.getLogo().getPath().equals("/images/noimage.png") && new File(selectedLogo.getLogo().getPath()).isFile()) {
-                        try {
-                            int width = Integer.parseInt(txPreviewWidth.getText());
-                            int height = Integer.parseInt(txPreviewHeight.getText());
-                            Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
-                            previewLogo.setImage(image);
-                        } catch (NumberFormatException e) {
-                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
-                        } catch (ServiceException e) {
-                            LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
-                        }
-                    } else
-                        LOGGER.info("No Logo is uploaded...");
-                }
+                LOGGER.info("Logo row selected..."+selectedLogo.getId());
+
+                this.selectedLogo = selectedLogo;
+                if (!selectedLogo.getLogo().getPath().isEmpty() && !selectedLogo.getLogo().getPath().equals("/images/noimage.png") && new File(selectedLogo.getLogo().getPath()).isFile()) {
+                    try {
+                        int width = Integer.parseInt(txPreviewWidth.getText());
+                        int height = Integer.parseInt(txPreviewHeight.getText());
+                        Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
+                        previewLogo.setImage(image);
+                    } catch (NumberFormatException e) {
+                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                    } catch (ServiceException e) {
+                        LOGGER.error("Fehler: Bitte geben Sie eine Zahl an");
+                    }
+                } else
+                    LOGGER.info("No Logo is uploaded...");
+
             }
         });
 
-        tableLogo.setRowFactory(new Callback<TableView<Logo>, TableRow<Logo>>() {
+      /*  tableLogo.setRowFactory(new Callback<TableView<Logo>, TableRow<Logo>>() {
             @Override
             public TableRow<Logo> call(TableView<Logo> tableView2) {
                 final TableRow<Logo> row = new TableRow<>();
@@ -382,7 +409,7 @@ public class LogoFrameController extends SettingFrameController {
                 });
                 return row;
             }
-        });
+        });*/
 
         txPreviewHeight.textProperty().addListener((observable, oldValue, newValue) -> {
             changePreviewSize(newValue,0);
