@@ -32,7 +32,8 @@
       <HBox fx:id="hbox" alignment="CENTER">
 <!--  prefHeight="740.0" prefWidth="1240.0" -->
 
-               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false" style="-fx-background-color: black;">
+               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false" style="-fx-background-color: #333333;">
+
                   <children>
 
                   </children>

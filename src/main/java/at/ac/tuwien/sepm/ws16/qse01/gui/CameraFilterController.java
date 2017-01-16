@@ -66,13 +66,13 @@ public class CameraFilterController {
     private WindowManager wm;
     private ImageService imageService;
     private ShootingService shootingService;
-
     private CameraFilterService cameraFilterService;
+
 
 
     @Autowired
 
-    public CameraFilterController( CameraFilterService cameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public CameraFilterController(CameraFilterService cameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
@@ -431,8 +431,7 @@ public class CameraFilterController {
         try{
 
         this.index=index;
-
-        fId=idFilter;
+            fId=idFilter;
         titel.setText("");
         greengrid=new GridPane();
         if(filtergrid==null){

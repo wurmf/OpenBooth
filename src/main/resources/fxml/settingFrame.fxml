@@ -36,8 +36,8 @@
 
 
 
-
                       <Label  fx:id="setting" text="Einstellungen" textFill="#362d2d">
+
                          <padding>
                             <Insets left="100.0" />
                          </padding>
