@@ -132,7 +132,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background.Category, Boolean> call(TableColumn<Background.Category, Boolean> p) {
-                        return new CategoryButtonCell(categoryList,bservice,windowManager.getStage());
+                        return new CategoryButtonCell(categoryListOfProfile,selectedProfile,categoryList,bservice,windowManager.getStage());
                     }
 
                 });
