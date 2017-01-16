@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 
-import java.awt.image.BufferedImage;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Shooting Dao
@@ -46,10 +46,9 @@ public interface ShootingDAO {
      void update(Shooting shooting) throws PersistenceException;
 
     /**
-     * Returns a map that contains all userdefined backgrounds.
-     * The keys in the returned map are the paths to the image-files, the values are the corresponding images as BufferedImages
-     * @return the map containing the userdefined backgrounds or null if there is no folder defined for backgrounds, the defined folder is empty or no active shooting is available.
-     * @throws PersistenceException if an error occurs while reading the pictures.
+     * Adds the userdefined backgrounds to the given list.
+     * @param bgList the list to which the backgrounds shall be added.
+     * @throws PersistenceException if a problem occurs while reading the images.
      */
-     Map<String, BufferedImage> getUserBackgrounds() throws PersistenceException;
+     void getUserBackgrounds(List<Background> bgList) throws PersistenceException;
 }

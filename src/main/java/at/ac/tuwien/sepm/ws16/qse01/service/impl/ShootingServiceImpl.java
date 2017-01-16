@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -19,6 +20,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -64,9 +66,9 @@ public class ShootingServiceImpl implements ShootingService {
     }
 
     @Override
-    public Map<String, BufferedImage> getUserBackgrounds() throws ServiceException{
+    public void addUserDefinedBackgrounds(List<Background> bgList) throws ServiceException{
         try {
-            return shootingDAO.getUserBackgrounds();
+            shootingDAO.getUserBackgrounds(bgList);
         } catch (PersistenceException e) {
             throw new ServiceException(e);
         }

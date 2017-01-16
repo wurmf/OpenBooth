@@ -1,12 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Shooting Service
@@ -44,12 +42,11 @@ public interface ShootingService {
      void endShooting() throws ServiceException;
 
     /**
-     * Returns a map that contains all userdefined backgrounds.
-     * The keys in the returned map are the paths to the image-files, the values are the corresponding images as BufferedImages
-     * @return the map containing the userdefined backgrounds or null if there is no folder defined for backgrounds, the defined folder is empty or no active shooting is available.
-     * @throws ServiceException if an error occurs while retrieving the
+     * Adds the userdefined backgrounds to the given list.
+     * @param bgList the list to which the backgrounds shall be added.
+     * @throws ServiceException if a problem occurs while reading the images.
      */
-     Map<String, BufferedImage> getUserBackgrounds() throws ServiceException;
+     void addUserDefinedBackgrounds(List<Background> bgList) throws ServiceException;
 
     /**
      * creates default storage Place inside HomeFolder named Fotostudio

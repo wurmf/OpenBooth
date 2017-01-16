@@ -307,7 +307,7 @@ public class CameraFilterController {
             int rowcount = 0;
 
             List<Background>  greenList =profileservice.getAllBackgroundOfProfile();
-
+            shootingService.addUserDefinedBackgrounds(greenList);
             // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Background backround : greenList) {//imagefilter.size
                 // for(Image im : imlist){
@@ -359,9 +359,7 @@ public class CameraFilterController {
             filterscrollplanel.setVisible(true);
             filterscrollplanel.setContent(greengrid);
             root.add(filterscrollplanel, 0, 1);
-        } catch (ServiceException e) {
-            LOGGER.error("Camers Filter, greenscreen creat button- ", e);
-        } catch (FileNotFoundException e) {
+        } catch (ServiceException|FileNotFoundException e) {
             LOGGER.error("Camers Filter, greenscreen creat button- ", e);
         }
     }

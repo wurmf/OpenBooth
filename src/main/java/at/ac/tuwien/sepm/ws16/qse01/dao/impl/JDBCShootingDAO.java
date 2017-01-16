@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ShootingDaoImpl
@@ -30,7 +28,7 @@ public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
     private String currentBgPath;
-    private Map<String, BufferedImage> currentBackgrounds;
+    private List<Background> currentBackgrounds;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
 
@@ -164,35 +162,27 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public Map<String, BufferedImage> getUserBackgrounds() throws PersistenceException {
+    public void getUserBackgrounds(List<Background> bgList) throws PersistenceException {
         Shooting activeShooting=this.searchIsActive();
         if(activeShooting==null || activeShooting.getBgPictureFolder()==null || activeShooting.getBgPictureFolder().isEmpty()){
-            return null;
-        } else if(currentBgPath!=null && activeShooting.getBgPictureFolder().equals(currentBgPath)){
-            return currentBackgrounds;
+            return;
         }
-        FileFilter filter= c-> c.getName().endsWith(".jpg")|c.getName().endsWith(".png");
+        FileFilter filter= c-> c.getName().endsWith(".jpg")||c.getName().endsWith(".png");
         File bgFolder= new File(activeShooting.getBgPictureFolder());
         File[] pictureFiles= bgFolder.listFiles(filter);
         if(pictureFiles==null||pictureFiles.length==0)
-            return null;
+            return;
         List<File> filesList=Arrays.asList(pictureFiles);
-        Map<String, BufferedImage> result=new HashMap<>();
-        String filePath;
-        BufferedImage image;
-        try {
-            for (File file : filesList) {
-                filePath = file.getCanonicalPath();
-                image = ImageIO.read(file);
-                result.put(filePath,image);
+        Background.Category category= new Background.Category("Userdefined Backgrounds");
+        for(int i=0; i<filesList.size();i++){
+            try{
+                Background bg=new Background("UserDef",filesList.get(i).getCanonicalPath(),category);
+                bgList.add(bg);
+            } catch(IOException e){
+                LOGGER.error("getUserBackgrounds - ",e);
+                throw new PersistenceException("Unable to get canonical path from file",e);
             }
-        } catch(IOException e){
-            LOGGER.error("getUserBackgrounds",e);
-            throw new PersistenceException("Unable to load images",e);
         }
-        currentBgPath=activeShooting.getBgPictureFolder();
-        currentBackgrounds=result;
-        return result;
     }
 
 }
