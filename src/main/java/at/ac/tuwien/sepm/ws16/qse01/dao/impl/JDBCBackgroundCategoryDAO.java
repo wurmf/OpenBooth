@@ -20,7 +20,7 @@ import java.util.List;
 @Repository
 public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO{
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCLogoDAO.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCBackgroundCategoryDAO.class);
     private Connection con;
 
     @Autowired
@@ -200,6 +200,44 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO{
                 throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
         }
     }
+    @Override
+    public List<Background.Category> readAllOfProfile(int profileID) throws PersistenceException {
+        LOGGER.debug("Entering readAllOfProfile method with Profileid ->"+profileID);
+        ResultSet rs;
+        String sqlString;
+        PreparedStatement stmt = null;
+
+        sqlString = "SELECT b.* FROM backgroundcategories b left join profile_backgroundcategories p " +
+                "on b.backgroundcategoryid=p.backgroundcategoryid where isDeleted = 'false' and p.profileid = ?;";
+
+        try {
+            stmt = this.con.prepareStatement(sqlString);
+            stmt.setInt(1,profileID);
+            rs = stmt.executeQuery();
+            List<Background.Category> returnList = new ArrayList<>();
+
+            while (rs.next()) {
+                Background.Category backgroundcategory
+                        = new Background.Category(
+                        rs.getInt("backgroundcategoryID"),
+                        rs.getString("name"),
+                        rs.getBoolean("isDeleted"));
+                returnList.add(backgroundcategory);
+            }
+            LOGGER.debug(" readAllOfProfile -> Persisted object readingAll has been successfully. " + returnList);
+            return returnList;
+        } catch (SQLException e) {
+            throw new PersistenceException("Error! Reading all objects in persistence layer has failed.:" + e);
+        }
+        finally {
+            // Return resources
+            try
+            {if (stmt != null)
+                stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
+        }
+    }
 
     @Override
     public boolean delete(Background.Category backgroundCategory) throws PersistenceException {
@@ -239,6 +277,71 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO{
                 stmt.close();}
             catch (SQLException e) {
                 throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
+        }
+    }
+
+
+    @Override
+    public void createPairProfileCategory(int profileID,int categoryID) throws PersistenceException {
+        LOGGER.debug("Entering createPairProfileCategory method with parameter " + categoryID+","+profileID);
+        PreparedStatement stmt = null;
+        ResultSet rs;
+        String sqlString;
+
+        try {
+            String subSql = "SELECT * FROM profile_backgroundcategories WHERE profileid= ? and backgroundcategoryid = ?;";
+            stmt = this.con.prepareStatement(subSql);
+            stmt.setInt(1,profileID);
+            stmt.setInt(2,categoryID);
+            rs = stmt.executeQuery();
+
+            if(!rs.next()) { //If this relation does not exist in database then create it.
+                sqlString = "INSERT INTO profile_backgroundcategories VALUES (?,?);";
+                stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
+                stmt.setInt(1, profileID);
+                stmt.setInt(2, categoryID);
+                stmt.executeUpdate();
+            }
+
+            LOGGER.debug("Persisted object creation successfully");
+
+        }catch (SQLException e) {
+            throw new PersistenceException("Error! Creating object in persistence layer has failed.:" + e);
+        }
+        finally{
+            // Return resources
+            try
+            {if (stmt != null)
+                stmt.close();}
+            catch (SQLException e) {
+                throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
+        }
+    }
+    @Override
+    public void deletePairProfileCategory(int profileID,int categoryID) throws PersistenceException {
+        LOGGER.debug("Entering deletePairProfileCategory method with parameters " + categoryID+","+profileID);
+
+        LOGGER.debug("Passed:Checking parameters according to specification.");
+        String sql = "DELETE FROM profile_backgroundcategories WHERE  profileid=? and backgroundcategoryid = ? ;";
+        PreparedStatement stmt = null;
+
+        try{
+            stmt= con.prepareStatement(sql);
+            stmt.setInt(1,profileID);
+            stmt.setInt(2,categoryID);
+            stmt.execute();
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing deletePairProfileCategory failed: ",e);
+                }
+            }
         }
     }
 }

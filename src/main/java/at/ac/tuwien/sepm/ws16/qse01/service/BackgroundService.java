@@ -37,4 +37,6 @@ public interface BackgroundService {
     Background.Category getCategory(int id) throws ServiceException;
     List<Background.Category> getAllCategories() throws ServiceException;
     boolean eraseCategory(Background.Category category) throws ServiceException;
+    void createPairProfileCategory(int profileID,int categoryID) throws ServiceException;
+    void deletePairProfileCategory(int profileID,int categoryID) throws ServiceException;
 }

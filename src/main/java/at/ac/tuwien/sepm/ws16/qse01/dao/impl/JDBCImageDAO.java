@@ -10,7 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -288,6 +291,17 @@ public class JDBCImageDAO implements ImageDAO {
     }
 
 
+    @Override
+    public Image createAndSave(Image image, BufferedImage bufferedImage) throws PersistenceException {
 
-
+        Image ret = create(image);
+        File outputfile = new File(image.getImagepath());
+        try {
+            ImageIO.write(bufferedImage, "jpg", outputfile);
+        } catch (IOException e) {
+           LOGGER.debug("createAndSave", e);
+            throw new PersistenceException(e.getMessage());
+        }
+        return ret;
+    }
 }

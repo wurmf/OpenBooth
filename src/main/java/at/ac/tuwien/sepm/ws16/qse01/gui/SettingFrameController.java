@@ -45,6 +45,7 @@ public abstract class SettingFrameController {
     protected final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
     protected final ObservableList<Background.Category> categoryList = FXCollections.observableArrayList();
+    protected final ObservableList<Background.Category> categoryListOfProfile = FXCollections.observableArrayList();
 
 
 
@@ -52,22 +53,23 @@ public abstract class SettingFrameController {
 
 
     protected Profile selectedProfile = null;
+    protected Background.Category selectedCategory = null;
 
 
 
 
     @FXML
-    private PositionFrameController positionController;
+    protected PositionFrameController positionController;
     @FXML
-    private ProfileFrameController profileController;
+    protected ProfileFrameController profileController;
     @FXML
-    private LogoFrameController logoController;
+    protected LogoFrameController logoController;
     @FXML
-    private GreenscreenBackgroundFrameController greenscreenBackgroundController;
+    protected GreenscreenBackgroundFrameController greenscreenBackgroundController;
     @FXML
-    private GreenscreenCategoryFrameController greenscreenCategoryController;
+    protected GreenscreenCategoryFrameController greenscreenCategoryController;
     @FXML
-    private CameraPositionFrameController kamPosController;
+    protected CameraPositionFrameController kamPosController;
 
 
 
@@ -112,8 +114,16 @@ public abstract class SettingFrameController {
         if(greenscreenCategoryController!=null)
             greenscreenBackgroundController.refreshCategoryComboBox(categories,profileController.getSelectedProfile());
     }
-    protected void refreshTableCategory(List<Background.Category> categories){
-        greenscreenCategoryController.refreshTableCategory(categories,profileController.getSelectedProfile());
+    protected void refreshTableCategory(List<Background.Category> categoriesOfProfile,List<Background.Category> categories){
+        greenscreenCategoryController.refreshTableCategory(categoriesOfProfile,categories,profileController.getSelectedProfile());
+    }
+    protected void refreshTableBackground(List<Background> backgrounds){
+       // if(greenscreenBackgroundController!=null)
+            greenscreenBackgroundController.refreshTableBackground(backgrounds,profileController.getSelectedProfile(),greenscreenCategoryController.getSelectedCategory());
+    }
+
+    protected  void setControllers(){
+        greenscreenCategoryController.setControllers(greenscreenBackgroundController);
     }
 
 

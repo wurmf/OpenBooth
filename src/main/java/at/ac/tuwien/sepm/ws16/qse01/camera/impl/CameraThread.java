@@ -31,6 +31,7 @@ public class CameraThread extends Thread{
     private ImageProcessor imageProcessor;
 
     private boolean shouldStop = false;
+    private boolean takeImage = false;
 
 
     public void run()
@@ -57,7 +58,6 @@ public class CameraThread extends Thread{
                         String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
                         image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
                         image = imageService.create(image);
-
                         cf.save(new File(imagePath).getAbsolutePath());
 
                         imageSaved=true;
@@ -105,6 +105,9 @@ public class CameraThread extends Thread{
         this.imageService = imageService;
     }
 
+    public void setTakeImage(boolean takeImage) {
+        this.takeImage = takeImage;
+    }
 
     public void setShootingService(ShootingService shootingService){
         this.shootingService = shootingService;

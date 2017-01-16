@@ -269,6 +269,7 @@ public class ProfileFrameController extends SettingFrameController{
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
                     try {
+                        setControllers();
                         refreshTablePosition(pservice.getAllPositions());
 
                         refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
@@ -276,8 +277,8 @@ public class ProfileFrameController extends SettingFrameController{
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableCategory(bservice.getAllCategories());
-                        refreshCategoryComboBox(bservice.getAllCategories());// OfProfile(selectedProfile.getId()));
+                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()),bservice.getAllCategories());
+                       // refreshCategoryComboBox(bservice.getAllCategories());// OfProfile(selectedProfile.getId()));
                     } catch (ServiceException e) {
                        LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
                     }

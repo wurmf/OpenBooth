@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.util;
 
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
-import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.opencv.core.Core;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class OpenCVLoader {
                 System.load(libPath);
 
                 isLoaded = true;
-                LOGGER.info("OpenCV Library loaded at: {}", libPath);
+                LOGGER.info("OpenCV Library for {} loaded at: {}", operatingSystem,libPath);
             }
 
         }

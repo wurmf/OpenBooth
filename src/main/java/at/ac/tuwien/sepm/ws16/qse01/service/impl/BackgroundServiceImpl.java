@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -80,15 +79,11 @@ public class BackgroundServiceImpl implements BackgroundService{
     public List<Background> getAllWithCategory(int id) throws ServiceException {
         List<Background> backgrounds;
         try {
-            backgrounds = backgroundDAO.readAll();
-            for(Iterator<Background> it = backgrounds.iterator(); it.hasNext();)
-            {
-                Background background = it.next();
-                if(background.getCategory().getId() != id){it.remove(); break;}
-            }
+            backgrounds = backgroundDAO.readAllWithCategory(id);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getting all background objects in service layer has failed.:" + e);
         }
+
         return backgrounds;
     }
 
@@ -160,5 +155,21 @@ public class BackgroundServiceImpl implements BackgroundService{
             throw new ServiceException("Error! erasing backgroundCategory object in service layer has failed.:" + e);
         }
         return returnValue;
+    }
+    @Override
+    public void createPairProfileCategory(int profileID,int categoryID) throws ServiceException{
+        try {
+            backgroundCategoryDAO.createPairProfileCategory(profileID,categoryID);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! createPairProfileCategory  object in service layer has failed.:",e);
+        }
+    }
+    @Override
+    public void deletePairProfileCategory(int profileID,int categoryID) throws ServiceException{
+        try {
+            backgroundCategoryDAO.deletePairProfileCategory(profileID,categoryID);
+        } catch (PersistenceException e) {
+            throw new ServiceException("Error! deletePairProfileCategory  object in service layer has failed.:",e);
+        }
     }
 }
