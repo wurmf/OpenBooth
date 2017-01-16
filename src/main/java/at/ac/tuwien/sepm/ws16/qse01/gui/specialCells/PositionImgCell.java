@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by macdnz on 16.12.16.
@@ -36,7 +36,7 @@ public class PositionImgCell extends TableCell<Position, String> {
     final Button cellButton = new Button("edit");
     private Desktop desktop;
 
-    public PositionImgCell(ObservableList<Position> posList, ProfileService pservice) {
+    public PositionImgCell(ObservableList<Position> posList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
         this.posList = posList;
         this.pservice = pservice;
 
@@ -79,10 +79,10 @@ public class PositionImgCell extends TableCell<Position, String> {
                         setGraphic(hb);
 
                         pservice.editPosition(p);
-                        //TODO nachdem profilDAO keine exception wirft,diese zeile wieder vor tableview schieben.
+
 
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                       LOGGER.error("Update position Image",e);
                     }
                 }
 
@@ -92,16 +92,10 @@ public class PositionImgCell extends TableCell<Position, String> {
 
             @Override
             public void handle(MouseEvent event) {
-                try {
-
-
-                    if(posList.get(getIndex()).getButtonImagePath()==null)
-                        desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png"));
-                    else
-                        desktop.getDesktop().open(new File(posList.get(getIndex()).getButtonImagePath()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if(posList.get(getIndex()).getButtonImagePath()==null)
+                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                else
+                    imageHandler.popupImage(posList.get(getIndex()).getButtonImagePath(),primaryStage);
 
             }
 

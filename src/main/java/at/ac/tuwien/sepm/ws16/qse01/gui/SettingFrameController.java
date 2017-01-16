@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
@@ -35,7 +36,7 @@ public abstract class SettingFrameController {
     protected BackgroundService bservice;
     @Resource
     protected LogoWatermarkService logoService;
-
+    protected ImageHandler imageHandler;
 
     protected final ObservableList<Profile> profList = FXCollections.observableArrayList();
     protected final ObservableList<Position> posList = FXCollections.observableArrayList();
@@ -77,17 +78,14 @@ public abstract class SettingFrameController {
 
 
     @Autowired
-    public SettingFrameController(ProfileService pservice,LogoWatermarkService logoService,BackgroundService bservice,WindowManager windowmanager) throws ServiceException {
+    public SettingFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
         this.pservice = pservice;
         this.bservice = bservice;
         this.logoService = logoService;
         this.windowManager = windowmanager;
+        this.imageHandler = imageHandler;
     }
-
-    public SettingFrameController(){
-
-    }
-
+    
 
 
 

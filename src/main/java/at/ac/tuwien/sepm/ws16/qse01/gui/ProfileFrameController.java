@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileCheckboxCell;
@@ -80,8 +81,8 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     @Autowired
-    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice,logoService,bservice,windowmanager);
+    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice,logoService,bservice,windowmanager,imageHandler);
     }
 
 
@@ -227,7 +228,7 @@ public class ProfileFrameController extends SettingFrameController{
                 @Override
                 public TableCell call(TableColumn p) {
 
-                    return new ProfileImgCell(profList,pservice);
+                    return new ProfileImgCell(profList,pservice,imageHandler,windowManager.getStage());
 
                 }
             });
@@ -267,7 +268,6 @@ public class ProfileFrameController extends SettingFrameController{
                     selectedProfile = (Profile) newSelection;
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
-                    System.out.println("profile selected....");
                     try {
                         refreshTablePosition(pservice.getAllPositions());
 
@@ -277,18 +277,16 @@ public class ProfileFrameController extends SettingFrameController{
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
+                        refreshTableCategory(bservice.getAllCategories());
                         refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
-                       // System.out.println("test int value ->"+getPosList().size());
-
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                       LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
                     }
                 }
             });
 
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOGGER.error("Couldnt initialize profile tableview",e);
         }
     }
 
@@ -322,7 +320,7 @@ public class ProfileFrameController extends SettingFrameController{
                 txProfilWatermark.setText("Hochladen...");
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden...",e);
             }
         }
     }

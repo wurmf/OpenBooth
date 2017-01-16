@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.CamPosComboBoxCell;
@@ -41,8 +42,8 @@ public class CameraPositionFrameController extends SettingFrameController {
 
 
     @Autowired
-    public CameraPositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public CameraPositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
     @FXML
@@ -68,7 +69,6 @@ public class CameraPositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Profile.PairCameraPosition, Boolean> call(TableColumn<Profile.PairCameraPosition, Boolean> p) {
-                        System.out.println("camerapos initiliaztion now...");
                         return new CamPosComboBoxCell(kamPosList,pservice,posList);
                     }
 

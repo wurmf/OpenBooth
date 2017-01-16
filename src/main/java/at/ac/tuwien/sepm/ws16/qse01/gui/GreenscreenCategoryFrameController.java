@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.CategoryButtonCell;
@@ -50,12 +51,13 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
 
     @Autowired
-    public GreenscreenCategoryFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public GreenscreenCategoryFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
     }
 
     @FXML
     private void initialize() {
+
         tableCategory.setEditable(true);
         colCategoryID.setCellValueFactory(new PropertyValueFactory<Background.Category, Integer>("id"));
 
@@ -139,7 +141,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Kategorie konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Kategorie konnte nicht erstellt werden...",e);
             }
         }
     }

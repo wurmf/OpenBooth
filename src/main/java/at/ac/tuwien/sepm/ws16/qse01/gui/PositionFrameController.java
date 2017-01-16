@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.PositionButtonCell;
@@ -10,7 +11,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -61,8 +61,8 @@ public class PositionFrameController extends SettingFrameController {
     private TextField txPositionBild;
 
     @Autowired
-    public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice, logoService, bservice, windowmanager);
+    public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice, logoService, bservice, windowmanager,imageHandler);
         System.out.println("Camera initiliasierit tableview..n #########");
     }
 
@@ -114,7 +114,7 @@ public class PositionFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new PositionImgCell(posList,pservice);
+                return new PositionImgCell(posList,pservice,imageHandler,windowManager.getStage());
 
             }
         });
@@ -137,17 +137,10 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        System.out.println("selectedProfil->"+selectedProfile.getId());
                         return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                     }
 
                 });
-
-
-
-        System.out.println("position initialization finito!");
-
-
 
     }
 
