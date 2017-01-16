@@ -32,11 +32,6 @@
                        <fx:include fx:id="logo" source="logoFrame.fxml"/>
                        <fx:include fx:id="greenscreenBackground" source="greenscreenBackgroundFrame.fxml"/>
                        <fx:include fx:id="greenscreenCategory" source="greenscreenCategoryFrame.fxml"/>
-
-
-
-
-
                       <Label text="Einstellungen" textFill="#362d2d">
                          <padding>
                             <Insets left="100.0" />
