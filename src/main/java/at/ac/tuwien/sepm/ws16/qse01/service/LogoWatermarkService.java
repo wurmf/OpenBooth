@@ -86,14 +86,11 @@ public interface LogoWatermarkService {
                         -> 0 <= x,y <= 100
                         -> 0 < height,width <= 100 OR height, width == -1
                     imageWidth and ImageHeight must be > 0
-                    logos and positions must have the same length
     postcondition: a valid image is returned
      */
     /**
      * Shows a preview of the resulting image if all of the given logos would be added at the positions specified by the given
      * RelativeRectangles. imageWidth and imageHeight must be set correctly.
-     * The list of logos and RelativeRectangles must be in corresponding order,
-     * therefore the first RelativeRectangle in the RelativeRectangle list specifies the position for the first logo in the logo list
      *
      * If the width or the height of a relative rectangle, representing a logo position is set to
      * -1 it will be automatically scaled according to the given logo.

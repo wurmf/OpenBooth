@@ -39,8 +39,8 @@ public class MainFrameController {
 
 
     /**
-     * inizialize Mainfraim by
-     * tests whether there is still an shooting active or not
+     * initialize Mainframe by
+     * tests whether there is still a shooting active or not
      * in case there is still an open shooting the RecoveryDialog will reload it
      *
      * catches ServiceException caused by all Service methodes
@@ -55,7 +55,7 @@ public class MainFrameController {
                 showRecoveryDialog();
             }
         } catch (ServiceException e) {
-            showInformationDialog("Ein fehler beim Starten des Programms ist aufgetreten.");
+            showInformationDialog("Ein Fehler beim Start des Programms ist aufgetreten.");
             LOGGER.info("initialize - ",e);
          }
     }
@@ -80,7 +80,7 @@ public class MainFrameController {
      public void showRecoveryDialog(){
 
         Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
-                "Möchten sie die zuletzt geöffnete Shooting wieder her stellen?");
+                "Möchten sie das zuletzt geöffnete Shooting wiederherstellen?");
         alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
         Optional<ButtonType> result =alert.showAndWait();
         if(result.isPresent()&&result.get()==ButtonType.OK){
