@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="basicpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-image: url('/images/studio.jpg')" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CostumerFrameController">
+<GridPane fx:id="basicpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-image: url('/images/studio.jpg')" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CustomerFrameController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
@@ -27,7 +27,7 @@
           <RowConstraints percentHeight="50.0" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="allpicturesview" mnemonicParsing="false" onAction="#switchtoMiniaturFrame" text="Alle Bilder ansehen" GridPane.rowIndex="1" />
+            <Button fx:id="allpicturesview" mnemonicParsing="false" onAction="#switchToMiniaturFrame" text="Alle Bilder ansehen" GridPane.rowIndex="1" />
             <ImageView fx:id="logo" fitHeight="300.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="/images/logo.png" />

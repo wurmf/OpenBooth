@@ -21,9 +21,9 @@ import java.util.List;
 
 
 @Component
-public class CostumerFrameController {
+public class CustomerFrameController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFrameController.class);
 
     @FXML
     private GridPane basicpane;
@@ -47,7 +47,7 @@ public class CostumerFrameController {
     private ProfileService profileservice;
 
     @Autowired
-    public CostumerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
+    public CustomerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
@@ -80,7 +80,7 @@ public class CostumerFrameController {
         }
     }
 
-    public void switchtoMiniaturFrame(){
+    public void switchToMiniaturFrame(){
         windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
