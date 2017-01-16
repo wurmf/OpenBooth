@@ -38,8 +38,8 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Diese Profile.PairLogoRelativeRectangle wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie diese Profile.PairLogoRelativeRectangle mit den zugehörigen Daten löschen wollen?");
+                alert.setHeaderText("Dieses Logo wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie dieses Logo mit den zugehörigen Daten löschen wollen?");
                 alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");

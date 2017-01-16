@@ -63,7 +63,6 @@ public class PositionFrameController extends SettingFrameController {
     @Autowired
     public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
         super(pservice, logoService, bservice, windowmanager,imageHandler);
-        System.out.println("Camera initiliasierit tableview..n #########");
     }
 
 
@@ -137,17 +136,10 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        System.out.println("selectedProfil->"+selectedProfile.getId());
                         return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
                     }
 
                 });
-
-
-
-        System.out.println("position initialization finito!");
-
-
 
     }
 

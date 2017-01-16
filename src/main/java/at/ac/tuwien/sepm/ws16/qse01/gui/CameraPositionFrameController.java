@@ -69,7 +69,6 @@ public class CameraPositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Profile.PairCameraPosition, Boolean> call(TableColumn<Profile.PairCameraPosition, Boolean> p) {
-                        System.out.println("camerapos initiliaztion now...");
                         return new CamPosComboBoxCell(kamPosList,pservice,posList);
                     }
 

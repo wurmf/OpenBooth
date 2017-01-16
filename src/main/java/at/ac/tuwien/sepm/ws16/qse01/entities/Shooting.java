@@ -47,4 +47,14 @@ public class Shooting {
     public void setActive(boolean active) {
         this.isActive = active;
     }
+
+    @Override
+    public String toString() {
+        return "Shooting{" +
+                "id=" + id +
+                ", storageDir='" + storageDir + '\'' +
+                ", isActive=" + isActive +
+                ", profileid=" + profileid +
+                '}';
+    }
 }

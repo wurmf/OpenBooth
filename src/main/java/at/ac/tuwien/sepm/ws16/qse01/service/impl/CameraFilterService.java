@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * Created by Moatzgeile Sau on 12.01.2017.
  */
 @Service
-public class KameraFilterService {
+public class CameraFilterService {
 
     private Integer[] current;
     private Profile profile;
@@ -21,7 +21,7 @@ public class KameraFilterService {
     ProfileService profileService;
 
     @Autowired
-    public KameraFilterService(ShootingService shootingService, ProfileService profileService) {
+    public CameraFilterService(ShootingService shootingService, ProfileService profileService) {
         this.shootingService = shootingService;
         this.profileService = profileService;
         try {
@@ -34,11 +34,11 @@ public class KameraFilterService {
         }
     }
 
-    public void setcurrent(int index, int modus ){
+    public void setCurrent(int index, int modus ){
         current[index]=modus;
     }
 
-    public int getcurrent(int index){
+    public int getCurrent(int index){
         if(current[index]==null){
             current[index]=0;
         }

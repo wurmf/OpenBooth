@@ -47,7 +47,6 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
             @Override
             public void handle(ActionEvent t) {
-                // System.out.println("img changed..");
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Bild Hochladen...");
                 fileChooser.setInitialDirectory(
