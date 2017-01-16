@@ -31,4 +31,10 @@ public interface CameraHandler {
      * @param camera the camera that shall be removed.
      */
     void removeCameraFromList(Camera camera);
+
+    /**
+     * Sets the captureImage Flag in the CameraThread
+     * @param camera camera that shall capture a image
+     */
+    void captureImage(Camera camera);
 }
