@@ -35,8 +35,9 @@ INSERT INTO backgroundcategories VALUES (2, 'Weihnachten', false);
 INSERT INTO backgroundcategories VALUES (3, 'Geburtstage', false);
 INSERT INTO backgroundcategories VALUES (4, 'Hochzeiten', false);
 
-INSERT INTO backgrounds VALUES (1,'background 1', '/images/logos/logo1.jpg',1,false);
-INSERT INTO backgrounds VALUES (2,'background 2', '/images/logos/logo2.jpg',1,false);
+INSERT INTO backgrounds(backgroundID,name,path,backgroundcategoryID) VALUES (1, 'Grüne Wiese','/bsp/folder/p1.jpg',1);
+INSERT INTO backgrounds(backgroundID,name,path,backgroundcategoryID) VALUES (2, 'Bretter','/bsp/folder/p1.jpg',1);
+INSERT INTO backgrounds(backgroundID,name,path,backgroundcategoryID) VALUES (3, 'Zimmer','/bsp/folder/p1.jpg',1);
 
 ALTER SEQUENCE IF EXISTS profiles_seq RESTART WITH 100;
 ALTER SEQUENCE IF EXISTS shootings_seq RESTART WITH 3;
