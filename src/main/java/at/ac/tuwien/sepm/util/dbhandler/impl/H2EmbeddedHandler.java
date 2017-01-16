@@ -178,16 +178,25 @@ public class H2EmbeddedHandler  implements DBHandler {
         String image2 = this.getClass().getResource("/images/dummies/p2.jpg").getPath();
         String logo1 = this.getClass().getResource("/images/logos/logofamp.jpg").getPath();
         String logo2 =this.getClass().getResource("/images/logos/logo1.jpg").getPath();
+        String green1 =this.getClass().getResource("/images/greenscreen/background/test_background1.jpg").getPath();
+        String green2 =this.getClass().getResource("/images/greenscreen/background/test_background2.png").getPath();
+        String green3 =this.getClass().getResource("/images/greenscreen/background/test_background3.jpg").getPath();
 
         Path img1Source = Paths.get(image1);
         Path img2Source = Paths.get(image2);
         Path logo1Source= Paths.get(logo1);
         Path logo2Source= Paths.get(logo2);
+        Path green1Source= Paths.get(green1);
+        Path green2Source= Paths.get(green2);
+        Path green3Source= Paths.get(green3);
 
         Path img1Dest= Paths.get(destPath+"p1.jpg");
         Path img2Dest= Paths.get(destPath+"p2.jpg");
         Path logo1Dest= Paths.get(destPath+"logofamp.jpg");
         Path logo2Dest= Paths.get(destPath+"logo1.jpg");
+        Path green1Dest= Paths.get(destPath+"greenBg1.jpg");
+        Path green2Dest= Paths.get(destPath+"greenBg2.png");
+        Path green3Dest= Paths.get(destPath+"greenBg3.jpg");
 
         String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";
 
@@ -208,6 +217,10 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             Files.copy(logo1Source,logo1Dest, StandardCopyOption.REPLACE_EXISTING);
             Files.copy(logo2Source,logo2Dest, StandardCopyOption.REPLACE_EXISTING);
+
+            Files.copy(green1Source,green1Dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(green2Source,green2Dest, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(green3Source,green3Dest, StandardCopyOption.REPLACE_EXISTING);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
             stmt.setString(1,destPath+"p1.jpg");
@@ -235,6 +248,21 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             stmt=connection.prepareStatement("UPDATE shootings SET folderpath=? WHERE shootingID=1");
             stmt.setString(1,shootingPath);
+            stmt.execute();
+
+            stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE backgrounds SET path=? WHERE backgroundID=?");
+            stmt.setString(1,destPath+"greenBg1.jpg");
+            stmt.setInt(2,1);
+            stmt.execute();
+
+            stmt.setString(1,destPath+"greenBg2.png");
+            stmt.setInt(2,2);
+            stmt.execute();
+
+            stmt.setString(1,destPath+"greenBg3.jpg");
+            stmt.setInt(2,3);
             stmt.execute();
         } catch (IOException|SQLException e) {
             LOGGER.error("setUpDefaultImgs - ",e);

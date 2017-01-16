@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
@@ -35,37 +36,38 @@ public abstract class SettingFrameController {
     protected BackgroundService bservice;
     @Resource
     protected LogoWatermarkService logoService;
-
+    protected ImageHandler imageHandler;
 
     protected final ObservableList<Profile> profList = FXCollections.observableArrayList();
     protected final ObservableList<Position> posList = FXCollections.observableArrayList();
-
-
     protected final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
+
+    protected final ObservableList<Background.Category> categoryList = FXCollections.observableArrayList();
 
 
 
     protected final FileChooser fileChooser = new FileChooser();
 
 
+    protected Profile selectedProfile = null;
 
 
 
 
-
-
-    @FXML
-    private ProfileFrameController profilController;
     @FXML
     private PositionFrameController positionController;
     @FXML
-    private CameraPositionFrameController kamPosController;
+    private ProfileFrameController profileController;
     @FXML
     private LogoFrameController logoController;
     @FXML
-    private GreenscreenFrameController greenscreenController;
+    private GreenscreenBackgroundFrameController greenscreenBackgroundController;
+    @FXML
+    private GreenscreenCategoryFrameController greenscreenCategoryController;
+    @FXML
+    private CameraPositionFrameController kamPosController;
 
 
 
@@ -73,77 +75,46 @@ public abstract class SettingFrameController {
 
 
     protected Profile.PairLogoRelativeRectangle selectedLogo = null;
-    protected Profile selectedProfile = null;
-    protected int selectedProfileID = 0;
+
 
     @Autowired
-    public SettingFrameController(ProfileService pservice,LogoWatermarkService logoService,BackgroundService bservice,WindowManager windowmanager) throws ServiceException {
+    public SettingFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
         this.pservice = pservice;
         this.bservice = bservice;
         this.logoService = logoService;
         this.windowManager = windowmanager;
+        this.imageHandler = imageHandler;
     }
-
-    public SettingFrameController(){
-
-    }
+    
 
 
-
-
-    @FXML
-    protected abstract void initialize();
 
     protected void refreshTableProfiles(List<Profile> profileList){
-        profilController.refreshTableProfiles(profileList);
-       /* LOGGER.info("refreshing the profil table...");
-        profList.clear();
-        profList.addAll(profileList);
-        tableProfil.setItems(profList);*/
-
+        profileController.refreshTableProfiles(profileList);
     }
     protected void refreshLogoAutoComplete(Profile selectedProfile) throws ServiceException {
         logoController.refreshLogoAutoComplete(selectedProfile);
-       /* txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
-        txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
-        txLogoName.setTxLogoPath(txLogoLogo);*/
     }
 
     protected void refreshTablePosition(List<Position> positionList){
-        positionController.refreshTablePosition(positionList);
-       /* LOGGER.info("refreshing the position table...");
-        posList.clear();
-        posList.addAll(positionList);
-        tablePosition.setItems(posList);*/
-    }
-    protected void refreshTableBackground(List<Background> backgroundList){
-        greenscreenController.refreshTableBackground(backgroundList);
-      /*  LOGGER.info("refreshing the background table...");
-        this.backgroundList.clear();
-        this.backgroundList.addAll(backgroundList);
-        tableBackground.setItems(this.backgroundList);*/
+        positionController.refreshTablePosition(positionList,selectedProfile);
     }
 
     protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
-        kamPosController.refreshTableKameraPosition(camposList);
-      /*  LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
-        this.kamPosList.removeAll(kamPosList);
-        this.kamPosList.addAll(camposList);
-        tableKamPos.setItems(this.kamPosList);*/
+        if(kamPosController!=null)
+            kamPosController.refreshTableKameraPosition(camposList,positionController.getPosList(),profileController.getSelectedProfile());
     }
     protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList){
-        logoController.refreshTableLogo(logoList);
-        /*LOGGER.info("refreshing the Logo table...");
-        this.logoList.clear();
-        this.logoList.addAll(logoList);
-        tableLogo.setItems(this.logoList);*/
+        logoController.refreshTableLogo(logoList,profileController.getSelectedProfile());
     }
 
-
-
-
-    @FXML
-    protected abstract void backgroundUpload();
+    protected void refreshCategoryComboBox(List<Background.Category> categories){
+        if(greenscreenCategoryController!=null)
+            greenscreenBackgroundController.refreshCategoryComboBox(categories,profileController.getSelectedProfile());
+    }
+    protected void refreshTableCategory(List<Background.Category> categories){
+        greenscreenCategoryController.refreshTableCategory(categories,profileController.getSelectedProfile());
+    }
 
 
 
@@ -162,21 +133,6 @@ public abstract class SettingFrameController {
         alert.initOwner(windowManager.getStage());
         alert.show();
     }
-
-    @FXML
-    protected abstract void positionUpload();
-    @FXML
-    protected abstract void savePosition();
-    @FXML
-    protected abstract void fullScreenPreview();
-    @FXML
-    protected abstract void saveLogo();
-    @FXML
-    protected abstract void logoUpload();
-    @FXML
-    protected abstract void watermarkUpload();
-    @FXML
-    protected abstract void saveProfil();
 
 
 

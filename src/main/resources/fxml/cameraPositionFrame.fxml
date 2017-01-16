@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 
-<TitledPane animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CameraPositionFrameController">
+<TitledPane fx:id="kampos" animated="false" prefHeight="717.0" text="Kamera-Position Zuweisung" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CameraPositionFrameController">
 
 <content>
     <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">

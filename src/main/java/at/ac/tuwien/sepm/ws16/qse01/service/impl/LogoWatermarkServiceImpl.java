@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -43,6 +44,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     @Override
     public double calculateRelativeWidth(double relativeHeight, Logo logo, double imageWidth, double imageHeight) throws ServiceException{
+        LOGGER.debug("Entering calculateRelativeWidth method");
         BufferedImage logoImage = openImageFromLogo(logo);
 
         if(relativeHeight <= 0){
@@ -60,11 +62,16 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         double absoluteHeight = relativeHeight / (100D) * imageHeight;
         double absoluteWidth = absoluteHeight * widthHeightRatio;
 
-        return absoluteWidth / imageWidth * (100D);
+
+        double relativeWidth = absoluteWidth / imageWidth * (100D);
+
+        LOGGER.debug("calculateRelativeWidth - calculation finished: relative width and height: {}, {}, original logo width and height: {}, {}, image width and height: {}, {} ", relativeWidth, relativeWidth, logoImage.getWidth(), logoImage.getHeight(), imageWidth, imageHeight);
+        return relativeWidth;
     }
 
     @Override
     public double calculateRelativeHeight(double relativeWidth, Logo logo, double imageWidth, double imageHeight) throws ServiceException{
+        LOGGER.debug("Entering calculateRelativeHeight method");
 
         BufferedImage logoImage = openImageFromLogo(logo);
 
@@ -83,7 +90,10 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         double absoluteWidth = relativeWidth / (100D) * imageWidth;
         double absoluteHeight = absoluteWidth * heightWidthRatio;
 
-        return absoluteHeight / imageHeight * (100D);
+        double relativeHeight = absoluteHeight / imageHeight * (100D);
+        LOGGER.debug("calculateRelativeHeight - calculation finished: relative width and height: {}, {}, original logo width and height: {}, {}, image width and height: {}, {} ", relativeWidth, relativeWidth, logoImage.getWidth(), logoImage.getHeight(), imageWidth, imageHeight);
+
+        return relativeHeight;
     }
 
     @Override
@@ -100,20 +110,15 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
+    public BufferedImage getPreviewForMultipleLogos(List<Profile.PairLogoRelativeRectangle> pairs, int imageWidth, int imageHeight) throws ServiceException{
         LOGGER.debug("Entering getPreviewFroMultipleLogos method");
-
-        if(logos.size() != positions.size()){
-            LOGGER.error("getPreviewForMultipleLogos - logo list and position list have different length");
-            throw new ServiceException("logo list and position list have different length");
-        }
 
         BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
         //iterate through logos
-        for(int i=0; i<logos.size(); i++){
-            BufferedImage logoImage = openImageFromLogo(logos.get(i));
-            addLogoAtPosition(img, logoImage, positions.get(i));
+        for(int i=0; i<pairs.size(); i++){
+            BufferedImage logoImage = openImageFromLogo(pairs.get(i).getLogo());
+            addLogoAtPosition(img, logoImage, pairs.get(i).getRelativeRectangle());
         }
 
         return img;
@@ -180,6 +185,8 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         g.drawImage(cachedWatermark, 0, 0, img.getWidth(), img.getHeight(), null);
 
+        LOGGER.debug("addWatemarkToImage - watermark {} added to image", watermark);
+
         return img;
 
     }
@@ -215,7 +222,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
         g.drawImage(logo, absoluteXPosition, absoluteYPosition, (int)absoluteLogoWidth, (int)absoluteLogoHeight, null);
         g.dispose();
-        LOGGER.debug("logo with width {} and height {} added at X: {} Y: {} | Imagewidth: {} Imageheight: {}", absoluteLogoWidth, absoluteLogoHeight, absoluteXPosition, absoluteYPosition, imgWidth, imgHeight);
+        LOGGER.debug("addLogoAtPositon - logo with width {} and height {} added at X: {} Y: {} | Imagewidth: {} Imageheight: {}", absoluteLogoWidth, absoluteLogoHeight, absoluteXPosition, absoluteYPosition, imgWidth, imgHeight);
     }
 
     private RelativeRectangle calculatePosition(RelativeRectangle position, double imageWidth, double imageHeight, double logoWidth, double logoHeight) throws ServiceException{
@@ -252,12 +259,12 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         relativeLogoWidth = absoluteCalculatedLogoWidth / imageWidth * (100D);
         relativeLogoHeight = absoluteCalculatedLogoHeight / imageHeight * (100D);
 
-        LOGGER.debug("given logo position and dimension {}", position);
+        LOGGER.debug("calculatePosition - given logo position and dimension {}", position);
 
         position.setHeight(relativeLogoHeight);
         position.setWidth(relativeLogoWidth);
 
-        LOGGER.debug("calculated logo position and dimension: {} ", position);
+        LOGGER.debug("calculatePosition - calculated logo position and dimension: {} ", position);
 
         return position;
     }
@@ -275,7 +282,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
         g.setPaint(new Color(160, 160, 160));
         g.fillRect(0, 0, img.getWidth(), img.getHeight());
 
-        LOGGER.debug("Previewimage background with {}px width and {}px height created", imageWidth, imageHeight);
+        LOGGER.debug("createPreviewImage - Previewimage background with {}px width and {}px height created", imageWidth, imageHeight);
         return img;
     }
 
@@ -294,7 +301,7 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
             throw new ServiceException(e);
         }
 
-        LOGGER.debug("Image from Logo {} opened", logo);
+        LOGGER.debug("openImageFromLogo - Image from Logo {} opened", logo);
         return img;
     }
 

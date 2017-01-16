@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by macdnz on 15.12.16.
@@ -35,7 +35,7 @@ public class ProfileImgCell extends TableCell<Profile, String> {
     final Button cellButton = new Button("edit");
     private Desktop desktop;
     
-    public ProfileImgCell(ObservableList<Profile> pList, ProfileService pservice) {
+    public ProfileImgCell(ObservableList<Profile> pList, ProfileService pservice,ImageHandler imageHandler,Stage primaryStage) {
         this.pList = pList;
         this.pservice = pservice;
 
@@ -47,7 +47,6 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
             @Override
             public void handle(ActionEvent t) {
-                // System.out.println("img changed..");
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Bild Hochladen...");
                 fileChooser.setInitialDirectory(
@@ -83,16 +82,11 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
             @Override
             public void handle(MouseEvent event) {
-                try {
 
-
-                    if(pList.get(getIndex()).getWatermark()==null)
-                        desktop.getDesktop().open(new File(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png"));
-                    else
-                        desktop.getDesktop().open(new File(pList.get(getIndex()).getWatermark()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                if(pList.get(getIndex()).getWatermark()==null)
+                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                else
+                    imageHandler.popupImage(pList.get(getIndex()).getWatermark(),primaryStage);
 
             }
 

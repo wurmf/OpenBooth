@@ -28,7 +28,6 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
         this.camPosList = camPosList;
         this.posList = posList;
         this.pservice = pservice;
-        System.out.println("Poslist -> Anzahl ->"+posList.size());
         this.comboBox.setItems(posList);
         this.comboBox.setPromptText("Position auswählen");
 
@@ -62,9 +61,6 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
         if(empty) {
             setGraphic(null);
         }else{
-            System.out.println("INDEX =>"+getIndex()+"___ItemsAnz="+this.comboBox.getItems().size());
-          // this.comboBox.getItems().clear();
-          //  this.comboBox.setItems(posList);
             Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
             try {
 
@@ -73,7 +69,6 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
                 for(Position pos: pservice.getAllPositions()) {
 
                     if(currentCamPos.getPosition()!=null) {
-                        System.out.println(currentCamPos.getPosition().getId()+"-"+pos.getId());
                         if (currentCamPos.getPosition().getId() == pos.getId())
                             index2select = i;
                     }

@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.BackgroundCategoryDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.BackgroundDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
@@ -85,7 +84,7 @@ public class BackgroundServiceImpl implements BackgroundService{
             for(Iterator<Background> it = backgrounds.iterator(); it.hasNext();)
             {
                 Background background = it.next();
-                if(background.getCategory().getId() != id){backgrounds.remove(background);}
+                if(background.getCategory().getId() != id){it.remove(); break;}
             }
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getting all background objects in service layer has failed.:" + e);

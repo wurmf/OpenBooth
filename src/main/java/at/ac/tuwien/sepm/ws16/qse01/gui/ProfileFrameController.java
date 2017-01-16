@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileCheckboxCell;
@@ -80,13 +81,13 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     @Autowired
-    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager) throws ServiceException {
-        super(pservice,logoService,bservice,windowmanager);
+    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+        super(pservice,logoService,bservice,windowmanager,imageHandler);
     }
 
 
     @FXML
-    protected void initialize(){
+    private void initialize(){
         LOGGER.debug("Initializing profile frame ...");
         try {
            /* ######################### */
@@ -227,7 +228,7 @@ public class ProfileFrameController extends SettingFrameController{
                 @Override
                 public TableCell call(TableColumn p) {
 
-                    return new ProfileImgCell(profList,pservice);
+                    return new ProfileImgCell(profList,pservice,imageHandler,windowManager.getStage());
 
                 }
             });
@@ -265,33 +266,31 @@ public class ProfileFrameController extends SettingFrameController{
             tableProfil.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
                     selectedProfile = (Profile) newSelection;
-                    selectedProfileID = selectedProfile.getId();
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
-                    System.out.println("profile selected....");
                     try {
                         refreshTablePosition(pservice.getAllPositions());
-                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
 
+                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfileID));
-
+                        refreshTableCategory(bservice.getAllCategories());
+                        refreshCategoryComboBox(bservice.getAllCategories());// OfProfile(selectedProfile.getId()));
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                       LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
                     }
                 }
             });
 
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOGGER.error("Couldnt initialize profile tableview",e);
         }
     }
 
 
-    @Override
+    @FXML
     protected void saveProfil(){
         LOGGER.error("Profil Add Button has been clicked");
         String name = txProfilName.getText();
@@ -320,13 +319,13 @@ public class ProfileFrameController extends SettingFrameController{
                 txProfilWatermark.setText("Hochladen...");
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden...",e);
             }
         }
     }
 
-    @Override
-    protected void watermarkUpload(){
+    @FXML
+    private void watermarkUpload(){
         fileChooser.setTitle("Watermark Hochladen...");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))
@@ -344,44 +343,15 @@ public class ProfileFrameController extends SettingFrameController{
 
 
 
-
-
-    @Override
-    protected void backgroundUpload() {
-
-    }
-
-    @Override
-    protected void positionUpload() {
-        System.out.println("klicked...");
-
-    }
-
-    @Override
-    protected void savePosition() {
-
-    }
-
-    @Override
-    protected void fullScreenPreview() {
-
-    }
-
-    @Override
-    protected void saveLogo() {
-
-    }
-
-    @Override
-    protected void logoUpload() {
-
-    }
-
     protected void refreshTableProfiles(List<Profile> profileList){
         LOGGER.info("refreshing the profil table...");
         profList.clear();
         profList.addAll(profileList);
         tableProfil.setItems(profList);
 
+    }
+
+    protected Profile getSelectedProfile(){
+        return this.selectedProfile;
     }
 }
