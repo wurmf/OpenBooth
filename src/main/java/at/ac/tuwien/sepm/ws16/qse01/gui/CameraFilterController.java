@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -267,6 +268,7 @@ public class CameraFilterController {
             LOGGER.error("greenScreenButoon:",e);
         }
 */
+       FileInputStream fips=null;
         try {
             greengrid = new GridPane();
             greengrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
@@ -327,7 +329,9 @@ public class CameraFilterController {
 
                 //iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
-                iv.setImage(new javafx.scene.image.Image(new FileInputStream(backround.getPath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
+                fips=new FileInputStream(backround.getPath());
+                iv.setImage(new javafx.scene.image.Image(fips, iv.getFitHeight(), iv.getFitWidth(), true, true));
+                fips.close();
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
                     if (backround.getPath().equals(profile.getPairCameraPositions().get(index).getBackground())) {
                         activiv = iv;
@@ -359,8 +363,16 @@ public class CameraFilterController {
             filterscrollplanel.setVisible(true);
             filterscrollplanel.setContent(greengrid);
             root.add(filterscrollplanel, 0, 1);
-        } catch (ServiceException|FileNotFoundException e) {
+        } catch (ServiceException|IOException e) {
             LOGGER.error("Camers Filter, greenscreen creat button- ", e);
+        } finally{
+            if(fips!=null){
+                try {
+                    fips.close();
+                } catch (IOException e) {
+                    LOGGER.debug("createGreenScreenButton - unable to close FileInputStream - ",e);
+                }
+            }
         }
     }
 
