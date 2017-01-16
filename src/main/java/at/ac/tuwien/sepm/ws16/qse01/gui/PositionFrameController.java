@@ -63,7 +63,6 @@ public class PositionFrameController extends SettingFrameController {
     @Autowired
     public PositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
         super(pservice, logoService, bservice, windowmanager,imageHandler);
-        System.out.println("Camera initiliasierit tableview..n #########");
     }
 
 

@@ -1,10 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -100,14 +100,13 @@ public interface LogoWatermarkService {
      *
      * If both width and length are set to -1 the absolute pixel values will be used
      *
-     * @param logos the given logos, which will be contained in the preview
-     * @param positions the list of RelativeRectangles, which specify the position of the logos
+     * @param pairs the given list with logos and RelativeRectangles, which specify the position of the logos
      * @param imageWidth specifies the width of the resulting image in pixel
      * @param imageHeight specifies the height of the resulting image in pixel
      * @return the preview where all logos are added at the specified positions
      * @throws ServiceException if an error during the image processing or opening one of the logo images occurs
      */
-    BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException;
+    BufferedImage getPreviewForMultipleLogos(List<Profile.PairLogoRelativeRectangle> pairs, int imageWidth, int imageHeight) throws ServiceException;
 
     /*
      precondition:  a valid image is given, all logos must be a valid images,

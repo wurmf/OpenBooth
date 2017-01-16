@@ -432,17 +432,20 @@ public class LogoFrameController extends SettingFrameController {
                 double height = 0.0;
                 if(txLogoHoehe.getText().isEmpty() && !txLogoBreite.getText().isEmpty()){
                     width = Double.valueOf(txLogoBreite.getText());
-                    height = (((width*100)/Double.valueOf(txPreviewWidth.getText()))*Double.valueOf(txPreviewHeight.getText()))/100;
+                    height = logoService.calculateRelativeHeight(width,newLogo,Double.valueOf(txPreviewWidth.getText()),Double.valueOf(txPreviewHeight.getText()));
+                    //(((width*100)/Double.valueOf(txPreviewWidth.getText()))*Double.valueOf(txPreviewHeight.getText()))/100;
                 }else if(!txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
                     height = Double.valueOf(txLogoHoehe.getText());
-                    width = (((height*100)/Double.valueOf(txPreviewHeight.getText()))*Double.valueOf(txPreviewWidth.getText()))/100;
+                    width = logoService.calculateRelativeWidth(height,newLogo,Double.valueOf(txPreviewWidth.getText()),Double.valueOf(txPreviewHeight.getText()));
+                    //(((height*100)/Double.valueOf(txPreviewHeight.getText()))*Double.valueOf(txPreviewWidth.getText()))/100;
                 }else if(txLogoHoehe.getText().isEmpty() && txLogoBreite.getText().isEmpty()){
-                    showError("Bitte in Breite und Höhe Eingabefelder nur Zahlen eingeben.");
+                   // showError("Bitte in Breite und Höhe Eingabefelder nur Zahlen eingeben.");
                     throw new NumberFormatException();
                 }else{
                     width = Double.valueOf(txLogoBreite.getText());
                     height = Double.valueOf(txLogoHoehe.getText());
                 }
+
                 RelativeRectangle newPosition = new RelativeRectangle(Double.valueOf(txLogoX.getText()),Double.valueOf(txLogoY.getText()),width,height);
 
                 LOGGER.info("adding the new pairLogo to tableView...");
@@ -505,6 +508,11 @@ public class LogoFrameController extends SettingFrameController {
         this.logoList.clear();
         this.logoList.addAll(logoList);
         tableLogo.setItems(this.logoList);
+        try {
+            previewLogo.setImage( SwingFXUtils.toFXImage(logoService.getPreviewForMultipleLogos(logoList,Integer.valueOf(txPreviewWidth.getText()),Integer.valueOf(txPreviewHeight.getText())),null));
+        } catch (ServiceException e) {
+            LOGGER.error("refreshTablelogo->Error",e);
+        }
     }
     protected void refreshLogoAutoComplete(Profile selected) throws ServiceException {
         selectedProfile = selected;
