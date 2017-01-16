@@ -21,9 +21,9 @@ import java.util.List;
 
 
 @Component
-public class CostumerFrameController {
+public class CustomerFrameController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFrameController.class);
 
     @FXML
     private GridPane basicpane;
@@ -47,7 +47,7 @@ public class CostumerFrameController {
     private ProfileService profileservice;
 
     @Autowired
-    public CostumerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
+    public CustomerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
@@ -80,7 +80,7 @@ public class CostumerFrameController {
         }
     }
 
-    public void switchtoMiniaturFrame(){
+    public void switchToMiniaturFrame(){
         windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
@@ -195,10 +195,17 @@ public class CostumerFrameController {
                     filter.setPrefHeight(high);
                     String url = pairList.get(i).getCameraLable();
                    // LOGGER.debug("url costumer: " + url);
-                    filter.setStyle("-fx-background-image: url('" + url + "'); " +
-                            "   -fx-background-size: 100%;" +
-                            "   -fx-background-color: transparent;" +
-                            "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    filter.setStyle("-fx-background-image: url('" + url + "') " );
+                    filter.setStyle("-fx-background-size: 100%" );
+                    filter.setStyle("-fx-background-color: transparent" );
+                    double size=0;
+                    if(column==0){
+                        size =allpicturesview.getFont().getSize();
+                    }else{
+                        size= (int)(allpicturesview.getFont().getSize() / column);
+                    }
+                    filter.setStyle("-fx-font-size:" + size + "px " );
+
                     final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
                         //kamera Filter controller fiter id

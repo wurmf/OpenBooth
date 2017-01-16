@@ -4,7 +4,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.KameraFilterService;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.CameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,9 @@ import java.util.Map;
  * Kamera Filter frame controller
  */
 @Component
-public class KameraFilterController {
+public class CameraFilterController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFrameController.class);
 
 
     @FXML
@@ -64,17 +66,19 @@ public class KameraFilterController {
     private WindowManager wm;
     private ImageService imageService;
     private ShootingService shootingService;
-    private KameraFilterService kameraFilterService;
+
+    private CameraFilterService cameraFilterService;
+
 
     @Autowired
 
-    public KameraFilterController(KameraFilterService kameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public CameraFilterController( CameraFilterService cameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
-        this.kameraFilterService = kameraFilterService;
+        this.cameraFilterService = cameraFilterService;
     }
 
 
@@ -222,7 +226,7 @@ public class KameraFilterController {
     /**
      * creats image buttons for green screen image and marks chousen one
      */
-    private void creatGreenscreenButton(){
+    private void createGreenscreenButton(){
        /* try {
             if (shootingService.searchIsActive().getActive()) {
                 List<Image> greenScreenImages = imageService.getAllImages(shootingService.searchIsActive().getId());
@@ -261,7 +265,7 @@ public class KameraFilterController {
         } catch (FileNotFoundException e) {
             LOGGER.error("greenScreenButoon:",e);
         }
-
+*/
         try {
             greengrid = new GridPane();
             greengrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
@@ -301,10 +305,10 @@ public class KameraFilterController {
             int columcount = 0;
             int rowcount = 0;
 
-            List<Background.Category>  greenList = profile.getBackgroundCategories();
+            List<Background>  greenList =profileservice.getAllBackgroundOfProfile();
 
             // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
-            for (Background.Category backround : greenList) {//imagefilter.size
+            for (Background backround : greenList) {//imagefilter.size
                 // for(Image im : imlist){
                 if (columcount == 5) {
                     rowcount++;
@@ -314,7 +318,7 @@ public class KameraFilterController {
                         greengrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
                     }
                 }
-
+               // profileservice.getAllBackgroundOfProfile().get(1).getPath()
 
                 ImageView iv = new ImageView();
                 iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
@@ -322,14 +326,9 @@ public class KameraFilterController {
 
                 iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
-
-
-
-                iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(), null));
-
+                iv.setImage(new javafx.scene.image.Image(new FileInputStream(backround.getPath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
-                    if (ba.equals(profile.getPairCameraPositions().get(index).getFilterName())) {
-
+                    if (backround.getPath().equals(profile.getPairCameraPositions().get(index).getBackground())) {
                         activiv = iv;
                         activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
@@ -349,7 +348,7 @@ public class KameraFilterController {
 
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
-                    profile.getPairCameraPositions().get(index).setBackground();
+                    profile.getPairCameraPositions().get(index).setBackground(backround);
                    
                 });
                 greengrid.add(iv, columcount, rowcount);
@@ -360,8 +359,10 @@ public class KameraFilterController {
             filterscrollplanel.setContent(greengrid);
             root.add(filterscrollplanel, 0, 1);
         } catch (ServiceException e) {
-            e.printStackTrace();
-        }*/
+            LOGGER.error("Camers Filter, greenscreen creat button- ", e);
+        } catch (FileNotFoundException e) {
+            LOGGER.error("Camers Filter, greenscreen creat button- ", e);
+        }
     }
 
     /**
@@ -374,34 +375,33 @@ public class KameraFilterController {
     /**
      * on single image pressed
      */
-    public void onsingelPressed() {
+    public void onSinglePressed() {
         unmark();
 
         profile.getPairCameraPositions().get(index).setShotType(0);
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode = 0;
-        //kameraFilterService.setcurrent(index,currentMode);
-
+        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
      * on serien pictures pressed
      */
-    public void onserienPressed() {
+    public void onSerialPressed() {
         unmark();
 
         profile.getPairCameraPositions().get(index).setShotType(1);
         serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode =1;
-        kameraFilterService.setcurrent(index,currentMode);
+        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
      * on time image pressed
      */
-    public void ontimerPressed() {
+    public void onTimerPressed() {
         unmark();
 
         profile.getPairCameraPositions().get(index).setShotType(2);
@@ -410,7 +410,7 @@ public class KameraFilterController {
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode=2;
-        kameraFilterService.setcurrent(index,currentMode);
+        cameraFilterService.setCurrent(index,currentMode);
     }
 
     /**
@@ -427,10 +427,10 @@ public class KameraFilterController {
      * @param idFilter current filter id
      * @param greenscreen boolean green screen or not
      */
-    public void currentlychousen(int index, int idFilter, boolean greenscreen){
+    public void currentlyChosen(int index, int idFilter, boolean greenscreen){
 
-        this.index=index;
-        currentMode=profile.getPairCameraPositions().get(index).getShotType();
+        this.index=index;  currentMode=profile.getPairCameraPositions().get(index).getShotType();
+
         fId=idFilter;
         titel.setText("");
         greengrid=new GridPane();
@@ -449,7 +449,7 @@ public class KameraFilterController {
                     greengrid.setVisible(true);
                     titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Hintergrund auswahl");
                     titel.setVisible(true);
-                    creatGreenscreenButton();
+                    createGreenscreenButton();
                 } else {
                     if (buttonList.isEmpty()) {
                         greengrid.setVisible(false);

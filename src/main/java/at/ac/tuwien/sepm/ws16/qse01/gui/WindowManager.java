@@ -51,7 +51,7 @@ public class WindowManager {
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
-    private KameraFilterController kameraFilterController;
+    private CameraFilterController cameraFilterController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -147,8 +147,8 @@ public class WindowManager {
         parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
         //costumer scene
-        SpringFXMLLoader.FXMLWrapper<Object,CostumerFrameController> costumerWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml",CostumerFrameController.class);
+        SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> costumerWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml", CustomerFrameController.class);
         Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
         URL csscos= this.getClass().getResource("/css/costumer.css");
         LOGGER.info("CSSCOS -"+csscos);
@@ -156,15 +156,15 @@ public class WindowManager {
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
 
-        SpringFXMLLoader.FXMLWrapper<Object, KameraFilterController> kameraFilterFXMLWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", KameraFilterController.class);
+        SpringFXMLLoader.FXMLWrapper<Object, CameraFilterController> kameraFilterFXMLWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", CameraFilterController.class);
         Parent parentkaf = (Parent) kameraFilterFXMLWrapper.getLoadedObject();
         URL csskaf= this.getClass().getResource("/css/camerafilter.css");
         LOGGER.info("CSSKAF -"+csskaf);
         parentkaf.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentkaf.getStylesheets().add(csskaf.toExternalForm());
         this.kamerafilterScene = new Scene(parentkaf,screenWidth,screenHeight);
-        kameraFilterController= kameraFilterFXMLWrapper.getController();
+        cameraFilterController = kameraFilterFXMLWrapper.getController();
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -239,7 +239,7 @@ public class WindowManager {
     public void showKameraFilterSceen(int idK, int idF, boolean greenscreen){
         mainStage.setScene(kamerafilterScene);
         mainStage.setFullScreen(true);
-        kameraFilterController.currentlychousen(idK,idF,greenscreen);
+        cameraFilterController.currentlyChosen(idK,idF,greenscreen);
     }
     /**
      * Closes the mainStage and all shotStages, which leads to the application being closed, too.

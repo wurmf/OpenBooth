@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -188,7 +187,7 @@ public class ShootingAdminController {
                     shootingService.addShooting(shouting);
 
 
-                    boolean camerasFitPosition= camerasFitPosition =windowManager.initImageProcessing();
+                    boolean camerasFitPosition =windowManager.initImageProcessing();
                     if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                     } else{
@@ -271,6 +270,7 @@ public class ShootingAdminController {
     public void onStopShootingPressed(ActionEvent actionEvent) {
         try {
             shootingService.endShooting();
+            inactivemode();
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");
