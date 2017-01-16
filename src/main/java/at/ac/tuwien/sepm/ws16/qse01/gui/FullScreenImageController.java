@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
+import at.ac.tuwien.sepm.ws16.qse01.application.ThreadCommunicator;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
@@ -124,7 +125,7 @@ public class FullScreenImageController {
     private ImageHandler imageHandler;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, ThreadCommunicator threadCommunicator) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
@@ -685,7 +686,7 @@ public class FullScreenImageController {
         LOGGER.info("Crop Button clicked");
         if(cropRectangle==null)
         {
-            cropRectangle=createDraggableRectangle(200, 200, 500, 500);
+            cropRectangle=createDraggableRectangle(wholePane.getWidth() - 250, wholePane.getHeight() - 250, 500, 500);
             wholePane.getChildren().add(cropRectangle);
         }
         else
@@ -694,6 +695,7 @@ public class FullScreenImageController {
             resizeHandleNW.setVisible(true);
             resizeHandleSE.setVisible(true);
         }
+
     }
 
     private void onCheckPressed()
@@ -731,15 +733,17 @@ public class FullScreenImageController {
 
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setOpacity(0.1);
+        //wholePane.getChildren().add(rect);
+
 
         // top left resize handle:
-        Circle resizeHandleNW = new Circle(handleRadius, Color.BLACK);
+        resizeHandleNW = new Circle(handleRadius, Color.BLACK);
         // bind to top left corner of Rectangle:
         resizeHandleNW.centerXProperty().bind(rect.xProperty());
         resizeHandleNW.centerYProperty().bind(rect.yProperty());
 
         // bottom right resize handle:
-        Circle resizeHandleSE = new Circle(handleRadius, Color.BLACK);
+        resizeHandleSE = new Circle(handleRadius, Color.BLACK);
         // bind to bottom right corner of Rectangle:
         resizeHandleSE.centerXProperty().bind(rect.xProperty().add(rect.widthProperty()));
         resizeHandleSE.centerYProperty().bind(rect.yProperty().add(rect.heightProperty()));
@@ -777,6 +781,8 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() - deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+                //resizeHandleNW.setCenterX(rect.getX());
+                //resizeHandleNW.setCenterY(rect.getY());
             }
         });
 
@@ -795,6 +801,8 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() + deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
+                //resizeHandleSE.setCenterX(rect.getX() + rect.getWidth());
+                //resizeHandleSE.setCenterY(rect.getY() + rect.getHeight());
             }
         });
 

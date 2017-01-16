@@ -72,48 +72,54 @@ public class CameraFile implements Closeable {
     /**
      * Represents a path of a camera file.
      */
-    static class Path {
+    static class Path
+	{
 
-	final String filename;
-	final String path;
+		final String filename;
+		final String path;
 
-    /**
-     * Creates new path.
-     * @param filename the file name, without the path, gphoto-dependent.
-     * @param path the path, gphoto-dependent.
-     */
-	public Path(String filename, String path) {
-	    this.filename = filename;
-	    this.path = path;
-	}
-
-	public Path(GPhoto2Native.CameraFilePath path) {
-	    filename = CameraUtils.toString(path.name);
-	    this.path = CameraUtils.toString(path.folder);
-	}
-
-	@Override
-	public String toString() {
-	    return "Path{" + path + " " + filename + '}';
-	}
-
-	/**
-	 * Returns a referenced camera file.
-	 * @param cam the camera handle.
-	 * @return camera file.
-	 */
-	CameraFile newFile(Pointer cam) {
-	    boolean returnedOk = false;
-	    final CameraFile cf = new CameraFile();
-	    try {
-		CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_file_get(cam, path, filename, GPhoto2Native.GP_FILE_TYPE_NORMAL, cf.cf, CameraList.CONTEXT), "gp_camera_file_get");
-		returnedOk = true;
-		return cf;
-	    } finally {
-		if (!returnedOk) {
-		    CameraUtils.closeQuietly(cf);
+		/**
+		 * Creates new path.
+		 * @param filename the file name, without the path, gphoto-dependent.
+		 * @param path the path, gphoto-dependent.
+		 */
+		public Path(String filename, String path) {
+			this.filename = filename;
+			this.path = path;
 		}
-	    }
-	}
+
+		public Path(GPhoto2Native.CameraFilePath path) {
+			filename = CameraUtils.toString(path.name);
+			this.path = CameraUtils.toString(path.folder);
+		}
+
+		@Override
+		public String toString() {
+			return "Path{" + path + " " + filename + '}';
+		}
+
+		/**
+		 * Returns a referenced camera file.
+		 * @param cam the camera handle.
+		 * @return camera file.
+		 */
+		CameraFile newFile(Pointer cam)
+		{
+			boolean returnedOk = false;
+			final CameraFile cf = new CameraFile();
+			try
+			{
+				CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_file_get(cam, path, filename, GPhoto2Native.GP_FILE_TYPE_NORMAL, cf.cf, CameraList.CONTEXT), "gp_camera_file_get");
+				returnedOk = true;
+				return cf;
+			}
+			finally
+			{
+				if (!returnedOk)
+				{
+					CameraUtils.closeQuietly(cf);
+				}
+			}
+		}
     }
 }

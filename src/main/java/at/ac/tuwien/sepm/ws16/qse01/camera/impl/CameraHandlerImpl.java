@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class CameraHandlerImpl implements CameraHandler {
         return threadList;
     }
 
-    @Override
+    @PostConstruct
     public List<Camera> getCameras() throws CameraException {
         try {
             cameraService.setAllCamerasInactive();

@@ -39,8 +39,8 @@
                         <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" percentWidth="20.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="20.0" />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
-                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="10.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="60.0" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" percentWidth="20.0" />
                      </columnConstraints>
                      <rowConstraints>
                         <RowConstraints percentHeight="100.0" valignment="TOP" vgrow="SOMETIMES" />

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
@@ -35,8 +36,108 @@ public class CameraThread extends Thread{
     private boolean shouldStop = false;
     private boolean takeImage = false;
 
-
+    @Override
     public void run()
+    {
+        while(true)
+        {
+            if(takeImage)
+            {
+                captureImage();
+                takeImage=false;
+            }
+            else
+            {
+                capturePreview();
+            }
+            if(shouldStop)
+            {
+                LOGGER.debug("Stopped CameraThread for Camera {}", camera);
+                return;
+            }
+        }
+    }
+
+    private void captureImage()
+    {
+        Image image;
+        try
+        {
+            final CameraFile cf = cameraGphoto.captureImage();
+            if (cf != null) {
+                Shooting activeShooting = shootingService.searchIsActive();
+                if(activeShooting != null)
+                {
+                    int imageID = imageService.getNextImageID();
+
+                    String directoryPath = activeShooting.getStorageDir() + "/";
+
+                    DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+                    Date date = new Date();
+                    String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
+                    image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
+                    image = imageService.create(image);
+                    cf.save(new File(imagePath).getAbsolutePath());
+
+                    imageProcessor.processShot(image);
+
+                    LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
+                }
+                else
+                {
+                    LOGGER.error("no active shooting during capture");
+                }
+                cf.close();
+            }
+        }
+        catch (CameraException ex)
+        {
+            LOGGER.debug("waitForImage failed", ex);
+            setStop(true);
+        }
+        catch (ServiceException ex)
+        {
+            LOGGER.debug("Exception in service: {}", ex);
+        }
+    }
+
+    private void capturePreview()
+    {
+        try
+        {
+
+            final CameraFile cf = cameraGphoto.capturePreview();
+            if (cf != null)
+            {
+                Shooting activeShooting = shootingService.searchIsActive();
+                if(activeShooting != null)
+                {
+                    String imagePath = activeShooting.getStorageDir() + "/tmp/K" + +camera.getId()+".jpg";
+                    cf.save(new File(imagePath).getAbsolutePath());
+                    imageProcessor.processPreview(imagePath);
+
+                    LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
+                }
+                else
+                {
+                    LOGGER.error("no active shooting during capture");
+                }
+                cf.close();
+
+            }
+        }
+        catch (CameraException ex)
+        {
+            LOGGER.debug("capturePreview failed" + ex);
+            setStop(true);
+        }
+        catch (ServiceException ex)
+        {
+            LOGGER.debug("Exception in service: {}", ex);
+        }
+    }
+
+    /*private void waitForEvent()
     {
         LOGGER.info("Camera Thread for Camera {} started", camera);
         int i = 1;
@@ -96,7 +197,7 @@ public class CameraThread extends Thread{
             }
         }
         CameraUtils.closeQuietly(cameraGphoto);
-    }
+    }*/
 
     public static void main(String[] args) {
         (new Thread(new CameraThread())).start();
