@@ -54,4 +54,7 @@ public interface BackgroundCategoryDAO {
      * @throws PersistenceException if persistence data store can not be accessed
      */
     boolean delete(Background.Category backgroundCategory) throws PersistenceException;
+    void createPairProfileCategory(int profileID,int categoryID) throws PersistenceException;
+    void deletePairProfileCategory(int profileID,int categoryID) throws PersistenceException;
+    List<Background.Category> readAllOfProfile(int profileID) throws PersistenceException;
 }

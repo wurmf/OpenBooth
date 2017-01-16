@@ -10,16 +10,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 
-<TitledPane fx:id="greenscreenBackground" animated="false" prefHeight="522.0" text="Greenscreen-&gt;Hintergrundverwaltung" GridPane.columnIndex="0" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenBackgroundFrameController">
+<TitledPane fx:id="greenscreenBackground" animated="false" prefHeight="522.0" text="Greenscreen-&gt;Hintergrundverwaltung" GridPane.columnIndex="1" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenBackgroundFrameController">
 <content>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
                 <children>
-                    <ComboBox fx:id="categoryCombo" layoutX="15.0" layoutY="10.0" prefHeight="27.0" prefWidth="189.0" promptText="Kategorie Auswählen">
-                        <items>
-                        </items>
-                    </ComboBox>
 
-                    <TableView fx:id="tableBackground" layoutY="50.0" prefHeight="370.0" >
+                    <TableView fx:id="tableBackground" layoutY="0.0" prefHeight="420.0" >
                         <columns>
                             <TableColumn fx:id="colBackgroundID" prefWidth="44.74237585067749" text="ID" />
                             <TableColumn fx:id="colBackgroundName" prefWidth="189.813720703125" text="Name" />
