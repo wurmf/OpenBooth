@@ -268,28 +268,24 @@ public class ProfileFrameController extends SettingFrameController{
                     selectedProfile = (Profile) newSelection;
 
                     LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
-                    System.out.println("profile selected....");
                     try {
                         refreshTablePosition(pservice.getAllPositions());
 
                         refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
-
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
 
                         refreshTableCategory(bservice.getAllCategories());
-                        refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
-                       // System.out.println("test int value ->"+getPosList().size());
-
+                        refreshCategoryComboBox(bservice.getAllCategories());// OfProfile(selectedProfile.getId()));
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                       LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
                     }
                 }
             });
 
         } catch (ServiceException e) {
-            e.printStackTrace();
+            LOGGER.error("Couldnt initialize profile tableview",e);
         }
     }
 
@@ -323,7 +319,7 @@ public class ProfileFrameController extends SettingFrameController{
                 txProfilWatermark.setText("Hochladen...");
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden...",e);
             }
         }
     }

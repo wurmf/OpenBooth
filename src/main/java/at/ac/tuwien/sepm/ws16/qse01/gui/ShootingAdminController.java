@@ -168,13 +168,14 @@ public class ShootingAdminController {
                     shootingService.addShooting(shouting);
 
 
-                    boolean camerasFitPosition=windowManager.initImageProcessing();
+                    windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+
+                    boolean camerasFitPosition =windowManager.initImageProcessing();
                     if(camerasFitPosition){
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                     } else{
                         showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
                     }
-
                 } catch (ServiceException serviceExeption) {
                     LOGGER.debug("onStartShootingPressed - ", serviceExeption);
                     showInformationDialog("Es konnte kein Shooting erstellt werden.");
@@ -261,6 +262,7 @@ public class ShootingAdminController {
     public void onStopShootingPressed() {
         try {
             shootingService.endShooting();
+            inactivemode();
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
             information.setHeaderText("Bestätigung");

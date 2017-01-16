@@ -43,11 +43,9 @@ public class AutoCompleteTextField extends TextField
             } else
             {
                 LinkedList<String> searchResult = new LinkedList<>();
-                System.out.println(getText().toLowerCase()+"_"+getText().toLowerCase()+Character.MAX_VALUE);
                 searchResult.addAll(entries.subSet(getText().toLowerCase(), getText().toLowerCase() + Character.MAX_VALUE));
                 if (entries.size() > 0)
                 {
-                  //  System.out.println(searchResult.size());
                     populatePopup(searchResult);
                     if (!entriesPopup.isShowing())
                     {
@@ -113,8 +111,10 @@ public class AutoCompleteTextField extends TextField
             {
                 @Override
                 public void handle(ActionEvent actionEvent) {
-                    setText(result.substring(0,result.lastIndexOf(" #")));
+                    String[] parts = result.split(" #");
+                    setText(parts[0]); //result.substring(0,result.lastIndexOf(" #")));
                     txLogoPath.setText(logo.getId());
+                    txLogoPath.setId(parts[1]); //if logo is selected -> to avoid a new creation of logo
                     entriesPopup.hide();
                 }
             });

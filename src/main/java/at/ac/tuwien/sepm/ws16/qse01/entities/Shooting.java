@@ -57,4 +57,15 @@ public class Shooting {
     public void setBgPictureFolder(String bgPictureFolder) {
         this.bgPictureFolder = bgPictureFolder;
     }
+
+    @Override
+    public String toString() {
+        return "Shooting{" +
+                "id=" + id +
+                ", storageDir='" + storageDir + '\'' +
+                ", bgPictureFolder" + bgPictureFolder + '\'' +
+                ", isActive=" + isActive +
+                ", profileid=" + profileid +
+                '}';
+    }
 }

@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,9 @@ import java.util.List;
 
 
 @Component
-public class CostumerFrameController {
+public class CustomerFrameController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CostumerFrameController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFrameController.class);
 
     @FXML
     private GridPane basicpane;
@@ -47,7 +48,7 @@ public class CostumerFrameController {
     private ProfileService profileservice;
 
     @Autowired
-    public CostumerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
+    public CustomerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
@@ -61,6 +62,7 @@ public class CostumerFrameController {
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
+
             if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
               //  LOGGER.debug("Profile id:" + profile.getId() + "");
                 if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
@@ -80,7 +82,7 @@ public class CostumerFrameController {
         }
     }
 
-    public void switchtoMiniaturFrame(){
+    public void switchToMiniaturFrame(){
         windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
@@ -176,8 +178,6 @@ public class CostumerFrameController {
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
 
-                    //imageView.setImage(camera.getFiler);
-                    //imageView.setImage(new javafx.scene.image.Image(new FileInputStream(pairList.get(i).getCameraLable()), width, high, true, true));
                     if (countrow < 2) {
                         countrow++;
                     } else {
@@ -185,7 +185,7 @@ public class CostumerFrameController {
                         if (countcolumn < column) {
                             countcolumn++;
                         } else {
-                         //   LOGGER.debug("not enoth columns" + column);
+                           LOGGER.debug("not enoth columns" + column);
                         }
                     }
                     Button filter = new Button();
@@ -195,10 +195,17 @@ public class CostumerFrameController {
                     filter.setPrefHeight(high);
                     String url = pairList.get(i).getCameraLable();
                    // LOGGER.debug("url costumer: " + url);
-                    filter.setStyle("-fx-background-image: url('" + url + "'); " +
-                            "   -fx-background-size: 100%;" +
-                            "   -fx-background-color: transparent;" +
-                            "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    filter.setStyle("-fx-background-image: url('" + url + "') " );
+                    filter.setStyle("-fx-background-size: 100%" );
+                    filter.setStyle("-fx-background-color: transparent" );
+                    double size=0;
+                    if(column==0){
+                        size =allpicturesview.getFont().getSize();
+                    }else{
+                        size= (int)(allpicturesview.getFont().getSize() / column);
+                    }
+                    filter.setStyle("-fx-font-size:" + size + "px " );
+
                     final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
                         //kamera Filter controller fiter id

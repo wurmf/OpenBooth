@@ -6,8 +6,8 @@
    -fx-background-image: url('/images/studio.jpg');
 }
 #logo{
- -fx-fit-width: 15em;
-   -fx-fit-height:15em;
+ -fx-fitWidth: 5em;
+   -fx-fitHeight:5em;
 }
 .button{
    -fx-text-fill: black;
@@ -18,6 +18,8 @@
    -fx-background-color: transparent;
    }
 #allpicturesview{
+
+   -fx-background-color: rgba(40,40, 40, 0.5);
    -fx-pref-width: 15em;
    -fx-pref-height:2em;
 }

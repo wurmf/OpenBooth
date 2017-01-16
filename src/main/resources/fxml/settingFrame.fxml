@@ -36,8 +36,8 @@
 
 
 
+                      <Label  fx:id="setting" text="Einstellungen" textFill="#362d2d">
 
-                      <Label text="Einstellungen" textFill="#362d2d">
                          <padding>
                             <Insets left="100.0" />
                          </padding>
@@ -47,7 +47,7 @@
                       </Label>
                       <ImageView fx:id="backButton" fitHeight="50.0" fitWidth="50.0" onMouseClicked="#openMainFrame" onMousePressed="#openMainFrame" onTouchPressed="#openMainFrame" pickOnBounds="true" preserveRatio="true">
                          <image>
-                            <Image url="@/images/back.png" />
+                            <Image url="@/images/arrowleft.png" />
                          </image>
                          <GridPane.margin>
                             <Insets />
