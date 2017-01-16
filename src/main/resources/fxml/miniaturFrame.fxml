@@ -12,16 +12,16 @@
 
 <ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.MiniaturFrameController">
 
-    <VBox alignment="CENTER_LEFT" minWidth="${scrollPane.viewportBounds.width}">
-        <HBox alignment="CENTER_LEFT">
+    <VBox fx:id="basevbox" alignment="CENTER_LEFT" minWidth="${sadmiscrollPane.viewportBounds.width}">
+        <HBox  alignment="CENTER_LEFT">
             <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#backButtonClicked" pickOnBounds="true" preserveRatio="true">
                 <image>
-                    <Image url="@/images/back.png" />
+                    <Image url="@/images/arrowleft.png" />
                 </image>
              <VBox.margin>
                 <Insets left="0.0" />
              </VBox.margin></ImageView>
-            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" maxWidth="1.7976931348623157E308" prefHeight="37.0" text="M E I N E   F O T O S" textAlignment="CENTER" textFill="#ab7a67">
+            <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" layoutX="200.0" maxWidth="1.7976931348623157E308" prefHeight="37.0" text="M E I N E   F O T O S" textAlignment="CENTER" textFill="#ab7a67">
             <HBox.margin>
                <Insets />
             </HBox.margin>
@@ -32,7 +32,8 @@
       <HBox fx:id="hbox" alignment="CENTER">
 <!--  prefHeight="740.0" prefWidth="1240.0" -->
 
-               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false" style="-fx-background-color: dimgray;">
+               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false" style="-fx-background-color: #333333;">
+
                   <children>
 
                   </children>

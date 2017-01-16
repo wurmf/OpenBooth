@@ -61,6 +61,7 @@ public class CustomerFrameController {
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
+
             if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
               //  LOGGER.debug("Profile id:" + profile.getId() + "");
                 if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
@@ -185,7 +186,7 @@ public class CustomerFrameController {
                         if (countcolumn < column) {
                             countcolumn++;
                         } else {
-                         //   LOGGER.debug("not enoth columns" + column);
+                           LOGGER.debug("not enoth columns" + column);
                         }
                     }
                     Button filter = new Button();
@@ -195,10 +196,17 @@ public class CustomerFrameController {
                     filter.setPrefHeight(high);
                     String url = pairList.get(i).getCameraLable();
                    // LOGGER.debug("url costumer: " + url);
-                    filter.setStyle("-fx-background-image: url('" + url + "'); " +
-                            "   -fx-background-size: 100%;" +
-                            "   -fx-background-color: transparent;" +
-                            "   -fx-font-size:" + allpicturesview.getFont().getSize() / column + "px;");
+                    filter.setStyle("-fx-background-image: url('" + url + "') " );
+                    filter.setStyle("-fx-background-size: 100%" );
+                    filter.setStyle("-fx-background-color: transparent" );
+                    double size=0;
+                    if(column==0){
+                        size =allpicturesview.getFont().getSize();
+                    }else{
+                        size= (int)(allpicturesview.getFont().getSize() / column);
+                    }
+                    filter.setStyle("-fx-font-size:" + size + "px " );
+
                     final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
                         //kamera Filter controller fiter id

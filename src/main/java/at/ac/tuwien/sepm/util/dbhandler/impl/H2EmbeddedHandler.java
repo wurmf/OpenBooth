@@ -148,7 +148,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         //TODO: Delete following before building module for client.
         if(!testState) {
             insertData();
-            setUpDefaultImgs();
+            //setUpDefaultImgs();
             LOGGER.info("Data inserted into DB, dummy images copied to filesystem");
         }
         LOGGER.info("Database initialized.");

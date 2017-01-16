@@ -1,0 +1,15 @@
+.root{
+  -fx-background-color: black;
+}
+#hbox{
+  -fx-background-color: black;
+}
+#basevbox{
+
+  -fx-background-color: black;
+}
+#title{
+
+  -fx-text-fill: white;
+  -fx-font-family: HP Simplified;
+}
