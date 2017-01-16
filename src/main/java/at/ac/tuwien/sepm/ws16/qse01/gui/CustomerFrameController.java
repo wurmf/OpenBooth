@@ -61,6 +61,7 @@ public class CustomerFrameController {
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
+
             if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
               //  LOGGER.debug("Profile id:" + profile.getId() + "");
                 if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {

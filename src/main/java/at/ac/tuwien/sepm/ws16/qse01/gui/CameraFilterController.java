@@ -428,8 +428,9 @@ public class CameraFilterController {
      * @param greenscreen boolean green screen or not
      */
     public void currentlyChosen(int index, int idFilter, boolean greenscreen){
+        try{
 
-        this.index=index;  currentMode=profile.getPairCameraPositions().get(index).getShotType();
+        this.index=index;
 
         fId=idFilter;
         titel.setText("");
@@ -437,12 +438,12 @@ public class CameraFilterController {
         if(filtergrid==null){
             filtergrid = new GridPane();
         }
-        try {
             if(index>-1) {
                 if (profile != profileservice.get(shootingService.searchIsActive().getProfileid())) {
                     profile = profileservice.get(shootingService.searchIsActive().getProfileid());
                     buttonList.clear();
                 }
+                currentMode=profile.getPairCameraPositions().get(index).getShotType();
                 markfirst();
                 if (greenscreen) {
                     filtergrid.setVisible(false);
@@ -454,19 +455,17 @@ public class CameraFilterController {
                     if (buttonList.isEmpty()) {
                         greengrid.setVisible(false);
                         filtergrid.setVisible(true);
-                        titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
+                        titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
                         titel.setVisible(true);
                         creatButtons();
                     } else {
                         greengrid.setVisible(false);
                         filtergrid.setVisible(true);
-                        titel.setText("Kamera " +  profile.getPairCameraPositions().get(index).getPosition().getName()  + " Filter auswahl");
+                        titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
                         titel.setVisible(true);
                         loadButton();
                     }
                 }
-
-
             }
         } catch (ServiceException e) {
             LOGGER.debug("no camera pair found", e);
