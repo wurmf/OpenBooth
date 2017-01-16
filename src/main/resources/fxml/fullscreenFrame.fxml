@@ -57,7 +57,7 @@
                            </font></Button>
 
 
-                        <Button fx:id="button2" mnemonicParsing="false" onAction="#onClosePressed" snapToPixel="false" style="-fx-background-image: url('/images/backarrow.png');" GridPane.columnIndex="3" />
+                        <Button fx:id="button2" mnemonicParsing="false" onAction="#onClosePressed" snapToPixel="false" style="-fx-background-image: url('/images/backarrow.png');" GridPane.columnIndex="4" />
 
                      </children>
                   </GridPane>
