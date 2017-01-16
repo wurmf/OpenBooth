@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -109,20 +110,20 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     }
 
     @Override
-    public BufferedImage getPreviewForMultipleLogos(List<Logo> logos, List<RelativeRectangle> positions, int imageWidth, int imageHeight) throws ServiceException{
+    public BufferedImage getPreviewForMultipleLogos(List<Profile.PairLogoRelativeRectangle> pairs, int imageWidth, int imageHeight) throws ServiceException{
         LOGGER.debug("Entering getPreviewFroMultipleLogos method");
 
-        if(logos.size() != positions.size()){
+       /* if(pairs.size() != positions.size()){
             LOGGER.error("getPreviewForMultipleLogos - logo list and position list have different length");
             throw new ServiceException("logo list and position list have different length");
-        }
+        }*/
 
         BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
         //iterate through logos
-        for(int i=0; i<logos.size(); i++){
-            BufferedImage logoImage = openImageFromLogo(logos.get(i));
-            addLogoAtPosition(img, logoImage, positions.get(i));
+        for(int i=0; i<pairs.size(); i++){
+            BufferedImage logoImage = openImageFromLogo(pairs.get(i).getLogo());
+            addLogoAtPosition(img, logoImage, pairs.get(i).getRelativeRectangle());
         }
 
         return img;

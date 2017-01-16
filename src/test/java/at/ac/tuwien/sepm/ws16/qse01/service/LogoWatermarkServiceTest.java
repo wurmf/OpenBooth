@@ -4,19 +4,17 @@ import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertTrue;
@@ -205,10 +203,10 @@ public abstract class LogoWatermarkServiceTest {
 
     @Test
     public void getPreviewForMultipleLogosWithValidParameters() throws ServiceException, ImageHandlingException{
-        List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
-        List<Logo> logoList = Arrays.asList(logo1, logo2);
+        List<Profile.PairLogoRelativeRectangle> pairs = Arrays.asList(new Profile.PairLogoRelativeRectangle(logo1,position1),new Profile.PairLogoRelativeRectangle(logo2,position2));
 
-        srcImg = logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
+
+        srcImg = logoWatermarkService.getPreviewForMultipleLogos(pairs, 1024, 768);
 
         String testImage = this.getClass().getResource("/images/result/test_preview_multiple_logos.jpg").getPath();
 
@@ -219,10 +217,9 @@ public abstract class LogoWatermarkServiceTest {
     @Test (expected = ServiceException.class)
     public void getPreviewForMultipleLogosWithInvalidLogoPath() throws ServiceException{
         logo1.setPath("/this/is/no/path");
-        List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
-        List<Logo> logoList = Arrays.asList(logo1, logo2);
+        List<Profile.PairLogoRelativeRectangle> pairs = Arrays.asList(new Profile.PairLogoRelativeRectangle(logo1,position1),new Profile.PairLogoRelativeRectangle(logo2,position2));
 
-        logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
+        logoWatermarkService.getPreviewForMultipleLogos(pairs, 1024, 768);
     }
 
     @Test (expected = ServiceException.class)
@@ -230,27 +227,27 @@ public abstract class LogoWatermarkServiceTest {
         position1.setHeight(-100);
         position2.setWidth(-100);
 
-        List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
-        List<Logo> logoList = Arrays.asList(logo1, logo2);
+        List<Profile.PairLogoRelativeRectangle> pairs = Arrays.asList(new Profile.PairLogoRelativeRectangle(logo1,position1),new Profile.PairLogoRelativeRectangle(logo2,position2));
 
-        logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
+        logoWatermarkService.getPreviewForMultipleLogos(pairs, 1024, 768);
     }
 
     @Test (expected = ServiceException.class)
     public void getPreviewForMultipleLogosWithInvalidImageDimensions() throws ServiceException{
-        List<RelativeRectangle> positionList = Arrays.asList(position1, position2);
-        List<Logo> logoList = Arrays.asList(logo1, logo2);
+        List<Profile.PairLogoRelativeRectangle> pairs = Arrays.asList(new Profile.PairLogoRelativeRectangle(logo1,position1),new Profile.PairLogoRelativeRectangle(logo2,position2));
 
-        logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, -100, -200);
+
+        logoWatermarkService.getPreviewForMultipleLogos(pairs, -100, -200);
     }
 
-    @Test (expected = ServiceException.class)
+  /*  @Test (expected = ServiceException.class)
     public void getPreviewForMultipleLogosWithInvalidLists() throws ServiceException{
         List<RelativeRectangle> positionList = Collections.singletonList(position1);
         List<Logo> logoList = Arrays.asList(logo1, logo2);
 
-        logoWatermarkService.getPreviewForMultipleLogos(logoList, positionList, 1024, 768);
-    }
+
+        logoWatermarkService.getPreviewForMultipleLogos(pairs, 1024, 768);
+    }*/
 
 
 
