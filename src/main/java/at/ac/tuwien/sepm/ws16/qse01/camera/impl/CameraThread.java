@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
@@ -29,6 +30,7 @@ public class CameraThread extends Thread{
     private CameraGphoto cameraGphoto;
     private Camera camera;
     private ImageProcessor imageProcessor;
+    private ShotFrameController shotFrameController;
 
     private boolean shouldStop = false;
     private boolean takeImage = false;
@@ -111,6 +113,10 @@ public class CameraThread extends Thread{
 
     public void setShootingService(ShootingService shootingService){
         this.shootingService = shootingService;
+    }
+
+    public void setShotFrameController(ShotFrameController shotFrameController){
+        this.shotFrameController = shotFrameController;
     }
 
     public void setCameraGphoto(CameraGphoto cameraGphoto) {

@@ -110,6 +110,7 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
             cameraThread.setImageService(imageService);
             cameraThread.setShootingService(shootingService);
+            cameraThread.setShotFrameController(shotFrameController);
             cameraThread.setImageProcessor(imageProcessor);
         }
 
