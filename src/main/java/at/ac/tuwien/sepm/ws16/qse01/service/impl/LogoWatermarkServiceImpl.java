@@ -113,11 +113,6 @@ public class LogoWatermarkServiceImpl implements LogoWatermarkService{
     public BufferedImage getPreviewForMultipleLogos(List<Profile.PairLogoRelativeRectangle> pairs, int imageWidth, int imageHeight) throws ServiceException{
         LOGGER.debug("Entering getPreviewFroMultipleLogos method");
 
-       /* if(pairs.size() != positions.size()){
-            LOGGER.error("getPreviewForMultipleLogos - logo list and position list have different length");
-            throw new ServiceException("logo list and position list have different length");
-        }*/
-
         BufferedImage img = createPreviewImage(imageWidth, imageHeight);
 
         //iterate through logos
