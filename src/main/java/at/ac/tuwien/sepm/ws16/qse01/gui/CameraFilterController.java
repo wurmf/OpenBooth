@@ -212,7 +212,7 @@ public class CameraFilterController {
             filterscrollplanel.setContent(filtergrid);
             root.add(filterscrollplanel,0,1);
         } catch (ServiceException e) {
-            LOGGER.error("CreatButtons", e);
+            LOGGER.error("creatButtons - ", e);
             showInformationDialog("Es konnte keine Filterauswahl erstellt werden");
         }
     }
@@ -354,7 +354,7 @@ public class CameraFilterController {
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
                     profile.getPairCameraPositions().get(index).setBackground(backround);
-                   
+
                 });
                 greengrid.add(iv, columcount, rowcount);
                 columcount++;
@@ -447,8 +447,8 @@ public class CameraFilterController {
             filtergrid = new GridPane();
         }
             if(index>-1) {
+                profile = profileservice.getActiveProfile();
                 if (profile.getId()!=profileservice.getActiveProfile().getId()){
-                    profile = profileservice.getActiveProfile();
                     buttonList.clear();
                 }
                 currentMode=profile.getPairCameraPositions().get(index).getShotType();
