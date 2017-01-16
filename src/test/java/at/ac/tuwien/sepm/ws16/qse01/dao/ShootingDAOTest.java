@@ -30,10 +30,10 @@ public class ShootingDAOTest extends TestEnvironment {
         super.tearDown();
     }
 
-    private Shooting shooting1 = new Shooting(1, 1, "home/foto/shooting1", true);
-    private Shooting shooting2 = new Shooting(2, 2, "home/foto/shooting2", false);
-    private Shooting shooting3 = new Shooting(3, 1, "home/foto/shooting3", false);
-    private Shooting shooting4 = new Shooting(4, 2, "home/foto/shooting4", false);
+    private Shooting shooting1 = new Shooting(1, 1, "home/foto/shooting1", "home/foto/shooting1", true);
+    private Shooting shooting2 = new Shooting(2, 2, "home/foto/shooting2", "home/foto/shooting1", false);
+    private Shooting shooting3 = new Shooting(3, 1, "home/foto/shooting3", "home/foto/shooting1", false);
+    private Shooting shooting4 = new Shooting(4, 2, "home/foto/shooting4", "home/foto/shooting1", false);
     private int id;
 
     @Test(expected = IllegalArgumentException.class)

@@ -93,7 +93,7 @@ public class ImageDAOTest extends TestEnvironment {
 
     @Test
     public void getAllImagesByExistingShootingID() throws Throwable  {
-        Shooting shooting = shootingDAO.create(new Shooting(9999,1,"/asdf/",true));
+        Shooting shooting = shootingDAO.create(new Shooting(9999,1,"/asdf/","/asdf2/",true));
         Image img = new Image(99,"/images/lastCreatedImage.jpg",shooting.getId(),new Date());
 
         imageDAO.create(img);

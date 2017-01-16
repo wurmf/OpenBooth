@@ -7,7 +7,8 @@ public class PersistenceException extends Exception {
     public PersistenceException(String message){
         super(message);
     }
-    public PersistenceException(Exception e){
+    public PersistenceException(Throwable e){
         super(e);
     }
+    public PersistenceException(String message, Throwable e){super(message, e);}
 }

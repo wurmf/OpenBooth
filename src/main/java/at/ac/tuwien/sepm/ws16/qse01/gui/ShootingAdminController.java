@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -51,12 +50,16 @@ public class ShootingAdminController {
     @FXML
     private Button stopButton;
     @FXML
-    private Label storageDirLabel;//storageDirLabel.setText();
-
+    private Label storageDirLabel;
     @FXML
-    private ChoiceBox profileChoiceBox;
+    private ChoiceBox<Profile> profileChoiceBox;
+    @FXML
+    private Button bgStorage;
+    @FXML
+    private Label bgStorageDirLabel;
 
     private String path =null;
+    private String bgPath="";
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingAdminController.class);
 
 
@@ -72,58 +75,27 @@ public class ShootingAdminController {
     }
 
     /**
-     * inizialise shooting Admin Controller
-     * depending on whether there is an activ shooting or not some funktions are unusable
-     * to achieve this, they are set invisible/visible
-     * furthermore this methodes initialises profileChoiceBox
+     * Initialise shooting Admin Controller
+     * Depending on whether there is an active shooting or not some functions are unusable
+     * To achieve this, they are set invisible/visible
+     * Furthermore this method initialises profileChoiceBox
      *
-     * catches Service Exeption caused by Service methodes
+     * Catches ServiceException caused by Service methods
      */
     @FXML
     private void initialize() {
 
         try {
-            if(shootingService.searchIsActive().getActive()){
-                startButton.setVisible(false);
-                stopButton.setVisible(true);
-                storage.setVisible(false);
-                canclebutton.setText("Fortsetzen");
-                storageDirLabel.setVisible(false);
-                gridSave.setVisible(false);
+            setButtons();
+            String userHome = System.getProperty("user.home");
 
-                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
-                finallsavingplace.setVisible(true);
-                save1.setVisible(true);
-                saveing.setVisible(false);
-
-            }else{
-                stopButton.setVisible(false);
-                startButton.setVisible(true);
-                storage.setVisible(true);
-                storageDirLabel.setVisible(true);
-                gridSave.setVisible(true);
-                canclebutton.setText("Abbrechen");
-                finallsavingplace.setVisible(false);
-                save1.setVisible(false);
-                saveing.setVisible(true);
-            }
-            String resource = System.getProperty("user.home");
-
-             /*if(mobiel) {
-                        storage = Paths.get(resource + "fotostudio/Mobil");
-            }else{*/
-            Path storagepath = Paths.get(resource+"/fotostudio/Studio");
-            // }
+            Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
             storageDirLabel.setText(storagepath.toString());
             List<Profile> prof = profileService.getAllProfiles();
             if(prof!=null&&!prof.isEmpty()) {
                 ObservableList<Profile> observableListProfile = FXCollections.observableList(prof);
-
                 profileChoiceBox.setItems(observableListProfile);
-
-                if (profileChoiceBox != null) {
-                    profileChoiceBox.setValue(observableListProfile.get(0));
-                }
+                profileChoiceBox.setValue(observableListProfile.get(0));
             }
 
         } catch (ServiceException e) {
@@ -134,54 +106,63 @@ public class ShootingAdminController {
 
     public void inactivemode(){
         try {
-            if (shootingService.searchIsActive().getActive()) {
-                startButton.setVisible(false);
-                stopButton.setVisible(true);
-                storage.setVisible(false);
-                canclebutton.setText("Fortsetzen");
-                storageDirLabel.setVisible(false);
-                gridSave.setVisible(false);
-                finallsavingplace.setText(shootingService.searchIsActive().getStorageDir());
-                finallsavingplace.setVisible(true);
-                save1.setVisible(true);
-                saveing.setVisible(false);
-
-            } else {
-                stopButton.setVisible(false);
-                startButton.setVisible(true);
-                storage.setVisible(true);
-                storageDirLabel.setVisible(true);
-                gridSave.setVisible(true);
-                canclebutton.setText("Abbrechen");
-                finallsavingplace.setVisible(false);
-                save1.setVisible(false);
-                saveing.setVisible(true);
-            }
+            setButtons();
         }catch (ServiceException e ){
-            e.printStackTrace();
+            LOGGER.error("inactivemode - ",e);
         }
-
     }
+
     /**
-     * when pressed an new shooting starts
-     * to successfully start an new shooting an storage path gets selected and an profile must be selected
-     *
-     * @param actionEvent press action event
-     *
+     * Checks if there is an active shooting and sets visibility and contents of buttons and labels accordingly.
+     * @throws ServiceException if an error occurs while retrieving the active shooting from the service layer.
+     */
+    private void setButtons() throws ServiceException{
+        Shooting activeShooting=shootingService.searchIsActive();
+        if (activeShooting!=null&&activeShooting.getActive()) {
+            startButton.setVisible(false);
+            stopButton.setVisible(true);
+            storage.setVisible(false);
+            canclebutton.setText("Fortsetzen");
+            storageDirLabel.setVisible(false);
+            gridSave.setVisible(false);
+            finallsavingplace.setText(activeShooting.getStorageDir());
+            finallsavingplace.setVisible(true);
+            save1.setVisible(true);
+            saveing.setVisible(false);
+            if(activeShooting.getBgPictureFolder()!=null && !activeShooting.getBgPictureFolder().isEmpty()){
+                bgStorageDirLabel.setText(activeShooting.getBgPictureFolder());
+            }
+
+        } else {
+            stopButton.setVisible(false);
+            startButton.setVisible(true);
+            storage.setVisible(true);
+            storageDirLabel.setVisible(true);
+            gridSave.setVisible(true);
+            canclebutton.setText("Abbrechen");
+            finallsavingplace.setVisible(false);
+            save1.setVisible(false);
+            saveing.setVisible(true);
+        }
+    }
+
+    /**
+     * when pressed a new shooting starts
+     * to successfully start a new shooting a storage path gets selected and a profile must be selected
      */
     @FXML
-    public void onStartShootingPressed(ActionEvent actionEvent) {
-        LOGGER.info("onStartShootingPressed - Path: "+path);
+    public void onStartShootingPressed() {
+        LOGGER.info("onStartShootingPressed - "+path);
         if (profileChoiceBox.getValue() != null) {
                 try{
-                    Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
+                    Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
 
                     if(path==null) {
                         path = shootingService.createPath();
                     }
-                    Shooting shouting = new Shooting(0, profile.getId(), path, true);
+                    Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
-                    LOGGER.info("onStartShootingPressed - "+ path);
+                    LOGGER.info("onStartShootingPressed - ", path);
                     //path = "";
 
                     shootingService.addShooting(shouting);
@@ -205,16 +186,17 @@ public class ShootingAdminController {
     }
 
     /**
-     * Opens Mainfframe again
-     * @param actionEvent press action event
+     * Opens Mainframe again
      */
-    public void onDemolitionPressed(ActionEvent actionEvent) {
+    @FXML
+    public void onDemolitionPressed() {
         try {
             if (shootingService.searchIsActive().getActive()) {
-                Profile profile = (Profile) profileChoiceBox.getSelectionModel().getSelectedItem();
-                if(shootingService.searchIsActive().getProfileid()!=profile.getId()) {
-                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "", true);
-                    shootingService.updateProfile(shooting);
+                Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
+                if(shootingService.searchIsActive().getProfileid()==profile.getId()) {
+                    Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "",bgPath, true);
+                    LOGGER.debug("Trying to persist shooting. shootingId: "+shooting.getId()+" | bgPath: "+shooting.getBgPictureFolder());
+                    shootingService.update(shooting);
                 }
                 windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
             } else {
@@ -226,26 +208,36 @@ public class ShootingAdminController {
         }
     }
 
-    /*
+    /**
      * finds the directory of desire to save new project in
-     *
-     * catches NullPointer Exception that could be caused by empty files
-     *
-     * @param actionEvent press action event
-*/
-    public void onChooseStorageDirPressed(ActionEvent actionEvent) {
-
-        try{
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setTitle("Speicherort wählen");
-            //directoryChooser.in
-            File savefile =directoryChooser.showDialog(windowManager.getStage());
+     */
+    @FXML
+    public void onChooseStorageDirPressed() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Speicherort wählen");
+        File savefile =directoryChooser.showDialog(windowManager.getStage());
+        if(savefile!=null){
             path = savefile.getPath();
             storageDirLabel.setText(savefile.getPath());
-        }catch (NullPointerException n){
+        } else {
             showInformationDialog("Default Pfad ausgewählt");
         }
+    }
 
+    /**
+     * Opens a DirectoryChooser that lets the user choose a folder in which background images are located.
+     */
+    @FXML
+    public void onChooseBgStorageDirPressed(){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Quellordner auswählen");
+        File sourceFolder =directoryChooser.showDialog(windowManager.getStage());
+        if(sourceFolder!=null) {
+            bgPath = sourceFolder.getPath();
+            bgStorageDirLabel.setText(bgPath);
+        } else{
+            storageDirLabel.setText("Keine Hintergründe definiert");
+        }
     }
 
     /**
@@ -253,7 +245,7 @@ public class ShootingAdminController {
      *
      * @param info String to be shown as error message to the user
      */
-    public void showInformationDialog(String info){
+    private void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
         information.show();
@@ -265,10 +257,9 @@ public class ShootingAdminController {
      * and main frame gets called
      *
      * catches ServiceException caused by Service methodes
-     *
-     * @param actionEvent press action event
      */
-    public void onStopShootingPressed(ActionEvent actionEvent) {
+    @FXML
+    public void onStopShootingPressed() {
         try {
             shootingService.endShooting();
             inactivemode();
@@ -277,6 +268,7 @@ public class ShootingAdminController {
             information.setHeaderText("Bestätigung");
             information.show();
         } catch (ServiceException e) {
+            LOGGER.error("onStopShootingPressed - ",e);
             showInformationDialog("Shooting konnte nicht beendet werden!");
         }
     }
