@@ -271,7 +271,7 @@ public class ProfileFrameController extends SettingFrameController{
                 if (newSelection != null) {
                     selectedProfile = (Profile) newSelection;
 
-                    LOGGER.info("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
+                    LOGGER.debug("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
                     try {
                         setControllers();
                         refreshTablePosition(pservice.getAllPositions());
@@ -310,7 +310,7 @@ public class ProfileFrameController extends SettingFrameController{
                 p.setWatermark(txProfilWatermark.getText());
 
             try {
-                LOGGER.info("adding the new profil to tableView...");
+                LOGGER.debug("adding the new profil to tableView...");
 
 
                 pservice.add(p);
@@ -349,7 +349,7 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     protected void refreshTableProfiles(List<Profile> profileList){
-        LOGGER.info("refreshing the profil table...");
+        LOGGER.debug("refreshing the profil table...");
         profList.clear();
         profList.addAll(profileList);
         tableProfil.setItems(profList);

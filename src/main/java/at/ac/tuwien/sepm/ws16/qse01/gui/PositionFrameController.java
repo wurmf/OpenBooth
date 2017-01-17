@@ -157,7 +157,7 @@ public class PositionFrameController extends SettingFrameController {
                 p.setButtonImagePath(txPositionBild.getText());
 
             try {
-                LOGGER.info("adding the new position to tableView...");
+                LOGGER.debug("adding the new position to tableView...");
 
                 pservice.addPosition(p);
                 posList.add(p);
@@ -194,7 +194,7 @@ public class PositionFrameController extends SettingFrameController {
     }
 
     protected void refreshTablePosition(List<Position> positionList,Profile selected){
-        LOGGER.info("refreshing the position table...");
+        LOGGER.debug("refreshing the position table...");
         selectedProfile = selected;
 
         posList.clear();

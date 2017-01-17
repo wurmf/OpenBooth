@@ -72,7 +72,7 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
 
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                        LOGGER.error("ProfileImgCell->Error bei updating Img Cell ",e);
                     }
                 }
 

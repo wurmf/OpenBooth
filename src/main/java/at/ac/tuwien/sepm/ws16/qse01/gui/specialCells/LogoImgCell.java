@@ -89,7 +89,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
 
 
                     } catch (ServiceException e) {
-                       LOGGER.error(e.getMessage());
+                       LOGGER.error("LogoImgCell->ImgCell->",e);
                     }
                 }
 

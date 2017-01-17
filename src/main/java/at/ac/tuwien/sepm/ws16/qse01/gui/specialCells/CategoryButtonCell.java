@@ -63,7 +63,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
 
 
                     } catch (ServiceException e) {
-                        LOGGER.error("Kategorie konnte nicht von db gelöscht werden",e);
+                        LOGGER.error("CategoryButtonCell->Kategory löschen Button->Kategorie konnte nicht von db gelöscht werden",e);
                     }
 
 

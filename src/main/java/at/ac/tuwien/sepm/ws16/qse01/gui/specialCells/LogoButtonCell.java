@@ -63,7 +63,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
                         pservice.erasePairLogoRelativeRectangle(currentPairLogo);
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                       LOGGER.error("LogoButtonCell->Löschen Button -> Logo konnte nicht gelöscht werden.",e);
                     }
 
 

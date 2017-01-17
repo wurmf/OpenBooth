@@ -141,7 +141,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
         tableCategory.getSelectionModel().selectedItemProperty().addListener((ObservableValue obs, Object oldSelection, Object newSelection) -> {
             if (newSelection != null) {
                 selectedCategory = (Background.Category) newSelection;
-                LOGGER.info("Kategorie ausgewählt ->"+selectedCategory.getId());
+                LOGGER.debug("Kategorie ausgewählt ->"+selectedCategory.getId());
                 try {
                     greenscreenBackgroundController.refreshTableBackground(bservice.getAllWithCategory(selectedCategory.getId()),selectedProfile,selectedCategory);
                 } catch (ServiceException e) {
@@ -166,7 +166,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
 
             try {
-                LOGGER.info("adding the new Category to tableView...");
+                LOGGER.debug("adding the new Category to tableView...");
 
                 p = bservice.addCategory(p);
                 categoryList.add(p);
@@ -187,7 +187,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
     }
 
     protected void refreshTableCategory(List<Background.Category> categoryListOfProfile,List<Background.Category> categoryList,Profile selected){
-        LOGGER.info("refreshing the category table..."+categoryList.size());
+        LOGGER.debug("refreshing the category table..."+categoryList.size());
         selectedProfile = selected;
         this.categoryListOfProfile.clear();
         this.categoryListOfProfile.addAll(categoryListOfProfile);

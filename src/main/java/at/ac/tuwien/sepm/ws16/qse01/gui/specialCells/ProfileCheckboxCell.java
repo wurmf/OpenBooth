@@ -41,12 +41,12 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
                 else if (checkboxTyp.equals("drucken"))
                     currentProfile.setPrintEnabled(cellCheckbox.isSelected());
 
-                LOGGER.info("Checkbox "+checkboxTyp+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+currentProfile.getName()+"_=>=>"+currentProfile.isFilerEnabled()+"_"+currentProfile.isGreenscreenEnabled()+"_"+currentProfile.isMobilEnabled()+"_"+currentProfile.isPrintEnabled());
+                LOGGER.debug("Checkbox "+checkboxTyp+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+currentProfile.getName()+"_=>=>"+currentProfile.isFilerEnabled()+"_"+currentProfile.isGreenscreenEnabled()+"_"+currentProfile.isMobilEnabled()+"_"+currentProfile.isPrintEnabled());
 
                 try {
                     pservice.edit(currentProfile);
                 } catch (ServiceException e) {
-                   LOGGER.debug("Error bei updating checkbox data "+e.getMessage());
+                   LOGGER.error("ProfileCheckboxCell->Error bei updating checkbox data ",e);
                 }
 
 

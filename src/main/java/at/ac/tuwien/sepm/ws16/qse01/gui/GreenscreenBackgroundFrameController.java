@@ -179,7 +179,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
 
             try {
-                LOGGER.info("adding the new background to tableView...");
+                LOGGER.debug("adding the new background to tableView...");
 
                 bservice.add(p);
                 backgroundList.add(p);
@@ -196,7 +196,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
     }
 
     public void refreshTableBackground(List<Background> backgroundList,Profile selProfile,Background.Category selCategory){
-        LOGGER.info("refreshing the background table..."+backgroundList.size());
+        LOGGER.debug("refreshing the background table..."+backgroundList.size());
         selectedProfile = selProfile;
         selectedCategory = selCategory;
         this.backgroundList.clear();
@@ -205,7 +205,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
     }
 
     protected void refreshCategoryComboBox(List<Background.Category> categories,Profile selected){
-        LOGGER.info("refreshing the categoryComboBox..."+categories.size());
+        LOGGER.debug("refreshing the categoryComboBox..."+categories.size());
         selectedProfile = selected;
         categoryList.clear();
         categoryList.addAll(categories);

@@ -76,7 +76,7 @@ public class CameraPositionFrameController extends SettingFrameController {
     }
 
     protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList,Profile selected){
-        LOGGER.info("refreshing the KameraPosition-Zuweisung table...");
+        LOGGER.debug("refreshing the KameraPosition-Zuweisung table...");
         selectedProfile = selected;
         this.posList.clear();
         this.posList.addAll(posList);

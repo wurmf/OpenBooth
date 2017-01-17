@@ -489,7 +489,7 @@ public class FullScreenImageController {
      * @param imgOriginalPath path of the image to show
      */
     public void makePreviewFilter(String imgOriginalPath){
-        LOGGER.info("Entering makePreviewFilter with imgPath->", imgOriginalPath);
+        LOGGER.debug("Entering makePreviewFilter with imgPath->", imgOriginalPath);
 
         try {
             String imgPath = filterService.resize(imgOriginalPath,80,80);
@@ -621,7 +621,7 @@ public class FullScreenImageController {
         }
         else
         {
-            LOGGER.info("Entering saveFilteredImg... "+filteredImgPath);
+            LOGGER.debug("Entering saveFilteredImg... "+filteredImgPath);
             try {
 
 
@@ -651,7 +651,7 @@ public class FullScreenImageController {
 
                 currentIndex = currentIndex + 1;
                 button4.setVisible(true);
-                LOGGER.info("Filtered image saved in DB...");
+                LOGGER.debug("Filtered image saved in DB...");
 
             } catch (ImageHandlingException | ServiceException e) {
                 LOGGER.error("saveFilteredImg - ",e);
@@ -664,7 +664,7 @@ public class FullScreenImageController {
      * @param imgPath imagepath to delete
      */
     public void deletePreviews(String imgPath){
-        LOGGER.info("Entering deletePreviews -> with imgPath ="+imgPath);
+        LOGGER.debug("Entering deletePreviews -> with imgPath ="+imgPath);
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
@@ -682,7 +682,7 @@ public class FullScreenImageController {
         button12.setVisible(false);
         button13.setVisible(true);*/
         saveFilteredButton.setVisible(true);
-        LOGGER.info("Crop Button clicked");
+        LOGGER.debug("Crop Button clicked");
         if(cropRectangle==null)
         {
             cropRectangle=createDraggableRectangle(wholePane.getWidth() - 250, wholePane.getHeight() - 250, 500, 500);

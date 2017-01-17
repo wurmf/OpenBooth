@@ -44,7 +44,7 @@ public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean
                     }
 
 
-                    LOGGER.info("Checkbox for Category "+currentCategory.getId()+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+selectedProfile.getName());
+                    LOGGER.debug("Checkbox for Category "+currentCategory.getId()+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+selectedProfile.getName());
 
                 } catch (ServiceException e) {
                    LOGGER.debug("Error bei updating checkbox data",e);

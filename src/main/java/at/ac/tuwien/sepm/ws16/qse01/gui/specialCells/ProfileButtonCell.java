@@ -54,7 +54,7 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
                     try {
                         pservice.erase(currentProfile);
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                        LOGGER.error("ProfileButtonCell->Löschen Button -> Profil konnte nicht gelöscht werden.",e);
                     }
 
 

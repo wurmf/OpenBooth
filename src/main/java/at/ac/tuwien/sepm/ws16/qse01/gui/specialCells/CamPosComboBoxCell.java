@@ -77,7 +77,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
                 if(index2select!= -1)
                     this.comboBox.getSelectionModel().select(index2select);
             } catch (ServiceException e) {
-                e.printStackTrace();
+                LOGGER.error("CamPosComboBoxCell -> updateItem",e);
             }
 
             setGraphic(comboBox);

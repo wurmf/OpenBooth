@@ -60,7 +60,7 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
                         kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
 
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                        LOGGER.error("PositionButtonCell->Löschen Button -> Position konnte nicht gelöscht werden.",e);
                     }
 
 

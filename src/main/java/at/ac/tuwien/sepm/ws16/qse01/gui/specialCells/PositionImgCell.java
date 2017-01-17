@@ -82,7 +82,7 @@ public class PositionImgCell extends TableCell<Position, String> {
 
 
                     } catch (ServiceException e) {
-                       LOGGER.error("Update position Image",e);
+                       LOGGER.error("PositionImgCell->Update position Image",e);
                     }
                 }
 
