@@ -7,9 +7,9 @@
 #basevbox{
 
   -fx-background-color: black;
+   -fx-pref-width: 200em;
 }
 #title{
-
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
 }
