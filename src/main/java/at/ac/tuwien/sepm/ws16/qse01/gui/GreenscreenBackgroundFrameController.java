@@ -10,11 +10,13 @@ import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -35,7 +37,7 @@ import java.util.List;
 public class GreenscreenBackgroundFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(GreenscreenBackgroundFrameController.class);
 
-    private Background.Category selectedCategory = null;
+
 
     /* Profile TEXTFIELDS for ADDING */
     @FXML
@@ -57,9 +59,10 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
     @FXML
     private TableColumn colBackgroundAction;
 
-    @FXML
+    //private Background.Category selectedCategory;
+   /* @FXML
     private ComboBox categoryCombo;
-
+*/
 
     @Autowired
     public GreenscreenBackgroundFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
@@ -141,19 +144,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
                 });
 
-        //listener for greenscreen category combobox
-        categoryCombo.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Background.Category>() {
-            @Override public void changed(ObservableValue selected, Background.Category oldCat, Background.Category newCat) {
-                LOGGER.info("Kategorie ausgewählt -> "+newCat);
-                selectedCategory = newCat;
-                try {
-                    refreshTableBackground(bservice.getAllWithCategory(newCat.getId()));
-                } catch (ServiceException e) {
-                    LOGGER.error("Backgroundservice couldnt get categories ->"+newCat.getId(),e);
-                }
 
-
-            }});
 
 
     }
@@ -204,8 +195,10 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         }
     }
 
-    protected void refreshTableBackground(List<Background> backgroundList){
+    public void refreshTableBackground(List<Background> backgroundList,Profile selProfile,Background.Category selCategory){
         LOGGER.info("refreshing the background table..."+backgroundList.size());
+        selectedProfile = selProfile;
+        selectedCategory = selCategory;
         this.backgroundList.clear();
         this.backgroundList.addAll(backgroundList);
         tableBackground.setItems(this.backgroundList);
@@ -216,8 +209,8 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         selectedProfile = selected;
         categoryList.clear();
         categoryList.addAll(categories);
-        categoryCombo.setItems(categoryList);
+       /* categoryCombo.setItems(categoryList);
         if(selectedCategory!=null)
-            categoryCombo.getSelectionModel().select(selectedCategory);
+            categoryCombo.getSelectionModel().select(selectedCategory);*/
     }
 }

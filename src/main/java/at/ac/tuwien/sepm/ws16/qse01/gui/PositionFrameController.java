@@ -196,9 +196,12 @@ public class PositionFrameController extends SettingFrameController {
     protected void refreshTablePosition(List<Position> positionList,Profile selected){
         LOGGER.info("refreshing the position table...");
         selectedProfile = selected;
+
         posList.clear();
         posList.addAll(positionList);
+
         tablePosition.setItems(posList);
+
 
     }
 

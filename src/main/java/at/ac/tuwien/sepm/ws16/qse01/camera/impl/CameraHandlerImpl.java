@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,11 @@ public class CameraHandlerImpl implements CameraHandler {
     private Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
 
     private CameraService cameraService;
-    private List<CameraGphoto> cameraGphotoList=new ArrayList<CameraGphoto>();
+    private List<CameraGphoto> cameraGphotoList=new ArrayList<>();
     private List<String> cameraModelList = new ArrayList<>();
     private List<String> cameraPortList = new ArrayList<>();
     private List<Camera> cameraList = new ArrayList<>();
+    private List<CameraThread> threadList;
 
     @Autowired
     public CameraHandlerImpl(CameraService cameraService)
@@ -45,7 +47,7 @@ public class CameraHandlerImpl implements CameraHandler {
     public List<CameraThread> createThreads() throws CameraException {
 
         Camera camera;
-        List<CameraThread> threadList = new ArrayList<>();
+        threadList = new ArrayList<>();
         for(int i=0;i<cameraGphotoList.size();i++) {
             camera=cameraList.get(i);
             CameraThread cameraThread = new CameraThread();
@@ -57,13 +59,17 @@ public class CameraHandlerImpl implements CameraHandler {
         return threadList;
     }
 
-    @Override
+    @PostConstruct
     public List<Camera> getCameras() throws CameraException {
         try {
             cameraService.setAllCamerasInactive();
         } catch (ServiceException e) {
             LOGGER.debug("getCameras - could not set cameras inactive", e);
         }
+        cameraGphotoList=new ArrayList<>();
+        cameraModelList=new ArrayList<>();
+        cameraPortList=new ArrayList<>();
+        cameraList=new ArrayList<>();
         int count=0;
         final CameraList cl = new CameraList();
         try {
@@ -105,6 +111,42 @@ public class CameraHandlerImpl implements CameraHandler {
             CameraUtils.closeQuietly(cl);
         }
         return cameraList;
+    }
+
+    @Override
+    public void captureImage(Camera camera)
+    {
+        for (CameraThread thread: threadList)
+        {
+            if(thread.getCamera().getId()==camera.getId())
+            {
+                thread.setTakeImage(true);
+            }
+        }
+    }
+
+    @Override
+    public void setSerieShot(Camera camera, boolean serieShot)
+    {
+        for (CameraThread thread: threadList)
+        {
+            if(thread.getCamera().getId()==camera.getId())
+            {
+                thread.setSerieShot(serieShot);
+            }
+        }
+    }
+
+    @Override
+    public void setCountdown(Camera camera, boolean countdown)
+    {
+        for (CameraThread thread: threadList)
+        {
+            if(thread.getCamera().getId()==camera.getId())
+            {
+                thread.setCountdown(countdown);
+            }
+        }
     }
 
     @Override

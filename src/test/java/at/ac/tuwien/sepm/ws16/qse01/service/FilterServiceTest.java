@@ -62,7 +62,7 @@ public abstract class FilterServiceTest{
 
         srcImg = imageHandler.openImage(srcImgPath);
 
-        when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,true));
+        when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,"",true));
        // when(mockShootingService.searchIsActive().getStorageDir()).thenReturn(destImgPath);
 
     }

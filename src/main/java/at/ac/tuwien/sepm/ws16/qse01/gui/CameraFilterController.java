@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -211,7 +212,7 @@ public class CameraFilterController {
             filterscrollplanel.setContent(filtergrid);
             root.add(filterscrollplanel,0,1);
         } catch (ServiceException e) {
-            LOGGER.error("CreatButtons", e);
+            LOGGER.error("creatButtons - ", e);
             showInformationDialog("Es konnte keine Filterauswahl erstellt werden");
         }
     }
@@ -267,6 +268,7 @@ public class CameraFilterController {
             LOGGER.error("greenScreenButoon:",e);
         }
 */
+       FileInputStream fips=null;
         try {
             greengrid = new GridPane();
             greengrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
@@ -307,7 +309,7 @@ public class CameraFilterController {
             int rowcount = 0;
 
             List<Background>  greenList =profileservice.getAllBackgroundOfProfile();
-
+            shootingService.addUserDefinedBackgrounds(greenList);
             // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Background backround : greenList) {//imagefilter.size
                 // for(Image im : imlist){
@@ -327,7 +329,9 @@ public class CameraFilterController {
 
                 //iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
-                iv.setImage(new javafx.scene.image.Image(new FileInputStream(backround.getPath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
+                fips=new FileInputStream(backround.getPath());
+                iv.setImage(new javafx.scene.image.Image(fips, iv.getFitHeight(), iv.getFitWidth(), true, true));
+                fips.close();
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
                     if (backround.getId()==profile.getPairCameraPositions().get(index).getBackground().getId()) {
                         activiv = iv;
@@ -350,7 +354,7 @@ public class CameraFilterController {
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
                     profile.getPairCameraPositions().get(index).setBackground(backround);
-                   
+
                 });
                 greengrid.add(iv, columcount, rowcount);
                 columcount++;
@@ -359,10 +363,16 @@ public class CameraFilterController {
             filterscrollplanel.setVisible(true);
             filterscrollplanel.setContent(greengrid);
             root.add(filterscrollplanel, 0, 1);
-        } catch (ServiceException e) {
+        } catch (ServiceException|IOException e) {
             LOGGER.error("Camers Filter, greenscreen creat button- ", e);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("Camers Filter, greenscreen creat button- ", e);
+        } finally{
+            if(fips!=null){
+                try {
+                    fips.close();
+                } catch (IOException e) {
+                    LOGGER.debug("createGreenScreenButton - unable to close FileInputStream - ",e);
+                }
+            }
         }
     }
 
@@ -437,8 +447,8 @@ public class CameraFilterController {
             filtergrid = new GridPane();
         }
             if(index>-1) {
+                profile = profileservice.getActiveProfile();
                 if (profile.getId()!=profileservice.getActiveProfile().getId()){
-                    profile = profileservice.getActiveProfile();
                     buttonList.clear();
                 }
                 currentMode=profile.getPairCameraPositions().get(index).getShotType();

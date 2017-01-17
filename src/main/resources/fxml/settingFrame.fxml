@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.AutoCompleteTextField?>
-<?import javafx.collections.FXCollections?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="container" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
+<ScrollPane  xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
     <content>
-        <VBox minHeight="2000"  alignment="TOP_CENTER">
+        <VBox alignment="TOP_CENTER" minHeight="1500">
             <children>
-                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1700.0" prefWidth="1400.0" >
+                <GridPane fx:id="containerGrid" maxHeight="-Infinity" maxWidth="-Infinity"  style="-fx-background-color: dimgray;">
                   <columnConstraints>
                     <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="1700.0" minWidth="10.0" prefWidth="504.0" />
@@ -23,20 +26,20 @@
                       <RowConstraints maxHeight="294.84861946105957" minHeight="10.0" prefHeight="89.0" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="525.2872924804688" valignment="TOP" vgrow="SOMETIMES" />
                     <RowConstraints maxHeight="766.0" minHeight="10.0" prefHeight="476.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="500.0" vgrow="SOMETIMES" />
+                      <RowConstraints maxHeight="600.0" minHeight="10.0" prefHeight="530.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                    <children>
                        <fx:include fx:id="profile" source="profileFrame.fxml"/>
                        <fx:include fx:id="position" source="positionFrame.fxml"/>
                        <fx:include fx:id="kamPos" source="cameraPositionFrame.fxml"/>
                        <fx:include fx:id="logo" source="logoFrame.fxml"/>
-                       <fx:include fx:id="greenscreenBackground" source="greenscreenBackgroundFrame.fxml"/>
                        <fx:include fx:id="greenscreenCategory" source="greenscreenCategoryFrame.fxml"/>
+                       <fx:include fx:id="greenscreenBackground" source="greenscreenBackgroundFrame.fxml"/>
 
 
 
 
-                      <Label  fx:id="setting" text="Einstellungen" textFill="#362d2d">
+                      <Label fx:id="setting" text="Einstellungen" textFill="#362d2d">
 
                          <padding>
                             <Insets left="100.0" />

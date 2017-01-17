@@ -12,8 +12,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,7 @@ public abstract class SettingFrameController {
     protected final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
     protected final ObservableList<Background.Category> categoryList = FXCollections.observableArrayList();
+    protected final ObservableList<Background.Category> categoryListOfProfile = FXCollections.observableArrayList();
 
 
 
@@ -52,22 +55,24 @@ public abstract class SettingFrameController {
 
 
     protected Profile selectedProfile = null;
+    protected Background.Category selectedCategory = null;
 
 
+    @FXML
+    protected GridPane containerGrid;
 
-
     @FXML
-    private PositionFrameController positionController;
+    protected PositionFrameController positionController;
     @FXML
-    private ProfileFrameController profileController;
+    protected ProfileFrameController profileController;
     @FXML
-    private LogoFrameController logoController;
+    protected LogoFrameController logoController;
     @FXML
-    private GreenscreenBackgroundFrameController greenscreenBackgroundController;
+    protected GreenscreenBackgroundFrameController greenscreenBackgroundController;
     @FXML
-    private GreenscreenCategoryFrameController greenscreenCategoryController;
+    protected GreenscreenCategoryFrameController greenscreenCategoryController;
     @FXML
-    private CameraPositionFrameController kamPosController;
+    protected CameraPositionFrameController kamPosController;
 
 
 
@@ -86,7 +91,13 @@ public abstract class SettingFrameController {
         this.imageHandler = imageHandler;
     }
     
-
+    @FXML
+    private void initialize(){
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        containerGrid.setMinHeight(screenHeight-50);
+        containerGrid.setPrefWidth(screenWidth);
+    }
 
 
     protected void refreshTableProfiles(List<Profile> profileList){
@@ -112,8 +123,16 @@ public abstract class SettingFrameController {
         if(greenscreenCategoryController!=null)
             greenscreenBackgroundController.refreshCategoryComboBox(categories,profileController.getSelectedProfile());
     }
-    protected void refreshTableCategory(List<Background.Category> categories){
-        greenscreenCategoryController.refreshTableCategory(categories,profileController.getSelectedProfile());
+    protected void refreshTableCategory(List<Background.Category> categoriesOfProfile,List<Background.Category> categories){
+        greenscreenCategoryController.refreshTableCategory(categoriesOfProfile,categories,profileController.getSelectedProfile());
+    }
+    protected void refreshTableBackground(List<Background> backgrounds){
+       // if(greenscreenBackgroundController!=null)
+            greenscreenBackgroundController.refreshTableBackground(backgrounds,profileController.getSelectedProfile(),greenscreenCategoryController.getSelectedCategory());
+    }
+
+    protected  void setControllers(){
+        greenscreenCategoryController.setControllers(greenscreenBackgroundController);
     }
 
 

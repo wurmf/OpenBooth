@@ -6,3 +6,18 @@
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
 }
+
+.text-field {
+    -fx-font-size: 0.8em;
+}
+.table-view .column-header{
+    -fx-font-size: 0.8em;
+}
+
+.table-cell {
+    -fx-font-size: 0.8em;
+}
+
+.button {
+    -fx-font-size: 0.8em;
+}

@@ -1,9 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCShootingDAO;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -13,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
@@ -20,9 +19,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Shooting service impl
@@ -38,14 +37,9 @@ public class ShootingServiceImpl implements ShootingService {
         shootingDAO = jdbcShootingDAO;
     }
 
-    String getImageStorage(){
-        return "";
-    }
-
     @Override
     public void addShooting(Shooting shooting) throws ServiceException {
         try {
-
             shootingDAO.create(shooting);
         } catch (PersistenceException e) {
             throw new ServiceException(e);
@@ -72,13 +66,24 @@ public class ShootingServiceImpl implements ShootingService {
     }
 
     @Override
-    public void updateProfile(Shooting shooting) throws ServiceException{
+    public void addUserDefinedBackgrounds(List<Background> bgList) throws ServiceException{
         try {
-            shootingDAO.updateProfile(shooting);
+            shootingDAO.getUserBackgrounds(bgList);
         } catch (PersistenceException e) {
             throw new ServiceException(e);
         }
     }
+
+    @Override
+    public void update(Shooting shooting) throws ServiceException{
+        try {
+            shootingDAO.update(shooting);
+        } catch (PersistenceException e) {
+            throw new ServiceException(e);
+        }
+    }
+
+
 
     @Override
     public String createPath() throws ServiceException {
@@ -91,8 +96,8 @@ public class ShootingServiceImpl implements ShootingService {
             try {
                 Files.createDirectories(storagepath);
             }  catch (IOException e) {
-                LOGGER.error("createPath - creating initial folder", e);
-                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
+                LOGGER.error("createPath - creating initial folder - ", e);
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden", e);
             }
             DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss");
             Date date = new Date();
@@ -101,11 +106,11 @@ public class ShootingServiceImpl implements ShootingService {
             try {
                 Files.createDirectories(shootingstorage);
             } catch (FileAlreadyExistsException e) {
-                LOGGER.info("shooting folder already exists - " , e);
-                throw new ServiceException("Der Speicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist ");
+                LOGGER.error("shooting folder already exists - " , e);
+                throw new ServiceException("Der Speicherort konnte nicht neu angelegt werden, da er bereits vorhanden ist.",e);
             } catch (IOException e) {
                 LOGGER.error("creatin shooting folder file - ", e);
-                throw new ServiceException("Der Speicherort konnte nicht erstellt werden");
+                throw new ServiceException("Der Speicherort konnte nicht erstellt werden",e);
             }
             path = shootingstorage.toString();
         }

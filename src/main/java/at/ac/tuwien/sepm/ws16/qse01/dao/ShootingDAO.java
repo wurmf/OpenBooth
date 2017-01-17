@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.dao;
 
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+
+import java.util.List;
 
 /**
  * Shooting Dao
@@ -36,11 +39,16 @@ public interface ShootingDAO {
      void endShooting() throws PersistenceException;
 
     /**
-     * updates the shooting profile
-     *
-     * @param shooting shooting to be updated to
-     * @throws PersistenceException
+     * Will update data saved for this shooting in the persistence.
+     * @param shooting Shooting-object with the same ID as the entry in the persistence that shall be updated.
+     * @throws PersistenceException if an error occurs while persisting the object.
      */
-     void updateProfile(Shooting shooting) throws PersistenceException;
+     void update(Shooting shooting) throws PersistenceException;
 
+    /**
+     * Adds the userdefined backgrounds to the given list.
+     * @param bgList the list to which the backgrounds shall be added.
+     * @throws PersistenceException if a problem occurs while reading the images.
+     */
+     void getUserBackgrounds(List<Background> bgList) throws PersistenceException;
 }

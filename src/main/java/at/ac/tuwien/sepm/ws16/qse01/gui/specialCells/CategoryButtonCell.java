@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -23,12 +24,16 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
     final static Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
 
     private  ObservableList<Background.Category> categories;
+    private ObservableList<Background.Category> categoryListOfProfile;
+    private Profile selectedProfile;
     private BackgroundService bservice;
 
     private final Button cellButton = new Button("X");
 
-    public CategoryButtonCell(ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
+    public CategoryButtonCell(ObservableList<Background.Category> categoryListOfProfile, Profile selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
         this.categories = categories;
+        this.categoryListOfProfile = categoryListOfProfile;
+        this.selectedProfile = selectedProfile;
         this.bservice = bservice;
 
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -54,6 +59,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
                     try {
 
                         bservice.eraseCategory(currentCategory);
+                        bservice.deletePairProfileCategory(selectedProfile.getId(),currentCategory.getId());
 
 
                     } catch (ServiceException e) {

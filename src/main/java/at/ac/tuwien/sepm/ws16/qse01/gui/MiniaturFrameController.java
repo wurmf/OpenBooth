@@ -17,6 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,12 @@ public class MiniaturFrameController {
         this.stage=stage;
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        System.out.println(screenWidth+"_"+screenHeight);
+        tile.setMinWidth(screenWidth);
+        tile.setMinHeight(screenHeight-65);
 
 
 
@@ -117,6 +124,7 @@ public class MiniaturFrameController {
     private void imageClicked1(ImageView imageView){
         if(!imageView.equals(activeImageView)) {
             ((VBox) imageView.getParent()).getChildren().get(1).setVisible(true);
+
             if(activeImageView!=null){
 
                 activeImageView.setFitHeight(150);
@@ -131,6 +139,13 @@ public class MiniaturFrameController {
             imageView.setStyle("-fx-background-color: BLACK");
             activeImageView = imageView;
 
+        }else{
+            activeImageView.setFitHeight(150);
+            activeImageView.setFitWidth(150);
+            activeImageView.setPreserveRatio(true);
+            imageView.setStyle("-fx-background-color: BLACK");
+            ((VBox) activeImageView.getParent()).getChildren().get(1).setVisible(false);
+            activeImageView = null;
         }
     }
 
@@ -158,6 +173,7 @@ public class MiniaturFrameController {
 
     private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img){
         HBox hBox = new HBox();
+        hBox.setPrefWidth(180);
         hBox.setSpacing(120);
         hBox.setVisible(false);
         hBox.setStyle("-fx-background-color: #dddddd;");

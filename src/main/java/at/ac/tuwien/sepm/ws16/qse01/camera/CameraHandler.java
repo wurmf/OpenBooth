@@ -31,4 +31,24 @@ public interface CameraHandler {
      * @param camera the camera that shall be removed.
      */
     void removeCameraFromList(Camera camera);
+
+    /**
+     * Sets the captureImage flag in the CameraThread
+     * @param camera camera that shall capture a image
+     */
+    void captureImage(Camera camera);
+
+    /**
+     * Sets the serieShot flag in the CameraThread
+     * @param camera camera that shall be configured
+     * @param serieShot whether multiple shots should be taken or not
+     */
+    public void setSerieShot(Camera camera, boolean serieShot);
+
+    /**
+     * Sets the countdown flag in the CameraThread
+     * @param camera camera that shall be configured
+     * @param countdown whether a countdown should be displayed or not
+     */
+    public void setCountdown(Camera camera, boolean countdown);
 }

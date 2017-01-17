@@ -1,14 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.exceptions;
 
 /**
- * Created by Martin Schroeder on 27.11.16.
+ * Exception thrown by classes of the Service-layer.
  */
 public class ServiceException extends Exception {
     public ServiceException(String message){
         super(message);
     }
-    public ServiceException(Exception e){
+    public ServiceException(Throwable e){
         super(e);
     }
-    public ServiceException(String message, Throwable e){super (message, e);}
+    public ServiceException(String message, Throwable e){super(message,e);}
 }

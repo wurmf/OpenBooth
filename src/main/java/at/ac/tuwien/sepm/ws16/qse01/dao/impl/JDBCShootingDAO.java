@@ -5,13 +5,20 @@ import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.sql.*;
+import java.util.*;
 
 /**
  * ShootingDaoImpl
@@ -20,7 +27,10 @@ import java.sql.*;
 public class JDBCShootingDAO implements ShootingDAO {
 
     private Connection con;
+    private String currentBgPath;
+    private List<Background> currentBackgrounds;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
+
 
     @Autowired
     public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {
@@ -30,36 +40,36 @@ public class JDBCShootingDAO implements ShootingDAO {
             LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
+        currentBgPath=null;
+        currentBackgrounds=null;
     }
 
     @Override
-    public Shooting create(Shooting shouting) throws PersistenceException {
+    public Shooting create(Shooting shooting) throws PersistenceException {
         PreparedStatement stmt = null;
-        if(shouting==null) {
-            LOGGER.debug("create - caught nullpointerShooting");
-            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if(shooting==null) {
+            LOGGER.debug("caught nullpointer Shooting");
+            throw new IllegalArgumentException("Error: Called create method with null pointer.");
         }
 
 
-
         try {
-            String sql="insert into Shootings(profileId,  FOLDERPATH, isactive) values(?,?,?)";
+            String sql="INSERT INTO Shootings(profileId, folderpath, bgpicturefolder, isactive) VALUES (?,?,?,?)";
 
             stmt = this.con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            //stmt.setInt(1,profile.getId());
-            stmt.setInt(1,shouting.getProfileid());
-            stmt.setString(2,shouting.getStorageDir());
-            stmt.setBoolean(3,shouting.getActive());
+            stmt.setInt(1,shooting.getProfileid());
+            stmt.setString(2,shooting.getStorageDir());
+            stmt.setString(3,shooting.getBgPictureFolder());
+            stmt.setBoolean(4,shooting.getActive());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()){shouting.setId(rs.getInt(1));}
+            if (rs.next()){
+                shooting.setId(rs.getInt(1));
+            }
 
-        } catch (SQLException e) {
+        } catch (SQLException|IllegalArgumentException e) {
             LOGGER.info("create - ",e);
             throw new PersistenceException(e);
-        } catch(IllegalArgumentException i) {
-            LOGGER.error("create - ",i);
-            throw new PersistenceException(i);
         } finally{
             if (stmt != null) {
                 try {
@@ -69,54 +79,47 @@ public class JDBCShootingDAO implements ShootingDAO {
                 }
             }
         }
-        return shouting;
+        return shooting;
     }
 
     @Override
     public Shooting searchIsActive() throws PersistenceException {
 
         PreparedStatement stmt =null;
-        Shooting shouting = new Shooting(0,0,"",false);
-        try {//exists
-            stmt = con.prepareStatement("select * from Shootings where isactive = true");
-            //stmt.setString(1,name);
+        Shooting shooting = new Shooting(0,0,"","",false);
+        try {
+            stmt = con.prepareStatement("SELECT * FROM Shootings WHERE isactive = true");
             ResultSet rst = stmt.executeQuery();
-            while (rst.next()){
-                shouting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getBoolean("ISACTIVE"));
+            if(rst.next()){
+                shooting = new Shooting(rst.getInt("SHOOTINGID"), rst.getInt("PROFILEID"),rst.getString("FOLDERPATH"), rst.getString("BGPICTUREFOLDER"), rst.getBoolean("ISACTIVE"));
             }
         } catch (SQLException e) {
-            LOGGER.error("searchIsActive - ",e);
+            LOGGER.info("searchIsActive - ",e);
             throw new PersistenceException(e);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                   LOGGER.error("searchIsActive - ",e);
+                   LOGGER.error("searchIsAcitve - ",e);
                 }
             }
         }
-        return shouting;
+        return shooting;
     }
 
     @Override
     public void endShooting() throws PersistenceException {
-        PreparedStatement stmt=null;
+        Statement stmt=null;
         try {
-            String prepered="update Shootings set isactive=? where isactive= ?";
-            stmt = con.prepareStatement(prepered);
-
-            stmt.setBoolean(1,false);
-            stmt.setBoolean(2,true);
-            stmt.execute();
+            String query="UPDATE Shootings SET isactive=false WHERE isactive= true";
+            stmt = con.createStatement();
+            stmt.execute(query);
 
         } catch (SQLException e) {
-            LOGGER.error("endShooting - ", e);
+            LOGGER.info("endShooting - ", e);
             throw new PersistenceException(e);
-        } catch(AssertionError i) {
-            LOGGER.error("endShooting - ",i);
-            throw new PersistenceException("No Activ Shooting Found");
-        }finally {
+        } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
@@ -128,14 +131,20 @@ public class JDBCShootingDAO implements ShootingDAO {
     }
 
     @Override
-    public void updateProfile(Shooting shooting) throws PersistenceException {
+    public void update(Shooting shooting) throws PersistenceException {
         PreparedStatement stmt=null;
         try {
-            String prepered="update Shootings set PROFILEID=? where SHOOTINGID= ?";
-            stmt = con.prepareStatement(prepered);
+            if(shooting.getBgPictureFolder()!=null && !shooting.getBgPictureFolder().isEmpty()){
+                stmt = con.prepareStatement("UPDATE Shootings SET PROFILEID=?, bgpicturefolder=? WHERE SHOOTINGID= ?");
+                stmt.setInt(1,shooting.getProfileid());
+                stmt.setString(2, shooting.getBgPictureFolder());
+                stmt.setInt(3,shooting.getId());
+            } else{
+                stmt = con.prepareStatement("UPDATE Shootings SET PROFILEID=? WHERE SHOOTINGID= ?");
+                stmt.setInt(1,shooting.getProfileid());
+                stmt.setInt(2,shooting.getId());
+            }
 
-            stmt.setInt(1,shooting.getProfileid());
-            stmt.setInt(2,shooting.getId());
             stmt.execute();
 
         } catch (SQLException e) {
@@ -148,6 +157,30 @@ public class JDBCShootingDAO implements ShootingDAO {
                 } catch (SQLException e) {
                     LOGGER.error("updateProfile - ",e);
                 }
+            }
+        }
+    }
+
+    @Override
+    public void getUserBackgrounds(List<Background> bgList) throws PersistenceException {
+        Shooting activeShooting=this.searchIsActive();
+        if(activeShooting==null || activeShooting.getBgPictureFolder()==null || activeShooting.getBgPictureFolder().isEmpty()){
+            return;
+        }
+        FileFilter filter= c-> c.getName().endsWith(".jpg")||c.getName().endsWith(".png");
+        File bgFolder= new File(activeShooting.getBgPictureFolder());
+        File[] pictureFiles= bgFolder.listFiles(filter);
+        if(pictureFiles==null||pictureFiles.length==0)
+            return;
+        List<File> filesList=Arrays.asList(pictureFiles);
+        Background.Category category= new Background.Category("Userdefined Backgrounds");
+        for(int i=0; i<filesList.size();i++){
+            try{
+                Background bg=new Background("UserDef",filesList.get(i).getCanonicalPath(),category);
+                bgList.add(bg);
+            } catch(IOException e){
+                LOGGER.error("getUserBackgrounds - ",e);
+                throw new PersistenceException("Unable to get canonical path from file",e);
             }
         }
     }
