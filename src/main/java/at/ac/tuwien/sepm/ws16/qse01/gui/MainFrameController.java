@@ -111,7 +111,7 @@ public class MainFrameController {
      *
      * @param actionEvent press action event
      */
-    
+
     public void onEditPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SETTINGSCENE);
     }
