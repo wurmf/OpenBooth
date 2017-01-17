@@ -389,7 +389,7 @@ public class CameraFilterController {
     public void onSinglePressed() {
         unmark();
 
-        profile.getPairCameraPositions().get(index).setShotType(0);
+        profile.getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_SINGLE);
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode = 0;
@@ -401,7 +401,7 @@ public class CameraFilterController {
     public void onSerialPressed() {
         unmark();
 
-        profile.getPairCameraPositions().get(index).setShotType(1);
+        profile.getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE);
         serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
         currentMode =1;
@@ -413,7 +413,7 @@ public class CameraFilterController {
     public void onTimerPressed() {
         unmark();
 
-        profile.getPairCameraPositions().get(index).setShotType(2);
+        profile.getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_TIMED);
 
         ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));

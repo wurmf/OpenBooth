@@ -288,18 +288,6 @@ public class Profile {
             this.filterName = filterName;
         }
 
-        public static int getShotTypeTimed() {
-            return SHOT_TYPE_TIMED;
-        }
-
-        public static int getShotTypeSingle() {
-            return SHOT_TYPE_SINGLE;
-        }
-
-        public static int getShotTypeMultiple() {
-            return SHOT_TYPE_MULTIPLE;
-        }
-
         public int getShotType() {
             return shotType;
         }
