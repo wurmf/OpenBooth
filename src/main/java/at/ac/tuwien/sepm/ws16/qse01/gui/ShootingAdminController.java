@@ -99,7 +99,7 @@ public class ShootingAdminController {
             }
 
         } catch (ServiceException e) {
-            LOGGER.debug("initialize - ",e);
+            LOGGER.error("initialize - ",e);
             showInformationDialog("Bitte erstellen Sie ein Profil");
         }
     }
@@ -162,7 +162,6 @@ public class ShootingAdminController {
                     }
                     Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
-                    LOGGER.info("onStartShootingPressed - ", path);
                     //path = "";
 
                     shootingService.addShooting(shouting);
@@ -176,7 +175,7 @@ public class ShootingAdminController {
                         showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
                     }
                 } catch (ServiceException serviceExeption) {
-                    LOGGER.debug("onStartShootingPressed - ", serviceExeption);
+                    LOGGER.error("onStartShootingPressed - ", serviceExeption);
                     showInformationDialog("Es konnte kein Shooting erstellt werden.");
                 }
         } else {
