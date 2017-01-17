@@ -126,6 +126,30 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
+    public void setSerieShot(Camera camera, boolean serieShot)
+    {
+        for (CameraThread thread: threadList)
+        {
+            if(thread.getCamera().getId()==camera.getId())
+            {
+                thread.setSerieShot(serieShot);
+            }
+        }
+    }
+
+    @Override
+    public void setCountdown(Camera camera, boolean countdown)
+    {
+        for (CameraThread thread: threadList)
+        {
+            if(thread.getCamera().getId()==camera.getId())
+            {
+                thread.setCountdown(countdown);
+            }
+        }
+    }
+
+    @Override
     public void removeCameraFromList(Camera camera){
         if(cameraList.isEmpty()){
             return;

@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
-import at.ac.tuwien.sepm.ws16.qse01.application.ThreadCommunicator;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
@@ -125,7 +124,7 @@ public class FullScreenImageController {
     private ImageHandler imageHandler;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, ThreadCommunicator threadCommunicator) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;

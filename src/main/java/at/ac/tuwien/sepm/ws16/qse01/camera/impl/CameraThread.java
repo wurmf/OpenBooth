@@ -7,7 +7,6 @@ import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
-import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -35,6 +34,8 @@ public class CameraThread extends Thread{
 
     private boolean shouldStop = false;
     private boolean takeImage = false;
+    private boolean serieShot = false;
+    private boolean countdown = false;
 
     @Override
     public void run()
@@ -43,7 +44,18 @@ public class CameraThread extends Thread{
         {
             if(takeImage)
             {
+                if(countdown)
+                {
+                    //TODO: shotFrameController.showCountdown(5)
+                }
                 captureImage();
+                if(serieShot)
+                {
+                    for (int i = 0; i < 5; i++)
+                    {
+                        captureImage();
+                    }
+                }
                 takeImage=false;
             }
             else
@@ -209,6 +221,14 @@ public class CameraThread extends Thread{
 
     public void setTakeImage(boolean takeImage) {
         this.takeImage = takeImage;
+    }
+
+    public void setSerieShot(boolean serieShot) {
+        this.serieShot = serieShot;
+    }
+
+    public void setCountdown(boolean countdown) {
+        this.countdown = countdown;
     }
 
     public void setShootingService(ShootingService shootingService){
