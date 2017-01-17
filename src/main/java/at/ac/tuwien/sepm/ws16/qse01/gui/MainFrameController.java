@@ -56,7 +56,7 @@ public class MainFrameController {
             }
         } catch (ServiceException e) {
             showInformationDialog("Ein Fehler beim Start des Programms ist aufgetreten.");
-            LOGGER.info("initialize - ",e);
+            LOGGER.error("initialize - ",e);
          }
     }
 
@@ -88,9 +88,10 @@ public class MainFrameController {
         } else {
             try {
                 shootingService.endShooting();
+                LOGGER.info("showRecoveryDialog - shooting stoped");
                 showInformationDialog("Shooting wurde beendet");
             } catch (ServiceException e) {
-                LOGGER.debug("recovery - ",e);
+                LOGGER.error("showRecoveryDialog - ",e);
                 showInformationDialog("Shooting konnte nicht beendet werden!");
             }
         }
@@ -110,6 +111,7 @@ public class MainFrameController {
      *
      * @param actionEvent press action event
      */
+    
     public void onEditPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SETTINGSCENE);
     }
