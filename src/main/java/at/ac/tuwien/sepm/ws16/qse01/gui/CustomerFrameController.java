@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -8,10 +9,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Screen;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +45,14 @@ public class CustomerFrameController {
     private WindowManager windowmanager;
     private ShootingService shootingservice;
     private ProfileService profileservice;
+    private FilterService filterservice;
 
     @Autowired
-    public CustomerFrameController(WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
+    public CustomerFrameController(FilterService filterservice, WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
+        this.filterservice=filterservice;
     }
 
     @FXML
@@ -164,7 +165,7 @@ public class CustomerFrameController {
               //  LOGGER.debug("buttons:" + buttonList.size() + "");
                // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
-                int width = (int) ((float) gridpanel.getWidth() / (float) column) - 5;
+                int width = (int) ((float) gridpanel.getWidth() / (float) (column)) - 5;
                 int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
                 int countrow = 0;
                 int countcolumn = 0;
@@ -173,11 +174,40 @@ public class CustomerFrameController {
                 for (int i = 0; i < pairList.size(); i++) {
                     GridPane gp = new GridPane();
                     String name = "Kamera " + pairList.get(i).getCamera().getId() + "  " + pairList.get(i).getPosition().getName();
+
+/*
                     ImageView imageView = new ImageView();
                     imageView.setVisible(true);
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
 
+                    String resource = System.getProperty("user.home");
+                    Image im = new Image("/images/studio.jpg", true);
+                    imageView.setImage(im);
+
+                    Image i2 =null;
+                    int shot =profile.getPairCameraPositions().get(i).getShotType();
+                    if(shot==0){
+                       i2= new Image("/images/singleshot.png");
+                    }else if(shot == 1){
+                        i2= new Image("/images/multishot.png");
+                    }else {
+                        i2= new Image("/images/timer.png");
+                    }
+                    ImageView iv2 = new ImageView();
+                    iv2.setImage(i2);
+
+                    iv2.setFitHeight(high/4);
+                    iv2.setFitWidth(high/4);
+                    imageView.setFitHeight(high/2);
+                    imageView.setFitWidth(high/2);
+
+                    imageView.setBlendMode(BlendMode.DIFFERENCE);
+                    Group blend = new Group(
+                            imageView,
+                            iv2
+                    );
+*/
                     if (countrow < 2) {
                         countrow++;
                     } else {
@@ -215,7 +245,7 @@ public class CustomerFrameController {
                     gp.prefWidth(width);
                     gp.prefHeight(high);
                     gp.add(filter, 0, 0);
-                    gp.add(imageView, 1, 0);
+                  //  gp.add(blend, 1, 0);
                     grid.add(gp, countcolumn, countrow);
                     // Image image = new Image(pairList.get(i).getCameraLable());
                   //  LOGGER.debug("count calls "+i+"");
@@ -244,6 +274,8 @@ public class CustomerFrameController {
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
+
+        information.initOwner(windowmanager.getStage());
         information.show();
     }
 }

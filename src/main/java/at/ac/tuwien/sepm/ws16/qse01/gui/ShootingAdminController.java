@@ -248,6 +248,7 @@ public class ShootingAdminController {
     private void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.initOwner(windowManager.getStage());
         information.show();
     }
 
