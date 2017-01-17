@@ -265,6 +265,7 @@ public class ShootingAdminController {
             inactivemode();
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
             Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
+            information.initOwner(windowManager.getStage());
             information.setHeaderText("Bestätigung");
             information.show();
         } catch (ServiceException e) {
