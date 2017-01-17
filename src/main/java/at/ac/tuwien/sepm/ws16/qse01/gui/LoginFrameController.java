@@ -82,6 +82,7 @@ public class LoginFrameController {
     private void resetValues(){
         wrongCredentialsLabel.setVisible(false);
         adminField.setText("");
+        adminField.requestFocus();
         passwordField.setText("");
     }
 }
