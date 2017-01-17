@@ -46,7 +46,7 @@ public class CameraThread extends Thread{
             {
                 if(countdown)
                 {
-                    //TODO: shotFrameController.showCountdown(5)
+                    //TODO: shotFrameController.showCountdown(10)
                 }
                 captureImage();
                 if(serieShot)
