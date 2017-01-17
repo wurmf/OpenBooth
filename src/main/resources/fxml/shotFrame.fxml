@@ -17,9 +17,9 @@
 
    </center>
    <top>
-      <Label fx:id="countdownLabel" prefHeight="580.0" prefWidth="359.0" text="Countdown" visible="false" BorderPane.alignment="CENTER">
+      <Label fx:id="countdownLabel" prefHeight="580.0"  text="Countdown" textFill="#e45252" visible="false" BorderPane.alignment="CENTER">
          <font>
-            <Font name="System Bold" size="60.0" />
+            <Font name="System Bold" size="400.0" />
          </font>
          <BorderPane.margin>
             <Insets bottom="-580.0" />
