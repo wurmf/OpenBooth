@@ -59,7 +59,6 @@ public class CameraHandlerImpl implements CameraHandler {
         return threadList;
     }
 
-    @PostConstruct
     public List<Camera> getCameras() throws CameraException {
         try {
             cameraService.setAllCamerasInactive();
