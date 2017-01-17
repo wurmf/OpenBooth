@@ -120,9 +120,13 @@ public class MainFrameController {
      * @param info String that gives the usere an error message
      */
     public void showInformationDialog(String info){
-        Alert information = new Alert(Alert.AlertType.INFORMATION, info);
-        information.setHeaderText("Ein Fehler ist Aufgetreten");
-        information.initOwner(windowManager.getStage());
-        information.show();
+        try {
+            Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+            information.setHeaderText("Ein Fehler ist Aufgetreten");
+            information.initOwner(windowManager.getStage());
+            information.show();
+        }catch (NullPointerException nu){
+            LOGGER.error("showInformationDialog - no main stage jet: ", nu);
+        }
     }
 }
