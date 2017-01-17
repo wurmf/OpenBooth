@@ -106,7 +106,7 @@ public class CustomerFrameController {
                 setInvisible();
             }
         } catch (ServiceException e) {
-            LOGGER.error("switch to login",e);
+            LOGGER.error("switchToLogin",e);
         }
 }
 
@@ -254,6 +254,7 @@ public class CustomerFrameController {
                 buttoncreated = true;
             }
        } catch (ServiceException e) {
+           LOGGER.error("creatButtons - ",e);
            showInformationDialog(e.getMessage());
         }
     }
