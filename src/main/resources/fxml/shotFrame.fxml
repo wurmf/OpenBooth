@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController">
    <center>
@@ -13,4 +16,14 @@
          </image></ImageView>
 
    </center>
+   <top>
+      <Label fx:id="countdownLabel" prefHeight="580.0" prefWidth="359.0" text="Countdown" visible="false" BorderPane.alignment="CENTER">
+         <font>
+            <Font name="System Bold" size="60.0" />
+         </font>
+         <BorderPane.margin>
+            <Insets bottom="-580.0" />
+         </BorderPane.margin>
+      </Label>
+   </top>
 </BorderPane>

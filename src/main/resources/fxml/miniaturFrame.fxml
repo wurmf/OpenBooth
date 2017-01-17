@@ -10,10 +10,10 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.MiniaturFrameController">
+<ScrollPane fx:id="scrollPane" hbarPolicy="ALWAYS" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.MiniaturFrameController">
 
     <VBox fx:id="basevbox" alignment="CENTER_LEFT" minWidth="${scrollPane.viewportBounds.width}">
-        <HBox  alignment="CENTER_LEFT">
+        <HBox fx:id="titleBox" alignment="CENTER_LEFT">
             <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#backButtonClicked" pickOnBounds="true" preserveRatio="true">
                 <image>
                     <Image url="@/images/arrowleft.png" />
@@ -32,7 +32,7 @@
       <HBox fx:id="hbox" alignment="CENTER">
 <!--  prefHeight="740.0" prefWidth="1240.0" -->
 
-               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false" style="-fx-background-color: #333333;">
+               <TilePane fx:id="tile" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="740" minWidth="1240.0" snapToPixel="false">
 
                   <children>
 

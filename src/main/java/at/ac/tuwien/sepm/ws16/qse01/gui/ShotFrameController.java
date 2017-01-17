@@ -1,9 +1,18 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +29,15 @@ public class ShotFrameController {
 
     @FXML
     private ImageView shotView;
+    @FXML
+    private Label countdownLabel;
 
     private int frameID;
 
 
     public void initShotFrame(int cameraID)  {
         this.frameID  = cameraID;
+        showCountdown(10);
     }
 
     /*
@@ -54,6 +66,49 @@ public class ShotFrameController {
         }catch (Exception e){
             LOGGER.debug("refreshShot(BufferedImage) - Fehler - ",e);
         }
+    }
+    public void showCountdown(int countdown){
+        countdownLabel.setText(String.valueOf(countdown));
+        countdownLabel.setVisible(true);
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        countdownLabel.setPrefHeight(screenHeight/2);
+        countdownLabel.setPrefWidth(screenWidth);
+
+        int paddingBottom =  -((Double)(screenHeight/2)).intValue();
+        countdownLabel.setPadding(new Insets(0, 0,paddingBottom,0));
+
+        final int[] startTimeSec = {countdown};
+        KeyFrame keyframe = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                startTimeSec[0]--;
+                boolean isSecondsZero = startTimeSec[0] == 0;
+                boolean timeToChangeBackground = startTimeSec[0] == 0 && startTimeSec[0] == 0;
+
+                if (isSecondsZero) {
+                    startTimeSec[0]--;
+                    startTimeSec[0] = 60;
+                }
+                if (timeToChangeBackground) {
+                    startTimeSec[0] = 0;
+                    startTimeSec[0] = 0;
+                    countdownLabel.setTextFill(Color.RED);
+
+                }
+
+                countdownLabel.setText(String.valueOf(startTimeSec[0]));
+
+            }
+        });
+
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(keyframe);
+        timeline.playFromStart();
+        timeline.play();
+
     }
 
     public int getFrameID(){

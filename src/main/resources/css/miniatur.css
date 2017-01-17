@@ -2,12 +2,11 @@
   -fx-background-color: black;
 }
 #hbox{
-  -fx-background-color: black;
+  -fx-background-color: #222222;
 }
 #basevbox{
 
   -fx-background-color: black;
-   -fx-pref-width: 200em;
 }
 #title{
   -fx-text-fill: white;

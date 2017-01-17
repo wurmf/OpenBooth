@@ -105,6 +105,12 @@ public class ShotFrameManager {
         }
         return null;
     }
+
+    public void showCountdown(Position position,int countdown){
+        LOGGER.debug("ShotFrameManager->showCountdown with position="+position.getName()+" and countdown = "+countdown);
+        getShotframe(position).showCountdown(countdown);
+
+    }
     public void closeFrames(){
         for(Stage stage: shotStages)
             stage.close();
