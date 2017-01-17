@@ -194,8 +194,8 @@ public class CameraFilterController {
                        //activiv.setBlendMode(BlendMode.BLUE);
                     }
                     activiv=iv;
-                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-30);
-                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-30);
+                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
+                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
                     profile.getPairCameraPositions().get(index).setFilterName(filterentety.getKey());
@@ -333,7 +333,7 @@ public class CameraFilterController {
                 iv.setImage(new javafx.scene.image.Image(fips, iv.getFitHeight(), iv.getFitWidth(), true, true));
                 fips.close();
                 if(profile.getPairCameraPositions().get(index).getBackground()!=null) {
-                    if (backround.getPath().equals(profile.getPairCameraPositions().get(index).getBackground())) {
+                    if (backround.getId()==profile.getPairCameraPositions().get(index).getBackground().getId()) {
                         activiv = iv;
                         activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/5-40);
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/5-40);
@@ -348,8 +348,8 @@ public class CameraFilterController {
                         //activiv.setBlendMode(BlendMode.BLUE);
                     }
                     activiv = iv;
-                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 30);
-                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 30);
+                    iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
+                    iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
 
                     //iv.setStyle("-fx-background-color: green;");
                     //iv.setBlendMode(BlendMode.GREEN);
@@ -537,6 +537,7 @@ public class CameraFilterController {
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.initOwner(wm.getStage());
         information.show();
     }
 }
