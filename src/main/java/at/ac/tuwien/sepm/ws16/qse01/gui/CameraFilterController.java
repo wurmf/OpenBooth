@@ -4,7 +4,6 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.CameraFilterService;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -22,10 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +51,7 @@ public class CameraFilterController {
     private GridPane filtergrid;
     private GridPane greengrid;
     private int index;
-    private int fId;
-    private List buttonList;
     private int currentMode;
-    private GridPane grid = new GridPane();
-    private ImageView[] chousenimage;
     private Profile profile;
     private ImageView activiv=null;
 
@@ -68,19 +60,17 @@ public class CameraFilterController {
     private WindowManager wm;
     private ImageService imageService;
     private ShootingService shootingService;
-    private CameraFilterService cameraFilterService;
 
 
 
     @Autowired
 
-    public CameraFilterController(CameraFilterService cameraFilterService, FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public CameraFilterController( FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
-        this.cameraFilterService = cameraFilterService;
     }
 
 
@@ -92,9 +82,8 @@ public class CameraFilterController {
     private void initialize(){
         try {
             if(shootingService.searchIsActive().getActive()) {
-                buttonList = new ArrayList<>();
+
                 profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-                chousenimage = new ImageView[profile.getPairCameraPositions().size()];
 
             }
         } catch (ServiceException e) {
@@ -149,13 +138,13 @@ public class CameraFilterController {
             Image image1 = null;
             if ( imageService.getAllImages(shootingService.searchIsActive().getId())!=null&&!imageService.getAllImages(shootingService.searchIsActive().getId()).isEmpty() ){
                 image1= imageService.getAllImages(shootingService.searchIsActive().getId()).get(1);
+
             }
             Map<String,BufferedImage> filtermap=null;
             if(image1!=null){
                 filtermap = filterService.getAllFilteredImages(image1.getImagepath());
             }else {
-                String resource = System.getProperty("user.home");
-                filtermap = filterService.getAllFilteredImages(resource+"/images/studio.jpg");
+                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/studio.jpg");
             }
            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
@@ -205,7 +194,6 @@ public class CameraFilterController {
                 });
                 filtergrid.add(iv, columcount, rowcount);
                 columcount++;
-                buttonList.add(iv);
             }
             filtergrid.setVisible(true);
             filterscrollplanel.setVisible(true);
@@ -229,45 +217,7 @@ public class CameraFilterController {
      * creats image buttons for green screen image and marks chousen one
      */
     private void createGreenscreenButton(){
-       /* try {
-            if (shootingService.searchIsActive().getActive()) {
-                List<Image> greenScreenImages = imageService.getAllImages(shootingService.searchIsActive().getId());
-                //greenScreenImages.add();
 
-                GridPane green = new GridPane();
-                ScrollPane scrollPane = new ScrollPane();
-                scrollPane.setFitToWidth(true);
-                green.prefWidth(scrollPane.getWidth()-scrollPane.getWidth()*0.05);
-                int columcount =0;
-                int rowcount =0;
-                for (Image greenScreenImage : greenScreenImages) {
-                    if (columcount == 6) {
-                        rowcount++;
-                        columcount = 0;
-                    }
-                    ImageView iv = new ImageView();
-                    iv.setFitHeight((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
-                    iv.setFitWidth((scrollPane.getWidth() - scrollPane.getWidth() * 0.05) / 6);
-                    iv.setImage(new javafx.scene.image.Image(new FileInputStream(greenScreenImage.getImagepath()), iv.getFitWidth(), iv.getFitHeight(), true, true));
-                    iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                        //grau überegt
-                        chousenimage[index] = iv;
-
-                    });
-                    green.add(iv, columcount, rowcount);
-                    columcount++;
-                }
-                scrollPane.setVisible(true);
-                scrollPane.setContent(green);
-                root.add(scrollPane,0,1);
-            }
-        } catch (ServiceException e) {
-            LOGGER.error("greenScreenButton:",e);
-            wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-        } catch (FileNotFoundException e) {
-            LOGGER.error("greenScreenButoon:",e);
-        }
-*/
        FileInputStream fips=null;
         try {
             greengrid = new GridPane();
@@ -437,10 +387,7 @@ public class CameraFilterController {
      */
     public void currentlyChosen(int index, int idFilter, boolean greenscreen){
         try{
-
-            buttonList = new LinkedList<>();
         this.index=index;
-            fId=idFilter;
         titel.setText("");
         greengrid=new GridPane();
         if(filtergrid==null){
@@ -449,7 +396,6 @@ public class CameraFilterController {
             if(index>-1) {
                 profile = profileservice.getActiveProfile();
                 if (profile.getId()!=profileservice.getActiveProfile().getId()){
-                    buttonList.clear();
                 }
                 currentMode=profile.getPairCameraPositions().get(index).getShotType();
                 markfirst();
