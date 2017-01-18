@@ -143,7 +143,7 @@ public class CameraThread extends Thread{
         }
         catch (CameraException ex)
         {
-            LOGGER.debug("capturePreview failed" + ex);
+            LOGGER.debug("capturePreview failed", ex);
             setStop(true);
         }
         catch (ServiceException ex)
