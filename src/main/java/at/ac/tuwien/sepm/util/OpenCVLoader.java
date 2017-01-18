@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 /**
  * This class provides a method for loading the opencv library
  */
@@ -34,23 +36,28 @@ public class OpenCVLoader {
                 String operatingSystem = System.getProperty("os.name").toLowerCase();
 
                 if (operatingSystem.contains("mac")) {
-                    lib = "/lib/libopencv_java320.dylib";
+                    lib = "/libopencv_java320.dylib";
                 } else if (operatingSystem.contains("win")){
-                    lib = "/lib/opencv_java320.dll";
+                    lib = "/opencv_java320.dll";
                 } else if(operatingSystem.contains("linux")) {
-                    lib = "/lib/libopencv_java320.so";
+                    lib = "/libopencv_java320.so";
                 }else {
                     LOGGER.error("Operating System: {} not supported", operatingSystem);
                     throw new LibraryLoadingException("Operating System not supported");
                 }
 
-
-
-                String libPath = this.getClass().getResource(lib).getPath();
-                System.load(libPath);
+                String dest=System.getProperty("user.home")+"/.fotostudio"+lib;
+                FileTransfer ft=new FileTransfer();
+                try {
+                    ft.transfer("/lib"+lib,dest,false);
+                } catch (IOException e1) {
+                    LOGGER.error("loadLibrary - ",e1);
+                    throw new LibraryLoadingException(e1);
+                }
+                System.load(dest);
 
                 isLoaded = true;
-                LOGGER.info("OpenCV Library for {} loaded at: {}", operatingSystem,libPath);
+                LOGGER.info("OpenCV Library for {} loaded at: {}", operatingSystem,dest);
             }
 
         }
