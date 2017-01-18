@@ -81,7 +81,7 @@ public class ShootingDAOTest extends TestEnvironment {
     }
 
 
-    @Test
+    /*@Test
     public void findactiveShooting() throws Throwable {
         shootingDAO.create(shooting1);
         Shooting shooting = shootingDAO.searchIsActive();
@@ -90,7 +90,7 @@ public class ShootingDAOTest extends TestEnvironment {
         assertTrue(shooting.getActive());
         assertTrue(shooting.getProfileid() == 1);
         assertTrue(shooting.getStorageDir().equals("home/foto/shooting1"));
-    }
+    }*/
 
     @Test
     public void endShootingwithValideArguments() throws Throwable {
