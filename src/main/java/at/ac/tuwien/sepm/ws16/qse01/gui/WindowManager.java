@@ -35,7 +35,6 @@ public class WindowManager {
     public static final int SHOW_SETTINGSCENE=6;
 
     private SpringFXMLLoader springFXMLLoader;
-    private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
     private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
@@ -66,12 +65,10 @@ public class WindowManager {
     /**
      * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
      * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
-     * @param applicationContext the applicationContext generated in the MainApplication
      * @throws IOException
      */
-    public void start(Stage mainStage, ApplicationContext applicationContext) throws IOException{
+    public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
-        this.applicationContext=applicationContext;
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
@@ -264,6 +261,7 @@ public class WindowManager {
     public Stage getStage(){
         return this.mainStage;
     }
+
 
     /**
      * sets the initial font size depending on the screen Width and high
