@@ -289,6 +289,7 @@ public class ProfileFrameController extends SettingFrameController{
                 }
             });
 
+
         } catch (ServiceException e) {
             LOGGER.error("Couldnt initialize profile tableview",e);
         }

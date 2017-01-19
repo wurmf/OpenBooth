@@ -7,15 +7,19 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<TitledPane fx:id="profile" animated="false" prefHeight="510.0" text="Profilverwaltung" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
+<TitledPane fx:id="profile" animated="false" prefHeight="520.0" text="Profilverwaltung" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
 <content>
     <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
         <children>
-            <TableView fx:id="tableProfil" prefHeight="427.0">
+            <TableView fx:id="tableProfil" maxWidth="1.7976931348623157E308" prefHeight="427.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="colProfilID" prefWidth="44.74237585067749" text="ID" />
                     <TableColumn fx:id="colProfilName" prefWidth="207.93091201782227" text="Name" />
@@ -27,14 +31,31 @@
                     <TableColumn fx:id="colProfilAktion" minWidth="0.0" prefWidth="74.4259033203125" text="Aktion" />
                 </columns>
             </TableView>
-            <TextField fx:id="txProfilName" layoutX="36.0" layoutY="439.0" prefHeight="27.0" prefWidth="205.0" />
-            <CheckBox fx:id="txProfilMobil" layoutX="285.0" layoutY="439.0" mnemonicParsing="false" />
-            <CheckBox fx:id="txProfilGreen" layoutX="394.0" layoutY="439.0" mnemonicParsing="false" />
-            <CheckBox fx:id="txProfilFilter" layoutX="480.0" layoutY="439.0" mnemonicParsing="false" />
-            <CheckBox fx:id="txProfilDrucken" layoutX="543.0" layoutY="439.0" mnemonicParsing="false" />
-            <TextField fx:id="txProfilWatermark" editable="false" layoutX="586.0" layoutY="439.0" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." />
-            <Button layoutX="678.0" layoutY="437.0" mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" />
-            <Button layoutX="726.0" layoutY="439.0" mnemonicParsing="false" onAction="#saveProfil" text="ADD" />
+            <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="430.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <TextField fx:id="txProfilName" prefHeight="27.0" prefWidth="205.0" GridPane.columnIndex="1" />
+                  <CheckBox fx:id="txProfilMobil" mnemonicParsing="false" GridPane.columnIndex="2" />
+                  <CheckBox fx:id="txProfilGreen" mnemonicParsing="false" GridPane.columnIndex="3" />
+                  <CheckBox fx:id="txProfilFilter" mnemonicParsing="false" GridPane.columnIndex="4" />
+                  <CheckBox fx:id="txProfilDrucken" mnemonicParsing="false" GridPane.columnIndex="5" />
+                  <TextField fx:id="txProfilWatermark" editable="false" onMouseClicked="#watermarkUpload" prefHeight="27.0" prefWidth="114.0" text="Hochladen..." GridPane.columnIndex="6" />
+                  <Button mnemonicParsing="false" onAction="#watermarkUpload" prefHeight="30.0" text="+" GridPane.columnIndex="6" />
+                  <Button mnemonicParsing="false" onAction="#saveProfil" text="ADD" GridPane.columnIndex="7" />
+               </children>
+            </GridPane>
 
             <!--<ImageView fitHeight="40.0" fitWidth="41.0" layoutX="904.0" layoutY="111.0" pickOnBounds="true" preserveRatio="true" />-->
         </children>

@@ -103,6 +103,7 @@ public class LogoFrameController extends SettingFrameController {
         tableLogo.setEditable(true);
 
         colLogoID.setCellValueFactory(new PropertyValueFactory<Profile.PairLogoRelativeRectangle, Integer>("id"));
+
         colLogoID.setCellFactory(tc -> {
                     TableCell<Profile.PairLogoRelativeRectangle, Integer> cell = new TableCell<Profile.PairLogoRelativeRectangle, Integer>() {
                         @Override
@@ -384,32 +385,6 @@ public class LogoFrameController extends SettingFrameController {
 
             }
         });
-
-      /*  tableLogo.setRowFactory(new Callback<TableView<Logo>, TableRow<Logo>>() {
-            @Override
-            public TableRow<Logo> call(TableView<Logo> tableView2) {
-                final TableRow<Logo> row = new TableRow<>();
-                final int[] click = {0};
-                row.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent event) {
-                        click[0]++;
-                        final int index = row.getIndex();
-                        if (click[0]==3 && index >= 0 && index < tableLogo.getItems().size() && tableLogo.getSelectionModel().isSelected(index)  ) {
-                            tableLogo.getSelectionModel().clearSelection();
-                            click[0] = 0;
-                            event.consume();
-                            try {
-                                previewLogo.setImage( SwingFXUtils.toFXImage(logoService.getPreviewForMultipleLogos(logoList,Integer.valueOf(txPreviewWidth.getText()),Integer.valueOf(txPreviewHeight.getText())),null));
-                            } catch (ServiceException e) {
-                                LOGGER.error("rowSelected->Error",e);
-                            }
-                        }
-                    }
-                });
-                return row;
-            }
-        });*/
 
         txPreviewHeight.textProperty().addListener((observable, oldValue, newValue) -> {
             changePreviewSize(newValue,0);
