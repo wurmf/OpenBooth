@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
@@ -262,12 +263,6 @@ public class WindowManager {
      */
     public Stage getStage(){
         return this.mainStage;
-    }
-
-
-    public boolean initImageProcessing() throws  ServiceException{
-        ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
-        return imageProcessingManager.initImageProcessing();
     }
 
     /**

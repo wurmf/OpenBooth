@@ -134,12 +134,12 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         //If you want to test without cameras attached, comment out
         //TODO: make sure to remove the comments before deploying
 
-        /*
+
         if(positionList.size()!=positionNumber){
             LOGGER.info("initShotFrameManager - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
             throw new ServiceException("Selected Profile not compatible with attached cameras");
         }
-        */
+
 
         LOGGER.info("initShotFrameManager - attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
 
