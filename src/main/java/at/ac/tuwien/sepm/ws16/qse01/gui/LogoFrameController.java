@@ -355,7 +355,7 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public TableCell<Profile.PairLogoRelativeRectangle, Boolean> call(TableColumn<Profile.PairLogoRelativeRectangle, Boolean> p) {
 
-                        return new LogoButtonCell(logoList,pservice,windowManager.getStage(),selectedProfile.getId());
+                        return new LogoButtonCell(logoList,pservice,windowManager.getStage(),selectedProfile.getId(),previewLogo);
                     }
 
                 });

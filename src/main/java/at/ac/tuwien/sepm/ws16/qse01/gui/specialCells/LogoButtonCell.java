@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
     private final Button cellButton = new Button("X");
 
-    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage, int profileID) {
+    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice, Stage primaryStage, int profileID, ImageView preview) {
         this.posList = posList;
         this.pservice = pservice;
 
@@ -53,15 +54,21 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                     posList.remove(currentPairLogo);
                    try {
                         int countsOfLogoUsing = 0;
-                        for(Profile.PairLogoRelativeRectangle p: pservice.getAllPairLogoRelativeRectangle(profileID)) {
-                            if (p.getLogo()!= null && currentPairLogo.getLogo().getId() == p.getLogo().getId())
-                                countsOfLogoUsing++;
-                        }
+                       for(Profile profile: pservice.getAllProfiles()) {
+                           for (Profile.PairLogoRelativeRectangle p : pservice.getAllPairLogoRelativeRectangle(profile.getId())) {
+                               if (p.getLogo() != null && currentPairLogo.getLogo().getId() == p.getLogo().getId())
+                                   countsOfLogoUsing++;
+                           }
+                       }
                        //if Logo is used just by this pairlogo relation, then delete it from database
+                       System.out.println("countOflogousin ->"+countsOfLogoUsing);
                         if(countsOfLogoUsing==1)
                             pservice.eraseLogo(currentPairLogo.getLogo());
 
-                        pservice.erasePairLogoRelativeRectangle(currentPairLogo);
+                       pservice.erasePairLogoRelativeRectangle(currentPairLogo);
+
+                       if(posList.size()==0)
+                           preview.setImage(null);
                     } catch (ServiceException e) {
                        LOGGER.error("LogoButtonCell->Löschen Button -> Logo konnte nicht gelöscht werden.",e);
                     }
