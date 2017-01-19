@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
@@ -57,49 +58,130 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     }
 
     @Override
-    public boolean initImageProcessing() throws ServiceException{
+    public void initImageProcessing() throws ServiceException{
         LOGGER.debug("initImageProcessing - entering initImageProcessing method ");
         List<Camera> cameraList = cameraHandler.getCameras();
+
+        Map<Position, ShotFrameController> positionShotFrameMap = initShotFrameManager(cameraList);
+        //If no camerathread has to be initialized then return
+        if(positionShotFrameMap == null)
+            return;
+
+        cameraThreadList = cameraHandler.createThreads();
+
+        initCameraThreads(positionShotFrameMap);
+
+        for(CameraThread cameraThread : cameraThreadList){
+            cameraThread.start();
+        }
+        LOGGER.debug("image processing initialised");
+    }
+
+    @Override
+    public void stopImageProcessing(){
+        if(cameraThreadList == null) {
+            LOGGER.debug("stopImageProcessing - No CameraThreads running - nothing to stop");
+        }else {
+            for(CameraThread cameraThread : cameraThreadList){
+                cameraThread.setStop(true);
+            }
+        }
+    }
+
+    @Override
+    public boolean checkImageProcessing(Profile profile) throws ServiceException{
+        LOGGER.debug("Entering checkImageProcessing method");
+        List<Camera> cameraList = cameraHandler.getCameras();
+        int cameraCount = 0;
+
+        for(Camera camera : cameraList){
+            Position correspondingPosition = profileService.getPositionOfCameraOfProfile(profile, camera);
+            if(correspondingPosition != null){
+                LOGGER.debug("checkImageProcessing - included camera detected");
+                cameraCount++;
+            }else {
+                LOGGER.debug("checkImageProcessing - no positon: camera {} ignored", camera);
+            }
+        }
+
+        int includedCameraCount = profileService.getAllPairCameraPositionOfProfile(profile.getId()).size();
+
+        if(cameraCount == includedCameraCount){
+            LOGGER.debug("checkImageProcessing - profile {} compatible with connected cameras", profile);
+            return true;
+        } else {
+            LOGGER.debug("checkImageProcessing - profile {} not compatible with connected cameras", profile);
+            return false;
+        }
+
+    }
+
+    private Map<Position, ShotFrameController> initShotFrameManager(List<Camera> cameraList) throws ServiceException{
         List<Position> positionList = new ArrayList<>();
 
         for(Camera c : cameraList){
             Position p = profileService.getPositionOfCameraOfProfile(c);
             if(p!=null){
-                LOGGER.debug("initImageProcessing - camera added");
+                LOGGER.debug("initShotFrameManager - camera added");
                 positionList.add(p);
             } else{
-                LOGGER.info("initImageProcessing - no position for this camera: "+c.getId());
+                LOGGER.info("initShotFrameManager - no position for this camera: "+c.getId());
                 cameraHandler.removeCameraFromList(c);
             }
         }
-        int positionNumber=profileService.getActiveProfile().getPairCameraPositions().size();
+        int positionNumber = profileService.getAllPairCameraPositionOfProfile().size();
 
         //If you want to test without cameras attached, comment out
         //TODO: make sure to remove the comments before deploying
+
         /*
         if(positionList.size()!=positionNumber){
-            LOGGER.info("initImageProcessing - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
-            return false;
+            LOGGER.info("initShotFrameManager - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
+            throw new ServiceException("Selected Profile not compatible with attached cameras");
         }
         */
-        LOGGER.info("initImageProcessing - attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
 
+        LOGGER.info("initShotFrameManager - attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
+
+        if(positionList.isEmpty()){
+            LOGGER.debug("initShotFrameManager - No cameras specfied in active profile - nothing to initialize");
+            return null;
+        }
 
         Map<Position, ShotFrameController> positionShotFrameMap = shotFrameManager.init(positionList);
+        if(positionShotFrameMap == null || positionShotFrameMap.isEmpty()){
+            LOGGER.error("initShotFrameManager - initializing ShotFrames failed - positionShotFrameMap is null or empty");
+            throw new ServiceException("Initializing ShotFrames failed");
+        }
 
+        return positionShotFrameMap;
+    }
 
-        cameraThreadList = cameraHandler.createThreads();
+    private void initCameraThreads(Map<Position, ShotFrameController> positionShotFrameMap) throws ServiceException{
+
         for(CameraThread cameraThread : cameraThreadList){
+            if(cameraThread.getCamera() == null){
+                LOGGER.error("initCameraThreads - No camera set for camerathread {}", cameraThread);
+            }
             Position position  = profileService.getPositionOfCameraOfProfile(cameraThread.getCamera());
+            if(position == null){
+                LOGGER.error("initCameraThreads - No position set for camera {}", cameraThread.getCamera());
+                throw new ServiceException("invalid camera - no position set");
+            }
+
             ShotFrameController shotFrameController = positionShotFrameMap.get(position);
+
+            if(shotFrameController == null){
+                LOGGER.error("initCameraThreads - No ShotFrameController for positon {}", position);
+                throw new ServiceException("Missing ShotFrameController for position");
+            }
 
             ImageHandler imageHandler;
             try {
                 imageHandler = new ImageHandler(openCVLoader);
             } catch (LibraryLoadingException e) {
-                LOGGER.error("initImageProcessing - Could not load opencv library", e);
                 shotFrameManager.closeFrames();
-                throw new ServiceException("Could not load opencv library");
+                throw new ServiceException(e);
             }
 
             LogoWatermarkService logoWatermarkService = new LogoWatermarkServiceImpl(profileService, imageHandler);
@@ -112,23 +194,6 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
             cameraThread.setShootingService(shootingService);
             cameraThread.setShotFrameController(shotFrameController);
             cameraThread.setImageProcessor(imageProcessor);
-        }
-
-        for(CameraThread cameraThread : cameraThreadList){
-            cameraThread.start();
-        }
-        LOGGER.debug("image processing initialised");
-        return true;
-    }
-
-    @Override
-    public void stopImageProcessing(){
-        if(cameraThreadList == null) {
-            LOGGER.debug("stopImageProcessing - No CameraThreads running - nothing to stop");
-        }else {
-            for(CameraThread cameraThread : cameraThreadList){
-                cameraThread.setStop(true);
-            }
         }
     }
 }
