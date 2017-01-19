@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,8 +89,7 @@ public class MainFrameController {
         } else {
             try {
                 shootingService.endShooting();
-                LOGGER.info("showRecoveryDialog - shooting stoped");
-                showInformationDialog("Shooting wurde beendet");
+                LOGGER.info("showRecoveryDialog - shooting stopped");
             } catch (ServiceException e) {
                 LOGGER.error("showRecoveryDialog - ",e);
                 showInformationDialog("Shooting konnte nicht beendet werden!");
@@ -122,13 +122,8 @@ public class MainFrameController {
      * @param info String that gives the usere an error message
      */
     public void showInformationDialog(String info){
-        try {
-            Alert information = new Alert(Alert.AlertType.INFORMATION, info);
-            information.setHeaderText("Ein Fehler ist Aufgetreten");
-            information.initOwner(windowManager.getStage());
-            information.show();
-        }catch (NullPointerException nu){
-            LOGGER.error("showInformationDialog - no main stage jet: ", nu);
-        }
+        Alert information = new Alert(Alert.AlertType.INFORMATION, info);
+        information.setHeaderText("Ein Fehler ist Aufgetreten");
+        information.showAndWait();
     }
 }
