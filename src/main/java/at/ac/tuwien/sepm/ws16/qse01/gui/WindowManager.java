@@ -1,8 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
-import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -13,7 +11,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -29,10 +26,10 @@ public class WindowManager {
     public static final int END_APPLICATION=0;
     public static final int SHOW_MAINSCENE=1;
     public static final int SHOW_SHOOTINGSCENE=2;
-    public static final int SHOW_PROFILESCENE=3;
+    public static final int SHOW_SETTINGSCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
     public static final int SHOW_CUSTOMERSCENE=5;
-    public static final int SHOW_SETTINGSCENE=6;
+
 
     private SpringFXMLLoader springFXMLLoader;
     private ShotFrameManager shotFrameManager;
@@ -41,7 +38,6 @@ public class WindowManager {
     private Scene adminLoginScene;
     private Scene mainScene;
     private Scene shootingScene;
-    private Scene profileScene;
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
@@ -75,14 +71,10 @@ public class WindowManager {
 
         setFontSize(screenWidth,screenHeight);
         if(fontSize ==0){
-            LOGGER.debug("font sice - non fitting screen sice");
+            LOGGER.debug("font size - non fitting screen size");
             fontSize =16;
         }
 
-
-        //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
-        // Anmerkung: shotframemanager wird in camerapackage erstellt und initializiert und die werden nicht in gleichem
-        // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
@@ -99,8 +91,8 @@ public class WindowManager {
         Parent parentmain = (Parent) mfWrapper.getLoadedObject();
         URL css= this.getClass().getResource("/css/main.css");
         LOGGER.info("CSSM -"+css);
-        int sice = (int)(fontSize *3);
-        parentmain.setStyle("-fx-font-size:"+sice+"px;");
+        int size = fontSize *3;
+        parentmain.setStyle("-fx-font-size:"+size+"px;");
         parentmain.getStylesheets().add(css.toExternalForm());
         this.mainScene=new Scene(parentmain,screenWidth,screenHeight);
 
@@ -195,8 +187,6 @@ public class WindowManager {
             case END_APPLICATION: closeStages();
                 break;
             case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
-                break;
-            case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
                 break;
             case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
                 break;

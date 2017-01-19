@@ -9,7 +9,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class MainFrameController {
     CameraService cameraService;
 
     @Autowired
-    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) throws Exception {
+    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) {
         this.shootingService = shootingService;
         this.windowManager = windowManager;
         this.cameraService = cameraService;
