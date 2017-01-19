@@ -172,8 +172,8 @@ public class WindowManager {
             showAdminLogin(SHOW_MAINSCENE, END_APPLICATION);
         }
         this.mainStage.setFullScreen(true);
-        this.mainStage.setFullScreenExitHint("");
         this.mainStage.show();
+        this.mainStage.setFullScreenExitHint("");
 
     }
 
