@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
@@ -34,7 +35,6 @@ public class WindowManager {
     public static final int SHOW_SETTINGSCENE=6;
 
     private SpringFXMLLoader springFXMLLoader;
-    private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
     private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
@@ -65,12 +65,10 @@ public class WindowManager {
     /**
      * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
      * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
-     * @param applicationContext the applicationContext generated in the MainApplication
      * @throws IOException
      */
-    public void start(Stage mainStage, ApplicationContext applicationContext) throws IOException{
+    public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
-        this.applicationContext=applicationContext;
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
@@ -264,11 +262,6 @@ public class WindowManager {
         return this.mainStage;
     }
 
-
-    public boolean initImageProcessing() throws  ServiceException{
-        ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
-        return imageProcessingManager.initImageProcessing();
-    }
 
     /**
      * sets the initial font size depending on the screen Width and high
