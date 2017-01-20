@@ -88,6 +88,9 @@ public class CustomerFrameController {
         }
     }
 
+    /**
+     * switches to miniatur frame when pressed
+     */
     public void switchToMiniaturFrame(){
 
         miniLastVisit = true;
@@ -95,6 +98,9 @@ public class CustomerFrameController {
         windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
+    /**
+     * switch to login when pressed
+     */
     public void switchToLogin() {
 
         try {
@@ -118,6 +124,9 @@ public class CustomerFrameController {
         }
 }
 
+    /**
+     * decides if something has chanced and adapts chances
+     */
     public void refresh (){
         try {
             if(!miniLastVisit) {
@@ -139,6 +148,10 @@ public class CustomerFrameController {
         }
     }
 
+    /**
+     * if right button gets pressed
+     * the controller loads the filter buttons and there  pictures
+     */
     public void switchToFilter() {
         try {
             if(shootingservice.searchIsActive().getActive()){
@@ -175,6 +188,10 @@ public class CustomerFrameController {
         }
     }
 
+    /**
+     * sets gridpane containing filterbuttons to invisible and
+     * button to switch to miniaturframe visible
+     */
     public void switchToAllImages() {
         rightbutton.setVisible(true);
         allpicturesview.setVisible(true);
@@ -183,6 +200,10 @@ public class CustomerFrameController {
         setInvisible();
     }
 
+    /**
+     * if a change oared or a new profile got installed
+     * the filter buttons get created
+     */
     private void creatButtons(){
        try {
 
@@ -318,6 +339,9 @@ public class CustomerFrameController {
        }
     }
 
+    /**
+     * if no chanches ocured the buttons can be loaded
+     */
     private void loadButton() {
 
         grid.setVisible(true);
