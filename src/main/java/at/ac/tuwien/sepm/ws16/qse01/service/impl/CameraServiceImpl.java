@@ -114,4 +114,17 @@ public class CameraServiceImpl implements CameraService {
             throw new ServiceException(ex);
         }
     }
+
+    @Override
+    public List<Camera> getAllCameras() throws ServiceException {
+        try
+        {
+            return cameraDAO.getAll();
+        }
+        catch (PersistenceException ex)
+        {
+            LOGGER.error("Cameras could not be set inactive");
+            throw new ServiceException(ex);
+        }
+    }
 }

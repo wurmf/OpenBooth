@@ -59,6 +59,13 @@ public interface CameraDAO {
     public void setAllInactive() throws PersistenceException;
 
     /**
+     * returns all Cameras
+     * @return list of all Cameras
+     * @throws PersistenceException if persistence data store can not be accessed
+     */
+    public List<Camera> getAll() throws PersistenceException;
+
+    /**
      * Looks a given camera up and returns if it already exists
      * @param camera - camera which will be looked up in the persistence
      * @return true if the given camera is already saved (identified by portnumber and cameramodel)

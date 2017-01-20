@@ -21,4 +21,6 @@ public interface CameraService {
     public void setCameraInactive(int cameraID) throws ServiceException;
 
     public void setAllCamerasInactive() throws ServiceException;
+
+    public List<Camera> getAllCameras() throws ServiceException;
 }
