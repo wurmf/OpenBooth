@@ -218,9 +218,16 @@ public class CustomerFrameController {
               //  LOGGER.debug("buttons:" + buttonList.size() + "");
                // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
-                int width = (int) ((float) gridpanel.getWidth() / (float) (column)) - 5;
+                int width;
+                if(pairList.size()>3){
+                     width = (int) ((float) gridpanel.getWidth() / 3) - 10;
+                }else if(pairList.size()>2){
+                    width = (int) ((float) gridpanel.getWidth() / 2) - 10;
+                }else{
+                    width = (int) ((float) gridpanel.getWidth()) - 10;
+                }
                 int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
-                int countrow = 0;
+                int countrow = 1;
                 int countcolumn = 0;
                 grid = new GridPane();
 
@@ -284,7 +291,29 @@ public class CustomerFrameController {
                         );
 
 
-                    if (countrow < 2) {
+                    if(pairList.size()<=3){
+                        if(countrow==1){
+                            GridPane top = new GridPane();
+                            top.setPrefHeight(high/2);
+                            top.setStyle("-fx-background-color: transparent");
+                            grid.add(top, countcolumn,0);
+                        }
+                        countrow=countrow+2;
+                    }else{
+                        if(countcolumn<2){
+                            countcolumn=+2;
+                            if(countrow==1){
+                                GridPane top = new GridPane();
+                                top.setPrefHeight(high/4);
+                                top.setStyle("-fx-background-color: transparent");
+                                grid.add(top, countcolumn,0);
+                            }
+                        }else{
+                            countrow++;
+                            countcolumn=+2;
+                        }
+                    }
+                  /*  if (countrow < 2) {
                         countrow++;
                     } else {
                         countrow = 0;
@@ -293,17 +322,19 @@ public class CustomerFrameController {
                         } else {
                            LOGGER.debug("not enoth columns" + column);
                         }
-                    }
+                    }*/
                     Button filter = new Button();
                     filter.setText(name);
+                    filter.setStyle("-fx-background-color: GRAY");
                     filter.setVisible(true);
                     filter.setPrefWidth(width - 20);
-                    filter.setPrefHeight(high);
+                    filter.setPrefHeight(high/2);
                     String url = pairList.get(i).getCameraLable();
                    // LOGGER.debug("url costumer: " + url);
-                    filter.setStyle("-fx-background-image: url('" + url + "') " );
-                    filter.setStyle("-fx-background-size: 100%" );
-                    filter.setStyle("-fx-background-color: transparent" );
+                   // filter.setStyle("-fx-background-image: url('" + url + "') " );
+                    //filter.setStyle("-fx-background-size: 100%" );
+                    filter.setStyle("-fx-background-color: Gray" );
+
                     double size;
                     if(column==0){
                         size =allpicturesview.getFont().getSize();
@@ -321,8 +352,20 @@ public class CustomerFrameController {
                     gp.prefWidth(width);
                     gp.prefHeight(high);
                     gp.add(filter, 0, 0);
-                    gp.add(blend, 1, 0);
+                    gp.add(blend,1,0);
+                    //gp.add(iv2, 1, 0);
+                    //gp.add(imageView,2,0);
                     grid.add(gp, countcolumn, countrow);
+                    GridPane fill = new GridPane();
+                    fill.setPrefHeight(high/2);
+                    fill.setStyle("-fx-background-color: transparent");
+                    if(pairList.size()>3) {
+                        GridPane fillside = new GridPane();
+                        fill.setPrefWidth(20);
+                        fill.setStyle("-fx-background-color: transparent");
+                        grid.add(fillside,countcolumn+1, countrow);
+                    }
+                    grid.add(fill, countcolumn,countrow+1);
                     // Image image = new Image(pairList.get(i).getCameraLable());
                   //  LOGGER.debug("count calls "+i+"");
                 }
