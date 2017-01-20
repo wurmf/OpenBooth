@@ -14,10 +14,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -37,7 +34,7 @@ import java.util.List;
 @Component("position")
 public class PositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionFrameController.class);
-
+    private CameraPositionFrameController cameraPositionFrameController;
 
     /* BEGINN OF Position Table Column FXML */
     @FXML
@@ -50,7 +47,10 @@ public class PositionFrameController extends SettingFrameController {
     private TableColumn colPositionBild;
     @FXML
     private TableColumn colPositionAktion;
-
+    @FXML
+    private Button txPositionUpload;
+    @FXML
+    private Button txPositionAdd;
 
 
 
@@ -89,7 +89,7 @@ public class PositionFrameController extends SettingFrameController {
                                 pservice.editPosition(p);
 
 
-                                refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()),posList,selectedProfile);
                             } else {
                                 refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
                             }
@@ -136,10 +136,28 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        return new PositionButtonCell(posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage());
+                        return new PositionButtonCell(imageHandler,posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage(),cameraPositionFrameController);
                     }
 
                 });
+
+
+        txPositionUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+        txPositionUpload.setPrefWidth(50);
+        txPositionUpload.setPrefHeight(50);
+
+        txPositionAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+        txPositionAdd.setPrefWidth(50);
+        txPositionAdd.setPrefHeight(50);
+
+        txPositionName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedProfile!=null && txPositionBild.getText().compareTo("Hochladen...") != 0){
+                txPositionAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txPositionAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+
 
     }
 
@@ -148,8 +166,8 @@ public class PositionFrameController extends SettingFrameController {
     private void savePosition(){
         LOGGER.error("Position Add Button has been clicked");
         String name = txPositionName.getText();
-        if(name.trim().compareTo("") == 0){
-            showError("Sie müssen einen Namen eingeben!");
+        if(selectedProfile==null || name.trim().compareTo("") == 0 || txPositionBild.getText().compareTo("Hochladen...") == 0){
+            showError("Sie müssen einen Namen eingeben, ein Positionbild hochladen und ein Profil auswählen!");
         }else {
             Position p = new Position(name);
 
@@ -167,6 +185,10 @@ public class PositionFrameController extends SettingFrameController {
 
                 txPositionBild.setText("Hochladen...");
                 txPositionName.clear();
+                txPositionUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+
+
+                cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfile);
 
 
             } catch (ServiceException e) {
@@ -190,6 +212,11 @@ public class PositionFrameController extends SettingFrameController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txPositionBild.setText(file.getAbsolutePath());
+            txPositionUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
+            if(!txPositionName.getText().isEmpty() && selectedProfile!=null){
+                txPositionAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txPositionAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
         }
     }
 
@@ -207,6 +234,10 @@ public class PositionFrameController extends SettingFrameController {
 
     protected ObservableList<Position> getPosList(){
         return this.posList;
+    }
+
+    protected void setControllers(CameraPositionFrameController cameraPositionFrameController){
+        this.cameraPositionFrameController = cameraPositionFrameController;
     }
 
 

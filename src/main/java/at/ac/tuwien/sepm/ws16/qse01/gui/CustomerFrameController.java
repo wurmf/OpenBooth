@@ -5,10 +5,13 @@ import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.event.ActionEvent;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
@@ -16,7 +19,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -36,11 +45,13 @@ public class CustomerFrameController {
     @FXML
     private Button leftbutton;
 
-    private boolean buttoncreated;
     private Profile profile;
-    private List<Button> buttonList;
     private GridPane grid = new GridPane();
     private Profile profileold =null;
+    private boolean isButtoncreated;
+    private boolean isRefreshed;
+    private boolean miniLastVisit;
+    private boolean filterChouseside;
 
     private WindowManager windowmanager;
     private ShootingService shootingservice;
@@ -53,41 +64,44 @@ public class CustomerFrameController {
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
         this.filterservice=filterservice;
+
+        miniLastVisit = false;
+        isButtoncreated =false;
+        isRefreshed=false;
+        filterChouseside =false;
     }
 
     @FXML
     private void initialize(){
         try {
-            buttonList= new ArrayList<>();
             leftbutton.setVisible(false);
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
 
-            if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-              //  LOGGER.debug("Profile id:" + profile.getId() + "");
-                if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                //    LOGGER.debug("Profile id changed:" + profile.getId() + "");
-                }
-            }
-            if(!profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
+            if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
                 rightbutton.setVisible(false);
             }
-
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
-            LOGGER.error("initialise:",e);
-        } catch (NullPointerException n){
-            LOGGER.error("no active shooting:",n);
+            LOGGER.error("initialise:", e);
         }
     }
 
+    /**
+     * switches to miniatur frame when pressed
+     */
     public void switchToMiniaturFrame(){
+
+        miniLastVisit = true;
+
         windowmanager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
-    public void switchToLogin(ActionEvent actionEvent) {
+    /**
+     * switch to login when pressed
+     */
+    public void switchToLogin() {
 
         try {
             windowmanager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_CUSTOMERSCENE);
@@ -106,27 +120,57 @@ public class CustomerFrameController {
                 setInvisible();
             }
         } catch (ServiceException e) {
-            LOGGER.error("switch to login",e);
+            LOGGER.error("switchToLogin",e);
         }
 }
 
+    /**
+     * decides if something has chanced and adapts chances
+     */
+    public void refresh (){
+        try {
+            if(!miniLastVisit) {
+                isRefreshed = true;
+                if(filterChouseside){
+                    basicpane.getChildren().remove(grid);
+                    grid = new GridPane();
+                   // gridpanel = new GridPane();
+                    creatButtons();
+                }
+                filterChouseside = false;
+            }
+            if (profileservice.getActiveProfile().getPairCameraPositions().isEmpty() || profileservice.getActiveProfile().getPairCameraPositions().size() == 0) {
+                rightbutton.setVisible(false);
+            }
+            miniLastVisit=false;
+        } catch (ServiceException e) {
+            LOGGER.error("refresh -", e);
+        }
+    }
+
+    /**
+     * if right button gets pressed
+     * the controller loads the filter buttons and there  pictures
+     */
     public void switchToFilter() {
         try {
             if(shootingservice.searchIsActive().getActive()){
-                profile=profileservice.get(shootingservice.searchIsActive().getProfileid());
+                if(profile.getId()!=shootingservice.searchIsActive().getProfileid()) {
+                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                    isButtoncreated=false;
+                }
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
                 allpicturesview.setVisible(false);
                 gridpanel.setVisible(false);
                 leftbutton.setVisible(true);
-                if (profileold != null && buttoncreated && profileold.getId() == shootingservice.searchIsActive().getProfileid()) {
+                if (!isRefreshed&&profileold != null && isButtoncreated && profileold.getId() == shootingservice.searchIsActive().getProfileid()) {
                     loadButton();
                 } else {
-                 //   LOGGER.debug("Profile id:" + profile.getId() + "");
+                    isRefreshed=false;
                     if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                  //      LOGGER.debug("Profile id changed:" + profile.getId() + "");
                     }
                     profileold = profile;
                     creatButtons();
@@ -144,7 +188,11 @@ public class CustomerFrameController {
         }
     }
 
-    public void switchToAllImages(ActionEvent actionEvent) {
+    /**
+     * sets gridpane containing filterbuttons to invisible and
+     * button to switch to miniaturframe visible
+     */
+    public void switchToAllImages() {
         rightbutton.setVisible(true);
         allpicturesview.setVisible(true);
         gridpanel.setVisible(true);
@@ -152,9 +200,13 @@ public class CustomerFrameController {
         setInvisible();
     }
 
+    /**
+     * if a change oared or a new profile got installed
+     * the filter buttons get created
+     */
     private void creatButtons(){
        try {
-            buttonList= new ArrayList<>();
+
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
@@ -162,6 +214,7 @@ public class CustomerFrameController {
             if (pairList==null||pairList.isEmpty()) {
                 rightbutton.setVisible(false);
             }else {
+
               //  LOGGER.debug("buttons:" + buttonList.size() + "");
                // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
@@ -175,18 +228,39 @@ public class CustomerFrameController {
                     GridPane gp = new GridPane();
                     String name = "Kamera " + pairList.get(i).getCamera().getId() + "  " + pairList.get(i).getPosition().getName();
 
-/*
+                    int shot =profileservice.getActiveProfile().getPairCameraPositions().get(i).getShotType();
+
+
                     ImageView imageView = new ImageView();
                     imageView.setVisible(true);
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
+                    if(!pairList.get(i).isGreenScreenReady()){
+                        String resource = System.getProperty("user.home");
+                        if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
 
-                    String resource = System.getProperty("user.home");
-                    Image im = new Image("/images/studio.jpg", true);
-                    imageView.setImage(im);
+                            imageView.setImage(SwingFXUtils.toFXImage(filterservice.filter(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName(), System.getProperty("user.dir") + "/src/main/resources/images/studio.jpg"), null));
+                        }else {
+                            imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                       }
+                    }else{
+                        if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground()!=null) {
+                            if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground().getPath() != null) {
 
-                    Image i2 =null;
-                    int shot =profile.getPairCameraPositions().get(i).getShotType();
+
+                                FileInputStream file = new FileInputStream(profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground().getPath());
+                                Image ima = new Image(file, imageView.getFitHeight(), imageView.getFitWidth(), true, true);
+                                file.close();
+                                imageView.setImage(ima);
+                            }else{
+                                imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                            }
+                        }else{
+                            imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                        }
+                    }
+
+                    Image i2;
                     if(shot==0){
                        i2= new Image("/images/singleshot.png");
                     }else if(shot == 1){
@@ -202,12 +276,14 @@ public class CustomerFrameController {
                     imageView.setFitHeight(high/2);
                     imageView.setFitWidth(high/2);
 
-                    imageView.setBlendMode(BlendMode.DIFFERENCE);
+                    //imageView.setBlendMode(BlendMode.DIFFERENCE);
+
                     Group blend = new Group(
-                            imageView,
-                            iv2
-                    );
-*/
+                                imageView,
+                                iv2
+                        );
+
+
                     if (countrow < 2) {
                         countrow++;
                     } else {
@@ -228,7 +304,7 @@ public class CustomerFrameController {
                     filter.setStyle("-fx-background-image: url('" + url + "') " );
                     filter.setStyle("-fx-background-size: 100%" );
                     filter.setStyle("-fx-background-color: transparent" );
-                    double size=0;
+                    double size;
                     if(column==0){
                         size =allpicturesview.getFont().getSize();
                     }else{
@@ -239,29 +315,38 @@ public class CustomerFrameController {
                     final int index = i;
                     filter.setOnMouseClicked((MouseEvent mouseEvent) -> {
                         //kamera Filter controller fiter id
+                        filterChouseside =true;
                         windowmanager.showKameraFilterSceen(index,1,pairList.get(index).isGreenScreenReady());
                     });
-                    buttonList.add(filter);
                     gp.prefWidth(width);
                     gp.prefHeight(high);
                     gp.add(filter, 0, 0);
-                  //  gp.add(blend, 1, 0);
+                    gp.add(blend, 1, 0);
                     grid.add(gp, countcolumn, countrow);
                     // Image image = new Image(pairList.get(i).getCameraLable());
                   //  LOGGER.debug("count calls "+i+"");
                 }
                 basicpane.add(grid, 1, 0);
-                buttoncreated = true;
+                isButtoncreated = true;
             }
        } catch (ServiceException e) {
+           LOGGER.error("creatButtons - ",e);
            showInformationDialog(e.getMessage());
-        }
+        } catch (FileNotFoundException e) {
+           LOGGER.error("creatButtons -", e);
+       } catch (IOException e) {
+           LOGGER.error("creatButtons -", e);
+       }
     }
 
+    /**
+     * if no chanches ocured the buttons can be loaded
+     */
     private void loadButton() {
 
         grid.setVisible(true);
     }
+
     private void setInvisible(){
         grid.setVisible(false);
     }

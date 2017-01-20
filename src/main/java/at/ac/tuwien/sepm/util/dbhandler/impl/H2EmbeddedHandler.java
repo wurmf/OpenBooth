@@ -1,17 +1,17 @@
 package at.ac.tuwien.sepm.util.dbhandler.impl;
 
+import at.ac.tuwien.sepm.util.FileTransfer;
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
+import org.h2.store.fs.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.h2.tools.RunScript;
 import org.h2.tools.Server;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,8 +47,8 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws ClassNotFoundException if the driver class is not found.
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
-    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, FileNotFoundException, DatabaseException{
-        LOGGER.info("Trying to open connection to database "+dbName);
+    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException, IOException{
+        LOGGER.info("openConnection - Trying to open connection to database "+dbName);
         try {
             Class.forName("org.h2.Driver");
             h2Server= Server.createTcpServer().start();
@@ -57,9 +57,8 @@ public class H2EmbeddedHandler  implements DBHandler {
             if(!rs.next()){
                 LOGGER.info("openConnection - first startup detected");
                 firstStartup();
-            } else{
-                LOGGER.info("openConnection - Database "+dbName+" already exists");
             }
+            LOGGER.info("openConnection - connected to database '"+dbName+"'");
         } catch(ClassNotFoundException|SQLException e){
             LOGGER.error("openConnection - ",e);
             throw e;
@@ -76,7 +75,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         if(connection==null){
             try {
                 openConnection("fotostudio");
-            } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
+            } catch (SQLException|ClassNotFoundException|IOException e) {
                 throw new DatabaseException(e);
             }
         }
@@ -94,7 +93,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             try {
                 testState=true;
                 openConnection("fotostudioTest");
-            } catch (SQLException|ClassNotFoundException|FileNotFoundException e) {
+            } catch (SQLException|ClassNotFoundException|IOException e) {
                 throw new DatabaseException(e);
             }
         } else if(!testState){
@@ -129,29 +128,39 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if the create-script is not found in the specified folder.
      * @throws SQLException if an error occurs while running the script on the database.
      */
-    private void firstStartup() throws FileNotFoundException, SQLException, DatabaseException{
+    private void firstStartup() throws DatabaseException {
         try {
-            String createPath=this.getClass().getResource("/sql/create.sql").getPath();
-            String initPath=this.getClass().getResource("/sql/init.sql").getPath();
+            InputStream createStream=this.getClass().getResourceAsStream("/sql/create.sql");
+            InputStream initStream=this.getClass().getResourceAsStream("/sql/init.sql");
 
-            ResultSet rs=RunScript.execute(connection, new FileReader(createPath));
+            InputStreamReader createISR= new InputStreamReader(createStream, "UTF-8");
+            InputStreamReader initISR= new InputStreamReader(initStream, "UTF-8");
+
+            ResultSet rs=RunScript.execute(connection, createISR);
             if(rs!=null)
                 rs.close();
             if(!testState)
-                rs=RunScript.execute(connection, new FileReader(initPath));
+                rs=RunScript.execute(connection, initISR);
             if(rs!=null)
                 rs.close();
-        } catch(FileNotFoundException|SQLException e){
+
+            createISR.close();
+            createStream.close();
+
+            initISR.close();
+            initStream.close();
+
+        } catch(SQLException|IOException e){
             LOGGER.error("firstStartup - ",e);
-            throw e;
+            throw new DatabaseException(e);
         }
         //TODO: Delete following before building module for client.
         if(!testState) {
             insertData();
             setUpDefaultImgs();
-            LOGGER.info("Data inserted into DB, dummy images copied to filesystem");
+            LOGGER.info("firstStartup - Data inserted into DB, dummy images copied to filesystem");
         }
-        LOGGER.info("Database initialized.");
+        LOGGER.info("firstStartup - Database initialized.");
     }
 
     /**
@@ -159,87 +168,92 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if the create-script is not found in the specified folder.
      * @throws SQLException if an error occurs while running the script on the database.
      */
-    private void insertData() throws FileNotFoundException, SQLException{
+    private void insertData() throws DatabaseException{
+        ResultSet rs=null;
+        InputStream insertStream=null;
+        InputStreamReader insertISR=null;
         try {
-            String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
+            insertStream=this.getClass().getResourceAsStream("/sql/insert.sql");
+            insertISR=new InputStreamReader(insertStream);
 
-            ResultSet rs=RunScript.execute(connection, new FileReader(insertPath));
-            if(rs!=null)
-                rs.close();
-        } catch(FileNotFoundException|SQLException e){
+            rs=RunScript.execute(connection, insertISR);
+        } catch(SQLException e){
             LOGGER.error("insertData - ",e);
-            throw e;
+            throw new DatabaseException(e);
+        } finally{
+            if(rs!=null){
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    LOGGER.error("insertData - ",e);
+                }
+            }
+            if(insertISR!=null){
+                try {
+                    insertISR.close();
+                } catch (IOException e) {
+                    LOGGER.error("insertData - ",e);
+                }
+            }
+            if(insertStream!=null){
+                try {
+                    insertStream.close();
+                } catch (IOException e) {
+                    LOGGER.error("insertData - ",e);
+                }
+            }
         }
     }
 
     private void setUpDefaultImgs() throws DatabaseException {
-        String destPath = System.getProperty("user.home") + "/fotostudio/BeispielBilder/";
-        String image1 = this.getClass().getResource("/images/dummies/p1.jpg").getPath();
-        String image2 = this.getClass().getResource("/images/dummies/p2.jpg").getPath();
-        String logo1 = this.getClass().getResource("/images/logos/logofamp.jpg").getPath();
-        String logo2 =this.getClass().getResource("/images/logos/logo1.jpg").getPath();
-        String green1 =this.getClass().getResource("/images/greenscreen/background/test_background1.jpg").getPath();
-        String green2 =this.getClass().getResource("/images/greenscreen/background/test_background2.png").getPath();
-        String green3 =this.getClass().getResource("/images/greenscreen/background/test_background3.jpg").getPath();
-
-        Path img1Source = Paths.get(image1);
-        Path img2Source = Paths.get(image2);
-        Path logo1Source= Paths.get(logo1);
-        Path logo2Source= Paths.get(logo2);
-        Path green1Source= Paths.get(green1);
-        Path green2Source= Paths.get(green2);
-        Path green3Source= Paths.get(green3);
-
-        Path img1Dest= Paths.get(destPath+"p1.jpg");
-        Path img2Dest= Paths.get(destPath+"p2.jpg");
-        Path logo1Dest= Paths.get(destPath+"logofamp.jpg");
-        Path logo2Dest= Paths.get(destPath+"logo1.jpg");
-        Path green1Dest= Paths.get(destPath+"greenBg1.jpg");
-        Path green2Dest= Paths.get(destPath+"greenBg2.png");
-        Path green3Dest= Paths.get(destPath+"greenBg3.jpg");
-
+        String destPath = System.getProperty("user.home") + "/.fotostudio/BeispielBilder/";
         String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";
 
+        String image1Source = "/images/dummies/p1.jpg";
+        String image2Source ="/images/dummies/p2.jpg";
+        String logo1Ssource ="/images/logos/logofamp.jpg";
+        String logo2Source ="/images/logos/logo1.jpg";
+        String green1Source ="/images/greenscreen/background/test_background1.jpg";
+        String green2Source ="/images/greenscreen/background/test_background2.png";
+        String green3Source ="/images/greenscreen/background/test_background3.jpg";
+
+        String image1Dest = shootingPath+"image1.jpg";
+        String image2Dest = shootingPath+"image2.jpg";
+        String logo1Dest = destPath+"logofamp.jpg";
+        String logo2Dest = destPath+"logo1.jpg";
+        String green1Dest = destPath+"greenBg1.jpg";
+        String green2Dest = destPath+"greenBg2.png";
+        String green3Dest = destPath+"greenBg3.jpg";
+
         PreparedStatement stmt=null;
-        try {
-            if(!img1Dest.getParent().getParent().toFile().exists()){
-                Files.createDirectory(img1Dest.getParent().getParent());
-            }
-            if(!img1Dest.getParent().toFile().exists()){
-                Files.createDirectory(img1Dest.getParent());
-            }
-            File shootingFolder=new File(shootingPath);
-            if(!shootingFolder.exists()){
-                Files.createDirectory(shootingFolder.toPath());
-            }
-            Files.copy(img1Source,img1Dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(img2Source,img2Dest, StandardCopyOption.REPLACE_EXISTING);
-
-            Files.copy(logo1Source,logo1Dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(logo2Source,logo2Dest, StandardCopyOption.REPLACE_EXISTING);
-
-            Files.copy(green1Source,green1Dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(green2Source,green2Dest, StandardCopyOption.REPLACE_EXISTING);
-            Files.copy(green3Source,green3Dest, StandardCopyOption.REPLACE_EXISTING);
+        try{
+            FileTransfer ft=new FileTransfer();
+            ft.transfer(image1Source,image1Dest);
+            ft.transfer(image2Source, image2Dest);
+            ft.transfer(logo1Ssource, logo1Dest);
+            ft.transfer(logo2Source, logo2Dest);
+            ft.transfer(green1Source,green1Dest);
+            ft.transfer(green2Source,green2Dest);
+            ft.transfer(green3Source,green3Dest);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
-            stmt.setString(1,destPath+"p1.jpg");
+            stmt.setString(1,image1Dest);
             stmt.setInt(2,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+"p2.jpg");
+            stmt.setString(1,image2Dest);
             stmt.setInt(2,2);
             stmt.execute();
 
             stmt.close();
 
             stmt=connection.prepareStatement("UPDATE logos SET path=?, label=? where logoID=?;");
-            stmt.setString(1,destPath+"logofamp.jpg");
+            stmt.setString(1,logo1Dest);
             stmt.setString(2,"Fotografie am Punkt");
             stmt.setInt(3,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+"logo1.jpg");
+            stmt.setString(1,logo2Dest);
             stmt.setString(2,"Beispiel-Logo");
             stmt.setInt(3,2);
             stmt.execute();
@@ -253,21 +267,21 @@ public class H2EmbeddedHandler  implements DBHandler {
             stmt.close();
 
             stmt=connection.prepareStatement("UPDATE backgrounds SET path=? WHERE backgroundID=?");
-            stmt.setString(1,destPath+"greenBg1.jpg");
+            stmt.setString(1,green1Dest);
             stmt.setInt(2,1);
             stmt.execute();
 
-            stmt.setString(1,destPath+"greenBg2.png");
+            stmt.setString(1,green2Dest);
             stmt.setInt(2,2);
             stmt.execute();
 
-            stmt.setString(1,destPath+"greenBg3.jpg");
+            stmt.setString(1,green3Dest);
             stmt.setInt(2,3);
             stmt.execute();
-        } catch (IOException|SQLException e) {
+        } catch (IOException|SQLException e){
             LOGGER.error("setUpDefaultImgs - ",e);
             throw new DatabaseException(e);
-        } finally {
+        } finally{
             if(stmt!=null){
                 try {
                     stmt.close();

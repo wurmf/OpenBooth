@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
@@ -28,14 +29,18 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
     private Profile selectedProfile;
     private BackgroundService bservice;
 
-    private final Button cellButton = new Button("X");
+    private final Button cellButton;
 
-    public CategoryButtonCell(ObservableList<Background.Category> categoryListOfProfile, Profile selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
+    public CategoryButtonCell(ImageHandler imageHandler,ObservableList<Background.Category> categoryListOfProfile, Profile selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
         this.categories = categories;
         this.categoryListOfProfile = categoryListOfProfile;
         this.selectedProfile = selectedProfile;
         this.bservice = bservice;
 
+        cellButton = new Button();
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setPrefWidth(40);
+        cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override

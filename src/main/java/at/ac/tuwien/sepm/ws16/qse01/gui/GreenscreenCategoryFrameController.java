@@ -36,6 +36,8 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
     private TextField txCategoryName;
     @FXML
     private CheckBox txCategoryActivated;
+    @FXML
+    private Button txCategoryAdd;
 
 
 
@@ -50,6 +52,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
     private TableColumn colCategoryActivated;
     @FXML
     private TableColumn colCategoryAction;
+
 
 
     @Autowired
@@ -132,7 +135,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background.Category, Boolean> call(TableColumn<Background.Category, Boolean> p) {
-                        return new CategoryButtonCell(categoryListOfProfile,selectedProfile,categoryList,bservice,windowManager.getStage());
+                        return new CategoryButtonCell(imageHandler,categoryListOfProfile,selectedProfile,categoryList,bservice,windowManager.getStage());
                     }
 
                 });
@@ -150,6 +153,18 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
             }
         });
 
+        txCategoryAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+        txCategoryAdd.setPrefHeight(50);
+        txCategoryAdd.setPrefWidth(50);
+
+        txCategoryName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedProfile!=null ){
+                txCategoryAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txCategoryAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+
     }
 
 
@@ -159,8 +174,8 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
     private void saveCategory(){
         LOGGER.error("Category Add Button has been clicked");
         String name = txCategoryName.getText();
-        if(name.trim().compareTo("") == 0){
-            showError("Sie müssen einen Namen eingeben!");
+        if(selectedProfile==null || name.trim().compareTo("") == 0){
+            showError("Sie müssen einen Namen eingeben  und ein Profil auswählen!");
         }else {
             Background.Category p = new Background.Category(name);
 

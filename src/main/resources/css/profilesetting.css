@@ -7,12 +7,10 @@
   -fx-font-family: HP Simplified;
 }
 
-.text-field {
-    -fx-font-size: 0.8em;
-}
 .table-view .column-header{
     -fx-font-size: 0.8em;
 }
+
 
 .table-cell {
     -fx-font-size: 0.8em;
@@ -20,4 +18,14 @@
 
 .button {
     -fx-font-size: 0.8em;
+}
+
+.choice-box{
+  -fx-background-color: darkgray;
+  -fx-pref-width: 30em;
+  -fx-mark-color: green ;
+}
+
+.choice-box .context-menu {
+    -fx-background-color: darkgray ;
 }

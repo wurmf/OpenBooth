@@ -228,7 +228,7 @@ public class FullScreenImageController {
                 }
             }
         } catch (ServiceException e) {
-            LOGGER.debug("delete - ",e);
+            LOGGER.error("onDeletePressed - ",e);
             informationDialog("Bild konnte nicht gelöscht werden.");
         }
     }
@@ -303,7 +303,6 @@ public class FullScreenImageController {
      *
      */
     public void onLastImagePressed() {
-        LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         FileInputStream fips=null;
         try {

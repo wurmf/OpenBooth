@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -25,12 +26,17 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
     private  ObservableList<Profile> pList;
     private ProfileService pservice;
 
-    private final Button cellButton = new Button("X");
+    private final Button cellButton;
 
-    public ProfileButtonCell(ObservableList<Profile> pList, ProfileService pservice,Stage primaryStage) {
+    public ProfileButtonCell(ImageHandler imageHandler,ObservableList<Profile> pList, ProfileService pservice, Stage primaryStage) {
         this.pList = pList;
         this.pservice = pservice;
-  
+
+        cellButton = new Button();
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setPrefWidth(40);
+        cellButton.setPrefHeight(40);
+
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
@@ -54,7 +60,7 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
                     try {
                         pservice.erase(currentProfile);
                     } catch (ServiceException e) {
-                        LOGGER.error("ProfileButtonCell->Löschen Button -> Profil konnte nicht gelöscht werden.",e);
+                        e.printStackTrace();
                     }
 
 

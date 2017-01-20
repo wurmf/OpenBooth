@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -10,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +27,16 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
     private  ObservableList<Profile.PairLogoRelativeRectangle> posList;
     private ProfileService pservice;
 
-    private final Button cellButton = new Button("X");
+    private final Button cellButton;
 
-    public LogoButtonCell(ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice,Stage primaryStage, int profileID) {
+    public LogoButtonCell(ImageHandler imageHandler,ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice, Stage primaryStage, int profileID, ImageView preview, AutoCompleteTextField txLogoName) {
         this.posList = posList;
         this.pservice = pservice;
 
+        cellButton = new Button();
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setPrefWidth(40);
+        cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
@@ -52,16 +58,19 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                     //remove selected item from the table list
                     posList.remove(currentPairLogo);
                    try {
-                        int countsOfLogoUsing = 0;
-                        for(Profile.PairLogoRelativeRectangle p: pservice.getAllPairLogoRelativeRectangle(profileID)) {
-                            if (p.getLogo()!= null && currentPairLogo.getLogo().getId() == p.getLogo().getId())
-                                countsOfLogoUsing++;
-                        }
-                       //if Logo is used just by this pairlogo relation, then delete it from database
-                        if(countsOfLogoUsing==1)
-                            pservice.eraseLogo(currentPairLogo.getLogo());
 
-                        pservice.erasePairLogoRelativeRectangle(currentPairLogo);
+                       //if Logo is used just by this pairlogo relation, then delete it from database
+
+                        if(pservice.getNumberOfUsing(currentPairLogo.getLogo().getId())==1) {
+                            pservice.eraseLogo(currentPairLogo.getLogo());
+                        }
+                        if(pservice.getNumberOfUsingByProfile(currentPairLogo.getLogo().getId(),profileID)==1)
+                            txLogoName.getEntries().remove(currentPairLogo.getLogo().getLabel().toLowerCase()+" #"+currentPairLogo.getLogo().getId());
+
+                       pservice.erasePairLogoRelativeRectangle(currentPairLogo);
+
+                       if(posList.size()==0)
+                           preview.setImage(null);
                     } catch (ServiceException e) {
                        LOGGER.error("LogoButtonCell->Löschen Button -> Logo konnte nicht gelöscht werden.",e);
                     }

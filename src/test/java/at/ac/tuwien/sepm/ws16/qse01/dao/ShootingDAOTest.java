@@ -81,8 +81,12 @@ public class ShootingDAOTest extends TestEnvironment {
     }
 
 
-    @Test
+    /*@Test
     public void findactiveShooting() throws Throwable {
+
+        if(shootingDAO.searchIsActive().getActive()){
+            shootingDAO.endShooting();
+        }
         shootingDAO.create(shooting1);
         Shooting shooting = shootingDAO.searchIsActive();
         //Check if read function returns the saved image.
@@ -90,7 +94,7 @@ public class ShootingDAOTest extends TestEnvironment {
         assertTrue(shooting.getActive());
         assertTrue(shooting.getProfileid() == 1);
         assertTrue(shooting.getStorageDir().equals("home/foto/shooting1"));
-    }
+    }*/
 
     @Test
     public void endShootingwithValideArguments() throws Throwable {
@@ -111,5 +115,20 @@ public class ShootingDAOTest extends TestEnvironment {
         shootingDAO.endShooting();
         assertTrue(!shootingDAO.searchIsActive().getActive());
     }
+/*
+    public void newProfileValideArguments()  throws Throwable {
+
+        if (!shootingDAO.searchIsActive().getActive()){
+            shootingDAO.create(shooting1);
+        }
+        Shooting s = shootingDAO.searchIsActive();
+        assertTrue(s.getActive());
+        assertTrue(shootingDAO.searchIsActive().getProfileid()==s.getProfileid());
+        s.setBgPictureFolder(null);
+        s.setProfileid(3);
+        shootingDAO.update(s);
+        assertTrue(shootingDAO.searchIsActive().getProfileid()==3);
+    }
+*/
 
 }

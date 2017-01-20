@@ -218,9 +218,9 @@ public class Profile {
         private String filterName = "";
         private Background background;
         private boolean isGreenScreenReady;
-        public static final int SHOT_TYPE_TIMED = 0;
-        public static final int SHOT_TYPE_SINGLE = 1;
-        public static final int SHOT_TYPE_MULTIPLE = 2;
+        public static final int SHOT_TYPE_TIMED = 2;
+        public static final int SHOT_TYPE_SINGLE = 0;
+        public static final int SHOT_TYPE_MULTIPLE = 1;
         private int shotType;
 
         public PairCameraPosition(int id,

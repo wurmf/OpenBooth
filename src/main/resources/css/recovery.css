@@ -11,16 +11,10 @@
 .label{
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
+   -fx-pref-height:5em;
+   -fx-pref-width: 40em;
 }
-#wrongCredentialsLabel{
-  -fx-text-fill: red;
-}
-#profileChoiceBox{
-  -fx-background-color: darkgray;
-  -fx-pref-width: 30em;
-  -fx-mark-color: green ;
-}
-
-.choice-box .context-menu {
-    -fx-background-color: darkgray ;
+#mrerror{
+    -fx-scale-y: 0.02em;
+    -fx-scale-x: 0.02em;
 }

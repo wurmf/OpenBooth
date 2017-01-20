@@ -6,6 +6,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Stage;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -202,5 +206,19 @@ public class ImageHandler {
         }catch(NullPointerException e){
             LOGGER.error("popupImage ->",e);
         }
+    }
+
+    /**
+     * creates scene.layout.Background object with given input data
+     * @param resourcePath path of icon in resources directory
+     * @param width width of icon
+     * @param height height of icon
+     * @return Background returns Background object created with given data
+     */
+    public javafx.scene.layout.Background getBackground(String resourcePath,int width,int height){
+        Image image = new Image("file:"+this.getClass().getResource(resourcePath).getPath(),width,height,true,true);
+        BackgroundSize backgroundSize = new BackgroundSize(width, height, true, true, true, false);
+        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        return new javafx.scene.layout.Background(backgroundImage);
     }
 }

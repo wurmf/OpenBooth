@@ -3,18 +3,15 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
-import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
 
 /**
  * The controller for the mainFrame.
@@ -31,7 +28,7 @@ public class MainFrameController {
     CameraService cameraService;
 
     @Autowired
-    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) throws Exception {
+    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) {
         this.shootingService = shootingService;
         this.windowManager = windowManager;
         this.cameraService = cameraService;
@@ -48,16 +45,6 @@ public class MainFrameController {
     @FXML
     private void initialize(){
         Shooting activeShooting = null;
-        try {
-            activeShooting = shootingService.searchIsActive();
-
-            if(activeShooting.getActive()){
-                showRecoveryDialog();
-            }
-        } catch (ServiceException e) {
-            showInformationDialog("Ein Fehler beim Start des Programms ist aufgetreten.");
-            LOGGER.info("initialize - ",e);
-         }
     }
 
     /**
@@ -67,33 +54,6 @@ public class MainFrameController {
      */
     public void onStartShootingPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SHOOTINGSCENE);
-    }
-
-    /**
-     * in case of a breakdown the Recovery Dialog will tell the user about an still active
-     * shooting and gives them the option to continue to ether close or reloade this shooting
-     *in case of reload the user gets directly to the costumer interface
-     *
-     * caches ServiceException eventualy caused by endShooting
-     *
-     */
-     public void showRecoveryDialog(){
-
-        Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
-                "Möchten sie das zuletzt geöffnete Shooting wiederherstellen?");
-        alert.setHeaderText("Die Anwendung wurde unerwartet geschlossen");
-        Optional<ButtonType> result =alert.showAndWait();
-        if(result.isPresent()&&result.get()==ButtonType.OK){
-            windowManager.notifyActiveShootingAvailable();
-        } else {
-            try {
-                shootingService.endShooting();
-                showInformationDialog("Shooting wurde beendet");
-            } catch (ServiceException e) {
-                LOGGER.debug("recovery - ",e);
-                showInformationDialog("Shooting konnte nicht beendet werden!");
-            }
-        }
     }
 
     /**
@@ -110,6 +70,7 @@ public class MainFrameController {
      *
      * @param actionEvent press action event
      */
+
     public void onEditPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SETTINGSCENE);
     }
@@ -122,7 +83,6 @@ public class MainFrameController {
     public void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
-        information.initOwner(windowManager.getStage());
-        information.show();
+        information.showAndWait();
     }
 }

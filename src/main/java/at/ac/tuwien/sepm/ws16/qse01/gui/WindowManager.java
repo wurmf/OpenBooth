@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -12,7 +11,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -28,30 +26,31 @@ public class WindowManager {
     public static final int END_APPLICATION=0;
     public static final int SHOW_MAINSCENE=1;
     public static final int SHOW_SHOOTINGSCENE=2;
-    public static final int SHOW_PROFILESCENE=3;
+    public static final int SHOW_SETTINGSCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
     public static final int SHOW_CUSTOMERSCENE=5;
-    public static final int SHOW_SETTINGSCENE=6;
+    public static final int SHOW_RECOVERYSCENE=6;
+
 
     private SpringFXMLLoader springFXMLLoader;
-    private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
     private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
     private Scene adminLoginScene;
     private Scene mainScene;
     private Scene shootingScene;
-    private Scene profileScene;
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
     private Scene customerScene;
     private Scene kamerafilterScene;
+    private Scene recoveryScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
     private CameraFilterController cameraFilterController;
+    private CustomerFrameController customerFrameController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -65,32 +64,26 @@ public class WindowManager {
     /**
      * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
      * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
-     * @param applicationContext the applicationContext generated in the MainApplication
      * @throws IOException
      */
-    public void start(Stage mainStage, ApplicationContext applicationContext) throws IOException{
+    public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
-        this.applicationContext=applicationContext;
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
 
         setFontSize(screenWidth,screenHeight);
         if(fontSize ==0){
-            LOGGER.debug("font sice - non fitting screen sice");
+            LOGGER.debug("font size - non fitting screen size");
             fontSize =16;
         }
 
-
-        //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
-        // Anmerkung: shotframemanager wird in camerapackage erstellt und initializiert und die werden nicht in gleichem
-        // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         URL cssf= this.getClass().getResource("/css/fullscreen.css");
-        LOGGER.info("CSSF -"+cssf);
+        LOGGER.debug("CSSF -"+cssf);
         root.setStyle("-fx-font-size:"+fontSize+"px;");
         root.getStylesheets().add(cssf.toExternalForm());
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
@@ -100,8 +93,8 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
         Parent parentmain = (Parent) mfWrapper.getLoadedObject();
         URL css= this.getClass().getResource("/css/main.css");
-        LOGGER.info("CSSM -"+css);
-        int sice = (int)(fontSize *3);
+        LOGGER.debug("CSSM -"+css);
+        int sice = (fontSize *3);
         parentmain.setStyle("-fx-font-size:"+sice+"px;");
         parentmain.getStylesheets().add(css.toExternalForm());
         this.mainScene=new Scene(parentmain,screenWidth,screenHeight);
@@ -110,7 +103,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper = springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
         Parent parentsf = (Parent) shootingWrapper.getLoadedObject();
         URL csssf= this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.info("CSSSF -"+csssf);
+        LOGGER.debug("CSSSF -"+csssf);
         parentsf.setStyle("-fx-font-size:"+fontSize+"px;");
         parentsf.getStylesheets().add(csssf.toExternalForm());
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
@@ -123,7 +116,7 @@ public class WindowManager {
         Parent parentsett = (Parent) settingWrapper.getLoadedObject();
         //Anmerkung: Css für Einstellungen wird erst dann hinzugefügt, wenn einstellungen-gui fertig ist. - Deniz
         URL csssett = this.getClass().getResource("/css/profilesetting.css");
-        LOGGER.info("CSSSETT:"+csssett);
+        LOGGER.debug("CSSSETT:"+csssett);
         parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentsett.getStylesheets().add(csssett.toExternalForm());
         this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
@@ -132,7 +125,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
         Parent parentad = (Parent) adminLoginWrapper.getLoadedObject();
         URL cssad= this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.info("CSSAD -"+cssad);
+        LOGGER.debug("CSSAD -"+cssad);
         parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentad.getStylesheets().add(cssad.toExternalForm());
         this.adminLoginScene = new Scene(parentad,screenWidth,screenHeight);
@@ -142,7 +135,7 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         Parent parentmin = (Parent) miniWrapper.getLoadedObject();
         URL cssmin = this.getClass().getResource("/css/miniatur.css");
-        LOGGER.info("CSSSETT:"+cssmin);
+        LOGGER.debug("CSSSETT:"+cssmin);
         parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
@@ -151,20 +144,32 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml", CustomerFrameController.class);
         Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
         URL csscos= this.getClass().getResource("/css/costumer.css");
-        LOGGER.info("CSSCOS -"+csscos);
+        LOGGER.debug("CSSCOS -"+csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
+        customerFrameController = costumerWrapper.getController();
 
+        //creat Camera filter scene
         SpringFXMLLoader.FXMLWrapper<Object, CameraFilterController> kameraFilterFXMLWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", CameraFilterController.class);
         Parent parentkaf = (Parent) kameraFilterFXMLWrapper.getLoadedObject();
         URL csskaf= this.getClass().getResource("/css/camerafilter.css");
-        LOGGER.info("CSSKAF -"+csskaf);
+        LOGGER.debug("CSSKAF -"+csskaf);
         parentkaf.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentkaf.getStylesheets().add(csskaf.toExternalForm());
         this.kamerafilterScene = new Scene(parentkaf,screenWidth,screenHeight);
         cameraFilterController = kameraFilterFXMLWrapper.getController();
+
+        //create Recovery scene
+        SpringFXMLLoader.FXMLWrapper<Object, RecoveryController> recoveryControllerFXMLWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/recoveryFrame.fxml", RecoveryController.class);
+        Parent parentrec = (Parent) recoveryControllerFXMLWrapper.getLoadedObject();
+        URL cssrec = this.getClass().getResource("/css/recovery.css");
+        LOGGER.debug("CSSREC:"+cssrec);
+        parentrec.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentrec.getStylesheets().add(cssrec.toExternalForm());
+        this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -184,6 +189,7 @@ public class WindowManager {
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
+
     }
 
     /**
@@ -192,18 +198,22 @@ public class WindowManager {
      * @param sceneToShow the number of the scene that shall be set.
      */
     public void showScene(int sceneToShow){
+        if(sceneToShow==SHOW_CUSTOMERSCENE) {
+            customerFrameController.refresh();
+        }
+
         switch (sceneToShow){
             case END_APPLICATION: closeStages();
                 break;
             case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
-                break;
-            case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
                 break;
             case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
                 break;
             case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
                 break;
             case SHOW_SETTINGSCENE: mainStage.setScene(settingScene);
+                break;
+            case SHOW_RECOVERYSCENE: mainStage.setScene(recoveryScene);
                 break;
             default: mainStage.setScene(mainScene);
                 break;
@@ -264,11 +274,6 @@ public class WindowManager {
         return this.mainStage;
     }
 
-
-    public boolean initImageProcessing() throws  ServiceException{
-        ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
-        return imageProcessingManager.initImageProcessing();
-    }
 
     /**
      * sets the initial font size depending on the screen Width and high

@@ -34,7 +34,7 @@ public class MainApplication extends Application {
 
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
         WindowManager windowManager = applicationContext.getBean(WindowManager.class);
-        windowManager.start(primaryStage, applicationContext);
+        windowManager.start(primaryStage);
     }
 
     @Override

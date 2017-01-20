@@ -1,14 +1,12 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Side;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -25,6 +23,8 @@ public class AutoCompleteTextField extends TextField
     private final SortedSet<String> entries;
     private final Map<String,ImageView> imgViews;
     private TextField txLogoPath;
+    private Button txLogoUpload;
+    private ImageHandler imageHandler;
     /** The popup used to select an entry. */
     private ContextMenu entriesPopup;
 
@@ -115,6 +115,7 @@ public class AutoCompleteTextField extends TextField
                     setText(parts[0]); //result.substring(0,result.lastIndexOf(" #")));
                     txLogoPath.setText(logo.getId());
                     txLogoPath.setId(parts[1]); //if logo is selected -> to avoid a new creation of logo
+                    txLogoUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
                     entriesPopup.hide();
                 }
             });
@@ -126,5 +127,11 @@ public class AutoCompleteTextField extends TextField
     }
     public void setTxLogoPath(TextField tx){
         txLogoPath = tx;
+    }
+    public void setTxLogoUpload(Button button){
+        txLogoUpload = button;
+    }
+    public void setImageHandler(ImageHandler imageHandler){
+        this.imageHandler = imageHandler;
     }
 }

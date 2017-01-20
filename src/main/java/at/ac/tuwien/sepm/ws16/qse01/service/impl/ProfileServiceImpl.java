@@ -547,7 +547,7 @@ public class ProfileServiceImpl implements ProfileService{
             Profile.PairCameraPosition auxPairCameraPosition = it.next();
             if(auxPairCameraPosition.getId()== pairCameraPosition.getId())
             {
-                pairCameraPositions.remove(auxPairCameraPosition);
+                it.remove(); //pairCameraPositions.remove(auxPairCameraPosition);
             }
         }
 
@@ -600,6 +600,7 @@ public class ProfileServiceImpl implements ProfileService{
 
     @Override
     public boolean editPairLogoRelativeRectangle(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle) throws ServiceException {
+        LOGGER.debug("Entering editPairLogoRelativeRectangle with ->",pairLogoRelativeRectangle.getId());
         Profile profile = this.get(pairLogoRelativeRectangle.getProfileId());
         List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles = profile.getPairLogoRelativeRectangles();
         for(Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle:pairLogoRelativeRectangles)
@@ -622,7 +623,7 @@ public class ProfileServiceImpl implements ProfileService{
             Profile.PairLogoRelativeRectangle auxPairLogoRelativeRectangle = it.next();
             if(auxPairLogoRelativeRectangle.getId()==pairLogoRelativeRectangle.getId())
             {
-                pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);
+                it.remove(); //pairLogoRelativeRectangles.remove(auxPairLogoRelativeRectangle);
             }
         }
         profile.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
@@ -714,5 +715,28 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public List<Background> getAllBackgroundOfProfile() throws ServiceException{
         return this.getAllBackgroundOfProfile(this.activeProfile.getId());
+    }
+
+    public int getNumberOfUsing(int logoID) throws ServiceException {
+        int countsOfLogoUsing = 0;
+        for(Profile profile: getAllProfiles()) {
+            for (Profile.PairLogoRelativeRectangle p : getAllPairLogoRelativeRectangle(profile.getId())) {
+                if (p.getLogo() != null && logoID == p.getLogo().getId()) {
+                    countsOfLogoUsing++;
+                }
+            }
+        }
+        return countsOfLogoUsing;
+    }
+    public int getNumberOfUsingByProfile(int logoID,int profileID) throws ServiceException {
+        int countsOfLogoUsingByProfile = 0;
+
+        for (Profile.PairLogoRelativeRectangle p : getAllPairLogoRelativeRectangle(profileID)) {
+            if (p.getLogo() != null && logoID == p.getLogo().getId()) {
+                countsOfLogoUsingByProfile++;
+            }
+        }
+
+        return countsOfLogoUsingByProfile;
     }
 }
