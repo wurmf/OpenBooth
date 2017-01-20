@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.RecoveryController">
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+      <RowConstraints percentHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+    <RowConstraints percentHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+      <RowConstraints percentHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <GridPane GridPane.rowIndex="3">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button mnemonicParsing="false" onAction="#onEndShootingPressed" text="Shooting beenden" />
+            <Button mnemonicParsing="false" onAction="#onRecoveryPressed" text="Shooting wiederherstellen" GridPane.columnIndex="1" />
+         </children>
+      </GridPane>
+      <Label prefHeight="38.0" prefWidth="447.0" text="Ihr letztes Shooting konnte wegen einem Technischenfehler nicht beendet werden. &#10;Möchten Sie dieses wiederherstellen oder beenden?" GridPane.rowIndex="2" />
+      <ImageView fx:id="mrerror" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
+       <image>
+           <Image url="/images/mrerror.png" />
+       </image>
+   </ImageView>
+   </children>
+</GridPane>

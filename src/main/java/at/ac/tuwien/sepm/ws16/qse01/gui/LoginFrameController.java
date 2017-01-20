@@ -1,7 +1,9 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.AdminUserService;
+import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -24,6 +26,7 @@ public class LoginFrameController {
     private WindowManager windowManager;
     private AdminUserService adminUserService;
     private LoginRedirectorModel loginRedirectorModel;
+    private ShootingService shootingService;
     @FXML
     private TextField adminField;
     @FXML
@@ -33,10 +36,11 @@ public class LoginFrameController {
 
 
     @Autowired
-    public LoginFrameController(AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
+    public LoginFrameController(ShootingService shootingService,AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
         this.loginRedirectorModel=loginRedirectorModel;
+        this.shootingService =shootingService;
     }
 
     /**
@@ -49,7 +53,14 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                windowManager.showScene(loginRedirectorModel.getNextScene());
+                    Shooting activeShooting = shootingService.searchIsActive();
+
+                    if(activeShooting.getActive()){
+                        windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
+                    }else{
+                        windowManager.showScene(loginRedirectorModel.getNextScene());
+                    }
+
                 resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
