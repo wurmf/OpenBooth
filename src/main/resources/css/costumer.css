@@ -36,3 +36,8 @@
    -fx-pref-height:30em;
    -fx-background-image: url('/images/arrowleft.png');
 }
+
+#logo{
+    -fx-scale-y: 0.014em;
+    -fx-scale-x: 0.014em;
+}
