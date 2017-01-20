@@ -179,7 +179,6 @@ public class WindowManager {
 
 
 
-
         this.mainStage.setTitle("Fotostudio");
         if(activeShootingAvailable){
             showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
@@ -201,7 +200,9 @@ public class WindowManager {
         if(sceneToShow==SHOW_CUSTOMERSCENE) {
             customerFrameController.refresh();
         }
-
+        if(sceneToShow == SHOW_SHOOTINGSCENE){
+            shootingAdminController.inactivemode();
+        }
         switch (sceneToShow){
             case END_APPLICATION: closeStages();
                 break;

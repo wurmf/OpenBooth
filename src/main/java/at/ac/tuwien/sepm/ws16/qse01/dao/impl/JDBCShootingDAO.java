@@ -12,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -117,7 +115,7 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.execute(query);
 
         } catch (SQLException e) {
-            LOGGER.info("endShooting - ", e);
+            LOGGER.error("endShooting - ", e);
             throw new PersistenceException(e);
         } finally {
             if (stmt != null) {
