@@ -35,12 +35,14 @@ public class LoginFrameController {
     private Label wrongCredentialsLabel;
 
 
+    private boolean firstLogin;
     @Autowired
     public LoginFrameController(ShootingService shootingService,AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
         this.loginRedirectorModel=loginRedirectorModel;
         this.shootingService =shootingService;
+        firstLogin = true;
     }
 
     /**
@@ -55,7 +57,8 @@ public class LoginFrameController {
             if(correctLogin){
                     Shooting activeShooting = shootingService.searchIsActive();
 
-                    if(activeShooting.getActive()){
+                    if(activeShooting.getActive()&&firstLogin){
+                        firstLogin=false;
                         windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
                     }else{
                         windowManager.showScene(loginRedirectorModel.getNextScene());

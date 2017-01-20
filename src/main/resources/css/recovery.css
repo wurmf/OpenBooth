@@ -11,10 +11,8 @@
 .label{
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
-   -fx-pref-height:5em;
-   -fx-pref-width: 40em;
 }
 #mrerror{
-    -fx-scale-y: 0.02em;
-    -fx-scale-x: 0.02em;
+    -fx-scale-y: 0.01em;
+    -fx-scale-x: 0.01em;
 }

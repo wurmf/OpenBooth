@@ -167,7 +167,7 @@ public class WindowManager {
         Parent parentrec = (Parent) recoveryControllerFXMLWrapper.getLoadedObject();
         URL cssrec = this.getClass().getResource("/css/recovery.css");
         LOGGER.debug("CSSREC:"+cssrec);
-        parentrec.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentrec.setStyle("-fx-font-size:"+ fontSize*1.5 +"px;");
         parentrec.getStylesheets().add(cssrec.toExternalForm());
         this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
