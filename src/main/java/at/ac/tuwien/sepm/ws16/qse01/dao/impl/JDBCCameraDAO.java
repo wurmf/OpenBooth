@@ -170,6 +170,38 @@ public class JDBCCameraDAO implements CameraDAO{
     }
 
     @Override
+    public List<Camera> getAll() throws PersistenceException {
+        List<Camera> cameraList = new ArrayList<>();
+        PreparedStatement stmt = null;
+        String query = "select * from cameras";
+
+        try {
+            stmt = con.prepareStatement(query);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Camera c = new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
+                cameraList.add(c);
+            }
+
+        } catch (SQLException e ) {
+            throw new PersistenceException(e.getMessage());
+        } catch(NullPointerException e){
+            throw new IllegalArgumentException();
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.debug("Closing readActive failed: " + e.getMessage());
+                }
+            }
+        }
+        return cameraList;
+    }
+
+    @Override
     public void setActive(int cameraID) throws PersistenceException {
         PreparedStatement stmt=null;
         try {

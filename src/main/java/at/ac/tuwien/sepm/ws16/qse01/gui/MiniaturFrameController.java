@@ -68,7 +68,7 @@ public class MiniaturFrameController {
 
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
-        System.out.println(screenWidth+"_"+screenHeight);
+       // System.out.println(screenWidth+"_"+screenHeight);
         tile.setMinWidth(screenWidth);
         tile.setMinHeight(screenHeight-60);
 
@@ -140,12 +140,14 @@ public class MiniaturFrameController {
             activeImageView = imageView;
 
         }else{
+            /*
             activeImageView.setFitHeight(150);
             activeImageView.setFitWidth(150);
             activeImageView.setPreserveRatio(true);
             imageView.setStyle("-fx-background-color: BLACK");
             ((VBox) activeImageView.getParent()).getChildren().get(1).setVisible(false);
-            activeImageView = null;
+            activeImageView = null;*/
+            windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         }
     }
 

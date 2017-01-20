@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -57,6 +58,8 @@ public class FullScreenImageController {
     private GridPane wholePane;
     @FXML
     private Pane planetop;
+    @FXML
+    private AnchorPane forCropping;
 
     private GridPane planbottom;
     @FXML
@@ -685,7 +688,7 @@ public class FullScreenImageController {
         if(cropRectangle==null)
         {
             cropRectangle=createDraggableRectangle(wholePane.getWidth() - 250, wholePane.getHeight() - 250, 500, 500);
-            wholePane.getChildren().add(cropRectangle);
+            forCropping.getChildren().add(cropRectangle);
         }
         else
         {

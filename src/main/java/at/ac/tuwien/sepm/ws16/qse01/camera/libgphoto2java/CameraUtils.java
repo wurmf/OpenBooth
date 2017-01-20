@@ -38,19 +38,25 @@ public class CameraUtils {
         throw new AssertionError();
     }
 
-    public static void closeQuietly(Closeable c) {
-        try {
+    public static void closeQuietly(Closeable c)
+    {
+        try
+        {
             c.close();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t)
+        {
             log.log(Level.WARNING, "Failed to close Closeable " + c.getClass().getName(), t);
         }
     }
     private final static Logger log = Logger.getLogger(CameraUtils.class.getName());
 
-    public static int check(int result, String methodName) {
+    public static int check(int result, String methodName)
+    {
         if (result < GPhoto2Native.GP_OK) {
             String constantName = ERROR_CONSTANTS.get(result);
-            if (constantName == null) {
+            if (constantName == null)
+            {
                 constantName = "unknown error";
             }
             throw new CameraException(methodName + " failed with " + constantName + " #" + result + ": " + GPhoto2Native.INSTANCE.gp_result_as_string(result), result);
@@ -58,32 +64,45 @@ public class CameraUtils {
         return result;
     }
 
-    public static void checkQuietly(int result, String methodName) {
-        try {
+    public static void checkQuietly(int result, String methodName)
+    {
+        try
+        {
             check(result, methodName);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             log.log(Level.WARNING, "Failed to invoke " + methodName + ": " + ex, ex);
         }
     }
 
-    public static String toString(char[] array) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == 0) {
+    public static String toString(char[] array)
+    {
+        for (int i = 0; i < array.length; i++)
+        {
+            if (array[i] == 0)
+            {
                 return new String(array, 0, i);
             }
         }
         return new String(array);
     }
 
-    public static String toString(byte[] array) {
-        try {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] == 0) {
+    public static String toString(byte[] array)
+    {
+        try
+        {
+            for (int i = 0; i < array.length; i++)
+            {
+                if (array[i] == 0)
+                {
                     return new String(array, 0, i, "ASCII");
                 }
             }
             return new String(array, "ASCII");
-        } catch (UnsupportedEncodingException ex) {
+        }
+        catch (UnsupportedEncodingException ex)
+        {
             throw new RuntimeException(ex);
         }
     }
@@ -126,14 +145,18 @@ public class CameraUtils {
         m.put(GPhoto2Native.GP_ERROR_HAL, "GP_ERROR_HAL");
     }
 
-    public static <T> T requireNotNull(T obj) {
-        if (obj == null) {
+    public static <T> T requireNotNull(T obj)
+    {
+        if (obj == null)
+        {
             throw new NullPointerException();
         }
         return obj;
     }
-    public static <T> T requireNotNull(T obj, String name) {
-        if (obj == null) {
+    public static <T> T requireNotNull(T obj, String name)
+    {
+        if (obj == null)
+        {
             throw new NullPointerException(name);
         }
         return obj;

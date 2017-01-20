@@ -111,9 +111,8 @@ public abstract class SettingFrameController {
         positionController.refreshTablePosition(positionList,selectedProfile);
     }
 
-    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList){
-        if(kamPosController!=null)
-            kamPosController.refreshTableKameraPosition(camposList,positionController.getPosList(),profileController.getSelectedProfile());
+    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList){
+            kamPosController.refreshTableKameraPosition(camposList,posList,profileController.getSelectedProfile());
     }
     protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList){
         logoController.refreshTableLogo(logoList,profileController.getSelectedProfile());
@@ -127,12 +126,13 @@ public abstract class SettingFrameController {
         greenscreenCategoryController.refreshTableCategory(categoriesOfProfile,categories,profileController.getSelectedProfile());
     }
     protected void refreshTableBackground(List<Background> backgrounds){
-       // if(greenscreenBackgroundController!=null)
+
             greenscreenBackgroundController.refreshTableBackground(backgrounds,profileController.getSelectedProfile(),greenscreenCategoryController.getSelectedCategory());
     }
 
     protected  void setControllers(){
         greenscreenCategoryController.setControllers(greenscreenBackgroundController);
+        positionController.setControllers(kamPosController);
     }
 
 
