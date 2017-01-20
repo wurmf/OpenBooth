@@ -18,7 +18,9 @@
 #profileChoiceBox{
   -fx-background-color: darkgray;
   -fx-pref-width: 30em;
+  -fx-mark-color: green ;
 }
-#profileChoiceBox {
--fx-text-fill: black;
+
+.choice-box .context-menu {
+    -fx-background-color: darkgray ;
 }
