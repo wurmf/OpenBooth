@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -65,12 +66,14 @@ public class ShootingAdminController {
 
     private ShootingService shootingService;
     private ProfileService profileService;
+    private ImageProcessingManager imageProcessingManager;
     private WindowManager windowManager;
 
     @Autowired
-    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, WindowManager windowManager) {
+    public ShootingAdminController(ProfileService profileService, ShootingService shootingService, ImageProcessingManager imageProcessingManager, WindowManager windowManager) {
         this.shootingService = shootingService;
         this.profileService= profileService;
+        this.imageProcessingManager = imageProcessingManager;
         this.windowManager = windowManager;
     }
 
@@ -160,23 +163,28 @@ public class ShootingAdminController {
                     if(path==null) {
                         path = shootingService.createPath();
                     }
-                    Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
-                    path = "";
-
-                    shootingService.addShooting(shouting);
 
                    // windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
 
-                  boolean camerasFitPosition =windowManager.initImageProcessing();
+                  boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
                     if(camerasFitPosition){
+
+                        Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
+
+                        path = "";
+
+                        shootingService.addShooting(shouting);
+
+                        imageProcessingManager.initImageProcessing();
+
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
                     } else{
                         showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
                     }
                 } catch (ServiceException serviceExeption) {
                     LOGGER.error("onStartShootingPressed - ", serviceExeption);
-                    showInformationDialog("Es konnte kein Shooting erstellt werden.");
+                    showInformationDialog("Es konnte kein Shooting gestartet werden.");
                 }
         } else {
             showInformationDialog("Bitte erstellen Sie ein neues Profil");

@@ -1,7 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
-import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessingManagerImpl;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -12,7 +11,6 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
@@ -28,20 +26,18 @@ public class WindowManager {
     public static final int END_APPLICATION=0;
     public static final int SHOW_MAINSCENE=1;
     public static final int SHOW_SHOOTINGSCENE=2;
-    public static final int SHOW_PROFILESCENE=3;
+    public static final int SHOW_SETTINGSCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
     public static final int SHOW_CUSTOMERSCENE=5;
-    public static final int SHOW_SETTINGSCENE=6;
+
 
     private SpringFXMLLoader springFXMLLoader;
-    private ApplicationContext applicationContext;
     private ShotFrameManager shotFrameManager;
     private LoginRedirectorModel loginRedirectorModel;
     private Stage mainStage;
     private Scene adminLoginScene;
     private Scene mainScene;
     private Scene shootingScene;
-    private Scene profileScene;
     private Scene settingScene;
     private Scene miniaturScene;
     private Scene pictureFullScene;
@@ -66,26 +62,20 @@ public class WindowManager {
     /**
      * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
      * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
-     * @param applicationContext the applicationContext generated in the MainApplication
      * @throws IOException
      */
-    public void start(Stage mainStage, ApplicationContext applicationContext) throws IOException{
+    public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
-        this.applicationContext=applicationContext;
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
 
         setFontSize(screenWidth,screenHeight);
         if(fontSize ==0){
-            LOGGER.debug("font sice - non fitting screen sice");
+            LOGGER.debug("font size - non fitting screen size");
             fontSize =16;
         }
 
-
-        //TODO: replace this part with ShotFrameManager. WindowManager#closeStages must also be changed.
-        // Anmerkung: shotframemanager wird in camerapackage erstellt und initializiert und die werden nicht in gleichem
-        // Stage angezeigt sondern die haben eigene stages. - deniz
 
         //Creating ImageFullscreenscene
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
@@ -186,6 +176,7 @@ public class WindowManager {
         this.mainStage.setFullScreen(true);
         this.mainStage.show();
         this.mainStage.setFullScreenExitHint("");
+
     }
 
     /**
@@ -202,8 +193,6 @@ public class WindowManager {
             case END_APPLICATION: closeStages();
                 break;
             case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
-                break;
-            case SHOW_PROFILESCENE: mainStage.setScene(profileScene);
                 break;
             case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
                 break;
@@ -270,11 +259,6 @@ public class WindowManager {
         return this.mainStage;
     }
 
-
-    public boolean initImageProcessing() throws  ServiceException{
-        ImageProcessingManagerImpl imageProcessingManager = applicationContext.getBean(ImageProcessingManagerImpl.class);
-        return imageProcessingManager.initImageProcessing();
-    }
 
     /**
      * sets the initial font size depending on the screen Width and high

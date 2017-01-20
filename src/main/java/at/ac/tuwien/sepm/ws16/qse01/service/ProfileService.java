@@ -2,7 +2,6 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
-import javafx.geometry.Pos;
 
 import java.util.List;
 
@@ -556,4 +555,21 @@ public interface ProfileService {
      * @return list of all available backgrounds
      */
     List<Background> getAllBackgroundOfProfile() throws ServiceException;
+
+    /**
+     * counts how many times a logo used by given profile
+     * @param logoID id of logo
+     * @param profileID if of profile
+     * @return int the number of using of logo by given profile
+     * @throws ServiceException if this action can't be completed
+     */
+    int getNumberOfUsingByProfile(int logoID,int profileID) throws ServiceException;
+
+    /**
+     * counts how many times a logo used by all existing profiles
+     * @param logoID id of logo
+     * @return int the number of using of logo by all existing profiles
+     * @throws ServiceException if this action can't be completed
+     */
+    int getNumberOfUsing(int logoID) throws ServiceException;
 }

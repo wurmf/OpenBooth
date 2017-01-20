@@ -79,21 +79,12 @@ public class CustomerFrameController {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
 
-            if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-              //  LOGGER.debug("Profile id:" + profile.getId() + "");
-                if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-                    profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                //    LOGGER.debug("Profile id changed:" + profile.getId() + "");
-                }
-            }
-            if(!profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
+            if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
                 rightbutton.setVisible(false);
             }
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
-            LOGGER.error("initialise:",e);
-        } catch (NullPointerException n){
-            LOGGER.error("no active shooting:",n);
+            LOGGER.error("initialise:", e);
         }
     }
 

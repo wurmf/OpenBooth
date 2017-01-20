@@ -9,7 +9,10 @@
 <content>
     <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
         <children>
-            <TableView fx:id="tableKamPos" prefHeight="405.0" prefWidth="453.0">
+            <TableView fx:id="tableKamPos" prefHeight="405.0" prefWidth="453.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
                 <columns>
                     <TableColumn fx:id="colKamPosKamera" prefWidth="185.41546630859375" text="Kamera" />
                     <TableColumn fx:id="colKamPosPosition" minWidth="0.0" prefWidth="202.0" text="Position" />
