@@ -19,13 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
 
@@ -330,9 +326,9 @@ public class CustomerFrameController {
                     filter.setPrefWidth(width - 20);
                     filter.setPrefHeight(high/2);
                     String url = pairList.get(i).getCameraLable();
-                   // LOGGER.debug("url costumer: " + url);
-                   // filter.setStyle("-fx-background-image: url('" + url + "') " );
-                    //filter.setStyle("-fx-background-size: 100%" );
+                    LOGGER.debug("url costumer: " + url);
+                    filter.setStyle("-fx-background-image: url('" + url + "') " );
+                    filter.setStyle("-fx-background-size: 100%" );
                     filter.setStyle("-fx-background-color: Gray" );
 
                     double size;
