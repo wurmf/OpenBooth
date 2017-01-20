@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.gui.CameraPositionFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -26,13 +27,14 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
     private  ObservableList<Position> posList;
     private ProfileService pservice;
+    private CameraPositionFrameController cameraPositionFrameController;
 
     private final Button cellButton;
 
-    public PositionButtonCell(ImageHandler imageHandler,ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, int selectedProfilID, ProfileService pservice, Stage primaryStage) {
+    public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, int selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
         this.posList = posList;
         this.pservice = pservice;
-
+        this.cameraPositionFrameController = cameraPositionFrameController;
         cellButton = new Button();
         cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",50,50));
         cellButton.setPrefWidth(40);
@@ -63,6 +65,7 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
                         // refreshing kamPos TableView;
                         kamPosList.clear();
                         kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
+                        cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,pservice.get(selectedProfilID));
 
                     } catch (ServiceException e) {
                         LOGGER.error("PositionButtonCell->Löschen Button -> Position konnte nicht gelöscht werden.",e);

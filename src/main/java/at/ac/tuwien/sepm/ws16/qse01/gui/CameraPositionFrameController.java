@@ -75,12 +75,12 @@ public class CameraPositionFrameController extends SettingFrameController {
                 });
     }
 
-    protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList,Profile selected){
-        LOGGER.debug("refreshing the KameraPosition-Zuweisung table...");
+    public void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList,Profile selected){
+        LOGGER.debug("refreshing the KameraPosition-Zuweisung table..."+posList.size()+posList.toString());
         selectedProfile = selected;
         this.posList.clear();
         this.posList.addAll(posList);
-        this.kamPosList.removeAll(kamPosList);
+        this.kamPosList.clear();
         this.kamPosList.addAll(camposList);
         tableKamPos.setItems(this.kamPosList);
     }

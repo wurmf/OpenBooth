@@ -35,16 +35,20 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
 
             @Override
             public void changed(ObservableValue ov, Position t, Position selectedPos) {
-                Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
-                currentCamPos.setPosition(selectedPos);
-                LOGGER.debug("Selected Pos ->"+(selectedPos==null?"keine":selectedPos.getName()));
+                if(getIndex()<getTableView().getItems().size() && getIndex()>=0) {
+                    Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
+                    currentCamPos.setPosition(selectedPos);
+                    LOGGER.debug("Selected Pos ->" + (selectedPos == null ? "keine" : selectedPos.getName()));
+                    LOGGER.debug(currentCamPos.getCamera().getLable() + "_" + currentCamPos.getPosition());
 
-                try {
-                    pservice.editPairCameraPosition(currentCamPos,currentCamPos.getCamera().getId(),currentCamPos.getPosition().getId(),false);
-                } catch (ServiceException e) {
-                    LOGGER.debug("Error->"+e.getMessage());
-                }  catch(NullPointerException e){
-                    LOGGER.debug("NullPointer ->"+e.getMessage());
+                    try {
+                        if(currentCamPos.getPosition()!=null)
+                            pservice.editPairCameraPosition(currentCamPos, currentCamPos.getCamera().getId(), currentCamPos.getPosition().getId(), false);
+                    } catch (ServiceException e) {
+                        LOGGER.debug("Error->", e);
+                    } catch (NullPointerException e) {
+                        LOGGER.debug("NullPointer ->", e);
+                    }
                 }
 
             }

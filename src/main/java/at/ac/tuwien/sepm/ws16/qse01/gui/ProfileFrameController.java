@@ -279,8 +279,9 @@ public class ProfileFrameController extends SettingFrameController{
                     try {
                         setControllers();
                         refreshTablePosition(pservice.getAllPositions());
-
-                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+                        this.posList.clear();
+                        this.posList.addAll(pservice.getAllPositions());
+                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()),this.posList);
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
