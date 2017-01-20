@@ -19,9 +19,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 
@@ -190,6 +194,7 @@ public class CustomerFrameController {
 
     private void creatButtons(){
        try {
+
             if (shootingservice.searchIsActive().getActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
@@ -244,7 +249,6 @@ public class CustomerFrameController {
                     }
 
                     Image i2;
-
                     if(shot==0){
                        i2= new Image("/images/singleshot.png");
                     }else if(shot == 1){
