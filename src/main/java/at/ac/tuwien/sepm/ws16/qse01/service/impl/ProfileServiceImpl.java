@@ -716,4 +716,27 @@ public class ProfileServiceImpl implements ProfileService{
     public List<Background> getAllBackgroundOfProfile() throws ServiceException{
         return this.getAllBackgroundOfProfile(this.activeProfile.getId());
     }
+
+    public int getNumberOfUsing(int logoID) throws ServiceException {
+        int countsOfLogoUsing = 0;
+        for(Profile profile: getAllProfiles()) {
+            for (Profile.PairLogoRelativeRectangle p : getAllPairLogoRelativeRectangle(profile.getId())) {
+                if (p.getLogo() != null && logoID == p.getLogo().getId()) {
+                    countsOfLogoUsing++;
+                }
+            }
+        }
+        return countsOfLogoUsing;
+    }
+    public int getNumberOfUsingByProfile(int logoID,int profileID) throws ServiceException {
+        int countsOfLogoUsingByProfile = 0;
+
+        for (Profile.PairLogoRelativeRectangle p : getAllPairLogoRelativeRectangle(profileID)) {
+            if (p.getLogo() != null && logoID == p.getLogo().getId()) {
+                countsOfLogoUsingByProfile++;
+            }
+        }
+
+        return countsOfLogoUsingByProfile;
+    }
 }

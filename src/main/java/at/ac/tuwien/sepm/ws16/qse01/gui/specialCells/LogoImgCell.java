@@ -33,7 +33,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
     final ImageView img = new ImageView();
     final ImageView cellImgView;
 
-    public LogoImgCell(ObservableList<Profile.PairLogoRelativeRectangle> logoList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
+    public LogoImgCell(ObservableList<Profile.PairLogoRelativeRectangle> logoList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage,AutoCompleteTextField txLogoName) {
         this.logoList = logoList;
         this.pservice = pservice;
 
@@ -64,6 +64,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                 if (file != null) {
                     try {
                         LOGGER.info("Logo Image uploading..."+file.getAbsolutePath());
+
                         Profile.PairLogoRelativeRectangle p = logoList.get(getIndex());
                         if(p.getLogo()==null){
                             Logo newLogo = pservice.addLogo(new Logo("null(No Logo Name)",file.getAbsolutePath()));
@@ -84,8 +85,30 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                         setGraphic(hb);
 
 
-                        pservice.editLogo(p.getLogo());
+                        ImageView imgView = new ImageView(new Image("file:" + p.getLogo().getPath(), 30, 30, true, true));
+                        imgView.setId((p.getLogo().getPath()));
+                        if(pservice.getNumberOfUsing(p.getLogo().getId())==1) {
+                            pservice.editLogo(p.getLogo());
 
+                            txLogoName.getImgViews().remove(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId());
+                            txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId(), imgView);
+                        }else {
+
+                            System.out.println("oldLogoID ->"+p.getLogo().getId());
+                            p.getLogo().setId(Integer.MIN_VALUE);
+                            Logo newLogo = pservice.addLogo(p.getLogo());
+                            p.setLogo(newLogo);
+
+                            logoList.remove(getIndex());
+                            logoList.add(getIndex(),p);
+
+
+                            //txLogoName.getImgViews().remove(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId());
+                            System.out.println("newLogoID ->"+p.getLogo().getId());
+                            txLogoName.getEntries().add(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId());
+                            txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId(),imgView);
+                            pservice.editPairLogoRelativeRectangle(p);
+                        }
 
                     } catch (ServiceException e) {
                        LOGGER.error("LogoImgCell->ImgCell->",e);

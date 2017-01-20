@@ -155,6 +155,4 @@ public abstract class SettingFrameController {
 
 
 
-
-
 }

@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -26,12 +27,16 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
     private  ObservableList<Position> posList;
     private ProfileService pservice;
 
-    private final Button cellButton = new Button("X");
+    private final Button cellButton;
 
-    public PositionButtonCell(ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList,int selectedProfilID, ProfileService pservice, Stage primaryStage) {
+    public PositionButtonCell(ImageHandler imageHandler,ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, int selectedProfilID, ProfileService pservice, Stage primaryStage) {
         this.posList = posList;
         this.pservice = pservice;
 
+        cellButton = new Button();
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",50,50));
+        cellButton.setPrefWidth(40);
+        cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override

@@ -13,10 +13,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.stage.FileChooser;
@@ -44,6 +41,10 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
     private TextField txBackgroundName;
     @FXML
     private TextField txBackgroundPath;
+    @FXML
+    private Button txBackgroundUpload;
+    @FXML
+    private Button txBackgroundAdd;
 
 
 
@@ -139,12 +140,27 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
                     @Override
                     public TableCell<Background, Boolean> call(TableColumn<Background, Boolean> p) {
-                        return new BackgroundButtonCell(backgroundList,bservice,windowManager.getStage());
+                        return new BackgroundButtonCell(imageHandler,backgroundList,bservice,windowManager.getStage());
                     }
 
                 });
 
 
+        txBackgroundUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+        txBackgroundUpload.setPrefHeight(50);
+        txBackgroundUpload.setPrefWidth(50);
+
+        txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+        txBackgroundAdd.setPrefHeight(50);
+        txBackgroundAdd.setPrefWidth(50);
+
+        txBackgroundName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+                txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
 
 
     }
@@ -166,14 +182,20 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txBackgroundPath.setText(file.getAbsolutePath());
+            txBackgroundUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
+
+            if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+                txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
         }
     }
     @FXML
     private void saveBackground(){
         LOGGER.error("Position Add Button has been clicked");
         String name = txBackgroundName.getText();
-        if(name.trim().compareTo("") == 0 || txBackgroundPath.getText().compareTo("Hochladen...") == 0){
-            showError("Sie müssen einen Namen eingeben und ein Hintergrundbild hochladen!");
+        if(selectedCategory==null || name.trim().compareTo("") == 0 || txBackgroundPath.getText().compareTo("Hochladen...") == 0){
+            showError("Sie müssen einen Namen eingeben, ein Hintergrundbild hochladen und eine Kategorie auswählen!");
         }else {
             Background p = new Background(name,txBackgroundPath.getText(),selectedCategory);
 
@@ -187,6 +209,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
                 txBackgroundPath.setText("Hochladen...");
                 txBackgroundName.clear();
+                txBackgroundUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -202,6 +225,12 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         this.backgroundList.clear();
         this.backgroundList.addAll(backgroundList);
         tableBackground.setItems(this.backgroundList);
+
+        if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+            txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+        }else
+            txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
     }
 
     protected void refreshCategoryComboBox(List<Background.Category> categories,Profile selected){

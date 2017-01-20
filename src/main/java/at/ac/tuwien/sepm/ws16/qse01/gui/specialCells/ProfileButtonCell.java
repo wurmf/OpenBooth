@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -10,8 +11,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
-import javafx.scene.image.Image;
-import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +28,12 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
 
     private final Button cellButton;
 
-    public ProfileButtonCell(ObservableList<Profile> pList, ProfileService pservice,Stage primaryStage) {
+    public ProfileButtonCell(ImageHandler imageHandler,ObservableList<Profile> pList, ProfileService pservice, Stage primaryStage) {
         this.pList = pList;
         this.pservice = pservice;
 
         cellButton = new Button();
-        Image image = new Image("file:"+this.getClass().getResource("/images/delete4.png").getPath(),100,100,false,false);
-        BackgroundSize backgroundSize = new BackgroundSize(200, 200, true, true, true, false);
-       BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        Background background = new Background(backgroundImage);
-        cellButton.setBackground(background);
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
 

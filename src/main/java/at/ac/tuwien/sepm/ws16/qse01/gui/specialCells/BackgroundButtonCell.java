@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
+import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -25,12 +26,16 @@ public class BackgroundButtonCell extends TableCell<Background, Boolean> {
     private  ObservableList<Background> backgroundList;
     private BackgroundService bservice;
 
-    private final Button cellButton = new Button("X");
+    private final Button cellButton;
 
-    public BackgroundButtonCell(ObservableList<Background> backgroundList, BackgroundService bservice, Stage primaryStage) {
+    public BackgroundButtonCell(ImageHandler imageHandler,ObservableList<Background> backgroundList, BackgroundService bservice, Stage primaryStage) {
         this.backgroundList = backgroundList;
         this.bservice = bservice;
 
+        cellButton = new Button();
+        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setPrefWidth(40);
+        cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override

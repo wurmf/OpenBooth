@@ -7,9 +7,6 @@
   -fx-font-family: HP Simplified;
 }
 
-.text-field {
-    -fx-font-size: 0.8em;
-}
 .table-view .column-header{
     -fx-font-size: 0.8em;
 }

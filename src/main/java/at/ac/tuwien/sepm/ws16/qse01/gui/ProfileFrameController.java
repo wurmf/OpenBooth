@@ -75,6 +75,10 @@ public class ProfileFrameController extends SettingFrameController{
     private CheckBox txProfilDrucken;
     @FXML
     private TextField txProfilWatermark;
+    @FXML
+    private Button txProfilUpload;
+    @FXML
+    private Button txProfilAdd;
 
 
 
@@ -256,7 +260,7 @@ public class ProfileFrameController extends SettingFrameController{
                         @Override
                         public TableCell<Profile, Boolean> call(TableColumn<Profile, Boolean> p) {
 
-                            return new ProfileButtonCell(profList,pservice,windowManager.getStage());
+                            return new ProfileButtonCell(imageHandler,profList,pservice,windowManager.getStage());
                         }
 
                     });
@@ -287,6 +291,23 @@ public class ProfileFrameController extends SettingFrameController{
                        LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
                     }
                 }
+            });
+
+
+            txProfilUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+            txProfilUpload.setPrefWidth(50);
+            txProfilUpload.setPrefHeight(50);
+
+            txProfilAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+            txProfilAdd.setPrefWidth(50);
+            txProfilAdd.setPrefHeight(50);
+
+            txProfilName.textProperty().addListener((observable, oldValue, newValue) -> {
+                if(!newValue.isEmpty()){
+                    txProfilAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                }else
+                    txProfilAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
             });
 
 
@@ -324,6 +345,10 @@ public class ProfileFrameController extends SettingFrameController{
                 txProfilName.clear();
                 txProfilWatermark.setText("Hochladen...");
 
+
+                txProfilUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+
+
             } catch (ServiceException e) {
                 LOGGER.error("Fehler: Profil konnte nicht erstellt werden...",e);
             }
@@ -344,6 +369,7 @@ public class ProfileFrameController extends SettingFrameController{
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txProfilWatermark.setText(file.getAbsolutePath());
+            txProfilUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
         }
     }
 
@@ -360,4 +386,6 @@ public class ProfileFrameController extends SettingFrameController{
     protected Profile getSelectedProfile(){
         return this.selectedProfile;
     }
+
+
 }

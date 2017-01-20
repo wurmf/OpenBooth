@@ -20,10 +20,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -73,6 +70,10 @@ public class LogoFrameController extends SettingFrameController {
     private AutoCompleteTextField txLogoName;
     @FXML
     private TextField txLogoLogo;
+    @FXML
+    private Button txLogoUpload;
+    @FXML
+    private Button txLogoAdd;
 
     /* LOGO TextFIELDS */
     @FXML
@@ -155,8 +156,36 @@ public class LogoFrameController extends SettingFrameController {
                                 if(p.getLogo()==null){
                                     Logo newLogo = pservice.addLogo(new Logo(t.getNewValue(),"noimage.jpg"));
                                     p.setLogo(newLogo);
-                                }else
-                                    p.getLogo().setLabel(t.getNewValue());
+                                }else {
+                                    if(pservice.getNumberOfUsing(p.getLogo().getId())==1) {
+                                        txLogoName.getEntries().remove(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId());
+                                        txLogoName.getImgViews().remove(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId());
+
+                                        p.getLogo().setLabel(t.getNewValue());
+
+                                        ImageView imgView = new ImageView(new Image("file:" + p.getLogo().getPath(), 30, 30, true, true));
+                                        imgView.setId((p.getLogo().getPath()));
+                                        txLogoName.getEntries().add(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId());
+                                        txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId(), imgView);
+                                    }else{
+                                        int index = logoList.indexOf(p);
+                                        logoList.remove(p);
+                                        p.getLogo().setId(Integer.MIN_VALUE);
+                                        p.getLogo().setLabel(t.getNewValue());
+                                        Logo newLogo = pservice.addLogo(p.getLogo());
+                                        p.setLogo(newLogo);
+
+
+                                        logoList.add(index,p);
+
+                                        ImageView imgView = new ImageView(new Image("file:" + p.getLogo().getPath(), 30, 30, true, true));
+                                        imgView.setId((p.getLogo().getPath()));
+                                        txLogoName.getEntries().add(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId());
+                                        txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId(),imgView);
+                                        pservice.editPairLogoRelativeRectangle(p);
+
+                                    }
+                                }
 
                                 LOGGER.info("Logo changed..."+p.getLogo().getId()+"_"+p.getLogo().getLabel()+"_"+p.getLogo().getPath());
                                 pservice.editLogo(p.getLogo());
@@ -331,7 +360,7 @@ public class LogoFrameController extends SettingFrameController {
             @Override
             public TableCell call(TableColumn p) {
 
-                return new LogoImgCell(logoList,pservice,imageHandler,windowManager.getStage());
+                return new LogoImgCell(logoList,pservice,imageHandler,windowManager.getStage(),txLogoName);
 
             }
         });
@@ -355,7 +384,7 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public TableCell<Profile.PairLogoRelativeRectangle, Boolean> call(TableColumn<Profile.PairLogoRelativeRectangle, Boolean> p) {
 
-                        return new LogoButtonCell(logoList,pservice,windowManager.getStage(),selectedProfile.getId(),previewLogo);
+                        return new LogoButtonCell(imageHandler,logoList,pservice,windowManager.getStage(),selectedProfile.getId(),previewLogo,txLogoName);
                     }
 
                 });
@@ -392,6 +421,57 @@ public class LogoFrameController extends SettingFrameController {
         });
         txPreviewWidth.textProperty().addListener((observable, oldValue, newValue) -> {
             changePreviewSize(newValue,1);
+        });
+
+
+        txLogoUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+        txLogoUpload.setPrefWidth(50);
+        txLogoUpload.setPrefHeight(50);
+
+
+        txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+        txLogoAdd.setPrefWidth(50);
+        txLogoAdd.setPrefHeight(50);
+
+        txLogoName.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+                    !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+        txLogoX.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoName.getText().isEmpty() &&
+                    !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+        txLogoY.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+                    !txLogoName.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+        txLogoBreite.textProperty().addListener((observable, oldValue, newValue) -> {
+            if((!newValue.isEmpty() || !txLogoHoehe.getText().isEmpty()) && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+                    !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
+        });
+        txLogoHoehe.textProperty().addListener((observable, oldValue, newValue) -> {
+            if((!newValue.isEmpty() || !txLogoBreite.getText().isEmpty()) && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+                    !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+
         });
 
     }
@@ -451,9 +531,10 @@ public class LogoFrameController extends SettingFrameController {
     private void saveLogo(){
         LOGGER.error("Logo Add Button has been clicked");
         String name = txLogoName.getText();
-        if(name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0){
+        if(selectedProfile==null || name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
+                txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
             LOGGER.error("in error");
-            showError("Sie müssen einen Namen eingeben und ein Logo hochladen!");
+            showError("Sie müssen einen Namen eingeben, ein Logo hochladen und ein Profil auswählen!");
         }else {
             try {
                 Logo newLogo = new Logo(name,txLogoLogo.getText());
@@ -488,7 +569,7 @@ public class LogoFrameController extends SettingFrameController {
 
                 logoList.add(p);
 
-                txLogoName.getEntries().add(newLogo.getLabel()+" #"+newLogo.getId());
+                txLogoName.getEntries().add(newLogo.getLabel().toLowerCase()+" #"+newLogo.getId());
 
                 ImageView imgView =new ImageView(new Image("file:"+newLogo.getPath(),30,30,true,true));
 
@@ -501,6 +582,7 @@ public class LogoFrameController extends SettingFrameController {
                 txLogoX.clear();
                 txLogoY.clear();
                 txLogoLogo.setText("Hochladen...");
+                txLogoUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -528,6 +610,14 @@ public class LogoFrameController extends SettingFrameController {
         if (file != null) {
             txLogoLogo.setText(file.getAbsolutePath());
             txLogoLogo.setId("");
+            txLogoUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
+            if(selectedProfile==null || txLogoName.getText().isEmpty() || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
+                    txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+            }else
+                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+
+
         }
     }
 
@@ -548,6 +638,8 @@ public class LogoFrameController extends SettingFrameController {
         txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
         txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
         txLogoName.setTxLogoPath(txLogoLogo);
+        txLogoName.setTxLogoUpload(txLogoUpload);
+        txLogoName.setImageHandler(imageHandler);
     }
 
     protected List<String> logo2StringArray(List<Logo> logos){
