@@ -29,6 +29,7 @@ public class WindowManager {
     public static final int SHOW_SETTINGSCENE=3;
     public static final int SHOW_MINIATURESCENE=4;
     public static final int SHOW_CUSTOMERSCENE=5;
+    public static final int SHOW_RECOVERYSCENE=6;
 
 
     private SpringFXMLLoader springFXMLLoader;
@@ -43,6 +44,7 @@ public class WindowManager {
     private Scene pictureFullScene;
     private Scene customerScene;
     private Scene kamerafilterScene;
+    private Scene recoveryScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
@@ -92,7 +94,7 @@ public class WindowManager {
         Parent parentmain = (Parent) mfWrapper.getLoadedObject();
         URL css= this.getClass().getResource("/css/main.css");
         LOGGER.debug("CSSM -"+css);
-        int sice = (int)(fontSize *3);
+        int sice = (fontSize *3);
         parentmain.setStyle("-fx-font-size:"+sice+"px;");
         parentmain.getStylesheets().add(css.toExternalForm());
         this.mainScene=new Scene(parentmain,screenWidth,screenHeight);
@@ -148,6 +150,7 @@ public class WindowManager {
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
         customerFrameController = costumerWrapper.getController();
 
+        //creat Camera filter scene
         SpringFXMLLoader.FXMLWrapper<Object, CameraFilterController> kameraFilterFXMLWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", CameraFilterController.class);
         Parent parentkaf = (Parent) kameraFilterFXMLWrapper.getLoadedObject();
@@ -157,6 +160,16 @@ public class WindowManager {
         parentkaf.getStylesheets().add(csskaf.toExternalForm());
         this.kamerafilterScene = new Scene(parentkaf,screenWidth,screenHeight);
         cameraFilterController = kameraFilterFXMLWrapper.getController();
+
+        //create Recovery scene
+        SpringFXMLLoader.FXMLWrapper<Object, RecoveryController> recoveryControllerFXMLWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/recoveryFrame.fxml", RecoveryController.class);
+        Parent parentrec = (Parent) recoveryControllerFXMLWrapper.getLoadedObject();
+        URL cssrec = this.getClass().getResource("/css/recovery.css");
+        LOGGER.debug("CSSREC:"+cssrec);
+        parentrec.setStyle("-fx-font-size:"+ fontSize +"px;");
+        parentrec.getStylesheets().add(cssrec.toExternalForm());
+        this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
         try {
             miniWrapper.getController().init(mainStage);
@@ -199,6 +212,8 @@ public class WindowManager {
             case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
                 break;
             case SHOW_SETTINGSCENE: mainStage.setScene(settingScene);
+                break;
+            case SHOW_RECOVERYSCENE: mainStage.setScene(recoveryScene);
                 break;
             default: mainStage.setScene(mainScene);
                 break;

@@ -21,7 +21,7 @@
       <RowConstraints percentHeight="15.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <Button fx:id="startbutton" mnemonicParsing="false" onAction="#onStartShootingPressed" snapToPixel="false" text="Starte Shooting" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <Button fx:id="startbutton" mnemonicParsing="false" onAction="#onStartShootingPressed" snapToPixel="false" text="Starte Shooting" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <font>
             <Font />
          </font>
