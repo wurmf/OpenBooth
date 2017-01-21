@@ -6,14 +6,12 @@
    -fx-background-color: darkgray;
    -fx-text-fill: white;
    -fx-font-family: HP Simplified;
-   -fx-pref-width: 14em;
    -fx-pref-height:2em;
    }
 
 #edit{
    -fx-background-color: darkgray;
    -fx-text-fill: white;
-   -fx-font-family: HP Simplified;
-   -fx-pref-width: 15em;
+   -fx-font-family: HP Simplified;admad
    -fx-pref-height:2em;
 }
