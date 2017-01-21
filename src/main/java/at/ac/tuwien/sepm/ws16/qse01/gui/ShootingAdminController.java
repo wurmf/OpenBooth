@@ -159,7 +159,7 @@ public class ShootingAdminController {
                 bgStorageDirLabel.setText(activeShooting.getBgPictureFolder());
             }
 
-        } else {  
+        } else {
             stopButton.setVisible(false);
             startButton.setVisible(true);
             storage.setVisible(true);
