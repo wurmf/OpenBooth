@@ -572,4 +572,12 @@ public interface ProfileService {
      * @throws ServiceException if this action can't be completed
      */
     int getNumberOfUsing(int logoID) throws ServiceException;
+
+    /**
+     * reads all cameras with or without position
+     * @param profileID id of profile
+     * @return List of all existing cameras with/without position
+     * @throws ServiceException if this action can't be completed
+     */
+    List<Profile.PairCameraPosition> getAllPairCamerasWithPositionByProfile(int profileID) throws ServiceException;
 }

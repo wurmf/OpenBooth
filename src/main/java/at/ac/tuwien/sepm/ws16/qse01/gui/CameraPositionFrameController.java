@@ -1,10 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.CamPosCheckbox;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.CamPosComboBoxCell;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -32,18 +35,22 @@ import java.util.List;
 public class CameraPositionFrameController extends SettingFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CameraPositionFrameController.class);
     public final ObservableList<Position> posList = FXCollections.observableArrayList();
-
+    private CameraService cameraService;
     @FXML
     private TableView tableKamPos;
     @FXML
     private TableColumn colKamPosKamera;
     @FXML
     private TableColumn colKamPosPosition;
-
+    @FXML
+    private TableColumn colKamPosActivated;
+    @FXML
+    private TableColumn colKamPosGreenscreen;
 
     @Autowired
-    public CameraPositionFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
+    public CameraPositionFrameController(CameraService cameraService,ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
         super(pservice, logoService, bservice, windowmanager,imageHandler);
+        this.cameraService = cameraService;
     }
 
     @FXML
@@ -51,6 +58,58 @@ public class CameraPositionFrameController extends SettingFrameController {
 
         tableKamPos.setEditable(true);
         colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLable"));
+      /*  colKamPosKamera.setCellValueFactory(new PropertyValueFactory<Profile.PairCameraPosition, String>("cameraLable"));
+        colKamPosKamera.setCellFactory(TextFieldTableCell.forTableColumn());
+        colKamPosKamera.setOnEditCommit(
+                new EventHandler<TableColumn.CellEditEvent<Profile.PairCameraPosition, String>>() {
+                    @Override
+                    public void handle(TableColumn.CellEditEvent<Profile.PairCameraPosition, String> t) {
+                        try {
+                            Profile.PairCameraPosition p = ((Profile.PairCameraPosition) t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow())
+                            );
+                            if (t.getNewValue().compareTo("") != 0) {
+                                p.getCamera().setLable(t.getNewValue());
+                                cameraService.(p);
+
+
+                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()),posList,selectedProfile);
+                            } else {
+                                refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
+                            }
+
+                        } catch (ServiceException e) {
+                            try {
+                                refreshTableProfiles(pservice.getAllProfiles());
+                            } catch (ServiceException e1) {
+                                LOGGER.error("Error: could not refresh the profile table: ",e1);
+                            }
+
+                        }
+
+                    }
+                });*/
+        colKamPosActivated.setStyle("-fx-alignment: CENTER;");
+        colKamPosActivated.setSortable(false);
+        colKamPosActivated.setCellValueFactory(
+                new Callback<TableColumn.CellDataFeatures<Profile.PairCameraPosition, Boolean>,
+                        ObservableValue<Boolean>>() {
+
+                    @Override
+                    public ObservableValue<Boolean> call(TableColumn.CellDataFeatures<Profile.PairCameraPosition, Boolean> p) {
+                        return new SimpleBooleanProperty(p.getValue() != null);
+                    }
+                });
+        //Adding the checkbox to the cell
+        colKamPosActivated.setCellFactory(
+                new Callback<TableColumn<Profile.PairCameraPosition, Boolean>, TableCell<Profile.PairCameraPosition, Boolean>>() {
+
+                    @Override
+                    public TableCell<Profile.PairCameraPosition,Boolean> call(TableColumn<Profile.PairCameraPosition,Boolean> p) {
+                        return new CamPosCheckbox(kamPosList,pservice,kamList,selectedProfile);
+                    }
+
+                });
 
         colKamPosPosition.setStyle("-fx-alignment: CENTER;");
         colKamPosPosition.setSortable(false);
@@ -75,7 +134,7 @@ public class CameraPositionFrameController extends SettingFrameController {
                 });
     }
 
-    public void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList,Profile selected){
+    public void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList, ObservableList<Position> posList, Profile selected){
         LOGGER.debug("refreshing the KameraPosition-Zuweisung table..."+posList.size()+posList.toString());
         selectedProfile = selected;
         this.posList.clear();

@@ -14,8 +14,10 @@
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
                 <columns>
-                    <TableColumn fx:id="colKamPosKamera" prefWidth="185.41546630859375" text="Kamera" />
-                    <TableColumn fx:id="colKamPosPosition" minWidth="0.0" prefWidth="202.0" text="Position" />
+                    <TableColumn fx:id="colKamPosKamera"  text="Kamera" />
+                    <TableColumn fx:id="colKamPosActivated"  text="Aktiviert" />
+                    <TableColumn fx:id="colKamPosPosition" text="Position" />
+                    <!--<TableColumn fx:id="colKamPosGreenscreen" text="Greenscreen" />-->
                 </columns>
             </TableView>
         </children>

@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -39,6 +40,8 @@ public class ProfileServiceImpl implements ProfileService{
     private BackgroundCategoryDAO backgroundCategoryDAO;
     @Resource
     private BackgroundService backgroundService;
+    @Resource
+    private CameraService cameraService;
 
     private List<Profile> profileList = new ArrayList<>();
     private List<Position> positionList = new ArrayList<>();
@@ -50,13 +53,15 @@ public class ProfileServiceImpl implements ProfileService{
                               PositionDAO positionDAO,
                               LogoDAO logoDAO,
                               CameraDAO cameraDAO,
-                              ShootingService shootingService
+                              ShootingService shootingService,
+                              CameraService cameraService
     ) throws ServiceException {
         this.profileDAO = profileDAO;
         this.positionDAO = positionDAO;
         this.logoDAO = logoDAO;
         this.cameraDAO = cameraDAO;
         this.shootingService = shootingService;
+        this.cameraService = cameraService;
         this.setActiveProfile(1);
 
         try {
@@ -474,6 +479,21 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     public List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile() throws ServiceException {
         return getAllPairCameraPositionOfProfile(this.getActiveProfile().getId());
+    }
+    @Override
+    public List<Profile.PairCameraPosition> getAllPairCamerasWithPositionByProfile(int profileID) throws ServiceException {
+        List<Profile.PairCameraPosition> allCameras = getAllPairCameraPositionOfProfile(profileID);
+        for(Camera c: cameraService.getAllCameras()) {
+            boolean exist = false;
+            for (Profile.PairCameraPosition p: allCameras){
+                if(c.getId()==p.getCamera().getId())
+                    exist = true;
+            }
+            if(!exist)
+                allCameras.add(new Profile.PairCameraPosition(profileID,c,null,false));
+
+        }
+        return allCameras;
     }
 
     @Override

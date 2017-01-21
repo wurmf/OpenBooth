@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
@@ -42,12 +43,15 @@ public abstract class SettingFrameController {
 
     protected final ObservableList<Profile> profList = FXCollections.observableArrayList();
     protected final ObservableList<Position> posList = FXCollections.observableArrayList();
-    protected final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
+    protected final ObservableList<Camera> kamList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairCameraPosition> kamPosList = FXCollections.observableArrayList();
+
+    protected final ObservableList<Background> backgroundList = FXCollections.observableArrayList();
     protected final ObservableList<Profile.PairLogoRelativeRectangle> logoList = FXCollections.observableArrayList();
 
     protected final ObservableList<Background.Category> categoryList = FXCollections.observableArrayList();
     protected final ObservableList<Background.Category> categoryListOfProfile = FXCollections.observableArrayList();
+
 
 
 

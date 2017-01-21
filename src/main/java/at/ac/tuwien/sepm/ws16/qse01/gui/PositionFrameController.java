@@ -192,7 +192,7 @@ public class PositionFrameController extends SettingFrameController {
 
 
             } catch (ServiceException e) {
-                LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
+                LOGGER.error("Fehler: Profil konnte nicht erstellt werden...",e);
             }
         }
     }
