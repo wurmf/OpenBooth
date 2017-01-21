@@ -285,7 +285,9 @@ public class WindowManager {
      */
     public void setFontSize(double screenWidth, double screenHeight){
         int initialsize = 16;
-        if(screenWidth>=1920.0 && screenHeight>=1080.0){
+        if(screenWidth>=2160.0&& screenHeight>=1440){
+            fontSize =(int)(initialsize*1.37);
+        }else if(screenWidth>=1920.0 && screenHeight>=1080.0){
             fontSize =(int)(initialsize*1.29);
         }else if(screenWidth>=1366.0 && screenHeight>=768.0){
             fontSize =(int)(initialsize*1.07);
