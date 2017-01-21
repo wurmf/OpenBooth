@@ -149,7 +149,7 @@ public class CameraFilterController {
                 filtermap.clear();
             }
             if(filtermap==null||filtermap.isEmpty()){
-                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
+                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
             }
            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size

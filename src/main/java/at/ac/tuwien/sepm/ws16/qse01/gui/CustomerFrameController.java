@@ -82,7 +82,7 @@ public class CustomerFrameController {
             if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
                 rightbutton.setVisible(false);
 
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
+                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
 
             }
 
@@ -168,7 +168,7 @@ public class CustomerFrameController {
             }
 
             if(filterList.isEmpty()){
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
+                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
@@ -256,7 +256,7 @@ public class CustomerFrameController {
                        // if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
 
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()==null|| profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName().equals("")){
-                            imageView.setImage(new Image("/images/defaut4.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                            imageView.setImage(new Image("/images/filterPreview.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
 
                         }else {
                             imageView.setImage(SwingFXUtils.toFXImage(filterList.get(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()), null));
