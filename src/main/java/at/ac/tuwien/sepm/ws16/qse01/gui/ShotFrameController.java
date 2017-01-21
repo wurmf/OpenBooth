@@ -10,6 +10,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -25,7 +26,8 @@ import java.awt.image.BufferedImage;
 
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
-
+    @FXML
+    private BorderPane pane;
     @FXML
     private ImageView shotView;
     @FXML
@@ -33,7 +35,16 @@ public class ShotFrameController {
 
     private int frameID;
 
+    @FXML
+    private void initialize(){
+        double screenWidth= Screen.getPrimary().getBounds().getWidth();
+        double screenHeight=Screen.getPrimary().getBounds().getHeight();
+        pane.setPrefHeight(screenHeight);
+        pane.setPrefWidth(screenWidth);
+        shotView.setFitHeight(screenHeight);
+        shotView.setFitWidth(screenWidth);
 
+    }
     public void initShotFrame(int cameraID)  {
         this.frameID  = cameraID;
        // showCountdown(10);

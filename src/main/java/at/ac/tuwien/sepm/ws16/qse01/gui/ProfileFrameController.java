@@ -6,6 +6,7 @@ import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileButtonCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileCheckboxCell;
 import at.ac.tuwien.sepm.ws16.qse01.gui.specialCells.ProfileImgCell;
 import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
+import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -38,7 +39,7 @@ public class ProfileFrameController extends SettingFrameController{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileFrameController.class);
 
-
+    private CameraService cameraService;
 
 
     /* BEGINN OF PROFILE Table Column FXML */
@@ -86,8 +87,9 @@ public class ProfileFrameController extends SettingFrameController{
 
 
     @Autowired
-    public ProfileFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager,ImageHandler imageHandler) throws ServiceException {
+    public ProfileFrameController(CameraService cameraService,ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
         super(pservice,logoService,bservice,windowmanager,imageHandler);
+        this.cameraService = cameraService;
     }
 
 
@@ -281,7 +283,7 @@ public class ProfileFrameController extends SettingFrameController{
                         refreshTablePosition(pservice.getAllPositions());
                         this.posList.clear();
                         this.posList.addAll(pservice.getAllPositions());
-                        refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()),this.posList);
+                        refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.getId()),this.posList);
                         refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
 
                         refreshLogoAutoComplete(selectedProfile);

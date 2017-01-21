@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.CameraServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import org.h2.tools.RunScript;
@@ -17,7 +18,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
@@ -151,7 +151,8 @@ public class TestEnvironment {
                 new JDBCPositionDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCCameraDAO(H2EmbeddedHandler.getInstance()),
-                new ShootingServiceImpl(shootingDAO));
+                new ShootingServiceImpl(shootingDAO),
+                new CameraServiceImpl(cameraDAO));
 
         try {
             con.setAutoCommit(false);

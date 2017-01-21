@@ -253,4 +253,15 @@ public class ProfileServiceTest extends TestEnvironment{
         assertTrue(profile == null);
     }
 
+    @Test
+    public void testGetActiveProfile() throws ServiceException {
+        Profile profile1 = profileService.getActiveProfile();
+        assertTrue(profile1.getName().equals("Profile 1"));
+        assertTrue(!profile1.isPrintEnabled());
+        assertTrue(!profile1.isFilerEnabled());
+        assertTrue(!profile1.isGreenscreenEnabled());
+        assertTrue(!profile1.isMobilEnabled());
+        assertTrue(profile1.getWatermark().isEmpty());
+    }
+
 }
