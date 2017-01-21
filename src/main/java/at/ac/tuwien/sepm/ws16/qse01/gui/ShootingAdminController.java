@@ -6,7 +6,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
-import javafx.collections.FXCollections;
+import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -39,8 +40,6 @@ public class ShootingAdminController {
     @FXML
     private Label finallsavingplace;
     @FXML
-    private GridPane gridbase;
-    @FXML
     private GridPane gridSave;
     @FXML
     private Button canclebutton;
@@ -54,8 +53,6 @@ public class ShootingAdminController {
     private Label storageDirLabel;
     @FXML
     private ChoiceBox<Profile> profileChoiceBox;
-    @FXML
-    private Button bgStorage;
     @FXML
     private Label bgStorageDirLabel;
 
@@ -96,9 +93,11 @@ public class ShootingAdminController {
             storageDirLabel.setText(storagepath.toString());
             List<Profile> prof = profileService.getAllProfiles();
             if(prof!=null&&!prof.isEmpty()) {
-                ObservableList<Profile> observableListProfile = FXCollections.observableList(prof);
-                profileChoiceBox.setItems(observableListProfile);
-                profileChoiceBox.setValue(observableListProfile.get(0));
+                ObservableList<Profile> observableListProfile = fittingProfiles(prof);
+                if(observableListProfile!=null||observableListProfile.isEmpty()){
+                    profileChoiceBox.setItems(observableListProfile);
+                    profileChoiceBox.setValue(observableListProfile.get(0));
+                }
             }
 
         } catch (ServiceException e) {
@@ -112,6 +111,29 @@ public class ShootingAdminController {
             setButtons();
         }catch (ServiceException e ){
             LOGGER.error("inactivemode - ",e);
+        }
+    }
+
+    private  ObservableList<Profile> fittingProfiles(List<Profile> proflist){
+        ObservableList<Profile> profileObservableList = new ObservableListWrapper<Profile>(new LinkedList<>());
+        try {
+
+            for(Profile profile: proflist) {
+                boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
+                if (camerasFitPosition) {
+                    profileObservableList.add(profile);
+                }
+            }
+        } catch (ServiceException e) {
+            LOGGER.debug("fittingProfiles-",e);
+        }finally{
+            if(profileObservableList!=null||profileObservableList.isEmpty()){
+                // just for testing
+                proflist.get(0).setName("Test Example Profile, does not fit camera settings");
+                profileObservableList.add(proflist.get(0));
+                //
+            }
+            return profileObservableList;
         }
     }
 
@@ -165,22 +187,28 @@ public class ShootingAdminController {
                     }
 
 
-                   // windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
 
-                  boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
-                    if(camerasFitPosition){
+                    Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
-                        Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
+                    path = "";
 
-                        path = "";
+                    shootingService.addShooting(shouting);
 
-                        shootingService.addShooting(shouting);
 
-                        imageProcessingManager.initImageProcessing();
-
+                    boolean test = true;
+                    try {
+                            boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
+                            if (!camerasFitPosition) {
+                                imageProcessingManager.initImageProcessing();
+                                test=false;
+                            }
+                    } catch (ServiceException e) {
+                        LOGGER.debug("fittingProfiles-",e);
+                    }finally{
+                        if(test) {
+                            showInformationDialog("You entered in test mode!");
+                        }
                         windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
-                    } else{
-                        showInformationDialog("Wählen sie ein anderes Profil das zu ihrem Kamerasetup passt.");
                     }
                 } catch (ServiceException serviceExeption) {
                     LOGGER.error("onStartShootingPressed - ", serviceExeption);
