@@ -148,7 +148,8 @@ public class ShootingAdminController {
             stopButton.setVisible(true);
             storage.setVisible(false);
             canclebutton.setText("Fortsetzen");
-            storageDirLabel.setVisible(false);
+            storageDirLabel.setVisible(true);
+            storageDirLabel.setText("  " +activeShooting.getStorageDir());
             gridSave.setVisible(false);
             finallsavingplace.setText(activeShooting.getStorageDir());
             finallsavingplace.setVisible(true);
@@ -163,6 +164,9 @@ public class ShootingAdminController {
             startButton.setVisible(true);
             storage.setVisible(true);
             storageDirLabel.setVisible(true);
+            String userHome = System.getProperty("user.home");
+            Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
+            storageDirLabel.setText(storagepath.toString());
             gridSave.setVisible(true);
             canclebutton.setText("Abbrechen");
             finallsavingplace.setVisible(false);
@@ -215,8 +219,7 @@ public class ShootingAdminController {
                     showInformationDialog("Es konnte kein Shooting gestartet werden.");
                 }
         } else {
-            showInformationDialog("Bitte erstellen Sie ein neues Profil");
-        }
+            showInformationDialog("Bitte erstellen Sie ein neues Profil");        }
     }
 
     /**
