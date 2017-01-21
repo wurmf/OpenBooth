@@ -22,6 +22,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -67,7 +68,25 @@ public class ImageHandler {
             LOGGER.error("openImage - error loading given image ", e);
             throw new ImageHandlingException(e);
         }
-        LOGGER.debug("Image at {} opened", imagePath);
+        LOGGER.debug("openImage - Image at {} opened", imagePath);
+        return img;
+    }
+
+    public BufferedImage openImage(InputStream inputStream) throws ImageHandlingException {
+        if(inputStream == null){
+            LOGGER.error("openImage - inputStream is null");
+            throw new ImageHandlingException("inputStream is null");
+        }
+
+        BufferedImage img;
+
+        try{
+            img = ImageIO.read(inputStream);
+        }catch (IOException e) {
+            LOGGER.error("openImage - error loading given image ", e);
+            throw new ImageHandlingException(e);
+        }
+        LOGGER.debug("openImage - image from inputstream opened");
         return img;
     }
 

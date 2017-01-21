@@ -68,7 +68,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
-        boolean isFilter = "".equals(pairCameraPosition.getFilterName());
+        boolean isFilter = !"".equals(pairCameraPosition.getFilterName());
 
         if(isGreenscreen){
             Background background = pairCameraPosition.getBackground();
@@ -108,7 +108,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         BufferedImage shot;
 
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
-        boolean isFilter = "".equals(pairCameraPosition.getFilterName());
+        boolean isFilter = !"".equals(pairCameraPosition.getFilterName());
 
         if(isGreenscreen){
             Background background = pairCameraPosition.getBackground();
@@ -157,7 +157,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
     private Image persistFilteredImage(String originalImgPath, BufferedImage shot) throws ServiceException{
         //Save filtered image in same path as original path
-        String fileEnding = originalImgPath.substring(originalImgPath.lastIndexOf('.') + 1);
+        String fileEnding = originalImgPath.substring(originalImgPath.lastIndexOf('.'));
         String directoryAndName = originalImgPath.substring(0, originalImgPath.lastIndexOf('.'));
         String newImgPath = directoryAndName + "_" + pairCameraPosition.getFilterName() + fileEnding;
         try {
