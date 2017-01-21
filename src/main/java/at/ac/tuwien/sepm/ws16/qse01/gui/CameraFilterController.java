@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,6 +62,7 @@ public class CameraFilterController {
     private ImageService imageService;
     private ShootingService shootingService;
 
+    private Map<String,BufferedImage> filtermap=null;
 
 
     @Autowired
@@ -86,6 +88,7 @@ public class CameraFilterController {
                 profile = profileservice.get(shootingService.searchIsActive().getProfileid());
 
             }
+            filtermap = new HashMap<>();
         } catch (ServiceException e) {
             e.printStackTrace();
         }
@@ -135,16 +138,18 @@ public class CameraFilterController {
 
             int columcount = 0;
             int rowcount = 0;
-            Image image1 = null;
+           /* Image image1 = null;
             if ( imageService.getAllImages(shootingService.searchIsActive().getId())!=null&&!imageService.getAllImages(shootingService.searchIsActive().getId()).isEmpty() ){
                 image1= imageService.getAllImages(shootingService.searchIsActive().getId()).get(1);
 
             }
-            Map<String,BufferedImage> filtermap=null;
-            if(image1!=null){
-                filtermap = filterService.getAllFilteredImages(image1.getImagepath());
-            }else {
-                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/studio.jpg");
+           */
+            if(profileservice.getActiveProfile().getId()!=profile.getId()){
+                profile=profileservice.getActiveProfile();
+                filtermap.clear();
+            }
+            if(filtermap==null||filtermap.isEmpty()){
+                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
             }
            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size

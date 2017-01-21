@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -19,10 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 
 @Component
@@ -48,6 +53,7 @@ public class CustomerFrameController {
     private boolean isRefreshed;
     private boolean miniLastVisit;
     private boolean filterChouseside;
+    private Map<String, BufferedImage> filterList;
 
     private WindowManager windowmanager;
     private ShootingService shootingservice;
@@ -65,6 +71,7 @@ public class CustomerFrameController {
         isButtoncreated =false;
         isRefreshed=false;
         filterChouseside =false;
+        filterList= new HashMap<>();
     }
 
     @FXML
@@ -77,7 +84,11 @@ public class CustomerFrameController {
 
             if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
                 rightbutton.setVisible(false);
+
+                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
+
             }
+
         } catch (ServiceException e) {
             showInformationDialog("Buttons konnten nicht geladen werden");
             LOGGER.error("initialise:", e);
@@ -144,6 +155,7 @@ public class CustomerFrameController {
         }
     }
 
+
     /**
      * if right button gets pressed
      * the controller loads the filter buttons and there  pictures
@@ -154,7 +166,12 @@ public class CustomerFrameController {
                 if(profile.getId()!=shootingservice.searchIsActive().getProfileid()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                     isButtoncreated=false;
+                    filterList.clear();
                 }
+            }
+
+            if(filterList.isEmpty()){
+                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/defaut4.png");
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
@@ -239,13 +256,17 @@ public class CustomerFrameController {
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
                     if(!pairList.get(i).isGreenScreenReady()){
-                        String resource = System.getProperty("user.home");
-                        if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
+                       // if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
 
-                            imageView.setImage(SwingFXUtils.toFXImage(filterservice.filter(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName(), System.getProperty("user.dir") + "/src/main/resources/images/studio.jpg"), null));
+                        if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()==null|| profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName().equals("")){
+                            imageView.setImage(new Image("/images/defaut4.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+
                         }else {
-                            imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
-                       }
+                            imageView.setImage(SwingFXUtils.toFXImage(filterList.get(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()), null));
+
+                        } //}else {
+                         //   imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                     //  }
                     }else{
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground()!=null) {
                             if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground().getPath() != null) {
@@ -259,7 +280,7 @@ public class CustomerFrameController {
                                 imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
                             }
                         }else{
-                            imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                            imageView.setImage(new Image("/images/backrounddefault.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
                         }
                     }
 
