@@ -3,7 +3,7 @@
    -fx-background-position: center;
    -fx-background-size: 100%;
    -fx-background-color: transparent;
-   -fx-background-image: url('/images/studio.jpg');
+   -fx-background-image: url('/images/studiogray.png');
 }
 #logo{
  -fx-fitWidth: 5em;

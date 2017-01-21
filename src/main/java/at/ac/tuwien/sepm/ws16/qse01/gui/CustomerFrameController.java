@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
@@ -22,10 +21,8 @@ import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -277,7 +274,7 @@ public class CustomerFrameController {
                                 file.close();
                                 imageView.setImage(ima);
                             }else{
-                                imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
+                                imageView.setImage(new Image("/images/backrounddefault.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
                             }
                         }else{
                             imageView.setImage(new Image("/images/backrounddefault.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
@@ -392,9 +389,7 @@ public class CustomerFrameController {
        } catch (ServiceException e) {
            LOGGER.error("creatButtons - ",e);
            showInformationDialog(e.getMessage());
-        } catch (FileNotFoundException e) {
-           LOGGER.error("creatButtons -", e);
-       } catch (IOException e) {
+       }catch (IOException e) {
            LOGGER.error("creatButtons -", e);
        }
     }
