@@ -202,7 +202,7 @@ public class ShootingAdminController {
                     boolean test = true;
                     try {
                             boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
-                            if (!camerasFitPosition) {
+                            if (camerasFitPosition) {
                                 imageProcessingManager.initImageProcessing();
                                 test=false;
                             }

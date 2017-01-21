@@ -107,12 +107,12 @@ public class CameraThread extends Thread{
         }
         catch (CameraException ex)
         {
-            LOGGER.debug("waitForImage failed", ex);
+            LOGGER.error("waitForImage failed", ex);
             setStop(true);
         }
         catch (ServiceException ex)
         {
-            LOGGER.debug("Exception in service: {}", ex);
+            LOGGER.error("Exception in service: {}", ex);
         }
     }
 

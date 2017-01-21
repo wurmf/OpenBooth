@@ -71,8 +71,8 @@ public class GreenscreenServiceImpl implements GreenscreenService{
         Imgproc.cvtColor(srcImgMat,yccFGMat,Imgproc.COLOR_RGB2YCrCb);
 
 
-        double[] rgbKeyColor = srcImgMat.get(0,800);
-        double[] yccKeyColor = yccFGMat.get(0,800);
+        double[] rgbKeyColor = srcImgMat.get(0,0);
+        double[] yccKeyColor = yccFGMat.get(0,0);
         double[] tolerances = calcTolerances(yccFGMat, yccKeyColor);
 
         LOGGER.debug("tolerances : {}", tolerances);

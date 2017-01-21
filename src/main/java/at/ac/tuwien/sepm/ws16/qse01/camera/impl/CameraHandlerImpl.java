@@ -60,6 +60,7 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     public List<Camera> getCameras() throws CameraException {
+        //TODO: check if list is already initialised
         try {
             cameraService.setAllCamerasInactive();
         } catch (ServiceException e) {
