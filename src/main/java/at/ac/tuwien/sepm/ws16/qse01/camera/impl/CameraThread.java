@@ -37,7 +37,7 @@ public class CameraThread extends Thread{
     private boolean shouldStop = false;
     private boolean takeImage = false;
     private boolean serieShot = false;
-    private boolean countdown = false;
+    private int countdown = 0;
 
     @Override
     public void run()
@@ -46,9 +46,9 @@ public class CameraThread extends Thread{
         {
             if(takeImage)
             {
-                if(countdown)
+                if(countdown!=0)
                 {
-                    //TODO: shotFrameController.showCountdown(10)
+                    shotFrameController.showCountdown(countdown);
                 }
                 captureImage();
                 if(serieShot)
@@ -143,12 +143,12 @@ public class CameraThread extends Thread{
         }
         catch (CameraException ex)
         {
-            LOGGER.debug("capturePreview failed", ex);
+            LOGGER.error("capturePreview failed", ex);
             setStop(true);
         }
         catch (ServiceException ex)
         {
-            LOGGER.debug("Exception in service: {}", ex);
+            LOGGER.error("Exception in service: {}", ex);
         }
     }
 
@@ -230,7 +230,7 @@ public class CameraThread extends Thread{
         this.serieShot = serieShot;
     }
 
-    public void setCountdown(boolean countdown) {
+    public void setCountdown(int countdown) {
         this.countdown = countdown;
     }
 

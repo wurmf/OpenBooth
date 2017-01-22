@@ -138,7 +138,7 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
-    public void setCountdown(Camera camera, boolean countdown)
+    public void setCountdown(Camera camera, int countdown)
     {
         for (CameraThread thread: threadList)
         {
