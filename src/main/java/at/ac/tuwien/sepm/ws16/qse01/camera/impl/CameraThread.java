@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,7 +43,7 @@ public class CameraThread extends Thread{
     @Override
     public void run()
     {
-        while(true)
+        while(!shouldStop)
         {
             if(takeImage)
             {
@@ -66,8 +67,15 @@ public class CameraThread extends Thread{
             }
             if(shouldStop)
             {
+                try
+                {
+                    cameraGphoto.close();
+                }
+                catch (IOException e)
+                {
+                    LOGGER.error("cameraThread run, could not close Camera", e);
+                }
                 LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-                return;
             }
         }
     }
