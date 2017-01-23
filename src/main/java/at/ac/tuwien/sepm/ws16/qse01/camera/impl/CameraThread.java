@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -136,6 +137,11 @@ public class CameraThread extends Thread{
                 if(activeShooting != null)
                 {
                     String imagePath = activeShooting.getStorageDir() + "/tmp/K" + +camera.getId()+".jpg";
+                    if(!new File(imagePath).exists())
+                    {
+                        File file = new File(imagePath);
+                        file.mkdir();
+                    }
                     cf.save(new File(imagePath).getAbsolutePath());
                     imageProcessor.processPreview(imagePath);
 

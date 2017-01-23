@@ -138,7 +138,7 @@ public class CustomerFrameController {
                 if(filterChouseside){
                     basicpane.getChildren().remove(grid);
                     grid = new GridPane();
-                   // gridpanel = new GridPane();
+                    gridpanel = new GridPane();
                     creatButtons();
                 }
                 filterChouseside = false;
