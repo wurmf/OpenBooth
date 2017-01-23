@@ -61,8 +61,10 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     public List<Camera> getCameras() throws CameraException {
-        if(!cameraGphotoList.isEmpty())
+        if(!cameraList.isEmpty())
         {
+            return cameraList;
+            /*
             for (CameraGphoto camera: cameraGphotoList)
             {
                 if(camera.isInitialized())
@@ -78,6 +80,7 @@ public class CameraHandlerImpl implements CameraHandler {
                     }
                 }
             }
+            */
         }
         try {
             cameraService.setAllCamerasInactive();

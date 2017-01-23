@@ -25,16 +25,10 @@ import java.util.Optional;
 public class PositionButtonCell extends TableCell<Position, Boolean> {
     final static Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
 
-    private  ObservableList<Position> posList;
-    private ProfileService pservice;
-    private CameraPositionFrameController cameraPositionFrameController;
 
     private final Button cellButton;
 
-    public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, int selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
-        this.posList = posList;
-        this.pservice = pservice;
-        this.cameraPositionFrameController = cameraPositionFrameController;
+    public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, ObservableList<Profile> selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
         cellButton = new Button();
         cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",50,50));
         cellButton.setPrefWidth(40);
@@ -64,8 +58,8 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
                         // refreshing kamPos TableView;
                         kamPosList.clear();
-                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID));
-                        cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,pservice.get(selectedProfilID));
+                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID.get(0).getId()));
+                        cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfilID);
 
                     } catch (ServiceException e) {
                         LOGGER.error("PositionButtonCell->Löschen Button -> Position konnte nicht gelöscht werden.",e);

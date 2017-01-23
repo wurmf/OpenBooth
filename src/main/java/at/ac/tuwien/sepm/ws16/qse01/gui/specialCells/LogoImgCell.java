@@ -94,7 +94,6 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
                             txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase() + " #" + p.getLogo().getId(), imgView);
                         }else {
 
-                            System.out.println("oldLogoID ->"+p.getLogo().getId());
                             p.getLogo().setId(Integer.MIN_VALUE);
                             Logo newLogo = pservice.addLogo(p.getLogo());
                             p.setLogo(newLogo);
@@ -104,7 +103,7 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
 
 
                             //txLogoName.getImgViews().remove(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId());
-                            System.out.println("newLogoID ->"+p.getLogo().getId());
+
                             txLogoName.getEntries().add(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId());
                             txLogoName.getImgViews().put(p.getLogo().getLabel().toLowerCase()+" #"+p.getLogo().getId(),imgView);
                             pservice.editPairLogoRelativeRectangle(p);

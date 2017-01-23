@@ -65,7 +65,7 @@ public class ImageHandler {
         try {
             img = ImageIO.read(new File(imagePath));
         } catch (IOException e) {
-            LOGGER.error("openImage - error loading given image ", e);
+            LOGGER.error("openImage - error loading given image {} ", imagePath, e);
             throw new ImageHandlingException(e);
         }
         LOGGER.debug("openImage - Image at {} opened", imagePath);
