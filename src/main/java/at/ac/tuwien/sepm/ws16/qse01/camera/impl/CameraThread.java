@@ -18,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -37,18 +39,18 @@ public class CameraThread extends Thread{
     private boolean shouldStop = false;
     private boolean takeImage = false;
     private boolean serieShot = false;
-    private boolean countdown = false;
+    private int countdown = 0;
 
     @Override
     public void run()
     {
-        while(true)
+        while(!shouldStop)
         {
             if(takeImage)
             {
-                if(countdown)
+                if(countdown!=0)
                 {
-                    //TODO: shotFrameController.showCountdown(10)
+                    shotFrameController.showCountdown(countdown);
                 }
                 captureImage();
                 if(serieShot)
@@ -66,8 +68,15 @@ public class CameraThread extends Thread{
             }
             if(shouldStop)
             {
+                try
+                {
+                    cameraGphoto.close();
+                }
+                catch (IOException e)
+                {
+                    LOGGER.error("cameraThread run, could not close Camera", e);
+                }
                 LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-                return;
             }
         }
     }
@@ -107,12 +116,12 @@ public class CameraThread extends Thread{
         }
         catch (CameraException ex)
         {
-            LOGGER.debug("waitForImage failed", ex);
+            LOGGER.error("waitForImage failed", ex);
             setStop(true);
         }
         catch (ServiceException ex)
         {
-            LOGGER.debug("Exception in service: {}", ex);
+            LOGGER.error("Exception in service: {}", ex);
         }
     }
 
@@ -128,6 +137,11 @@ public class CameraThread extends Thread{
                 if(activeShooting != null)
                 {
                     String imagePath = activeShooting.getStorageDir() + "/tmp/K" + +camera.getId()+".jpg";
+                    if(!new File(imagePath).exists())
+                    {
+                        File file = new File(imagePath);
+                        file.mkdir();
+                    }
                     cf.save(new File(imagePath).getAbsolutePath());
                     imageProcessor.processPreview(imagePath);
 
@@ -143,12 +157,12 @@ public class CameraThread extends Thread{
         }
         catch (CameraException ex)
         {
-            LOGGER.debug("capturePreview failed", ex);
+            LOGGER.error("capturePreview failed", ex);
             setStop(true);
         }
         catch (ServiceException ex)
         {
-            LOGGER.debug("Exception in service: {}", ex);
+            LOGGER.error("Exception in service: {}", ex);
         }
     }
 
@@ -230,7 +244,7 @@ public class CameraThread extends Thread{
         this.serieShot = serieShot;
     }
 
-    public void setCountdown(boolean countdown) {
+    public void setCountdown(int countdown) {
         this.countdown = countdown;
     }
 

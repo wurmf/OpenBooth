@@ -48,7 +48,7 @@ public interface CameraHandler {
     /**
      * Sets the countdown flag in the CameraThread
      * @param camera camera that shall be configured
-     * @param countdown whether a countdown should be displayed or not
+     * @param countdown number of seconds a countdown should be displayed
      */
-    public void setCountdown(Camera camera, boolean countdown);
+    public void setCountdown(Camera camera, int countdown);
 }

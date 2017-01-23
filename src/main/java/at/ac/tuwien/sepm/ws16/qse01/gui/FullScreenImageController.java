@@ -677,18 +677,19 @@ public class FullScreenImageController {
     public void onCropPressed()
     {
         cropping=true;
-        /*button1.setVisible(false);
-        button3.setVisible(false);
-        button4.setVisible(false);
-        button11.setVisible(false);
-        button12.setVisible(false);
-        button13.setVisible(true);*/
         saveFilteredButton.setVisible(true);
         LOGGER.debug("Crop Button clicked");
         if(cropRectangle==null)
         {
-            cropRectangle=createDraggableRectangle(wholePane.getWidth() - 250, wholePane.getHeight() - 250, 500, 500);
+            cropRectangle=createDraggableRectangle((forCropping.getWidth()/2)-200, (forCropping.getHeight()/2)-300, 400, 600);
             forCropping.getChildren().add(cropRectangle);
+        }
+        else if(cropRectangle.isVisible())
+        {
+            cropRectangle.setVisible(false);
+            resizeHandleNW.setVisible(false);
+            resizeHandleSE.setVisible(false);
+            saveFilteredButton.setVisible(false);
         }
         else
         {
@@ -702,31 +703,32 @@ public class FullScreenImageController {
     private void onCheckPressed()
     {
         cropping = false;
-        /*button1.setVisible(true);
-        button3.setVisible(true);
-        button4.setVisible(true);
-        button11.setVisible(true);
-        button12.setVisible(true);
-        button5.setCancelButton(true);
-        button6.setCancelButton(true);
-        button7.setCancelButton(true);
-        button8.setCancelButton(true);
-        button9.setCancelButton(true);
-        button13.setVisible(false);*/
         cropRectangle.setVisible(false);
         resizeHandleNW.setVisible(false);
         resizeHandleSE.setVisible(false);
-        //saveFilteredButton.setVisible(true);
+        saveFilteredButton.setVisible(false);
 
         int x = (int)cropRectangle.localToScene(cropRectangle.getBoundsInLocal()).getMinX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int y = (int)cropRectangle.localToScene(cropRectangle.getBoundsInLocal()).getMinY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         int maxX =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int maxY =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         try {
-            imageService.crop(imageList.get(currentIndex), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.crop(imageList.get(currentIndex), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
+            refreshManager.notifyMiniatureFrameOfAdd(newImage);
+
+            if((currentIndex+1)>=imageList.size())
+                imageList.add(newImage);
+            else {
+                imageList.add(currentIndex + 1, newImage);
+            }
+
+            currentIndex = currentIndex + 1;
+            button4.setVisible(true);
         } catch (ServiceException e) {
-            LOGGER.debug("onCheckPressed" , e);
+            LOGGER.error("onCheckPressed" , e);
         }
+
+
     }
 
     private Rectangle createDraggableRectangle(double x, double y, double width, double height) {
@@ -734,22 +736,18 @@ public class FullScreenImageController {
 
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setOpacity(0.1);
-        //wholePane.getChildren().add(rect);
+        rect.setVisible(true);
 
-
-        // top left resize handle:
         resizeHandleNW = new Circle(handleRadius, Color.BLACK);
-        // bind to top left corner of Rectangle:
         resizeHandleNW.centerXProperty().bind(rect.xProperty());
         resizeHandleNW.centerYProperty().bind(rect.yProperty());
+        resizeHandleNW.setVisible(true);
 
-        // bottom right resize handle:
         resizeHandleSE = new Circle(handleRadius, Color.BLACK);
-        // bind to bottom right corner of Rectangle:
         resizeHandleSE.centerXProperty().bind(rect.xProperty().add(rect.widthProperty()));
         resizeHandleSE.centerYProperty().bind(rect.yProperty().add(rect.heightProperty()));
+        resizeHandleSE.setVisible(true);
 
-        // force circles to live in same parent as rectangle:
         rect.parentProperty().addListener((obs, oldParent, newParent) -> {
             for (Circle c : Arrays.asList(resizeHandleNW, resizeHandleSE)) {
                 Pane currentParent = (Pane)c.getParent();
@@ -782,8 +780,6 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() - deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
-                //resizeHandleNW.setCenterX(rect.getX());
-                //resizeHandleNW.setCenterY(rect.getY());
             }
         });
 
@@ -802,8 +798,6 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() + deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
-                //resizeHandleSE.setCenterX(rect.getX() + rect.getWidth());
-                //resizeHandleSE.setCenterY(rect.getY() + rect.getHeight());
             }
         });
 

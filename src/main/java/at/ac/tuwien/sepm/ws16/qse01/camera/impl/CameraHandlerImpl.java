@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,24 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     public List<Camera> getCameras() throws CameraException {
+        if(!cameraGphotoList.isEmpty())
+        {
+            for (CameraGphoto camera: cameraGphotoList)
+            {
+                if(camera.isInitialized())
+                {
+                    try
+                    {
+                        camera.close();
+                    }
+                    catch (IOException e)
+                    {
+                        LOGGER.error("getCameras, close open cameras", e);
+                        throw new CameraException(e.getMessage(),-1);
+                    }
+                }
+            }
+        }
         try {
             cameraService.setAllCamerasInactive();
         } catch (ServiceException e) {
@@ -87,6 +106,7 @@ public class CameraHandlerImpl implements CameraHandler {
                 cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
 
                 cameraGphotoList.get(i).initialize();
+                //cameraPortList.set(i,cameraPortList.get(i).substring(0,cl.getPort(i).length()-4));
                 cameraGphotoList.get(i).ref();
                 try{
                     camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
@@ -137,7 +157,7 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
-    public void setCountdown(Camera camera, boolean countdown)
+    public void setCountdown(Camera camera, int countdown)
     {
         for (CameraThread thread: threadList)
         {

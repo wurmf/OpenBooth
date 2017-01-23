@@ -46,7 +46,9 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     private List<CameraThread> cameraThreadList;
 
-    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, OpenCVLoader openCVLoader){
+    private RemoteService remoteService;
+
+    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, RemoteService remoteService, OpenCVLoader openCVLoader){
 
         this.cameraHandler = cameraHandler;
         this.shotFrameManager = shotFrameManager;
@@ -54,6 +56,7 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         this.shootingService = shootingService;
         this.profileService = profileService;
         this.imageService = imageService;
+        this.remoteService = remoteService;
         this.openCVLoader = openCVLoader;
     }
 
@@ -74,17 +77,23 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         for(CameraThread cameraThread : cameraThreadList){
             cameraThread.start();
         }
-        LOGGER.debug("image processing initialised");
+        remoteService.start();
+        LOGGER.info("initImageProcessing - image processing initialised");
     }
 
     @Override
     public void stopImageProcessing(){
         if(cameraThreadList == null) {
-            LOGGER.debug("stopImageProcessing - No CameraThreads running - nothing to stop");
+            LOGGER.debug("stopImageProcessing - No CameraThreads running");
         }else {
             for(CameraThread cameraThread : cameraThreadList){
                 cameraThread.setStop(true);
             }
+        }
+        if(!remoteService.isRunning()){
+            LOGGER.debug("stopImageProcessing - RemoteService not running");
+        } else {
+            remoteService.stop();
         }
     }
 
