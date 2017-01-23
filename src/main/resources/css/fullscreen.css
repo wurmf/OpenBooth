@@ -8,6 +8,7 @@
    -fx-background-color: transparent;
    -fx-pref-width: 4.5em;
    -fx-pref-height:4.5em;
+
 }
 
 #fullscreen{
@@ -20,5 +21,5 @@
    -fx-pref-height:4.5em;
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
-  -fx-font-size: 2.5;
+  -fx-font-size: 2.5em;
 }

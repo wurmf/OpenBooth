@@ -45,12 +45,15 @@ public class WindowManager {
     private Scene customerScene;
     private Scene kamerafilterScene;
     private Scene recoveryScene;
+    private Scene deleteScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
     private CameraFilterController cameraFilterController;
     private CustomerFrameController customerFrameController;
+    private DeleteImageController deleteImageController;
+    private MiniaturFrameController miniaturFrameController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -77,7 +80,6 @@ public class WindowManager {
             LOGGER.debug("font size - non fitting screen size");
             fontSize =16;
         }
-
 
         //Creating ImageFullscreenscene
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
@@ -139,6 +141,9 @@ public class WindowManager {
         parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
+        this.miniaturFrameController = miniWrapper.getController();
+
+
         //costumer scene
         SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> costumerWrapper =
                 springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml", CustomerFrameController.class);
@@ -176,6 +181,17 @@ public class WindowManager {
         } catch (ServiceException e) {
             LOGGER.error("start - ",e);
         }
+
+
+        //Create Delete Sceen
+        SpringFXMLLoader.FXMLWrapper<Object, DeleteImageController> deleteWrapper = springFXMLLoader.loadAndWrap("/fxml/deleteFrame.fxml", DeleteImageController.class);
+        Parent parentdel = (Parent) deleteWrapper.getLoadedObject();
+        URL cssd= this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.debug("CSSF -"+cssd);
+        parentdel.setStyle("-fx-font-size:"+fontSize*1.5+"px;");
+        parentdel.getStylesheets().add(cssd.toExternalForm());
+        this.deleteScene=new Scene(parentdel ,screenWidth,screenHeight);
+        this.deleteImageController = deleteWrapper.getController();
 
 
 
@@ -222,6 +238,30 @@ public class WindowManager {
         mainStage.setFullScreen(true);
     }
 
+    public void showMiniaturscene(boolean decide){
+       mainStage.setScene(miniaturScene);
+        mainStage.setFullScreen(true);
+        miniaturFrameController.shouldBeDeleted(decide);
+    }
+
+
+    /**
+     * sets the delete desicion scene
+     * @param imageView image view of the image that should be deleted
+     */
+    public void showDeleteScene(boolean scene, javafx.scene.image.Image imageView){
+
+        if (scene){
+            deleteImageController.setdeleteImage(true,imageView);
+
+        }else {
+            deleteImageController.setdeleteImage(false,imageView);
+        }
+        mainStage.setScene(deleteScene);
+        mainStage.setFullScreen(true);
+
+    }
+
 
     /**
      * Sets the adminLoginScene as Scene in the mainStage.
@@ -244,7 +284,18 @@ public class WindowManager {
     public void showFullscreenImage(int imgID){
         mainStage.setScene(pictureFullScene);
         mainStage.setFullScreen(true);
-        pictureController.changeImage(imgID);
+
+            pictureController.changeImage(imgID);
+
+    }
+
+    /**
+     * to be called from delete scene
+     */
+    public void showFullscreenImage(boolean decison){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
+        pictureController.shouldBeDeleted(decison);
     }
 
     public void showKameraFilterSceen(int idK, int idF, boolean greenscreen){
