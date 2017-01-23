@@ -681,8 +681,15 @@ public class FullScreenImageController {
         LOGGER.debug("Crop Button clicked");
         if(cropRectangle==null)
         {
-            cropRectangle=createDraggableRectangle(forCropping.getWidth() - 400, forCropping.getHeight() - 400, 100, 100);
+            cropRectangle=createDraggableRectangle((forCropping.getWidth()/2)-200, (forCropping.getHeight()/2)-300, 400, 600);
             forCropping.getChildren().add(cropRectangle);
+        }
+        else if(cropRectangle.isVisible())
+        {
+            cropRectangle.setVisible(false);
+            resizeHandleNW.setVisible(false);
+            resizeHandleSE.setVisible(false);
+            saveFilteredButton.setVisible(false);
         }
         else
         {
@@ -730,24 +737,17 @@ public class FullScreenImageController {
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setOpacity(0.1);
         rect.setVisible(true);
-        //wholePane.getChildren().add(rect);
 
-
-        // top left resize handle:
         resizeHandleNW = new Circle(handleRadius, Color.BLACK);
-        // bind to top left corner of Rectangle:
         resizeHandleNW.centerXProperty().bind(rect.xProperty());
         resizeHandleNW.centerYProperty().bind(rect.yProperty());
         resizeHandleNW.setVisible(true);
 
-        // bottom right resize handle:
         resizeHandleSE = new Circle(handleRadius, Color.BLACK);
-        // bind to bottom right corner of Rectangle:
         resizeHandleSE.centerXProperty().bind(rect.xProperty().add(rect.widthProperty()));
         resizeHandleSE.centerYProperty().bind(rect.yProperty().add(rect.heightProperty()));
         resizeHandleSE.setVisible(true);
 
-        // force circles to live in same parent as rectangle:
         rect.parentProperty().addListener((obs, oldParent, newParent) -> {
             for (Circle c : Arrays.asList(resizeHandleNW, resizeHandleSE)) {
                 Pane currentParent = (Pane)c.getParent();
@@ -780,8 +780,6 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() - deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
-                //resizeHandleNW.setCenterX(rect.getX());
-                //resizeHandleNW.setCenterY(rect.getY());
             }
         });
 
@@ -800,8 +798,6 @@ public class FullScreenImageController {
                     rect.setHeight(rect.getHeight() + deltaY);
                 }
                 mouseLocation.value = new Point2D(event.getSceneX(), event.getSceneY());
-                //resizeHandleSE.setCenterX(rect.getX() + rect.getWidth());
-                //resizeHandleSE.setCenterY(rect.getY() + rect.getHeight());
             }
         });
 

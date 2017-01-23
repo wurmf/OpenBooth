@@ -125,12 +125,13 @@ public class ImageServiceImpl implements ImageService {
             int newY1 = (int)(y1 * ratioY);
             int newY2 = (int)(y2 * ratioY);
 
+
             BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2-newX1, newY2-newY1);
             Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
             return dao.createAndSave(img, bufCropped);
 
         } catch (IOException | PersistenceException e) {
-            LOGGER.debug("crop: ", e);
+            LOGGER.error("crop: ", e);
             throw new ServiceException(e.getMessage());
         }
     }
