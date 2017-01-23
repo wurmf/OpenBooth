@@ -17,8 +17,8 @@ public class RecoveryController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecoveryController.class);
 
-    ShootingService shootingService;
-    WindowManager windowmanager;
+    private ShootingService shootingService;
+    private WindowManager windowmanager;
 
     @Autowired
     public RecoveryController(ShootingService shootingService, WindowManager windowmanager) {

@@ -24,14 +24,9 @@ public class MainFrameController {
 
     private WindowManager windowManager;
 
-    ShootingService shootingService;
-    CameraService cameraService;
-
     @Autowired
-    public MainFrameController(ShootingServiceImpl shootingService, WindowManager windowManager, CameraService cameraService) {
-        this.shootingService = shootingService;
+    public MainFrameController(WindowManager windowManager) {
         this.windowManager = windowManager;
-        this.cameraService = cameraService;
     }
 
 
@@ -49,28 +44,24 @@ public class MainFrameController {
 
     /**
      * linkes to admin log in and followup options
-     *
-     * @param actionEvent press action event
      */
+    @FXML
     public void onStartShootingPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SHOOTINGSCENE);
     }
 
     /**
      * programm gets shot down
-     *
-     * @param actionEvent press action event
      */
-    public void onEndPressed(ActionEvent actionEvent) {
+    @FXML
+    public void onEndPressed() {
         windowManager.closeStages();
     }
 
     /**
      *Opens Profile administration
-     *
-     * @param actionEvent press action event
      */
-
+    @FXML
     public void onEditPressed(ActionEvent actionEvent) {
         windowManager.showScene(WindowManager.SHOW_SETTINGSCENE);
     }
