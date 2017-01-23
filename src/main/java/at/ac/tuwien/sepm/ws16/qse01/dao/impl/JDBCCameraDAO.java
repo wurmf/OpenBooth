@@ -86,13 +86,14 @@ public class JDBCCameraDAO implements CameraDAO{
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
         }catch(NullPointerException e){
+            LOGGER.error("delete", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing delete failed: " + e.getMessage());
+                    LOGGER.error("Closing delete failed: " + e);
                 }
             }
         }
@@ -112,17 +113,19 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,id);
             rs = stmt.executeQuery();
-            if(rs.next()) {
+            if(rs.next())
+            {
                 Camera camera = new Camera(rs.getInt("cameraID"),
-                        rs.getString("label"),
-                        rs.getString("portNumber"),
-                        rs.getString("modelName"),
-                        rs.getString("serialNumber"));
+                rs.getString("label"),
+                rs.getString("portNumber"),
+                rs.getString("modelName"),
+                rs.getString("serialNumber"));
                 LOGGER.debug("Read has been successfully. " + camera);
                 return camera;
             }
-            else {
-                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
+            else
+            {
+                LOGGER.error("Read nothing, since it doesn't exist in persistence data store(return null)");
                 return null;
             }
         }
