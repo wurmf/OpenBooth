@@ -302,4 +302,33 @@ public class JDBCCameraDAO implements CameraDAO{
         }
         return ret;
     }
+
+    @Override
+    public Camera editCamera(Camera camera) throws PersistenceException
+    {
+        PreparedStatement stmt=null;
+        try {
+            String prepered="update cameras set LABEL=?, PORTNUMBER=?, MODELNAME=?, SERIALNUMBER=? where cameraid= ?";
+            stmt = con.prepareStatement(prepered);
+            stmt.setString(1,camera.getLable());
+            stmt.setString(2,camera.getPort());
+            stmt.setString(3,camera.getModel());
+            stmt.setString(4,camera.getSerialnumber());
+            stmt.setInt(5,camera.getId());
+            stmt.execute();
+
+        } catch (SQLException e) {
+            LOGGER.error("CameraDAO", e);
+            throw new PersistenceException(e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.error("editCamera",e);
+                }
+            }
+        }
+        return read(camera.getId());
+    }
 }
