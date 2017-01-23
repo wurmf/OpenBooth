@@ -78,21 +78,31 @@ public class JDBCCameraDAO implements CameraDAO{
     public void delete(int cameraID) throws PersistenceException {
         String sql = "DELETE FROM CAMERAS WHERE  CAMERAID=?";
         PreparedStatement stmt = null;
-
-        try{
+        try
+        {
             stmt= con.prepareStatement(sql);
             stmt.setInt(1,cameraID);
             stmt.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
+            LOGGER.error("delete", e);
             throw new PersistenceException(e.getMessage());
-        }catch(NullPointerException e){
+        }
+        catch(NullPointerException e){
             LOGGER.error("delete", e);
             throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                try
+                {
                     stmt.close();
-                } catch (SQLException e) {
+                }
+                catch (SQLException e)
+                {
                     LOGGER.error("Closing delete failed: " + e);
                 }
             }
