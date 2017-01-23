@@ -82,7 +82,7 @@ public class CustomerFrameController {
             if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
                 rightbutton.setVisible(false);
 
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
+                //filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
 
             }
 

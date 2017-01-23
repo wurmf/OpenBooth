@@ -677,12 +677,6 @@ public class FullScreenImageController {
     public void onCropPressed()
     {
         cropping=true;
-        /*button1.setVisible(false);
-        button3.setVisible(false);
-        button4.setVisible(false);
-        button11.setVisible(false);
-        button12.setVisible(false);
-        button13.setVisible(true);*/
         saveFilteredButton.setVisible(true);
         LOGGER.debug("Crop Button clicked");
         if(cropRectangle==null)
@@ -702,17 +696,6 @@ public class FullScreenImageController {
     private void onCheckPressed()
     {
         cropping = false;
-        /*button1.setVisible(true);
-        button3.setVisible(true);
-        button4.setVisible(true);
-        button11.setVisible(true);
-        button12.setVisible(true);
-        button5.setCancelButton(true);
-        button6.setCancelButton(true);
-        button7.setCancelButton(true);
-        button8.setCancelButton(true);
-        button9.setCancelButton(true);
-        button13.setVisible(false);*/
         cropRectangle.setVisible(false);
         resizeHandleNW.setVisible(false);
         resizeHandleSE.setVisible(false);
