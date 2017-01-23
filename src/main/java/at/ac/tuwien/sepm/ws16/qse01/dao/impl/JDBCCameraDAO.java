@@ -58,15 +58,17 @@ public class JDBCCameraDAO implements CameraDAO{
             }
 
         } catch (SQLException e ) {
+            LOGGER.error("create", e);
             throw new PersistenceException("Create failed: "+e.getMessage());
         } catch(NullPointerException e){
+            LOGGER.error("create", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing create failed: " + e.getMessage());
+                    LOGGER.debug("Closing create failed: " + e);
                 }
             }
         }
