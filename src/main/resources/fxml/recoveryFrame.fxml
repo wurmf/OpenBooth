@@ -32,7 +32,7 @@
             <Button mnemonicParsing="false" onAction="#onRecoveryPressed" text="Shooting wiederherstellen" GridPane.columnIndex="1" />
          </children>
       </GridPane>
-      <Label text="Ihr letztes Shooting konnte wegen einem Technischenfehler nicht beendet werden. &#10;Möchten Sie dieses wiederherstellen oder beenden?" GridPane.rowIndex="2" />
+      <Label text="Ihr letztes Shooting konnte aufgrund eines technischen Fehlers nicht beendet werden. &#10;Möchten Sie dieses jetzt wiederherstellen oder endgültig beenden?" GridPane.rowIndex="2" />
       <ImageView fx:id="mrerror" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1">
        <image>
            <Image url="/images/mrerror.png" />
