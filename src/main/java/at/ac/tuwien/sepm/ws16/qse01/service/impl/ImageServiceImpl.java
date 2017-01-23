@@ -122,6 +122,7 @@ public class ImageServiceImpl implements ImageService {
             double ratioY = height/(double)maxY;
             int newX1 = (int)(x1 * ratioX);
             int newX2 = (int)(x2 * ratioX);
+
             int newY1 = (int)(y1 * ratioY);
             int newY2 = (int)(y2 * ratioY);
 

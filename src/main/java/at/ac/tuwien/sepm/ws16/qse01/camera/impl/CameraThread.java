@@ -130,6 +130,7 @@ public class CameraThread extends Thread{
         }
     }
 
+
     private void capturePreview()
     {
         try
