@@ -1,6 +1,12 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
+import at.ac.tuwien.sepm.util.dbhandler.impl.H2EmbeddedHandler;
+import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCAdminUserDAO;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.AdminUserServiceImpl;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +18,16 @@ import static junit.framework.TestCase.assertTrue;
 /**
  * Test for implementations of the AdminUserService-Interface
  */
-public abstract class AbstractAdminUserServiceTest {
-    static final Logger LOGGER = LoggerFactory.getLogger(AbstractAdminUserServiceTest.class);
+public class AdminUserServiceTest {
+    static final Logger LOGGER = LoggerFactory.getLogger(AdminUserServiceTest.class);
 
     @Autowired
     protected AdminUserService adminUserService;
 
-    protected void setAdminUserService(AdminUserService adminUserService){
-        this.adminUserService=adminUserService;
+    @Before
+    public void setUp() throws DatabaseException, PersistenceException {
+        H2EmbeddedHandler.getInstance().getTestConnection();
+        adminUserService = new AdminUserServiceImpl(new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance()));
     }
 
     /**

@@ -74,7 +74,6 @@ public class ImageProcessorImplTest {
 
 
     @Test
-    @Ignore
     public void testProcessPreviewWithoutFilterOrGreenscreen() throws ServiceException{
 
         imageProcessor.processPreview(testImgPath);
