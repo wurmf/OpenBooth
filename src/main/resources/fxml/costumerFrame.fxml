@@ -47,7 +47,7 @@
           <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="login" mnemonicParsing="false" onAction="#switchToLogin" text="Admin Anmedung" GridPane.columnIndex="1" />
+            <Button fx:id="login" mnemonicParsing="false" onAction="#switchToLogin" text="Administrator" GridPane.columnIndex="1" />
          </children>
       </GridPane>
       <Button fx:id="rightbutton" mnemonicParsing="false" onAction="#switchToFilter" GridPane.columnIndex="2" />
