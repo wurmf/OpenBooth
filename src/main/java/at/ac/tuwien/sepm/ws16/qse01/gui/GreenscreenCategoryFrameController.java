@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -80,9 +81,9 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 bservice.editCategory(p);
 
-                                 refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.getId()));
+                                 refreshCategoryComboBox(pservice.getAllCategoryOfProfile(selectedProfile.get(0).getId()));
                             } else {
-                                refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()),bservice.getAllCategories());
+                                refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.get(0).getId()),bservice.getAllCategories());
                             }
 
                         } catch (ServiceException e) {
@@ -111,7 +112,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background.Category, Boolean> call(TableColumn<Background.Category, Boolean> p) {
-                        return new CategoryCheckboxCell(categoryListOfProfile,bservice,categoryList,selectedProfile);
+                        return new CategoryCheckboxCell(categoryListOfProfile,bservice,categoryList, selectedProfile);
 
                     }
 
@@ -135,7 +136,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Background.Category, Boolean> call(TableColumn<Background.Category, Boolean> p) {
-                        return new CategoryButtonCell(imageHandler,categoryListOfProfile,selectedProfile,categoryList,bservice,windowManager.getStage());
+                        return new CategoryButtonCell(imageHandler,categoryListOfProfile, selectedProfile,categoryList,bservice,windowManager.getStage());
                     }
 
                 });
@@ -146,7 +147,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                 selectedCategory = (Background.Category) newSelection;
                 LOGGER.debug("Kategorie ausgewählt ->"+selectedCategory.getId());
                 try {
-                    greenscreenBackgroundController.refreshTableBackground(bservice.getAllWithCategory(selectedCategory.getId()),selectedProfile,selectedCategory);
+                    greenscreenBackgroundController.refreshTableBackground(bservice.getAllWithCategory(selectedCategory.getId()), selectedProfile,selectedCategory);
                 } catch (ServiceException e) {
                     LOGGER.error("Backgroundservice couldnt get categories ->"+selectedCategory.getId(),e);
                 }
@@ -158,7 +159,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
         txCategoryAdd.setPrefWidth(50);
 
         txCategoryName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedProfile!=null ){
+            if(!newValue.isEmpty() && selectedProfile !=null ){
                 txCategoryAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
             }else
                 txCategoryAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
@@ -174,7 +175,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
     private void saveCategory(){
         LOGGER.error("Category Add Button has been clicked");
         String name = txCategoryName.getText();
-        if(selectedProfile==null || name.trim().compareTo("") == 0){
+        if(selectedProfile ==null || name.trim().compareTo("") == 0){
             showError("Sie müssen einen Namen eingeben  und ein Profil auswählen!");
         }else {
             Background.Category p = new Background.Category(name);
@@ -187,7 +188,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                 categoryList.add(p);
 
                 if(txCategoryActivated.isSelected()){
-                    bservice.createPairProfileCategory(selectedProfile.getId(),p.getId());
+                    bservice.createPairProfileCategory(selectedProfile.get(0).getId(),p.getId());
                     categoryListOfProfile.add(p);
                 }
                 refreshCategoryComboBox(categoryList);
@@ -201,7 +202,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
         }
     }
 
-    protected void refreshTableCategory(List<Background.Category> categoryListOfProfile,List<Background.Category> categoryList,Profile selected){
+    protected void refreshTableCategory(List<Background.Category> categoryListOfProfile,List<Background.Category> categoryList,ObservableList<Profile> selected){
         LOGGER.debug("refreshing the category table..."+categoryList.size());
         selectedProfile = selected;
         this.categoryListOfProfile.clear();

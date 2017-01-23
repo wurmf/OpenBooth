@@ -89,9 +89,9 @@ public class PositionFrameController extends SettingFrameController {
                                 pservice.editPosition(p);
 
 
-                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()),posList,selectedProfile);
+                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
                             } else {
-                                refreshTablePosition(pservice.getAllPositionsOfProfile(selectedProfile));
+                                refreshTablePosition(pservice.getAllPositionsOfProfile(pservice.get(selectedProfile.get(0).getId())));
                             }
 
                         } catch (ServiceException e) {
@@ -136,7 +136,7 @@ public class PositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Position, Boolean> call(TableColumn<Position, Boolean> p) {
-                        return new PositionButtonCell(imageHandler,posList,kamPosList,selectedProfile.getId(),pservice,windowManager.getStage(),cameraPositionFrameController);
+                        return new PositionButtonCell(imageHandler,posList,kamPosList, selectedProfile,pservice,windowManager.getStage(),cameraPositionFrameController);
                     }
 
                 });
@@ -151,7 +151,7 @@ public class PositionFrameController extends SettingFrameController {
         txPositionAdd.setPrefHeight(50);
 
         txPositionName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedProfile!=null && txPositionBild.getText().compareTo("Hochladen...") != 0){
+            if(!newValue.isEmpty() && selectedProfile !=null && txPositionBild.getText().compareTo("Hochladen...") != 0){
                 txPositionAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
             }else
                 txPositionAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
@@ -166,7 +166,7 @@ public class PositionFrameController extends SettingFrameController {
     private void savePosition(){
         LOGGER.error("Position Add Button has been clicked");
         String name = txPositionName.getText();
-        if(selectedProfile==null || name.trim().compareTo("") == 0 || txPositionBild.getText().compareTo("Hochladen...") == 0){
+        if(selectedProfile ==null || name.trim().compareTo("") == 0 || txPositionBild.getText().compareTo("Hochladen...") == 0){
             showError("Sie müssen einen Namen eingeben, ein Positionbild hochladen und ein Profil auswählen!");
         }else {
             Position p = new Position(name);
@@ -181,14 +181,14 @@ public class PositionFrameController extends SettingFrameController {
                 posList.add(p);
 
                 kamPosList.clear();
-                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.getId()));
+                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.get(0).getId()));
 
                 txPositionBild.setText("Hochladen...");
                 txPositionName.clear();
                 txPositionUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
 
 
-                cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfile);
+                cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList, selectedProfile);
 
 
             } catch (ServiceException e) {
@@ -213,14 +213,14 @@ public class PositionFrameController extends SettingFrameController {
         if (file != null) {
             txPositionBild.setText(file.getAbsolutePath());
             txPositionUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
-            if(!txPositionName.getText().isEmpty() && selectedProfile!=null){
+            if(!txPositionName.getText().isEmpty() && selectedProfile !=null){
                 txPositionAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
             }else
                 txPositionAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
         }
     }
 
-    protected void refreshTablePosition(List<Position> positionList,Profile selected){
+    protected void refreshTablePosition(List<Position> positionList,ObservableList<Profile> selected){
         LOGGER.debug("refreshing the position table...");
         selectedProfile = selected;
 

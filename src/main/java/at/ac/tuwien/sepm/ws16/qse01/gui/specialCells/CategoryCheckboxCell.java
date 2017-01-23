@@ -17,17 +17,13 @@ import org.slf4j.LoggerFactory;
  */
 public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean> {
     final static Logger LOGGER = LoggerFactory.getLogger(CategoryCheckboxCell.class);
-    private  ObservableList<Background.Category> categoryList;
     private ObservableList<Background.Category> categoryListOfProfile;
-    private BackgroundService bservice;
-    private final CheckBox cellCheckbox = new CheckBox();
-    private Profile selectedProfile;
 
-    public CategoryCheckboxCell(ObservableList<Background.Category> categoryListOfProfile, BackgroundService bservice, ObservableList<Background.Category> categoryList, Profile selectedProfile) {
+    private final CheckBox cellCheckbox = new CheckBox();
+
+
+    public CategoryCheckboxCell(ObservableList<Background.Category> categoryListOfProfile, BackgroundService bservice, ObservableList<Background.Category> categoryList, ObservableList<Profile>  selectedProfile) {
         this.categoryListOfProfile = categoryListOfProfile;
-        this.bservice = bservice;
-        this.selectedProfile = selectedProfile;
-        this.categoryList = categoryList;
 
         cellCheckbox.setOnMouseClicked(new EventHandler<MouseEvent>(){
 
@@ -36,7 +32,7 @@ public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean
                 Background.Category currentCategory = (Background.Category) CategoryCheckboxCell.this.getTableView().getItems().get(CategoryCheckboxCell.this.getIndex());
                 try {
                     if(cellCheckbox.isSelected()) {
-                        bservice.createPairProfileCategory(selectedProfile.getId(), currentCategory.getId());
+                        bservice.createPairProfileCategory(selectedProfile.get(0).getId(), currentCategory.getId());
                         categoryListOfProfile.add(currentCategory);
                     }else {
                         /*bservice.deletePairProfileCategory(selectedProfile.getId(), currentCategory.getId());
@@ -44,7 +40,7 @@ public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean
                     }
 
 
-                    LOGGER.debug("Checkbox for Category "+currentCategory.getId()+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+selectedProfile.getName());
+                    LOGGER.debug("Checkbox for Category "+currentCategory.getId()+" clicked...checkboxValue="+cellCheckbox.isSelected()+"->profil =>"+selectedProfile.get(0).getId());
 
                 } catch (ServiceException e) {
                    LOGGER.debug("Error bei updating checkbox data",e);

@@ -12,6 +12,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -275,20 +276,21 @@ public class ProfileFrameController extends SettingFrameController{
             /* ######################### */
             tableProfil.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
                 if (newSelection != null) {
-                    selectedProfile = (Profile) newSelection;
+                    selectedProfile.clear();
+                    selectedProfile.add((Profile) newSelection);
 
-                    LOGGER.debug("Profile selected -> "+selectedProfile.getName()+"_"+selectedProfile.getId());
+                    LOGGER.debug("Profile selected -> "+ selectedProfile);
                     try {
                         setControllers();
                         refreshTablePosition(pservice.getAllPositions());
                         this.posList.clear();
                         this.posList.addAll(pservice.getAllPositions());
-                        refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.getId()),this.posList);
-                        refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                        refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),this.posList);
+                        refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
 
                         refreshLogoAutoComplete(selectedProfile);
 
-                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.getId()),bservice.getAllCategories());
+                        refreshTableCategory(pservice.getAllCategoryOfProfile(selectedProfile.get(0).getId()),bservice.getAllCategories());
                        // refreshCategoryComboBox(bservice.getAllCategories());// OfProfile(selectedProfile.getId()));
                     } catch (ServiceException e) {
                        LOGGER.error("Couldnt refreshing all tables with new selected profile",e);
@@ -386,7 +388,7 @@ public class ProfileFrameController extends SettingFrameController{
 
     }
 
-    protected Profile getSelectedProfile(){
+    protected ObservableList<Profile> getSelectedProfile(){
         return this.selectedProfile;
     }
 

@@ -11,6 +11,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -93,14 +94,14 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
                                 p.setName(t.getNewValue());
                                 bservice.edit(p);
 
-                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.get(0).getId()));
                             } else {
-                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
                             try {
-                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.getId()));
+                                refreshTableBackground(pservice.getAllBackgroundOfProfile(selectedProfile.get(0).getId()));
                             } catch (ServiceException e1) {
                                 LOGGER.error("Error: could not refresh the profile table: ",e1);
                             }
@@ -155,7 +156,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         txBackgroundAdd.setPrefWidth(50);
 
         txBackgroundName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+            if(!newValue.isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
                 txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
             }else
                 txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
@@ -184,7 +185,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
             txBackgroundPath.setText(file.getAbsolutePath());
             txBackgroundUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
 
-            if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+            if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
                 txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
             }else
                 txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
@@ -218,7 +219,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         }
     }
 
-    public void refreshTableBackground(List<Background> backgroundList,Profile selProfile,Background.Category selCategory){
+    public void refreshTableBackground(List<Background> backgroundList, ObservableList<Profile> selProfile, Background.Category selCategory){
         LOGGER.debug("refreshing the background table..."+backgroundList.size());
         selectedProfile = selProfile;
         selectedCategory = selCategory;
@@ -226,14 +227,14 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         this.backgroundList.addAll(backgroundList);
         tableBackground.setItems(this.backgroundList);
 
-        if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile!=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
+        if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
             txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
         }else
             txBackgroundAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
 
     }
 
-    protected void refreshCategoryComboBox(List<Background.Category> categories,Profile selected){
+    protected void refreshCategoryComboBox(List<Background.Category> categories,ObservableList<Profile> selected){
         LOGGER.debug("refreshing the categoryComboBox..."+categories.size());
         selectedProfile = selected;
         categoryList.clear();
