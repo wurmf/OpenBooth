@@ -102,7 +102,14 @@ public class RemoteRunnable implements Runnable{
 
         if( numberOfCameras > cameraIndex && cameraIndex >= 0 ){
             messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
-            cameraHandler.captureImage(cameras.get(cameraIndex));
+            //cameraHandler.captureImage(cameras.get(cameraIndex));
+            Profile.PairCameraPosition pairCameraPosition = activeProfile.getPairCameraPositions().get(cameraIndex);
+            int shotType = pairCameraPosition.getShotType();
+            Camera camera = pairCameraPosition.getCamera();
+            if (shotType == 1){cameraHandler.setSerieShot(camera,true);}
+            else if (shotType == 2) {cameraHandler.setCountdown(camera,5);}
+            else {}
+            cameraHandler.captureImage(camera);
         }
         else if(cameraIndex >= 0){
             messageString = "triggerCall - No camera at this index found, so no action will be triggered";
