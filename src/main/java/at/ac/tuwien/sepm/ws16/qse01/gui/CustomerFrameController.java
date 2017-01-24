@@ -443,6 +443,22 @@ public class CustomerFrameController {
 
     public void triggerShot(KeyEvent keyEvent){
         String keystoke = keyEvent.getText();
+
+        int index = -1;
+        String messageString = "";
+
+        switch (keystoke){
+            case "1" : index = 0;break;
+            case "2" : index = 1;break;
+            case "3" : index = 2;break;
+            case "4" : index = 3;break;
+            case "5" : index = 4;break;
+            case "6" : index = 5;break;
+            case "7" : index = 6;break;
+            case "8" : index = 7;break;
+            case "9" : index = 8;break;
+            default: index = -1;return;
+        }
         LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
         int numberOfPositions = 0;
         int numberOfCameras = 0;
@@ -464,21 +480,7 @@ public class CustomerFrameController {
             LOGGER.debug("Cameras couldn't be determined, thus an empty List will be assumed");
         }
 
-        int index = -1;
-        String messageString = "";
 
-        switch (keystoke){
-            case "1" : index = 0;break;
-            case "2" : index = 1;break;
-            case "3" : index = 2;break;
-            case "4" : index = 3;break;
-            case "5" : index = 4;break;
-            case "6" : index = 5;break;
-            case "7" : index = 6;break;
-            case "8" : index = 7;break;
-            case "9" : index = 8;break;
-            default: index = -1;break;
-        }
         if(index >= 0)
         {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
         else
@@ -494,7 +496,12 @@ public class CustomerFrameController {
             if (shotType == pairCameraPosition.SHOT_TYPE_MULTIPLE){cameraHandler.setSerieShot(camera,true);}
             else if (shotType == pairCameraPosition.SHOT_TYPE_TIMED) {cameraHandler.setCountdown(camera,5);}
             else {}
-            cameraHandler.captureImage(camera);
+
+            if (cameras.contains(camera)) {cameraHandler.captureImage(camera);return;}
+            else {
+                LOGGER.debug("Camera that has been triggered is not in cameraHandlers list");
+                return;
+            }
         }
         else if(index >= 0){
             messageString = "triggerCall - No camera at this index found, so no action will be triggered";
