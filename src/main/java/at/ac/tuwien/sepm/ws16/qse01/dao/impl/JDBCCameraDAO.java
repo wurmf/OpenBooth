@@ -307,7 +307,7 @@ public class JDBCCameraDAO implements CameraDAO{
         Camera ret=null;
         try {
             stmt = con.prepareStatement(query);
-            stmt.setString(2,camera.getModel());
+            stmt.setString(1,camera.getModel());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
