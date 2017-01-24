@@ -637,18 +637,20 @@ public class FullScreenImageController {
                 String[] parts = ivfullscreenImage.getId().split("/");
                 String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
 
-                String destPath = activeShooting.getStorageDir()+"/"+imgFilterName;
+                String destPath = activeShooting.getStorageDir()+imgFilterName;
 
                 imageHandler.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
 
                 activeFilterImageView = null;
                 at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
-                refreshManager.notifyMiniatureFrameOfAdd(newImage);
 
-                if((currentIndex+1)>=imageList.size())
+
+                if((currentIndex+1)>=imageList.size()) {
                     imageList.add(newImage);
-                else {
+                    refreshManager.notifyMiniatureFrameOfAdd(newImage, -1);
+                }else {
                     imageList.add(currentIndex + 1, newImage);
+                    refreshManager.notifyMiniatureFrameOfAdd(newImage,currentIndex+1);
                 }
 
                 currentIndex = currentIndex + 1;
@@ -713,17 +715,26 @@ public class FullScreenImageController {
         int maxX =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int maxY =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         try {
-            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.crop(imageList.get(currentIndex), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
-            refreshManager.notifyMiniatureFrameOfAdd(newImage);
 
-            if((currentIndex+1)>=imageList.size())
+            at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.crop(imageList.get(currentIndex),activeFilterImageView.getId(), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
+
+
+            if((currentIndex+1)>=imageList.size()) {
                 imageList.add(newImage);
-            else {
+                refreshManager.notifyMiniatureFrameOfAdd(newImage,-1);
+            }else {
                 imageList.add(currentIndex + 1, newImage);
+                refreshManager.notifyMiniatureFrameOfAdd(newImage,currentIndex+1);
             }
 
             currentIndex = currentIndex + 1;
             button4.setVisible(true);
+
+            /* changes image of activeImageView */
+            System.out.println("imagepath ->"+newImage.getImagepath());
+            ivfullscreenImage.setImage(new Image("file:"+newImage.getImagepath(), base.getWidth(), base.getHeight(),true,true));
+
+
         } catch (ServiceException e) {
             LOGGER.error("onCheckPressed" , e);
         }

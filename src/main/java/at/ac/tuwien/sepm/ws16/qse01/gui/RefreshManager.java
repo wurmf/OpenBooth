@@ -24,13 +24,13 @@ public class RefreshManager {
      * @param image the Image-Object representing the new image.
      */
     public synchronized void refreshFrames(Image image){
-        miniaturFrameController.notifyOfNewImage(image);
+        miniaturFrameController.notifyOfNewImage(image,-1);
     }
 
     public void notifyMiniatureFrameOfDelete(Image image){
         miniaturFrameController.notifyOfDelete(image);
     }
-    public void notifyMiniatureFrameOfAdd(Image image){
-        miniaturFrameController.notifyOfNewImage(image);
+    public void notifyMiniatureFrameOfAdd(Image image,int index){
+        miniaturFrameController.notifyOfNewImage(image,index);
     }
 }

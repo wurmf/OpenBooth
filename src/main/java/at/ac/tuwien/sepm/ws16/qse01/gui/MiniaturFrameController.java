@@ -91,7 +91,7 @@ public class MiniaturFrameController {
         //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
-            prepareHBox(img);
+            prepareHBox(img,-1);
         }
 
     }
@@ -103,7 +103,7 @@ public class MiniaturFrameController {
             final Image image = new Image(new FileInputStream(imageFile), 150, 150, true,
                     true);
             imageView = new ImageView(image);
-            imageView.setStyle("-fx-background-color: BLACK");
+            imageView.setStyle("-fx-background-color: WHITE");
 
             imageView.setOnMouseClicked(mouseEvent -> {
 
@@ -118,7 +118,7 @@ public class MiniaturFrameController {
             });
             return imageView;
         } catch (FileNotFoundException ex) {
-           LOGGER.debug("image not found : "+ex.getMessage());
+           LOGGER.error("createImageView->image not found : ",ex);
         }
         return null;
     }
@@ -158,9 +158,13 @@ public class MiniaturFrameController {
         LOGGER.debug("backbutton cliked...");
     }
 
-    public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image) {
-        listOfImages.add(image);
-        prepareHBox(image);
+    public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image,int index) {
+        if(index==-1)
+            listOfImages.add(image);
+        else
+            listOfImages.add(index,image);
+
+        prepareHBox(image,index);
     }
     public void notifyOfDelete(at.ac.tuwien.sepm.ws16.qse01.entities.Image image){
         listOfImages.removeIf(img -> img.getImageID()==image.getImageID());
@@ -175,12 +179,12 @@ public class MiniaturFrameController {
         tile.getChildren().remove(vboxList.get(0));
     }
 
-    private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img){
+    private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img,int index){
         HBox hBox = new HBox();
         hBox.setPrefWidth(180);
         hBox.setSpacing(120);
         hBox.setVisible(false);
-        hBox.setStyle("-fx-background-color: #dddddd;");
+        hBox.setStyle("-fx-background-color: white;");
 
         ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
         fullscreen.setFitHeight(30);
@@ -214,7 +218,7 @@ public class MiniaturFrameController {
                     tile.getChildren().remove(imageView.getParent());
 
                 } catch (ServiceException e) {
-                    LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
+                    LOGGER.error("prepareHBox->Beim Löschen Fehler aufgetreten: ",e);
                 }
 
             }
@@ -238,10 +242,14 @@ public class MiniaturFrameController {
                 imageView.setId(String.valueOf(img.getImageID()));
                 imageView.setUserData(img.getImagepath());
                 vBox.getChildren().addAll(imageView,hBox);
-                tile.getChildren().add(vBox);
+
+                if(index==-1)
+                    tile.getChildren().add(vBox);
+                else
+                    tile.getChildren().add(index,vBox);
             }
         }catch (Exception e){
-            LOGGER.debug("Fehler: "+e.getMessage());
+            LOGGER.error("Fehler: ",e);
         }
     }
 }

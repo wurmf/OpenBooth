@@ -15,10 +15,10 @@
  -fx-pref-height:100em;
 }
 
+/*
 #saveFilteredButton{
-   -fx-pref-width: 8em;
-   -fx-pref-height:4.5em;
-  -fx-text-fill: white;
+   -fx-pref-width: inherit;
+   -fx-pref-height: inherit;
   -fx-font-family: HP Simplified;
-  -fx-font-size: 2.5;
-}
+  -fx-font-size: inherit;
+}*/
