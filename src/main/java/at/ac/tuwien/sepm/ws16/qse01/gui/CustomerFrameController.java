@@ -9,12 +9,14 @@ import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
@@ -23,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.beans.EventHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -438,11 +441,14 @@ public class CustomerFrameController {
         information.show();
     }
 
-    public void triggerShot(){
+    public void triggerShot(KeyEvent keyEvent){
+        String keystoke = keyEvent.getText();
+        LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
         int numberOfPositions = 0;
         int numberOfCameras = 0;
         Profile.PairCameraPosition pairCameraPosition = null;
         Profile activeProfile = null;
+
         List<Camera> cameras = new ArrayList<>();
         try {
             if (profileservice != null) {activeProfile = profileservice.getActiveProfile();
@@ -458,19 +464,19 @@ public class CustomerFrameController {
             LOGGER.debug("Cameras couldn't be determined, thus an empty List will be assumed");
         }
 
-        int keystoke = 0;
         int index = -1;
         String messageString = "";
+
         switch (keystoke){
-            case 1 : index = 0;break;
-            case 2 : index = 1;break;
-            case 3 : index = 2;break;
-            case 4 : index = 3;break;
-            case 5 : index = 4;break;
-            case 6 : index = 5;break;
-            case 7 : index = 6;break;
-            case 8 : index = 7;break;
-            case 9 : index = 8;break;
+            case "1" : index = 0;break;
+            case "2" : index = 1;break;
+            case "3" : index = 2;break;
+            case "4" : index = 3;break;
+            case "5" : index = 4;break;
+            case "6" : index = 5;break;
+            case "7" : index = 6;break;
+            case "8" : index = 7;break;
+            case "9" : index = 8;break;
             default: index = -1;break;
         }
         if(index >= 0)
