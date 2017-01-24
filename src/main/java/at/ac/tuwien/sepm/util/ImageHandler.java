@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.util;
 
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -234,8 +235,14 @@ public class ImageHandler {
      * @param height height of icon
      * @return Background returns Background object created with given data
      */
-    public javafx.scene.layout.Background getBackground(String resourcePath,int width,int height){
-        Image image = new Image("file:"+this.getClass().getResource(resourcePath).getPath(),width,height,true,true);
+    public javafx.scene.layout.Background getButtonBackground(String resourcePath, int width, int height){
+        //Image image = new Image("file:"+this.getClass().getResourceAsStream(resourcePath),width,height,true,true);
+        Image image = null ;
+        try {
+            image =  SwingFXUtils.toFXImage(openImage(this.getClass().getResourceAsStream(resourcePath)),null);
+        } catch (ImageHandlingException e) {
+           LOGGER.error("getButtonBackground->Error",e);
+        }
         BackgroundSize backgroundSize = new BackgroundSize(width, height, true, true, true, false);
         BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         return new javafx.scene.layout.Background(backgroundImage);

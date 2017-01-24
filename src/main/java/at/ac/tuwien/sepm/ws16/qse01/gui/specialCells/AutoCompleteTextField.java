@@ -115,7 +115,7 @@ public class AutoCompleteTextField extends TextField
                     setText(parts[0]); //result.substring(0,result.lastIndexOf(" #")));
                     txLogoPath.setText(logo.getId());
                     txLogoPath.setId(parts[1]); //if logo is selected -> to avoid a new creation of logo
-                    txLogoUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
+                    txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
                     entriesPopup.hide();
                 }
             });

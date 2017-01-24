@@ -72,7 +72,7 @@ public class CameraPositionFrameController extends SettingFrameController {
                             );
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.getCamera().setLable(t.getNewValue());
-                              //TODO: cameraservice.edit implementieren!!!  cameraService.edit(p);
+                                cameraService.editCamera(p.getCamera());
 
 
                                 refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),posList, selectedProfile);

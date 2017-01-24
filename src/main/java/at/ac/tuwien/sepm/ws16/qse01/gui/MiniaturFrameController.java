@@ -69,7 +69,7 @@ public class MiniaturFrameController {
 
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
-       // System.out.println(screenWidth+"_"+screenHeight);
+
         tile.setMinWidth(screenWidth);
         tile.setMinHeight(screenHeight-60);
 
