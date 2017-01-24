@@ -166,7 +166,7 @@ public class CustomerFrameController {
         try {
             if(shootingservice.searchIsActive().getActive()){
                 if(profile!=null) {
-                    if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                    if ( profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                         isButtoncreated = false;
                         filterList.clear();

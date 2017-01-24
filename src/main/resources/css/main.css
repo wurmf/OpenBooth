@@ -10,15 +10,15 @@
    -fx-background-image: url('/images/logo.png');
 }
 #startbutton {
-   -fx-background-color:  rgba(40,40, 40, 0.5);
+   -fx-background-color:  rgba(40,40, 40, 0.7);
    -fx-text-fill: white;
    -fx-font-family: HP Simplified;
-   -fx-pref-height:2em;
+   -fx-pref-height:1em;
    }
 
 #edit{
-   -fx-background-color:  rgba(40,40, 40, 0.5);
+   -fx-background-color:  rgba(40,40, 40, 0.7);
    -fx-text-fill: white;
    -fx-font-family: HP Simplified;
-   -fx-pref-height:2em;
+   -fx-pref-height:1em;
 }
