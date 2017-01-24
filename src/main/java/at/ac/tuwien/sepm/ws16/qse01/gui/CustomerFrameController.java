@@ -173,7 +173,12 @@ public class CustomerFrameController {
             }
 
             if(filterList.isEmpty()){
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
+                try {
+                    String filterPreviewImagePath = windowmanager.copyResource("/images/filterPreview.png");
+                    filterList = filterservice.getAllFilteredImages(filterPreviewImagePath);
+                } catch (IOException e) {
+                    LOGGER.error("switchToFilter - could not copy preview filter image", e);
+                }
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
