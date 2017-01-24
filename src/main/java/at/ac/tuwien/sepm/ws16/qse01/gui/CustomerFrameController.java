@@ -458,8 +458,9 @@ public class CustomerFrameController {
             activeProfile = null;
             LOGGER.debug("Active Profile couldn't be determined, thus null value will be assumed");
         }
+        String os = System.getProperty("os.name");
         try {
-            if (cameraHandler != null) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
+            if (cameraHandler != null && !os.startsWith("Windows")) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
         } catch (CameraException e) {
             cameras = new ArrayList<>();
             LOGGER.debug("Cameras couldn't be determined, thus an empty List will be assumed");
