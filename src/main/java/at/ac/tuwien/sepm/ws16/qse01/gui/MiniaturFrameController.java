@@ -232,7 +232,8 @@ public class MiniaturFrameController {
      * notification if the image should really be deleted, if yes, it will delete
      * @param delete notification
      */
-    public void shouldBeDeleted(boolean delete){
+    public void shouldBeDeleted(boolean delete)
+    {
         if(delete){
             ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEventdel.getSource()).getParent().getParent())).getChildren().get(0);
             LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
