@@ -119,8 +119,7 @@ public class H2EmbeddedHandler  implements DBHandler {
 
     /**
      * Runs the create.sql-script on the database.
-     * @throws FileNotFoundException if the create-script is not found in the specified folder.
-     * @throws SQLException if an error occurs while running the script on the database.
+     * @throws DatabaseException if the scripts cannot be read or an error occurs while writing to the database.
      */
     private void firstStartup() throws DatabaseException {
         try {
@@ -159,8 +158,7 @@ public class H2EmbeddedHandler  implements DBHandler {
 
     /**
      * Insert test data into the database
-     * @throws FileNotFoundException if the create-script is not found in the specified folder.
-     * @throws SQLException if an error occurs while running the script on the database.
+     * @throws DatabaseException if an error occurs while reading the scripts or while making the entries in the database.
      */
     private void insertData() throws DatabaseException{
         ResultSet rs=null;
@@ -199,6 +197,11 @@ public class H2EmbeddedHandler  implements DBHandler {
         }
     }
 
+    /**
+     * For test-reasons!
+     * Copies some files used for tests and makes an entry in the database.
+     * @throws DatabaseException if an error occurs while making the new entries.
+     */
     private void setUpDefaultImgs() throws DatabaseException {
         String destPath = System.getProperty("user.home") + "/.fotostudio/BeispielBilder/";
         String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";

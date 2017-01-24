@@ -109,8 +109,8 @@ public class RemoteRunnable implements Runnable{
             Profile.PairCameraPosition pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
             int shotType = pairCameraPosition.getShotType();
             Camera camera = pairCameraPosition.getCamera();
-            if (shotType == 1){cameraHandler.setSerieShot(camera,true);}
-            else if (shotType == 2) {cameraHandler.setCountdown(camera,5);}
+            if (shotType == pairCameraPosition.SHOT_TYPE_MULTIPLE){cameraHandler.setSerieShot(camera,true);}
+            else if (shotType == pairCameraPosition.SHOT_TYPE_TIMED) {cameraHandler.setCountdown(camera,5);}
             else {}
             cameraHandler.captureImage(camera);
         }

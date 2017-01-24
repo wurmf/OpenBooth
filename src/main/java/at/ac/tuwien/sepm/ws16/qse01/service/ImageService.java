@@ -76,6 +76,7 @@ public interface ImageService {
      * crops the given image and saves it as new file
      *
      * @param original image to be cropped
+     * @param filterName name of filter
      * @param x1 start point on x axis
      * @param x2 stop point on x axis
      * @param y1 start point on y axis
@@ -85,5 +86,5 @@ public interface ImageService {
      * @return reference to the cropped image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public Image crop(Image original, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException;
+    public Image crop(Image original,String filterName, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException;
 }

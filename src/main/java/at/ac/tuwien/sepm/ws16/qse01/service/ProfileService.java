@@ -580,4 +580,10 @@ public interface ProfileService {
      * @throws ServiceException if this action can't be completed
      */
     List<Profile.PairCameraPosition> getAllPairCamerasWithPositionByProfile(int profileID) throws ServiceException;
+
+    /**
+     * resets not persistent filter and greenscreensettings in active profile
+     */
+    void resetActiveProfileNonPersistentAttributes() throws ServiceException;
+
 }

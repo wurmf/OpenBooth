@@ -6,6 +6,8 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,6 +16,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -88,7 +92,7 @@ public class MiniaturFrameController {
         //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
-            prepareHBox(img);
+            prepareHBox(img,-1);
         }
 
     }
@@ -100,7 +104,7 @@ public class MiniaturFrameController {
             final Image image = new Image(new FileInputStream(imageFile), 150, 150, true,
                     true);
             imageView = new ImageView(image);
-            imageView.setStyle("-fx-background-color: BLACK");
+            imageView.setStyle("-fx-background-color: WHITE");
 
             imageView.setOnMouseClicked(mouseEvent -> {
 
@@ -115,7 +119,7 @@ public class MiniaturFrameController {
             });
             return imageView;
         } catch (FileNotFoundException ex) {
-           LOGGER.debug("image not found : "+ex.getMessage());
+           LOGGER.error("createImageView->image not found : ",ex);
         }
         return null;
     }
@@ -155,9 +159,13 @@ public class MiniaturFrameController {
         LOGGER.debug("backbutton cliked...");
     }
 
-    public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image) {
-        listOfImages.add(image);
-        prepareHBox(image);
+    public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image,int index) {
+        if(index==-1)
+            listOfImages.add(image);
+        else
+            listOfImages.add(index,image);
+
+        prepareHBox(image,index);
     }
     public void notifyOfDelete(at.ac.tuwien.sepm.ws16.qse01.entities.Image image){
         listOfImages.removeIf(img -> img.getImageID()==image.getImageID());
@@ -172,12 +180,12 @@ public class MiniaturFrameController {
         tile.getChildren().remove(vboxList.get(0));
     }
 
-    private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img){
+    private void prepareHBox(at.ac.tuwien.sepm.ws16.qse01.entities.Image img,int index){
         HBox hBox = new HBox();
         hBox.setPrefWidth(180);
         hBox.setSpacing(120);
         hBox.setVisible(false);
-        hBox.setStyle("-fx-background-color: #dddddd;");
+        hBox.setStyle("-fx-background-color: white;");
 
         ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
         fullscreen.setFitHeight(30);
@@ -194,12 +202,26 @@ public class MiniaturFrameController {
         delete.setFitWidth(30);
         delete.setOnMouseClicked((MouseEvent mouseEvent) -> {
             LOGGER.debug("delete button clicked...");
-            this.mouseEventdel = mouseEvent;
-            try {
-                windowManager.showDeleteScene(false, new Image(new FileInputStream(img.getImagepath()), 500, 500, true, true));
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setHeaderText("Bild Löschen");
+            alert.setContentText("Möchten Sie das Bild tatsächlich löschen");
+            alert.initModality(Modality.WINDOW_MODAL);
+            alert.initOwner(this.stage);
+            Optional<ButtonType> result =alert.showAndWait();
 
-            } catch (FileNotFoundException e) {
-                LOGGER.error("prepareHBox - ",e);
+            if(result.isPresent()&&result.get()==ButtonType.OK){
+                ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
+                LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+                try {
+
+                    imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
+
+                    tile.getChildren().remove(imageView.getParent());
+
+                } catch (ServiceException e) {
+                    LOGGER.error("prepareHBox->Beim Löschen Fehler aufgetreten: ",e);
+                }
+
             }
         });
 
@@ -221,10 +243,14 @@ public class MiniaturFrameController {
                 imageView.setId(String.valueOf(img.getImageID()));
                 imageView.setUserData(img.getImagepath());
                 vBox.getChildren().addAll(imageView,hBox);
-                tile.getChildren().add(vBox);
+
+                if(index==-1)
+                    tile.getChildren().add(vBox);
+                else
+                    tile.getChildren().add(index,vBox);
             }
         }catch (Exception e){
-            LOGGER.debug("Fehler: "+e.getMessage());
+            LOGGER.debug("Fehler: ", e);
         }
     }
 
