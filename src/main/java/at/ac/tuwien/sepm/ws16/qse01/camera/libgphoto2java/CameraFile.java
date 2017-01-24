@@ -83,12 +83,14 @@ public class CameraFile implements Closeable {
 		 * @param filename the file name, without the path, gphoto-dependent.
 		 * @param path the path, gphoto-dependent.
 		 */
-		public Path(String filename, String path) {
+		public Path(String filename, String path)
+		{
 			this.filename = filename;
 			this.path = path;
 		}
 
-		public Path(GPhoto2Native.CameraFilePath path) {
+		public Path(GPhoto2Native.CameraFilePath path)
+		{
 			filename = CameraUtils.toString(path.name);
 			this.path = CameraUtils.toString(path.folder);
 		}
