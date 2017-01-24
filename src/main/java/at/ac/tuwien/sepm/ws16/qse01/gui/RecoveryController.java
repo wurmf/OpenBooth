@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -55,8 +54,8 @@ public class RecoveryController {
     public void onRecoveryPressed() {
         try {
             windowmanager.notifyActiveShootingAvailable();
-            Profile profile = profileService.get(shootingService.searchIsActive().getProfileid());
-            boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
+            profileService.setActiveProfile(shootingService.searchIsActive().getProfileid());
+            boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profileService.getActiveProfile());
             if (camerasFitPosition) {
                 imageProcessingManager.initImageProcessing();
                 windowmanager.showScene(WindowManager.SHOW_CUSTOMERSCENE);

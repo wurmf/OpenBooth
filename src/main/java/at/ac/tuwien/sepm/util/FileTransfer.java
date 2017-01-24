@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 
 /**
  * Used to transfer files out of an executing JAR-File to a destination in the computers filesystem.
- * Before using methods of this class, make sure directories you want to write to already exist.
  */
 public class FileTransfer{
 
@@ -30,6 +29,9 @@ public class FileTransfer{
      * @throws IOException if an error occurs while writing or reading the files.
      */
     public void transfer(String sourceName, String destinationName, boolean replace) throws IOException{
+        if(sourceName==null || sourceName.isEmpty() || destinationName==null || destinationName.isEmpty()){
+            throw new IOException("At least one of the paths is empty or null!");
+        }
         File destinationFile=new File(destinationName);
         if(!replace && destinationFile.exists()){
             return;
