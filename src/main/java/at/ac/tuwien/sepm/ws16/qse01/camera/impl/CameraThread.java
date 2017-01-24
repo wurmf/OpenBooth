@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 
-import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
@@ -19,7 +18,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,9 +43,12 @@ public class CameraThread extends Thread{
     private boolean serieShot = false;
     private int countdown = 0;
 
+    private String tempStorage;
+
     @Override
     public void run()
     {
+        createTempDir();
         while(!shouldStop)
         {
             if(takeImage)
@@ -125,6 +130,7 @@ public class CameraThread extends Thread{
         }
     }
 
+
     private void capturePreview()
     {
         try
@@ -133,27 +139,12 @@ public class CameraThread extends Thread{
             final CameraFile cf = cameraGphoto.capturePreview();
             if (cf != null)
             {
-                Shooting activeShooting = shootingService.searchIsActive();
-                if(activeShooting != null)
-                {
-                    String imagePath = activeShooting.getStorageDir() + "/tmp/K" + +camera.getId()+".jpg";
-                    if(!new File(imagePath).exists())
-                    {
-                        File file = new File(imagePath);
-                        file.mkdir();
-                    }
-                    cf.save(new File(imagePath).getAbsolutePath());
-                    imageProcessor.processPreview(imagePath);
+                String imagePath = tempStorage + "/K" + +camera.getId()+".jpg";
 
-                    LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
-                }
-                else
-                {
-                    LOGGER.error("no active shooting during capture");
-                }
-                cf.close();
-
+                cf.save(new File(imagePath).getAbsolutePath());
+                imageProcessor.processPreview(imagePath);
             }
+            cf.close();
         }
         catch (CameraException ex)
         {
@@ -278,5 +269,53 @@ public class CameraThread extends Thread{
 
     public void setStop(boolean shouldStop){
         this.shouldStop = shouldStop;
+    }
+
+    private void createTempDir(){
+
+        /*
+        Shooting activeShooting = null;
+        try {
+            activeShooting = shootingService.searchIsActive();
+        } catch (ServiceException e) {
+            LOGGER.error("createTempDir - Exception in service: {}", e);
+            return;
+        }
+
+        if(activeShooting == null){
+            LOGGER.error("createTempDir - no active shooting during capture");
+            return;
+        }
+
+        if(activeShooting.getStorageDir() != null){
+            tempStorage = activeShooting.getStorageDir() + "/tmp/";
+        }else{
+            LOGGER.error("createTempDir - no storage dir set");
+            return;
+        }
+
+        Path tempStoragePath = Paths.get(tempStorage);
+        if(tempStoragePath != null){
+
+        }
+        */
+
+        tempStorage = System.getProperty("user.home") + "/.fotostudio/tmp";
+
+        Path tempStoragePath = Paths.get(tempStorage);
+        if(tempStoragePath != null){
+
+            try {
+                Files.createDirectories(tempStoragePath);
+            } catch (FileAlreadyExistsException e) {
+                LOGGER.debug("createTempDir - temp directory already exists");
+            } catch (IOException e) {
+                LOGGER.error("createTempDir - Error creating temp directory", e);
+            }
+        }
+
+
+
+
     }
 }

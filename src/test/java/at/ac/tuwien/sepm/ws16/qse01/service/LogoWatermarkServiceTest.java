@@ -1,12 +1,14 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Logo;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.entities.RelativeRectangle;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.LogoWatermarkServiceImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +26,7 @@ import static org.mockito.Mockito.when;
 /**
  * This class is used for testing the LogoWatermarkService
  */
-public abstract class LogoWatermarkServiceTest {
+public class LogoWatermarkServiceTest {
 
 
     private LogoWatermarkService logoWatermarkService;
@@ -44,20 +46,10 @@ public abstract class LogoWatermarkServiceTest {
     private BufferedImage srcImg;
     private String destImgPath;
 
-    protected void setLogoWatermarkService(LogoWatermarkService logoWatermarkService){
-        this.logoWatermarkService = logoWatermarkService;
-    }
-
-    protected void setImageHandler(ImageHandler imageHandler){
-        this.imageHandler = imageHandler;
-    }
-
-    protected ProfileService getMockProfileService(){
-        return mockProfileService;
-    }
-
     @Before
     public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException{
+        imageHandler = new ImageHandler(new OpenCVLoader());
+
         String logoPath1 = this.getClass().getResource("/logos/logofamp.jpg").getPath();
         String logoPath2 = this.getClass().getResource("/logos/logofamp.jpg").getPath();
 
@@ -85,6 +77,7 @@ public abstract class LogoWatermarkServiceTest {
         when(mockProfileService.getRelativeRectangleOfLogoOfProfile(logo2)).thenReturn(position2);
         when(mockProfileService.getProfileWaterMark()).thenReturn(watermark);
 
+        logoWatermarkService = new LogoWatermarkServiceImpl(mockProfileService, imageHandler);
     }
 
     @Test

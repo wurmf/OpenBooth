@@ -58,15 +58,17 @@ public class JDBCCameraDAO implements CameraDAO{
             }
 
         } catch (SQLException e ) {
+            LOGGER.error("create", e);
             throw new PersistenceException("Create failed: "+e.getMessage());
         } catch(NullPointerException e){
+            LOGGER.error("create", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing create failed: " + e.getMessage());
+                    LOGGER.debug("Closing create failed: " + e);
                 }
             }
         }
@@ -78,21 +80,32 @@ public class JDBCCameraDAO implements CameraDAO{
     public void delete(int cameraID) throws PersistenceException {
         String sql = "DELETE FROM CAMERAS WHERE  CAMERAID=?";
         PreparedStatement stmt = null;
-
-        try{
+        try
+        {
             stmt= con.prepareStatement(sql);
             stmt.setInt(1,cameraID);
             stmt.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
+            LOGGER.error("delete", e);
             throw new PersistenceException(e.getMessage());
-        }catch(NullPointerException e){
+        }
+        catch(NullPointerException e){
+            LOGGER.error("delete", e);
             throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                try
+                {
                     stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.debug("Closing delete failed: " + e.getMessage());
+                }
+                catch (SQLException e)
+                {
+                    LOGGER.error("Closing delete failed: " + e);
                 }
             }
         }
@@ -112,27 +125,38 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt = this.con.prepareStatement(sqlString);
             stmt.setInt(1,id);
             rs = stmt.executeQuery();
-            if(rs.next()) {
+            if(rs.next())
+            {
                 Camera camera = new Camera(rs.getInt("cameraID"),
-                        rs.getString("label"),
-                        rs.getString("portNumber"),
-                        rs.getString("modelName"),
-                        rs.getString("serialNumber"));
+                rs.getString("label"),
+                rs.getString("portNumber"),
+                rs.getString("modelName"),
+                rs.getString("serialNumber"));
                 LOGGER.debug("Read has been successfully. " + camera);
                 return camera;
             }
-            else {
-                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
+            else
+            {
+                LOGGER.error("Read nothing, since it doesn't exist in persistence data store(return null)");
                 return null;
             }
         }
-        catch (SQLException e) {
+        catch (SQLException e)
+        {
+            LOGGER.error("read", e);
             throw new PersistenceException("Error! Read in persistence layer has failed.:" + e);
         }
-        finally {
-            // Return resources
-            try {if (stmt != null) stmt.close();}
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+            }
             catch (SQLException e) {
+                LOGGER.error("read", e);
                 throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
         }
     }
@@ -154,15 +178,17 @@ public class JDBCCameraDAO implements CameraDAO{
             }
 
         } catch (SQLException e ) {
+            LOGGER.error("readActive", e);
             throw new PersistenceException(e.getMessage());
         } catch(NullPointerException e){
+            LOGGER.error("readActive", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing readActive failed: " + e.getMessage());
+                    LOGGER.debug("Closing readActive failed: " + e);
                 }
             }
         }
@@ -186,15 +212,17 @@ public class JDBCCameraDAO implements CameraDAO{
             }
 
         } catch (SQLException e ) {
+            LOGGER.error("getAll", e);
             throw new PersistenceException(e.getMessage());
         } catch(NullPointerException e){
+            LOGGER.error("getAll", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.debug("Closing readActive failed: " + e.getMessage());
+                    LOGGER.error("Closing readActive failed: " + e);
                 }
             }
         }
@@ -212,14 +240,14 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e.getMessage());
+            LOGGER.error("CameraDAO", e);
             throw new PersistenceException(e.getMessage());
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("setActive", e);
                 }
             }
         }
@@ -236,14 +264,14 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e.getMessage());
+            LOGGER.error("CameraDAO", e);
             throw new PersistenceException(e.getMessage());
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("setInactive", e);
                 }
             }
         }
@@ -259,14 +287,14 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt.execute();
 
         } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e.getMessage());
+            LOGGER.error("CameraDAO", e);
             throw new PersistenceException(e.getMessage());
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error(e.getMessage());
+                    LOGGER.error("setAllInactive", e);
                 }
             }
         }
@@ -288,8 +316,10 @@ public class JDBCCameraDAO implements CameraDAO{
             }
 
         } catch (SQLException e ) {
+            LOGGER.error("exists", e);
             throw new PersistenceException(e.getMessage());
         } catch(NullPointerException e){
+            LOGGER.error("exists", e);
             throw new IllegalArgumentException();
         } finally {
             if (stmt != null) {
@@ -301,5 +331,34 @@ public class JDBCCameraDAO implements CameraDAO{
             }
         }
         return ret;
+    }
+
+    @Override
+    public Camera editCamera(Camera camera) throws PersistenceException
+    {
+        PreparedStatement stmt=null;
+        try {
+            String prepered="update cameras set LABEL=?, PORTNUMBER=?, MODELNAME=?, SERIALNUMBER=? where cameraid= ?";
+            stmt = con.prepareStatement(prepered);
+            stmt.setString(1,camera.getLable());
+            stmt.setString(2,camera.getPort());
+            stmt.setString(3,camera.getModel());
+            stmt.setString(4,camera.getSerialnumber());
+            stmt.setInt(5,camera.getId());
+            stmt.execute();
+
+        } catch (SQLException e) {
+            LOGGER.error("CameraDAO", e);
+            throw new PersistenceException(e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    LOGGER.error("editCamera",e);
+                }
+            }
+        }
+        return read(camera.getId());
     }
 }

@@ -72,4 +72,12 @@ public interface CameraDAO {
      * @throws PersistenceException
      */
     public Camera exists(Camera camera) throws PersistenceException;
+
+    /**
+     * Looks a given camera up and returns if it already exists
+     * @param camera - camera which will be edited in the persistence
+     * @return edited camera
+     * @throws PersistenceException
+     */
+    public Camera editCamera(Camera camera) throws PersistenceException;
 }

@@ -13,6 +13,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl.ImageProcessorImpl;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;

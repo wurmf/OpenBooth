@@ -67,7 +67,7 @@ public class WindowManager {
     /**
      * Starts the WindowManager instance, which will open the stages and prepare all necessary scenes.
      * @param mainStage the MainStage, which will be used to show the Scenes that the users directly interact with.
-     * @throws IOException
+     * @throws IOException if an error occurs while loading the FXML-files defining the scenes.
      */
     public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;

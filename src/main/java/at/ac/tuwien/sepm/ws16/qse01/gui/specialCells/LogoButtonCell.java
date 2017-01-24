@@ -24,17 +24,13 @@ import java.util.Optional;
 public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle, Boolean> {
     final static Logger LOGGER = LoggerFactory.getLogger(LogoButtonCell.class);
 
-    private  ObservableList<Profile.PairLogoRelativeRectangle> posList;
-    private ProfileService pservice;
 
     private final Button cellButton;
 
-    public LogoButtonCell(ImageHandler imageHandler,ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice, Stage primaryStage, int profileID, ImageView preview, AutoCompleteTextField txLogoName) {
-        this.posList = posList;
-        this.pservice = pservice;
+    public LogoButtonCell(ImageHandler imageHandler, ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice, Stage primaryStage, ObservableList<Profile> profileID, ImageView preview, AutoCompleteTextField txLogoName) {
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -64,7 +60,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                         if(pservice.getNumberOfUsing(currentPairLogo.getLogo().getId())==1) {
                             pservice.eraseLogo(currentPairLogo.getLogo());
                         }
-                        if(pservice.getNumberOfUsingByProfile(currentPairLogo.getLogo().getId(),profileID)==1)
+                        if(pservice.getNumberOfUsingByProfile(currentPairLogo.getLogo().getId(),profileID.get(0).getId())==1)
                             txLogoName.getEntries().remove(currentPairLogo.getLogo().getLabel().toLowerCase()+" #"+currentPairLogo.getLogo().getId());
 
                        pservice.erasePairLogoRelativeRectangle(currentPairLogo);

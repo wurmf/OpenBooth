@@ -3,7 +3,6 @@ package at.ac.tuwien.sepm.util.dbhandler.impl;
 import at.ac.tuwien.sepm.util.FileTransfer;
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
 import at.ac.tuwien.sepm.util.exceptions.DatabaseException;
-import org.h2.store.fs.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.h2.tools.RunScript;
@@ -11,11 +10,6 @@ import org.h2.tools.Server;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.sql.*;
 
 /**

@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.FilterServiceImpl;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,7 +28,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests possible cases for FilterService
  */
-public abstract class FilterServiceTest{
+public class FilterServiceTest{
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceTest.class);
 
     private FilterService filterService;
@@ -42,20 +44,10 @@ public abstract class FilterServiceTest{
     private BufferedImage srcImg;
     private String destImgPath;
 
-    protected void setFilterService(FilterService filterService){
-        this.filterService = filterService;
-    }
-
-    protected void setImageHandler(ImageHandler imageHandler){
-        this.imageHandler = imageHandler;
-    }
-
-    protected ShootingService getMockShootingService(){
-        return mockShootingService;
-    }
-
     @Before
     public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException{
+        OpenCVLoader openCVLoader = new OpenCVLoader();
+        imageHandler = new ImageHandler(openCVLoader);
 
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
@@ -65,6 +57,7 @@ public abstract class FilterServiceTest{
         when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,"",true));
        // when(mockShootingService.searchIsActive().getStorageDir()).thenReturn(destImgPath);
 
+        filterService = new FilterServiceImpl(mockShootingService, openCVLoader, imageHandler);
     }
 
     @Test

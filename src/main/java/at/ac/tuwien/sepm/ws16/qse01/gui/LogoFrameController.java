@@ -15,6 +15,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -190,7 +191,7 @@ public class LogoFrameController extends SettingFrameController {
                                 LOGGER.info("Logo changed..."+p.getLogo().getId()+"_"+p.getLogo().getLabel()+"_"+p.getLogo().getPath());
                                 pservice.editLogo(p.getLogo());
                             } else {
-                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
@@ -226,7 +227,7 @@ public class LogoFrameController extends SettingFrameController {
                                 changePreviewSize(txPreviewHeight.getText(),0);
 
                             } else {
-                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
@@ -262,7 +263,7 @@ public class LogoFrameController extends SettingFrameController {
                                 pservice.editPairLogoRelativeRectangle(p);
                                 changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
-                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
@@ -297,7 +298,7 @@ public class LogoFrameController extends SettingFrameController {
                                 pservice.editPairLogoRelativeRectangle(p);
                                 changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
-                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
@@ -331,7 +332,7 @@ public class LogoFrameController extends SettingFrameController {
                                 pservice.editPairLogoRelativeRectangle(p);
                                 changePreviewSize(txPreviewHeight.getText(),0);
                             } else {
-                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.getId()));
+                                refreshTableLogo(pservice.getAllPairLogoRelativeRectangle(selectedProfile.get(0).getId()));
                             }
 
                         } catch (ServiceException e) {
@@ -384,7 +385,7 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public TableCell<Profile.PairLogoRelativeRectangle, Boolean> call(TableColumn<Profile.PairLogoRelativeRectangle, Boolean> p) {
 
-                        return new LogoButtonCell(imageHandler,logoList,pservice,windowManager.getStage(),selectedProfile.getId(),previewLogo,txLogoName);
+                        return new LogoButtonCell(imageHandler,logoList,pservice,windowManager.getStage(), selectedProfile,previewLogo,txLogoName);
                     }
 
                 });
@@ -424,53 +425,53 @@ public class LogoFrameController extends SettingFrameController {
         });
 
 
-        txLogoUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+        txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
         txLogoUpload.setPrefWidth(50);
         txLogoUpload.setPrefHeight(50);
 
 
-        txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+        txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
         txLogoAdd.setPrefWidth(50);
         txLogoAdd.setPrefHeight(50);
 
         txLogoName.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+            if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
 
         });
         txLogoX.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoName.getText().isEmpty() &&
+            if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoName.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
 
         });
         txLogoY.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue.isEmpty() && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+            if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoName.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
 
         });
         txLogoBreite.textProperty().addListener((observable, oldValue, newValue) -> {
-            if((!newValue.isEmpty() || !txLogoHoehe.getText().isEmpty()) && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+            if((!newValue.isEmpty() || !txLogoHoehe.getText().isEmpty()) && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
 
         });
         txLogoHoehe.textProperty().addListener((observable, oldValue, newValue) -> {
-            if((!newValue.isEmpty() || !txLogoBreite.getText().isEmpty()) && selectedProfile!=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
+            if((!newValue.isEmpty() || !txLogoBreite.getText().isEmpty()) && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
 
         });
 
@@ -531,7 +532,7 @@ public class LogoFrameController extends SettingFrameController {
     private void saveLogo(){
         LOGGER.error("Logo Add Button has been clicked");
         String name = txLogoName.getText();
-        if(selectedProfile==null || name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
+        if(selectedProfile ==null || name.trim().compareTo("") == 0 || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
                 txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
             LOGGER.error("in error");
             showError("Sie müssen einen Namen eingeben, ein Logo hochladen und ein Profil auswählen!");
@@ -565,7 +566,7 @@ public class LogoFrameController extends SettingFrameController {
                 else
                     newLogo = pservice.getLogo(Integer.valueOf(txLogoLogo.getId()));
 
-                Profile.PairLogoRelativeRectangle p = pservice.addPairLogoRelativeRectangle(selectedProfile.getId(),newLogo.getId(),newPosition);
+                Profile.PairLogoRelativeRectangle p = pservice.addPairLogoRelativeRectangle(selectedProfile.get(0).getId(),newLogo.getId(),newPosition);
 
                 logoList.add(p);
 
@@ -582,7 +583,7 @@ public class LogoFrameController extends SettingFrameController {
                 txLogoX.clear();
                 txLogoY.clear();
                 txLogoLogo.setText("Hochladen...");
-                txLogoUpload.setBackground(imageHandler.getBackground("/images/upload1.png",50,50));
+                txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -610,20 +611,20 @@ public class LogoFrameController extends SettingFrameController {
         if (file != null) {
             txLogoLogo.setText(file.getAbsolutePath());
             txLogoLogo.setId("");
-            txLogoUpload.setBackground(imageHandler.getBackground("/images/upload2.png",50,50));
-            if(selectedProfile==null || txLogoName.getText().isEmpty() || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
+            txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            if(selectedProfile ==null || txLogoName.getText().isEmpty() || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
                     txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
 
         }
     }
 
-    protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList,Profile selected){
+    protected void refreshTableLogo(List<Profile.PairLogoRelativeRectangle> logoList,ObservableList<Profile> selectedID){
         LOGGER.info("refreshing the Logo table...");
-        selectedProfile = selected;
+        selectedProfile = selectedID;
         this.logoList.clear();
         this.logoList.addAll(logoList);
         tableLogo.setItems(this.logoList);
@@ -633,10 +634,10 @@ public class LogoFrameController extends SettingFrameController {
             LOGGER.error("refreshTablelogo->Error",e);
         }
     }
-    protected void refreshLogoAutoComplete(Profile selected) throws ServiceException {
+    protected void refreshLogoAutoComplete(ObservableList<Profile> selected) throws ServiceException {
         selectedProfile = selected;
-        txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(selectedProfile)));
-        txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(selectedProfile)));
+        txLogoName.getEntries().addAll(logo2StringArray(pservice.getAllLogosOfProfile(pservice.get(selected.get(0).getId()))));
+        txLogoName.getImgViews().putAll(logo2imgViews(pservice.getAllLogosOfProfile(pservice.get(selected.get(0).getId()))));
         txLogoName.setTxLogoPath(txLogoLogo);
         txLogoName.setTxLogoUpload(txLogoUpload);
         txLogoName.setImageHandler(imageHandler);

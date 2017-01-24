@@ -55,14 +55,14 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                    Shooting activeShooting = shootingService.searchIsActive();
+                Shooting activeShooting = shootingService.searchIsActive();
 
-                    if(activeShooting.getActive()&&firstLogin){
-                        firstLogin=false;
-                        windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
-                    }else{
-                        windowManager.showScene(loginRedirectorModel.getNextScene());
-                    }
+                if(activeShooting.getActive()&&firstLogin){
+                    firstLogin=false;
+                    windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
+                }else{
+                    windowManager.showScene(loginRedirectorModel.getNextScene());
+                }
 
                 resetValues();
             } else{

@@ -33,7 +33,7 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
         this.pservice = pservice;
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
 

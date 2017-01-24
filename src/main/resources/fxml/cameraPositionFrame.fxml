@@ -17,7 +17,7 @@
                     <TableColumn fx:id="colKamPosKamera"  text="Kamera" />
                     <TableColumn fx:id="colKamPosActivated"  text="Aktiviert" />
                     <TableColumn fx:id="colKamPosPosition" text="Position" />
-                    <!--<TableColumn fx:id="colKamPosGreenscreen" text="Greenscreen" />-->
+                    <TableColumn fx:id="colKamPosGreenscreen" text="Greenscreen" />
                 </columns>
             </TableView>
         </children>

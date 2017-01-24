@@ -9,6 +9,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.BackgroundService;
 import at.ac.tuwien.sepm.ws16.qse01.service.LogoWatermarkService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import javafx.beans.value.ObservableIntegerValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,7 +59,7 @@ public abstract class SettingFrameController {
     protected final FileChooser fileChooser = new FileChooser();
 
 
-    protected Profile selectedProfile = null;
+    protected ObservableList<Profile> selectedProfile = FXCollections.observableArrayList();
     protected Background.Category selectedCategory = null;
 
 
@@ -107,12 +108,12 @@ public abstract class SettingFrameController {
     protected void refreshTableProfiles(List<Profile> profileList){
         profileController.refreshTableProfiles(profileList);
     }
-    protected void refreshLogoAutoComplete(Profile selectedProfile) throws ServiceException {
+    protected void refreshLogoAutoComplete(ObservableList<Profile> selectedProfile) throws ServiceException {
         logoController.refreshLogoAutoComplete(selectedProfile);
     }
 
     protected void refreshTablePosition(List<Position> positionList){
-        positionController.refreshTablePosition(positionList,selectedProfile);
+        positionController.refreshTablePosition(positionList, selectedProfile);
     }
 
     protected void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList,ObservableList<Position> posList){
@@ -156,6 +157,7 @@ public abstract class SettingFrameController {
         alert.initOwner(windowManager.getStage());
         alert.show();
     }
+
 
 
 

@@ -1,10 +1,12 @@
 package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.GreenscreenServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by fabian on 04.01.17.
  */
-public abstract class GreenscreenServiceTest {
+public class GreenscreenServiceTest {
 
     private GreenscreenService greenscreenService;
     private ImageHandler imageHandler;
@@ -26,16 +28,13 @@ public abstract class GreenscreenServiceTest {
 
     private Background background;
 
-    protected void setGreenscreenService(GreenscreenService greenscreenService){
-        this.greenscreenService = greenscreenService;
-    }
-
-    protected void setImageHandler(ImageHandler imageHandler){
-        this.imageHandler = imageHandler;
-    }
 
     @Before
     public void setUp() throws ServiceException, LibraryLoadingException, ImageHandlingException{
+        OpenCVLoader openCVLoader = new OpenCVLoader();
+        imageHandler = new ImageHandler(openCVLoader);
+        greenscreenService = new GreenscreenServiceImpl(openCVLoader, imageHandler);
+
         srcImgPath = this.getClass().getResource("/greenscreen/images/greenscreen_ufo.jpeg").getPath();
         backgroundImgPath = this.getClass().getResource("/greenscreen/background/test_background2.png").getPath();
 

@@ -24,21 +24,15 @@ import java.util.Optional;
 public class CategoryButtonCell extends TableCell<Background.Category, Boolean> {
     final static Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
 
-    private  ObservableList<Background.Category> categories;
-    private ObservableList<Background.Category> categoryListOfProfile;
-    private Profile selectedProfile;
-    private BackgroundService bservice;
+
 
     private final Button cellButton;
 
-    public CategoryButtonCell(ImageHandler imageHandler,ObservableList<Background.Category> categoryListOfProfile, Profile selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
-        this.categories = categories;
-        this.categoryListOfProfile = categoryListOfProfile;
-        this.selectedProfile = selectedProfile;
-        this.bservice = bservice;
+    public CategoryButtonCell(ImageHandler imageHandler, ObservableList<Background.Category> categoryListOfProfile, ObservableList<Profile>  selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
+
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -64,7 +58,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
                     try {
 
                         bservice.eraseCategory(currentCategory);
-                        bservice.deletePairProfileCategory(selectedProfile.getId(),currentCategory.getId());
+                        bservice.deletePairProfileCategory(selectedProfile.get(0).getId(),currentCategory.getId());
 
 
                     } catch (ServiceException e) {

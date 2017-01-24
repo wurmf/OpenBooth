@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,7 @@ public class MiniaturFrameController {
 
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
-       // System.out.println(screenWidth+"_"+screenHeight);
+
         tile.setMinWidth(screenWidth);
         tile.setMinHeight(screenHeight-60);
 
@@ -80,6 +81,7 @@ public class MiniaturFrameController {
             LOGGER.debug("Miniaturansich -> Active Shooting ->" + shootingService.searchIsActive().getId());
             listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
         }else{
+            listOfImages = new ArrayList<>();
             return;
         }
       //  listOfImages = imageService.getAllImages(1);
