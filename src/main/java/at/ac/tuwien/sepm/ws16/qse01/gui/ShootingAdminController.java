@@ -198,8 +198,7 @@ public class ShootingAdminController {
                         path = shootingService.createPath();
                     }
 
-
-
+                    profileService.setActiveProfile(profile.getId());
                     Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
                     path = "";
