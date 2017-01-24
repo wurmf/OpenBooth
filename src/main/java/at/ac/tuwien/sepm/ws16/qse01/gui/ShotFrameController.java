@@ -39,6 +39,7 @@ public class ShotFrameController {
     private int frameID;
     private Stage primaryStage;
 
+    final int[] startTimeSec = new int[]{0};
     @FXML
     private void initialize(){
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
@@ -99,7 +100,7 @@ public class ShotFrameController {
     }
     public Timeline createCounter(int countdown){
         Timeline timeline = new Timeline();
-        final int[] startTimeSec = {countdown};
+        startTimeSec[0] = countdown;
         KeyFrame keyframe = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -122,6 +123,9 @@ public class ShotFrameController {
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(keyframe);
         return timeline;
+    }
+    public boolean isExpired(){
+       return startTimeSec[0]==0?true:false;
     }
 
     public int getFrameID(){

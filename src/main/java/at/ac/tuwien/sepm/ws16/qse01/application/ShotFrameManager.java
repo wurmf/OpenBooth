@@ -115,4 +115,8 @@ public class ShotFrameManager {
         for(Stage stage: shotStages)
             stage.close();
     }
+    public boolean isExpired(Position position){
+        LOGGER.debug("ShotFrameManager->isExpired with position="+position.getName());
+        return getShotframe(position).isExpired();
+    }
 }
