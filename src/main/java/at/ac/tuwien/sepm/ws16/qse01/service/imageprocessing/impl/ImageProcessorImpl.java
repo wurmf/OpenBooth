@@ -56,10 +56,9 @@ public class ImageProcessorImpl implements ImageProcessor {
 
     @Override
     public void processPreview(String imgPath) throws ServiceException{
-        if(pairCameraPosition == null){
-            Camera camera = profileService.getCameraOfPositionOfProfile(position);
-            pairCameraPosition = profileService.getPairCameraPosition(camera);
-        }
+        Camera camera = profileService.getCameraOfPositionOfProfile(position);
+        pairCameraPosition = profileService.getPairCameraPosition(camera);
+
 
 
         LOGGER.debug("entering processPreview method for position {}", position);
@@ -97,10 +96,8 @@ public class ImageProcessorImpl implements ImageProcessor {
     @Override
     public void processShot(Image image) throws ServiceException{
         String imgPath = image.getImagepath();
-        if(pairCameraPosition == null){
-            Camera camera = profileService.getCameraOfPositionOfProfile(position);
-            pairCameraPosition = profileService.getPairCameraPosition(camera);
-        }
+        Camera camera = profileService.getCameraOfPositionOfProfile(position);
+        pairCameraPosition = profileService.getPairCameraPosition(camera);
 
 
         LOGGER.debug("entering processShot method for position {}", position);
