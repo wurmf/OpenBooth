@@ -29,13 +29,16 @@ public class RemoteRunnable implements Runnable{
     private Profile activeProfile = null;
     private List<Camera> cameras = new ArrayList<>();
     private int numberOfCameras = 0;
+    private int numberOfPositions = 0;
+    private Profile.PairCameraPosition pairCameraPosition = null;
 
     public RemoteRunnable(CameraHandler cameraHandler, ProfileService profileService){
         LOGGER.debug("constructor with parameters cameraHandler{} and profileService {}",cameraHandler,profileService);
         this.cameraHandler = cameraHandler;
         this.profileService = profileService;
         try {
-            if (profileService != null) {activeProfile = profileService.getActiveProfile();}
+            if (profileService != null) {activeProfile = profileService.getActiveProfile();
+            numberOfPositions = activeProfile.getPairCameraPositions().size();}
         } catch (ServiceException e) {
             activeProfile = null;
             LOGGER.debug("Active Profile couldn't be determined, thus null value will be assumed");
@@ -80,31 +83,38 @@ public class RemoteRunnable implements Runnable{
 
     public void triggerCall(String triggerSequence){
         LOGGER.debug("triggerCall with triggerSequence {}",triggerSequence);
-        int cameraIndex = -1;
+        int index = -1;
         String messageString = "";
         switch (triggerSequence){
-            case "1" : cameraIndex = 0;break;
-            case "2" : cameraIndex = 1;break;
-            case "3" : cameraIndex = 2;break;
-            case "4" : cameraIndex = 3;break;
-            case "5" : cameraIndex = 4;break;
-            case "6" : cameraIndex = 5;break;
-            case "7" : cameraIndex = 6;break;
-            case "8" : cameraIndex = 7;break;
-            case "9" : cameraIndex = 8;break;
-            default: cameraIndex = -1;break;
+            case "1" : index = 0;break;
+            case "2" : index = 1;break;
+            case "3" : index = 2;break;
+            case "4" : index = 3;break;
+            case "5" : index = 4;break;
+            case "6" : index = 5;break;
+            case "7" : index = 6;break;
+            case "8" : index = 7;break;
+            case "9" : index = 8;break;
+            default: index = -1;break;
         }
-        if(cameraIndex >= 0)
-            {messageString = "triggerCall - Attempting to trigger camera object at camera list index " + cameraIndex + " because of valid trigger sequence{}";}
+        if(index >= 0)
+            {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
         else
             {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
         LOGGER.debug(messageString,triggerSequence);
 
-        if( numberOfCameras > cameraIndex && cameraIndex >= 0 ){
+        if( numberOfPositions > index && index >= 0 ){
             messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
-            cameraHandler.captureImage(cameras.get(cameraIndex));
+            //cameraHandler.captureImage(cameras.get(cameraIndex));
+            Profile.PairCameraPosition pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
+            int shotType = pairCameraPosition.getShotType();
+            Camera camera = pairCameraPosition.getCamera();
+            if (shotType == 1){cameraHandler.setSerieShot(camera,true);}
+            else if (shotType == 2) {cameraHandler.setCountdown(camera,5);}
+            else {}
+            cameraHandler.captureImage(camera);
         }
-        else if(cameraIndex >= 0){
+        else if(index >= 0){
             messageString = "triggerCall - No camera at this index found, so no action will be triggered";
         }
         else {

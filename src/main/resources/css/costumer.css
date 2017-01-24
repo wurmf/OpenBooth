@@ -1,7 +1,7 @@
 #basicpane{
  -fx-background-repeat: no-repeat;
    -fx-background-position: center;
-   -fx-background-size: cover;
+   -fx-background-size: 100%;
    -fx-background-color: transparent;
    -fx-background-image: url('/images/studiogray.png');
 }
@@ -10,7 +10,7 @@
    -fx-fitHeight:5em;
 }
 .button{
-   -fx-text-fill: black;
+   -fx-text-fill: white;
    -fx-font-family: HP Simplified;
    -fx-background-repeat: no-repeat;
    -fx-background-position: center;

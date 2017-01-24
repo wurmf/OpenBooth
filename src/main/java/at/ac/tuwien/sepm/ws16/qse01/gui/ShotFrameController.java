@@ -86,8 +86,6 @@ public class ShotFrameController {
         // countdownLabel.setPrefWidth((screenWidth/2));
 
         int paddingBottom =  -((Double)(screenHeight/2)).intValue();
-     //   int paddingRight =  -((Double)(screenWidth/2)).intValue();
-      //  System.out.println(paddingBottom+"_"+paddingRight+"_"+countdownLabel.getWidth()+"_"+countdownLabel.getPrefWidth());
         countdownLabel.setPadding(new Insets(0, 0,paddingBottom,0));
         createCounter(countdown).play();
 
