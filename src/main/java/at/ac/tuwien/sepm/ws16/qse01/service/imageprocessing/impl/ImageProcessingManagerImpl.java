@@ -20,6 +20,7 @@ import at.ac.tuwien.sepm.ws16.qse01.service.impl.GreenscreenServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.LogoWatermarkServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     private RemoteService remoteService;
 
+    @Autowired
     public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, RemoteService remoteService, OpenCVLoader openCVLoader){
 
         this.cameraHandler = cameraHandler;
