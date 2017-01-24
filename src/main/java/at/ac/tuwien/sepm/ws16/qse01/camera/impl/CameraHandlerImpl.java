@@ -121,7 +121,6 @@ public class CameraHandlerImpl implements CameraHandler {
                 cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
 
                 cameraGphotoList.get(i).initialize();
-                //cameraPortList.set(i,cameraPortList.get(i).substring(0,cl.getPort(i).length()-4));
                 cameraGphotoList.get(i).ref();
                 try{
                     camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
