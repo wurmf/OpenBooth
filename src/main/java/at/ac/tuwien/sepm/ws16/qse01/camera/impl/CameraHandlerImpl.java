@@ -91,9 +91,12 @@ public class CameraHandlerImpl implements CameraHandler {
             }
             */
         }
-        try {
+        try
+        {
             cameraService.setAllCamerasInactive();
-        } catch (ServiceException e) {
+        }
+        catch (ServiceException e)
+        {
             LOGGER.debug("getCameras - could not set cameras inactive", e);
         }
         cameraGphotoList=new ArrayList<>();
