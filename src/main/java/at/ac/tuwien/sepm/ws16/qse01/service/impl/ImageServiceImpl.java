@@ -1,12 +1,13 @@
 package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
-import at.ac.tuwien.sepm.util.dbhandler.impl.H2Handler;
+import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.ShootingDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
-import at.ac.tuwien.sepm.ws16.qse01.dao.impl.JDBCImageDAO;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
+import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ImageService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import org.slf4j.Logger;
@@ -14,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -31,11 +29,15 @@ public class ImageServiceImpl implements ImageService {
     private ShootingDAO shootingDAO;
     private String storageDir;
     private Shooting activeShooting;
+    private ImageHandler imageHandler;
+    private FilterService filterService;
 
     @Autowired
-    public ImageServiceImpl(ImageDAO imageDAO, ShootingDAO shootingDAO) throws ServiceException {
+    public ImageServiceImpl(ImageDAO imageDAO, ShootingDAO shootingDAO, ImageHandler imageHandler, FilterService filterService) throws ServiceException {
         this.dao = imageDAO;
         this.shootingDAO = shootingDAO;
+        this.imageHandler = imageHandler;
+        this.filterService = filterService;
 
 
     }
@@ -112,28 +114,32 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image crop(Image original, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException {
+    public Image crop(Image original,String filterName, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException {
         try {
-            BufferedImage bufOriginal = ImageIO.read(new File(original.getImagepath()));
+            BufferedImage bufOriginal = filterService.filter(filterName, original.getImagepath());
 
-            int width=bufOriginal.getWidth();
-            int height=bufOriginal.getHeight();
-            double ratioX = width/(double)maxX;
-            double ratioY = height/(double)maxY;
-            int newX1 = (int)(x1 * ratioX);
-            int newX2 = (int)(x2 * ratioX);
+            int width = bufOriginal.getWidth();
+            int height = bufOriginal.getHeight();
+            double ratioX = width / (double) maxX;
+            double ratioY = height / (double) maxY;
+            int newX1 = (int) (x1 * ratioX);
+            int newX2 = (int) (x2 * ratioX);
 
-            int newY1 = (int)(y1 * ratioY);
-            int newY2 = (int)(y2 * ratioY);
+            int newY1 = (int) (y1 * ratioY);
+            int newY2 = (int) (y2 * ratioY);
 
 
-            BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2-newX1, newY2-newY1);
-            Image img= new Image(-1, original.getImagepath().substring(0, original.getImagepath().length()-4) + "_crop.jpg",original.getShootingid(),original.getDate());
-            return dao.createAndSave(img, bufCropped);
-
-        } catch (IOException | PersistenceException e) {
-            LOGGER.error("crop: ", e);
-            throw new ServiceException(e.getMessage());
+            BufferedImage bufCropped = bufOriginal.getSubimage(newX1, newY1, newX2 - newX1, newY2 - newY1);
+            Image img = new Image(-1, original.getImagepath().substring(0, original.getImagepath().length() - 4) + "_crop.jpg", original.getShootingid(), original.getDate());
+            Image image = dao.create(img); // bufCropped);
+            imageHandler.saveImage(bufCropped, img.getImagepath().replaceAll("//", "/"));
+            return image;
+        } catch (ImageHandlingException e) {
+            LOGGER.error("crop->saveImage: ", e);
+            throw new ServiceException(e);
+        } catch (PersistenceException e) {
+            LOGGER.error("crop->saveImage in DB: ", e);
+            throw new ServiceException(e);
         }
     }
 

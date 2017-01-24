@@ -1,7 +1,10 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
+import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +22,15 @@ public class RecoveryController {
 
     private ShootingService shootingService;
     private WindowManager windowmanager;
+    private ImageProcessingManager imageProcessingManager;
+    private ProfileService profileService;
 
     @Autowired
-    public RecoveryController(ShootingService shootingService, WindowManager windowmanager) {
+    public RecoveryController(ShootingService shootingService, WindowManager windowmanager, ImageProcessingManager imageProcessingManager, ProfileService profileService) {
         this.shootingService = shootingService;
         this.windowmanager = windowmanager;
+        this.imageProcessingManager = imageProcessingManager;
+        this.profileService = profileService;
     }
 
 
@@ -46,8 +53,21 @@ public class RecoveryController {
      * customer page of the active shooting
      */
     public void onRecoveryPressed() {
-        windowmanager.notifyActiveShootingAvailable();
-        windowmanager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+        try {
+            windowmanager.notifyActiveShootingAvailable();
+            Profile profile = profileService.get(shootingService.searchIsActive().getProfileid());
+            boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
+            if (camerasFitPosition) {
+                imageProcessingManager.initImageProcessing();
+                windowmanager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+            } else{
+                showInformationDialog("Das Kamerasetup des Studios passt nicht zum gewählten Profil. Das Shooting kann nicht fortgesetzt werden.");
+                onEndShootingPressed();
+            }
+        } catch(ServiceException e){
+            showInformationDialog("Das Shooting konnte nicht wiederhergestellt werden.");
+            onEndShootingPressed();
+        }
     }
 
 
