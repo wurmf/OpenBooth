@@ -60,13 +60,6 @@ public class CameraThread extends Thread{
                     shotFrameController.showCountdown(countdown);
                 }
                 captureImage();
-                if(serieShot)
-                {
-                    for (int i = 0; i < 5; i++)
-                    {
-                        captureImage();
-                    }
-                }
                 takeImage=false;
             }
             else
