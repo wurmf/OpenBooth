@@ -310,6 +310,7 @@ public class ShootingAdminController {
             shootingService.endShooting();
             inactivemode();
             imageProcessingManager.stopImageProcessing();
+
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
         } catch (ServiceException e) {
             LOGGER.error("onStopShootingPressed - ",e);
