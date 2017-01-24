@@ -1,17 +1,22 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
+import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
@@ -20,8 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.beans.EventHandler;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,13 +63,15 @@ public class CustomerFrameController {
     private ShootingService shootingservice;
     private ProfileService profileservice;
     private FilterService filterservice;
+    private CameraHandler cameraHandler;
 
     @Autowired
-    public CustomerFrameController(FilterService filterservice, WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice){
+    public CustomerFrameController(FilterService filterservice, WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice, CameraHandler cameraHandler){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
         this.filterservice=filterservice;
+        this.cameraHandler=cameraHandler;
 
         miniLastVisit = false;
         isButtoncreated =false;
@@ -415,5 +424,70 @@ public class CustomerFrameController {
 
         information.initOwner(windowmanager.getStage());
         information.show();
+    }
+
+    public void triggerShot(KeyEvent keyEvent){
+        String keystoke = keyEvent.getText();
+        LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
+        int numberOfPositions = 0;
+        int numberOfCameras = 0;
+        Profile.PairCameraPosition pairCameraPosition = null;
+        Profile activeProfile = null;
+
+        List<Camera> cameras = new ArrayList<>();
+        try {
+            if (profileservice != null) {activeProfile = profileservice.getActiveProfile();
+                numberOfPositions = activeProfile.getPairCameraPositions().size();}
+        } catch (ServiceException e) {
+            activeProfile = null;
+            LOGGER.debug("Active Profile couldn't be determined, thus null value will be assumed");
+        }
+        try {
+            if (cameraHandler != null) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
+        } catch (CameraException e) {
+            cameras = new ArrayList<>();
+            LOGGER.debug("Cameras couldn't be determined, thus an empty List will be assumed");
+        }
+
+        int index = -1;
+        String messageString = "";
+
+        switch (keystoke){
+            case "1" : index = 0;break;
+            case "2" : index = 1;break;
+            case "3" : index = 2;break;
+            case "4" : index = 3;break;
+            case "5" : index = 4;break;
+            case "6" : index = 5;break;
+            case "7" : index = 6;break;
+            case "8" : index = 7;break;
+            case "9" : index = 8;break;
+            default: index = -1;break;
+        }
+        if(index >= 0)
+        {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
+        else
+        {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
+        LOGGER.debug(messageString,keystoke);
+
+        if( numberOfPositions > index && index >= 0 ){
+            messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
+            //cameraHandler.captureImage(cameras.get(cameraIndex));
+            pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
+            int shotType = pairCameraPosition.getShotType();
+            Camera camera = pairCameraPosition.getCamera();
+            if (shotType == pairCameraPosition.SHOT_TYPE_MULTIPLE){cameraHandler.setSerieShot(camera,true);}
+            else if (shotType == pairCameraPosition.SHOT_TYPE_TIMED) {cameraHandler.setCountdown(camera,5);}
+            else {}
+            cameraHandler.captureImage(camera);
+        }
+        else if(index >= 0){
+            messageString = "triggerCall - No camera at this index found, so no action will be triggered";
+        }
+        else {
+            messageString = "triggerCall - Trigger sequence is invalid";
+        }
+        LOGGER.debug(messageString);
+
     }
 }
