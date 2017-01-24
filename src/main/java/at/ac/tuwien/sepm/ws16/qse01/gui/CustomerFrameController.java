@@ -173,7 +173,12 @@ public class CustomerFrameController {
             }
 
             if(filterList.isEmpty()){
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
+                try {
+                    String filterPreviewImagePath = windowmanager.copyResource("/images/filterPreview.png");
+                    filterList = filterservice.getAllFilteredImages(filterPreviewImagePath);
+                } catch (IOException e) {
+                    LOGGER.error("switchToFilter - could not copy preview filter image", e);
+                }
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
@@ -337,7 +342,7 @@ public class CustomerFrameController {
                     filter.setPrefWidth(width - high/2);
                     filter.setPrefHeight(high/2);
                     String url = pairList.get(i).getCameraLable();
-                    LOGGER.debug("url costumer: " + url);
+                    LOGGER.debug("url customer: " + url);
                     filter.setStyle("-fx-background-image: url('" + url + "') " );
                     filter.setStyle("-fx-background-size: 100%" );
                     filter.setStyle("-fx-background-color: Gray" );

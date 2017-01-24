@@ -149,7 +149,12 @@ public class CameraFilterController {
                 filtermap.clear();
             }
             if(filtermap==null||filtermap.isEmpty()){
-                filtermap = filterService.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
+                try {
+                    String filterPreviewImagePath = wm.copyResource("/images/filterPreview.png");
+                    filtermap = filterService.getAllFilteredImages(filterPreviewImagePath);
+                } catch (IOException e) {
+                    LOGGER.error("createButtons - could not copy preview filter image", e);
+                }
             }
            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
             for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
@@ -332,7 +337,7 @@ public class CameraFilterController {
     }
 
     /**
-     * goes back to costumer frame
+     * goes back to customer frame
      */
     public void onBackbuttonpressed() {
         wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
