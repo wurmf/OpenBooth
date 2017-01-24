@@ -71,11 +71,13 @@ public class CameraPositionFrameController extends SettingFrameController {
                                     t.getTablePosition().getRow())
                             );
                             if (t.getNewValue().compareTo("") != 0) {
+                                kamPosList.remove(p);
                                 p.getCamera().setLable(t.getNewValue());
                                 cameraService.editCamera(p.getCamera());
+                                kamPosList.add(t.getTablePosition().getRow(),p);
 
 
-                                refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
+                               // refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
                             } else {
                                 refreshTablePosition(pservice.getAllPositionsOfProfile(pservice.get(selectedProfile.get(0).getId())));
                             }
