@@ -250,7 +250,7 @@ public class FullScreenImageController {
      */
     @FXML
     public void onClosePressed(){
-        if(cropping)
+        if(cropping==true)
         {
             cropping = false;
             cropRectangle.setVisible(false);
