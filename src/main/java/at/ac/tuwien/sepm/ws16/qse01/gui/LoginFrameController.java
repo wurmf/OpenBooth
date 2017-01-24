@@ -27,6 +27,7 @@ public class LoginFrameController {
     private AdminUserService adminUserService;
     private LoginRedirectorModel loginRedirectorModel;
     private ShootingService shootingService;
+    private boolean firstLogin;
     @FXML
     private TextField adminField;
     @FXML
@@ -34,8 +35,6 @@ public class LoginFrameController {
     @FXML
     private Label wrongCredentialsLabel;
 
-
-    private boolean firstLogin;
     @Autowired
     public LoginFrameController(ShootingService shootingService,AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
         this.adminUserService=adminUserService;
@@ -55,15 +54,18 @@ public class LoginFrameController {
         try {
             boolean correctLogin=adminUserService.checkLogin(adminName,password);
             if(correctLogin){
-                Shooting activeShooting = shootingService.searchIsActive();
-
-                if(activeShooting.getActive()&&firstLogin){
-                    firstLogin=false;
-                    windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
+                if(firstLogin){
+                    Shooting activeShooting = shootingService.searchIsActive();
+                    if(activeShooting.getActive()){
+                        firstLogin=false;
+                        windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
+                    } else{
+                        windowManager.showScene(WindowManager.SHOW_MAINSCENE);
+                    }
                 }else{
+                    firstLogin=false;
                     windowManager.showScene(loginRedirectorModel.getNextScene());
                 }
-
                 resetValues();
             } else{
                 wrongCredentialsLabel.setVisible(true);
@@ -94,7 +96,7 @@ public class LoginFrameController {
     private void resetValues(){
         wrongCredentialsLabel.setVisible(false);
         adminField.setText("");
-        adminField.requestFocus();
         passwordField.setText("");
+        adminField.requestFocus();
     }
 }

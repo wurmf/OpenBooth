@@ -138,7 +138,6 @@ public class CustomerFrameController {
                 if(filterChouseside){
                     basicpane.getChildren().remove(grid);
                     grid = new GridPane();
-                    gridpanel = new GridPane();
                     creatButtons();
                 }
                 filterChouseside = false;
@@ -160,15 +159,26 @@ public class CustomerFrameController {
     public void switchToFilter() {
         try {
             if(shootingservice.searchIsActive().getActive()){
-                if(profile.getId()!=shootingservice.searchIsActive().getProfileid()) {
+                if(profile!=null) {
+                    if (profile.getId() != shootingservice.searchIsActive().getProfileid()) {
+                        profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
+                        isButtoncreated = false;
+                        filterList.clear();
+                    }
+                }else{
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-                    isButtoncreated=false;
+                    isButtoncreated = false;
                     filterList.clear();
                 }
             }
 
             if(filterList.isEmpty()){
-                filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
+                try {
+                    String filterPreviewImagePath = windowmanager.copyResource("/images/filterPreview.png");
+                    filterList = filterservice.getAllFilteredImages(filterPreviewImagePath);
+                } catch (IOException e) {
+                    LOGGER.error("switchToFilter - could not copy preview filter image", e);
+                }
             }
             if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
@@ -230,13 +240,13 @@ public class CustomerFrameController {
                 int column = (int) ((float) pairList.size() / 3.0f);
                 int width;
                 if(pairList.size()>3){
-                     width = (int) ((float) gridpanel.getWidth() / 3) - 10;
+                     width = (int) ((float) gridpanel.getWidth() / 6) - 10;
                 }else if(pairList.size()>2){
-                    width = (int) ((float) gridpanel.getWidth() / 2) - 10;
+                    width = (int) ((float) gridpanel.getWidth() / 5) - 10;
                 }else{
                     width = (int) ((float) gridpanel.getWidth()) - 10;
                 }
-                int high = (int) ((float) gridpanel.getHeight() / 3) - 7;
+                int high = (int) ((float) gridpanel.getWidth() / 6) - 7;
                 int countrow = 1;
                 int countcolumn = 0;
                 grid = new GridPane();
@@ -292,18 +302,6 @@ public class CustomerFrameController {
                     ImageView iv2 = new ImageView();
                     iv2.setImage(i2);
 
-                    iv2.setFitHeight(high/4);
-                    iv2.setFitWidth(high/4);
-                    imageView.setFitHeight(high/2);
-                    imageView.setFitWidth(high/2);
-
-                    //imageView.setBlendMode(BlendMode.DIFFERENCE);
-
-                    Group blend = new Group(
-                                imageView,
-                                iv2
-                        );
-
 
                     if(pairList.size()<=3){
                         if(countrow==1){
@@ -341,10 +339,10 @@ public class CustomerFrameController {
                     filter.setText(name);
                     filter.setStyle("-fx-background-color: GRAY");
                     filter.setVisible(true);
-                    filter.setPrefWidth(width - 20);
+                    filter.setPrefWidth(width - high/2);
                     filter.setPrefHeight(high/2);
                     String url = pairList.get(i).getCameraLable();
-                    LOGGER.debug("url costumer: " + url);
+                    LOGGER.debug("url customer: " + url);
                     filter.setStyle("-fx-background-image: url('" + url + "') " );
                     filter.setStyle("-fx-background-size: 100%" );
                     filter.setStyle("-fx-background-color: Gray" );
@@ -363,6 +361,21 @@ public class CustomerFrameController {
                         filterChouseside =true;
                         windowmanager.showKameraFilterSceen(index,1,pairList.get(index).isGreenScreenReady());
                     });
+
+
+                    iv2.setFitWidth(high/4);
+                    iv2.setFitHeight(high/4);
+                    imageView.setFitWidth(high/1.5);
+                    imageView.setFitHeight(high/1.5);
+
+                    //imageView.setBlendMode(BlendMode.DIFFERENCE);
+
+                    Group blend = new Group(
+                            imageView,
+                            iv2
+                    );
+
+
                     gp.prefWidth(width);
                     gp.prefHeight(high);
                     gp.add(filter, 0, 0);

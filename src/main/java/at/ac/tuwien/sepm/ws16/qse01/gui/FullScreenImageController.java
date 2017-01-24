@@ -98,6 +98,7 @@ public class FullScreenImageController {
 
 
 
+    private boolean delete = false;
     private boolean b3=true;
     private boolean b4=true;
     private boolean upperbutton=false;
@@ -197,34 +198,43 @@ public class FullScreenImageController {
      */
     @FXML
     public void onDeletePressed() {
-        try {
+    try {
             if(ivfullscreenImage!=null&&imageList!=null){
-            Alert alert= new Alert(Alert.AlertType.CONFIRMATION,
-                    "Möchten Sie das Bild tatsächlich löschen");
-            alert.setHeaderText("Bild Löschen");
-            alert.initOwner(windowManager.getStage());
-            Optional<ButtonType> result =alert.showAndWait();
-                if(result.isPresent()&&result.get()==ButtonType.OK){
-                    at.ac.tuwien.sepm.ws16.qse01.entities.Image image=imageList.get(currentIndex);
-                    imageService.delete(image.getImageID());
 
-                    if(currentIndex<imageList.size()-1){
-                        onNextImage();
-                        currentIndex--;
-                    }else{
-                        if(currentIndex>0){
-                            onLastImagePressed();
-                        }else{
-                            onClosePressed();
-                        }
+                windowManager.showDeleteScene(true ,(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 500, 500, true, true)));
+
+            }
+        } catch (FileNotFoundException e) {
+            LOGGER.error("onDeletePressed - ", e);
+        }
+    }
+
+    /**
+     * notification if image should be deleted
+     * @param delete notification
+     */
+    public void shouldBeDeleted(boolean delete){
+        try {
+            if (delete) {
+                at.ac.tuwien.sepm.ws16.qse01.entities.Image image = imageList.get(currentIndex);
+                imageService.delete(image.getImageID());
+
+                if (currentIndex < imageList.size() - 1) {
+                    onNextImage();
+                    currentIndex--;
+                } else {
+                    if (currentIndex > 0) {
+                        onLastImagePressed();
+                    } else {
+                        onClosePressed();
                     }
-                    if(activ!=-1) {
-                        imageList = imageService.getAllImages(activ);
-                        refreshManager.notifyMiniatureFrameOfDelete(image);
-                    }else{
-                        LOGGER.debug("no active shooting");
-                        informationDialog("Bild konnte nicht gelöscht werden.");
-                    }
+                }
+                if (activ != -1) {
+                    imageList = imageService.getAllImages(activ);
+                    refreshManager.notifyMiniatureFrameOfDelete(image);
+                } else {
+                    LOGGER.debug("no active shooting");
+                    informationDialog("Bild konnte nicht gelöscht werden.");
                 }
             }
         } catch (ServiceException e) {
@@ -243,25 +253,14 @@ public class FullScreenImageController {
         if(cropping)
         {
             cropping = false;
-            image3.setVisible(true);
-            image4.setVisible(true);
-            button1.setVisible(true);
-            button11.setVisible(true);
-            button12.setVisible(true);
-            button5.setCancelButton(true);
-            button6.setCancelButton(true);
-            button7.setCancelButton(true);
-            button8.setCancelButton(true);
-            button9.setCancelButton(true);
-            button13.setVisible(false);
             cropRectangle.setVisible(false);
             resizeHandleNW.setVisible(false);
             resizeHandleSE.setVisible(false);
+            cropRectangle = null;
+            resizeHandleSE = null;
+            resizeHandleNW = null;
         }
-        else
-        {
-            windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
-        }
+        windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
     /**
@@ -774,7 +773,7 @@ public class FullScreenImageController {
         setUpDragging(resizeHandleNW, mouseLocation) ;
         setUpDragging(resizeHandleSE, mouseLocation) ;
 
-        resizeHandleNW.setOnMouseDragged(event -> {
+        resizeHandleNW.setOnDragDetected(event -> {
             if (mouseLocation.value != null) {
                 double deltaX = event.getSceneX() - mouseLocation.value.getX();
                 double deltaY = event.getSceneY() - mouseLocation.value.getY();

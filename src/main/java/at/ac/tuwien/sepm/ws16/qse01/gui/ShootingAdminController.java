@@ -109,6 +109,14 @@ public class ShootingAdminController {
     public void inactivemode(){
         try {
             setButtons();
+            List<Profile> prof = profileService.getAllProfiles();
+            if(prof!=null&&!prof.isEmpty()) {
+                ObservableList<Profile> observableListProfile = fittingProfiles(prof);
+                if(observableListProfile!=null||observableListProfile.isEmpty()){
+                    profileChoiceBox.setItems(observableListProfile);
+                    profileChoiceBox.setValue(observableListProfile.get(0));
+                }
+            }
         }catch (ServiceException e ){
             LOGGER.error("inactivemode - ",e);
         }
@@ -301,11 +309,8 @@ public class ShootingAdminController {
         try {
             shootingService.endShooting();
             inactivemode();
+            imageProcessingManager.stopImageProcessing();
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
-            Alert information = new Alert(Alert.AlertType.INFORMATION, "Shooting wurde beendet");
-            information.initOwner(windowManager.getStage());
-            information.setHeaderText("Bestätigung");
-            information.show();
         } catch (ServiceException e) {
             LOGGER.error("onStopShootingPressed - ",e);
             showInformationDialog("Shooting konnte nicht beendet werden!");

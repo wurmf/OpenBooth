@@ -76,7 +76,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             preview =openImageThrowException(imgPath);
 
             if(background == null){
-                LOGGER.info("processPreview - greenscreen activated for position {} but no background set", position);
+                LOGGER.debug("processPreview - greenscreen activated for position {} but no background set", position);
             }else {
                 preview = greenscreenService.applyGreenscreen(preview, background);
                 LOGGER.debug("processShot - Background {} applied to shot from position {}", background, position);
@@ -116,7 +116,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             shot = openImageThrowException(imgPath);
 
             if(background == null){
-                LOGGER.info("processShot - greenscreen activated for position {} but no background set", position);
+                LOGGER.debug("processShot - greenscreen activated for position {} but no background set", position);
             }else {
                 shot = greenscreenService.applyGreenscreen(shot, background);
                 LOGGER.debug("processShot - Background {} applied to shot from position {}", background, position);

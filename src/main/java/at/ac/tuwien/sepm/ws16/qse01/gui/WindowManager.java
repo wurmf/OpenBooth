@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.FileTransfer;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -45,12 +47,15 @@ public class WindowManager {
     private Scene customerScene;
     private Scene kamerafilterScene;
     private Scene recoveryScene;
+    private Scene deleteScene;
     private boolean activeShootingAvailable;
     private int fontSize;
     private FullScreenImageController pictureController;
     private ShootingAdminController shootingAdminController;
     private CameraFilterController cameraFilterController;
     private CustomerFrameController customerFrameController;
+    private DeleteImageController deleteImageController;
+    private MiniaturFrameController miniaturFrameController;
 
     @Autowired
     public WindowManager(SpringFXMLLoader springFXMLLoader, ShotFrameManager shotFrameManager, LoginRedirectorModel loginRedirectorModel){
@@ -77,7 +82,6 @@ public class WindowManager {
             LOGGER.debug("font size - non fitting screen size");
             fontSize =16;
         }
-
 
         //Creating ImageFullscreenscene
        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
@@ -139,16 +143,19 @@ public class WindowManager {
         parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
-        //costumer scene
-        SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> costumerWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml", CustomerFrameController.class);
-        Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
-        URL csscos= this.getClass().getResource("/css/costumer.css");
+        this.miniaturFrameController = miniWrapper.getController();
+
+
+        //customer scene
+        SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> customerWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/customerFrame.fxml", CustomerFrameController.class);
+        Parent parentcos = (Parent) customerWrapper.getLoadedObject();
+        URL csscos= this.getClass().getResource("/css/customer.css");
         LOGGER.debug("CSSCOS -"+csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
-        customerFrameController = costumerWrapper.getController();
+        customerFrameController = customerWrapper.getController();
 
         //creat Camera filter scene
         SpringFXMLLoader.FXMLWrapper<Object, CameraFilterController> kameraFilterFXMLWrapper =
@@ -176,6 +183,17 @@ public class WindowManager {
         } catch (ServiceException e) {
             LOGGER.error("start - ",e);
         }
+
+
+        //Create Delete Sceen
+        SpringFXMLLoader.FXMLWrapper<Object, DeleteImageController> deleteWrapper = springFXMLLoader.loadAndWrap("/fxml/deleteFrame.fxml", DeleteImageController.class);
+        Parent parentdel = (Parent) deleteWrapper.getLoadedObject();
+        URL cssd= this.getClass().getResource("/css/basicstyle.css");
+        LOGGER.debug("CSSF -"+cssd);
+        parentdel.setStyle("-fx-font-size:"+fontSize*1.5+"px;");
+        parentdel.getStylesheets().add(cssd.toExternalForm());
+        this.deleteScene=new Scene(parentdel ,screenWidth,screenHeight);
+        this.deleteImageController = deleteWrapper.getController();
 
 
 
@@ -222,6 +240,30 @@ public class WindowManager {
         mainStage.setFullScreen(true);
     }
 
+    public void showMiniaturscene(boolean decide){
+       mainStage.setScene(miniaturScene);
+        mainStage.setFullScreen(true);
+        miniaturFrameController.shouldBeDeleted(decide);
+    }
+
+
+    /**
+     * sets the delete desicion scene
+     * @param imageView image view of the image that should be deleted
+     */
+    public void showDeleteScene(boolean scene, javafx.scene.image.Image imageView){
+
+        if (scene){
+            deleteImageController.setdeleteImage(true,imageView);
+
+        }else {
+            deleteImageController.setdeleteImage(false,imageView);
+        }
+        mainStage.setScene(deleteScene);
+        mainStage.setFullScreen(true);
+
+    }
+
 
     /**
      * Sets the adminLoginScene as Scene in the mainStage.
@@ -244,7 +286,18 @@ public class WindowManager {
     public void showFullscreenImage(int imgID){
         mainStage.setScene(pictureFullScene);
         mainStage.setFullScreen(true);
-        pictureController.changeImage(imgID);
+
+            pictureController.changeImage(imgID);
+
+    }
+
+    /**
+     * to be called from delete scene
+     */
+    public void showFullscreenImage(boolean decison){
+        mainStage.setScene(pictureFullScene);
+        mainStage.setFullScreen(true);
+        pictureController.shouldBeDeleted(decison);
     }
 
     public void showKameraFilterSceen(int idK, int idF, boolean greenscreen){
@@ -294,6 +347,20 @@ public class WindowManager {
         }else if(screenWidth>=1280.0 && screenHeight>=800.0){
             fontSize = initialsize;
         }
+    }
+
+    /**
+     * Takes the path to a file from the resource-folder, copies it to a hidden folder in the user-home on the computer-filesystem and returns the full path to where it copied the file.
+     * @param resourcePath the relative path the file inside the resource-folder.
+     * @return the absolute path to the new file.
+     * @throws IOException if an error occurs while transfering the file.
+     */
+    public String copyResource(String resourcePath) throws IOException{
+        String[] parts=resourcePath.split("/");
+        String destPath = System.getProperty("user.home") + "/.fotostudio/Resources/"+parts[parts.length-1];
+        FileTransfer ft= new FileTransfer();
+        ft.transfer(resourcePath, destPath);
+        return destPath;
     }
 
 }
