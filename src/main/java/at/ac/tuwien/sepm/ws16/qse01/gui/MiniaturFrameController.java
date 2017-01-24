@@ -63,14 +63,14 @@ public class MiniaturFrameController {
         this.windowManager = windowManager;
     }
 
-    public void init(Stage stage) throws ServiceException {
+    public void init(Stage stage) {
         this.stage=stage;
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
-
+        tile.getChildren().clear();
         tile.setMinWidth(screenWidth);
         tile.setMinHeight(screenHeight-60);
 
@@ -81,21 +81,26 @@ public class MiniaturFrameController {
         tile.setHgap(20);
         tile.setVgap(20);
 
-        if(shootingService.searchIsActive().getActive()) {
-            LOGGER.debug("Miniaturansich -> Active Shooting ->" + shootingService.searchIsActive().getId());
-            listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
-        }else{
-            listOfImages = new ArrayList<>();
-            return;
+        try {
+            if(shootingService.searchIsActive().getActive()) {
+                LOGGER.info("Miniaturansicht -> Active Shooting ->" + shootingService.searchIsActive().getId());
+                listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+            }else{
+                listOfImages = new ArrayList<>();
+                return;
+            }
+        } catch (ServiceException e) {
+            LOGGER.error("init -> Error",e);
         }
-      //  listOfImages = imageService.getAllImages(1);
-        //List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages = imageService.getAllImages(3);//shootingService.searchIsActive().getId());
+
 
         for (final at.ac.tuwien.sepm.ws16.qse01.entities.Image img : listOfImages) {
             prepareHBox(img,-1);
         }
 
     }
+
+
 
     private ImageView createImageView(final File imageFile) {
         ImageView imageView;
