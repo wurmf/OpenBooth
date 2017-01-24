@@ -30,7 +30,7 @@ public class OpenCVLoader {
                 isLoaded = true;
                 LOGGER.info("Library {} loaded from system library path", Core.NATIVE_LIBRARY_NAME);
             } catch (UnsatisfiedLinkError e) {
-                LOGGER.error("Library not found in system library path , trying to load from resources");
+                LOGGER.info("Library not found in system library path , trying to load from resources");
                 String lib;
 
                 String operatingSystem = System.getProperty("os.name").toLowerCase();
