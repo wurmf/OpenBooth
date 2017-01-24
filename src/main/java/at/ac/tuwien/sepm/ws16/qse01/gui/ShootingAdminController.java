@@ -205,7 +205,6 @@ public class ShootingAdminController {
 
                     shootingService.addShooting(shouting);
 
-
                     boolean test = true;
                     try {
                             boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
@@ -240,6 +239,7 @@ public class ShootingAdminController {
                 if(shootingService.searchIsActive().getProfileid()==profile.getId()) {
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "",bgPath, true);
                     LOGGER.debug("Trying to persist shooting. shootingId: "+shooting.getId()+" | bgPath: "+shooting.getBgPictureFolder());
+                    profileService.setActiveProfile(profile.getId());
                     shootingService.update(shooting);
                 }
                 windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);

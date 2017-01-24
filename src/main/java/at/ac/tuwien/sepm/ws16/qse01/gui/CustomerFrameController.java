@@ -161,13 +161,11 @@ public class CustomerFrameController {
             if(shootingservice.searchIsActive().getActive()){
                 if(profile!=null) {
                     if ( profile.getId() != shootingservice.searchIsActive().getProfileid()) {
-                        profileservice.setActiveProfile(shootingservice.searchIsActive().getProfileid());
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                         isButtoncreated = false;
                         filterList.clear();
                     }
                 }else{
-                    profileservice.setActiveProfile(shootingservice.searchIsActive().getProfileid());
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                     isButtoncreated = false;
                     filterList.clear();
