@@ -1,6 +1,8 @@
 package at.ac.tuwien.sepm.ws16.qse01.entities;
 
-
+/**
+ * Entitiy class for camera-entries in the database.
+ */
 public class Camera {
     int id;
     String lable;
