@@ -247,7 +247,8 @@ public class WindowManager {
 
     /**
      * sets the delete desicion scene
-    todo *
+     *@param scene if scene== true, the demoliton controller gets started for fullscreenframe
+     *             if scene== false, the demolition controller gets started for minaturframe
      * @param imageView image view of the image that should be deleted
      */
     public void showDeleteScene(boolean scene, javafx.scene.image.Image imageView){
@@ -292,7 +293,7 @@ public class WindowManager {
 
     /**
      * to be called from delete scene
-     * TODO
+     * @param decison tells the full screenframe if it should delete or ceap the image
      */
     public void showFullscreenImage(boolean decison){
         mainStage.setScene(pictureFullScene);
@@ -300,7 +301,12 @@ public class WindowManager {
         pictureController.shouldBeDeleted(decison);
     }
 
-    //TODO
+    /**
+     * shows Kamera filter screen
+     * @param idK id of the kamera position mapping
+     * @param idF id of the last used filter
+     * @param greenscreen if green screen is enabled or not 
+     */
     public void showKameraFilterSceen(int idK, int idF, boolean greenscreen){
         mainStage.setScene(kamerafilterScene);
         mainStage.setFullScreen(true);
