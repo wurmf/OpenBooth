@@ -204,7 +204,8 @@ public class CameraGphoto implements Closeable {
     {
         final String[] versions = GPhoto2Native.INSTANCE.gp_library_version(GPhoto2Native.GP_VERSION_VERBOSE);
         final StringBuilder sb = new StringBuilder();
-        for (final String v : versions) {
+        for (final String v : versions)
+        {
             sb.append(v).append(' ');
         }
         return sb.toString();
