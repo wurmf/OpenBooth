@@ -3,6 +3,7 @@ package at.ac.tuwien.sepm.ws16.qse01.camera.impl;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 
+import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraFile;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraGphoto;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraList;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.CameraUtils;
@@ -60,9 +61,17 @@ public class CameraHandlerImpl implements CameraHandler {
         return threadList;
     }
 
+    @Override
     public List<Camera> getCameras() throws CameraException {
         if(!cameraList.isEmpty())
         {
+            for (CameraGphoto camera: cameraGphotoList)
+            {
+                if(!camera.isInitialized())
+                {
+                    camera.initialize();
+                }
+            }
             return cameraList;
             /*
             for (CameraGphoto camera: cameraGphotoList)
@@ -82,9 +91,12 @@ public class CameraHandlerImpl implements CameraHandler {
             }
             */
         }
-        try {
+        try
+        {
             cameraService.setAllCamerasInactive();
-        } catch (ServiceException e) {
+        }
+        catch (ServiceException e)
+        {
             LOGGER.debug("getCameras - could not set cameras inactive", e);
         }
         cameraGphotoList=new ArrayList<>();
@@ -109,7 +121,6 @@ public class CameraHandlerImpl implements CameraHandler {
                 cameraGphotoList.get(i).setPortInfo(cl.getPortPath(cl.getPort(i,true)));
 
                 cameraGphotoList.get(i).initialize();
-                //cameraPortList.set(i,cameraPortList.get(i).substring(0,cl.getPort(i).length()-4));
                 cameraGphotoList.get(i).ref();
                 try{
                     camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);

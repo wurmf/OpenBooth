@@ -759,4 +759,17 @@ public class ProfileServiceImpl implements ProfileService{
 
         return countsOfLogoUsingByProfile;
     }
+
+    @Override
+    public void resetActiveProfileNonPersistentAttributes() throws ServiceException{
+        Profile profile = this.getActiveProfile();
+        List<Profile.PairCameraPosition> pairCameraPositions = profile.getPairCameraPositions();
+        for(Profile.PairCameraPosition auxPairCameraPosition:pairCameraPositions)
+        {
+            auxPairCameraPosition.setBackground(null);
+            auxPairCameraPosition.setFilterName("");
+            auxPairCameraPosition.setShotType(Profile.PairCameraPosition.SHOT_TYPE_SINGLE);
+        }
+        activeProfile.setPairCameraPositions(pairCameraPositions);
+    }
 }

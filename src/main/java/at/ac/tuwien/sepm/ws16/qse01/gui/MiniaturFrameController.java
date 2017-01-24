@@ -53,6 +53,7 @@ public class MiniaturFrameController {
 
     private Stage stage=null;
     private ImageView activeImageView = null;
+    private MouseEvent mouseEventdel;
     List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
 
     @Autowired
@@ -249,7 +250,30 @@ public class MiniaturFrameController {
                     tile.getChildren().add(index,vBox);
             }
         }catch (Exception e){
-            LOGGER.error("Fehler: ",e);
+            LOGGER.debug("Fehler: ", e);
+        }
+    }
+
+    /**
+     * notification if the image should really be deleted, if yes, it will delete
+     * @param delete notification
+     */
+    public void shouldBeDeleted(boolean delete)
+    {
+        if(delete){
+            ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEventdel.getSource()).getParent().getParent())).getChildren().get(0);
+            LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+            try {
+
+                imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
+
+                tile.getChildren().remove(imageView.getParent());
+
+                mouseEventdel = null;
+            } catch (ServiceException e) {
+                LOGGER.error("shouldBeDeleted - ", e);
+            }
+
         }
     }
 }
