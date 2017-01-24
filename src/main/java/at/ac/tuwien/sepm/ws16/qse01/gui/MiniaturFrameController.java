@@ -6,8 +6,6 @@ import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -53,6 +49,7 @@ public class MiniaturFrameController {
 
     private Stage stage=null;
     private ImageView activeImageView = null;
+    private MouseEvent mouseEventdel;
     List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
 
     @Autowired
@@ -197,26 +194,12 @@ public class MiniaturFrameController {
         delete.setFitWidth(30);
         delete.setOnMouseClicked((MouseEvent mouseEvent) -> {
             LOGGER.debug("delete button clicked...");
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setHeaderText("Bild Löschen");
-            alert.setContentText("Möchten Sie das Bild tatsächlich löschen");
-            alert.initModality(Modality.WINDOW_MODAL);
-            alert.initOwner(this.stage);
-            Optional<ButtonType> result =alert.showAndWait();
+            this.mouseEventdel = mouseEvent;
+            try {
+                windowManager.showDeleteScene(false, new Image(new FileInputStream(img.getImagepath()), 500, 500, true, true));
 
-            if(result.isPresent()&&result.get()==ButtonType.OK){
-                ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-                LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
-                try {
-
-                    imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
-
-                    tile.getChildren().remove(imageView.getParent());
-
-                } catch (ServiceException e) {
-                    LOGGER.debug("Beim Löschen Fehler aufgetreten: "+e.getMessage());
-                }
-
+            } catch (FileNotFoundException e) {
+                LOGGER.error("prepareHBox - ",e);
             }
         });
 
@@ -242,6 +225,28 @@ public class MiniaturFrameController {
             }
         }catch (Exception e){
             LOGGER.debug("Fehler: "+e.getMessage());
+        }
+    }
+
+    /**
+     * notification if the image should really be deleted, if yes, it will delete
+     * @param delete notification
+     */
+    public void shouldBeDeleted(boolean delete){
+        if(delete){
+            ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEventdel.getSource()).getParent().getParent())).getChildren().get(0);
+            LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+            try {
+
+                imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
+
+                tile.getChildren().remove(imageView.getParent());
+
+                mouseEventdel = null;
+            } catch (ServiceException e) {
+                LOGGER.error("shouldBeDeleted - ", e);
+            }
+
         }
     }
 }
