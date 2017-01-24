@@ -432,16 +432,19 @@ public class FullScreenImageController {
      * @param imgID image id given from miniaturframe
      */
     public void changeImage(int imgID){
-       activ = -1;
-       FileInputStream fips=null;
+        LOGGER.info("Entering changeImage with imgID ="+imgID);
+
+        activ = -1;
+        FileInputStream fips=null;
         try {
 
             if (shootingService.searchIsActive().getActive()) {
                 activ = shootingService.searchIsActive().getId();
-                imageList = imageService.getAllImages(activ);
+                this.imageList = imageService.getAllImages(activ);
             }
+            System.out.println("imagelist->size" + imageList.size()+"_"+activ);
             if (imageList != null) {
-               // LOGGER.debug("hear" + imageList.size());
+                LOGGER.debug("imagelist->size" + imageList.size());
                 for (int i = 0; i <imageList.size() ; i++) {
                     if(imageList.get(i).getImageID()==imgID){
                         currentIndex=i;
@@ -714,7 +717,7 @@ public class FullScreenImageController {
         int maxX =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int maxY =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         try {
-
+            System.out.println(currentIndex+"_"+imageList.size());
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.crop(imageList.get(currentIndex),activeFilterImageView.getId(), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
 
 
