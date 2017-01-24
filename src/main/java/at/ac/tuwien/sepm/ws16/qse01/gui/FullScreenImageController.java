@@ -253,25 +253,14 @@ public class FullScreenImageController {
         if(cropping)
         {
             cropping = false;
-            image3.setVisible(true);
-            image4.setVisible(true);
-            button1.setVisible(true);
-            button11.setVisible(true);
-            button12.setVisible(true);
-            button5.setCancelButton(true);
-            button6.setCancelButton(true);
-            button7.setCancelButton(true);
-            button8.setCancelButton(true);
-            button9.setCancelButton(true);
-            button13.setVisible(false);
             cropRectangle.setVisible(false);
             resizeHandleNW.setVisible(false);
             resizeHandleSE.setVisible(false);
+            cropRectangle = null;
+            resizeHandleSE = null;
+            resizeHandleNW = null;
         }
-        else
-        {
-            windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
-        }
+        windowManager.showScene(WindowManager.SHOW_MINIATURESCENE);
     }
 
     /**
@@ -773,7 +762,7 @@ public class FullScreenImageController {
         setUpDragging(resizeHandleNW, mouseLocation) ;
         setUpDragging(resizeHandleSE, mouseLocation) ;
 
-        resizeHandleNW.setOnMouseDragged(event -> {
+        resizeHandleNW.setOnDragDetected(event -> {
             if (mouseLocation.value != null) {
                 double deltaX = event.getSceneX() - mouseLocation.value.getX();
                 double deltaY = event.getSceneY() - mouseLocation.value.getY();
