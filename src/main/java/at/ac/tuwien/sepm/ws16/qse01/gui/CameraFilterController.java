@@ -332,7 +332,7 @@ public class CameraFilterController {
     }
 
     /**
-     * goes back to costumer frame
+     * goes back to customer frame
      */
     public void onBackbuttonpressed() {
         wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);

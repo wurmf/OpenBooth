@@ -146,16 +146,16 @@ public class WindowManager {
         this.miniaturFrameController = miniWrapper.getController();
 
 
-        //costumer scene
-        SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> costumerWrapper =
-                springFXMLLoader.loadAndWrap("/fxml/costumerFrame.fxml", CustomerFrameController.class);
-        Parent parentcos = (Parent) costumerWrapper.getLoadedObject();
-        URL csscos= this.getClass().getResource("/css/costumer.css");
+        //customer scene
+        SpringFXMLLoader.FXMLWrapper<Object, CustomerFrameController> customerWrapper =
+                springFXMLLoader.loadAndWrap("/fxml/customerFrame.fxml", CustomerFrameController.class);
+        Parent parentcos = (Parent) customerWrapper.getLoadedObject();
+        URL csscos= this.getClass().getResource("/css/customer.css");
         LOGGER.debug("CSSCOS -"+csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
-        customerFrameController = costumerWrapper.getController();
+        customerFrameController = customerWrapper.getController();
 
         //creat Camera filter scene
         SpringFXMLLoader.FXMLWrapper<Object, CameraFilterController> kameraFilterFXMLWrapper =
