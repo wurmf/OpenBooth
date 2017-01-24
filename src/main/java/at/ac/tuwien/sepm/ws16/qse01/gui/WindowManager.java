@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.FileTransfer;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -345,6 +347,20 @@ public class WindowManager {
         }else if(screenWidth>=1280.0 && screenHeight>=800.0){
             fontSize = initialsize;
         }
+    }
+
+    /**
+     * Takes the path to a file from the resource-folder, copies it to a hidden folder in the user-home on the computer-filesystem and returns the full path to where it copied the file.
+     * @param resourcePath the relative path the file inside the resource-folder.
+     * @return the absolute path to the new file.
+     * @throws IOException if an error occurs while transfering the file.
+     */
+    public String copyResource(String resourcePath) throws IOException{
+        String[] parts=resourcePath.split("/");
+        String destPath = System.getProperty("user.home") + "/.fotostudio/Resources/"+parts[parts.length-1];
+        FileTransfer ft= new FileTransfer();
+        ft.transfer(resourcePath, destPath);
+        return destPath;
     }
 
 }
