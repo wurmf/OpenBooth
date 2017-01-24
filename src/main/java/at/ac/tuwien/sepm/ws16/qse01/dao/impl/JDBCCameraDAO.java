@@ -310,7 +310,8 @@ public class JDBCCameraDAO implements CameraDAO{
             stmt.setString(1,camera.getModel());
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) {
+            if (rs.next())
+            {
                 ret=new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
             }
 
