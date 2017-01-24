@@ -73,23 +73,8 @@ public class CustomerFrameController {
 
     @FXML
     private void initialize(){
-        try {
+
             leftbutton.setVisible(false);
-            if (shootingservice.searchIsActive().getActive()) {
-                profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
-            }
-
-            if(profile != null && !profile.isGreenscreenEnabled()&&!profile.isFilerEnabled()){
-                rightbutton.setVisible(false);
-
-                //filterList = filterservice.getAllFilteredImages(System.getProperty("user.dir") + "/src/main/resources/images/filterPreview.png");
-
-            }
-
-        } catch (ServiceException e) {
-            showInformationDialog("Buttons konnten nicht geladen werden");
-            LOGGER.error("initialise:", e);
-        }
     }
 
     /**
@@ -114,7 +99,7 @@ public class CustomerFrameController {
                 if (shootingservice.searchIsActive().getActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                 }
-                List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();
+                List<Profile.PairCameraPosition> pairList = profileservice.getAllPairCameraPositionOfProfile();
                 if (pairList.isEmpty() || pairList.size() == 0) {
                     rightbutton.setVisible(false);
                 }
@@ -180,7 +165,7 @@ public class CustomerFrameController {
                     LOGGER.error("switchToFilter - could not copy preview filter image", e);
                 }
             }
-            if(profile.isFilerEnabled()||profile.isGreenscreenEnabled()) {
+            if(profileservice.getActiveProfile().isFilerEnabled()||profileservice.getActiveProfile().isGreenscreenEnabled()) {
                 rightbutton.setVisible(false);
                 allpicturesview.setVisible(false);
                 gridpanel.setVisible(false);

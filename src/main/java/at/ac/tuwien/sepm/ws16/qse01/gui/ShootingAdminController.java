@@ -198,12 +198,12 @@ public class ShootingAdminController {
                         path = shootingService.createPath();
                     }
 
-                    profileService.setActiveProfile(profile.getId());
                     Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
 
                     path = "";
 
                     shootingService.addShooting(shouting);
+                    profileService.setActiveProfile(profile.getId());
 
                     boolean test = true;
                     try {
@@ -240,6 +240,7 @@ public class ShootingAdminController {
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "",bgPath, true);
                     LOGGER.debug("Trying to persist shooting. shootingId: "+shooting.getId()+" | bgPath: "+shooting.getBgPictureFolder());
                     profileService.setActiveProfile(profile.getId());
+                    profileService.resetActiveProfileNonPersistentAttributes();
                     shootingService.update(shooting);
                 }
                 windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
@@ -306,10 +307,10 @@ public class ShootingAdminController {
     @FXML
     public void onStopShootingPressed() {
         try {
+            profileService.resetActiveProfileNonPersistentAttributes();
             shootingService.endShooting();
             inactivemode();
             imageProcessingManager.stopImageProcessing();
-
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
         } catch (ServiceException e) {
             LOGGER.error("onStopShootingPressed - ",e);
