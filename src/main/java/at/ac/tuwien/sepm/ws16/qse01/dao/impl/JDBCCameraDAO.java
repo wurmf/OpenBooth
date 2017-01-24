@@ -303,15 +303,14 @@ public class JDBCCameraDAO implements CameraDAO{
     @Override
     public Camera exists(Camera camera) throws PersistenceException {
         PreparedStatement stmt = null;
-        String query = "select * from cameras where PORTNUMBER = ? AND MODELNAME = ? ;";
+        String query = "select * from cameras where AND MODELNAME = ? ;";
         Camera ret=null;
         try {
             stmt = con.prepareStatement(query);
-            stmt.setString(1,camera.getPort());
             stmt.setString(2,camera.getModel());
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
                 ret=new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
             }
 
