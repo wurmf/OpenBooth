@@ -24,7 +24,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class CameraThread extends Thread{
@@ -90,6 +92,12 @@ public class CameraThread extends Thread{
     {
 
         Image image;
+        int anz=1;
+        List<Image> imageList = new ArrayList<>();
+        if(serieShot)
+        {
+            anz=5;
+        }
         try
         {
             final CameraFile cf = cameraGphoto.captureImage();
@@ -97,20 +105,26 @@ public class CameraThread extends Thread{
                 Shooting activeShooting = shootingService.searchIsActive();
                 if(activeShooting != null)
                 {
-                    int imageID = imageService.getNextImageID();
+                    for (int i=0;i<anz;i++)
+                    {
+                        int imageID = imageService.getNextImageID();
 
-                    String directoryPath = activeShooting.getStorageDir() + "/";
+                        String directoryPath = activeShooting.getStorageDir() + "/";
 
-                    DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
-                    Date date = new Date();
-                    String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
-                    image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
-                    image = imageService.create(image);
-                    cf.save(new File(imagePath).getAbsolutePath());
-
-                    imageProcessor.processShot(image);
-
-                    LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
+                        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+                        Date date = new Date();
+                        String imagePath = directoryPath + "K" + camera.getId() + "_" + dateFormat.format(date) + ".jpg";
+                        image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
+                        image = imageService.create(image);
+                        cf.save(new File(imagePath).getAbsolutePath());
+                        imageList.add(image);
+                        LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
+                    }
+                    for (Image shot : imageList)
+                    {
+                        imageProcessor.processShot(shot);
+                        sleep(5000);
+                    }
                 }
                 else
                 {
@@ -124,7 +138,7 @@ public class CameraThread extends Thread{
             LOGGER.error("waitForImage failed", ex);
             setStop(true);
         }
-        catch (ServiceException ex)
+        catch (ServiceException | InterruptedException ex)
         {
             LOGGER.error("Exception in service: {}", ex);
         }
