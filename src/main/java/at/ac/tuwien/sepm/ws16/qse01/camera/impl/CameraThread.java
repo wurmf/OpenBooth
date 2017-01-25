@@ -154,30 +154,35 @@ public class CameraThread extends Thread{
             {
                 CameraUtils.closeQuietly(cf);
             }
-
-
             try
             {
                 image = new Image(imagePath, activeShooting.getId());
                 image = imageService.create(image);
                 imageList.add(image);
-            } catch (ServiceException e) {
+            }
+            catch (ServiceException e)
+            {
                 LOGGER.error("captureImage - exception in service", e);
             }
 
         }
 
-        for (Image shot : imageList) {
-            try {
+        for (Image shot : imageList)
+        {
+            try
+            {
                 imageProcessor.processShot(shot);
                 sleep(5000);
-            } catch (ServiceException e) {
+            }
+            catch (ServiceException e)
+            {
                 LOGGER.error("captureImage - exception in service", e);
-            } catch (InterruptedException e){
+            }
+            catch (InterruptedException e)
+            {
                 LOGGER.error("captureImage - exception during showing of shot", e);
                 return;
             }
-
         }
     }
 
