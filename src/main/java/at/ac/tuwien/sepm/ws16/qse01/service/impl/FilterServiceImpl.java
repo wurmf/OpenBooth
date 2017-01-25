@@ -2,6 +2,7 @@ package at.ac.tuwien.sepm.ws16.qse01.service.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,19 +33,15 @@ public class FilterServiceImpl implements FilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceImpl.class);
 
 
-    private String storageDir;
-    private Shooting activeShooting;
-
     private List<String> filterList;
 
     private ImageHandler imageHandler;
 
+    String storageDir;
+
     @Autowired
-    public FilterServiceImpl(ShootingService shootingService, OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException {
+    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, TempStorageHandler tempStorageHandler) throws ServiceException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
-
-
-        activeShooting = shootingService.searchIsActive();
 
         try {
             openCVLoader.loadLibrary();
@@ -52,9 +50,9 @@ public class FilterServiceImpl implements FilterService {
             throw new ServiceException("error loading opencv library - ", e);
         }
 
-        this.imageHandler = imageHandler;
+        storageDir = tempStorageHandler.getTempStoragePath();
 
-        storageDir = activeShooting.getStorageDir()+"/";
+        this.imageHandler = imageHandler;
     }
     @Override
     public List<String> getExistingFilters(){
@@ -73,7 +71,7 @@ public class FilterServiceImpl implements FilterService {
         return filteredImgPaths;
     }
     @Override
-    public String resize(String imgPath,int width,int height){
+    public String resize(String imgPath,int width,int height) throws ServiceException{
         LOGGER.debug("Entering resize->imgPath->"+imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,  Imgcodecs.CV_LOAD_IMAGE_COLOR);

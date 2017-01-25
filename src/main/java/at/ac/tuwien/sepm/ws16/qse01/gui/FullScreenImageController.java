@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
@@ -106,7 +107,6 @@ public class FullScreenImageController {
     private int currentIndex=-1;
     private int activ;
 
-    private Shooting activeShooting;
     private ImageView activeFilterImageView;
     private ImageView original;
     private String filteredImgPath= null;
@@ -124,8 +124,10 @@ public class FullScreenImageController {
     private RefreshManager refreshManager;
     private ImageHandler imageHandler;
 
+    String tempStorageDir;
+
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, TempStorageHandler tempStorageHandler) throws ServiceException {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
@@ -134,7 +136,7 @@ public class FullScreenImageController {
         this.refreshManager=refreshManager;
         this.imageHandler = imageHandler;
 
-        this.activeShooting = shootingService.searchIsActive();
+        this.tempStorageDir = tempStorageHandler.getTempStoragePath();
     }
 
     /**
@@ -624,6 +626,7 @@ public class FullScreenImageController {
             try {
 
 
+
                 activeFilterImageView.setFitHeight(80);
                 activeFilterImageView.setPreserveRatio(false);
 
@@ -634,12 +637,13 @@ public class FullScreenImageController {
                 String[] parts = ivfullscreenImage.getId().split("/");
                 String imgFilterName = parts[parts.length-1].replace(".jpg","_"+activeFilterImageView.getId()+".jpg");
 
-                String destPath = activeShooting.getStorageDir()+imgFilterName;
+                String destPath = shootingService.searchIsActive().getStorageDir()+imgFilterName;
 
                 imageHandler.saveImage(filterService.filter(activeFilterImageView.getId(),ivfullscreenImage.getId()),destPath);
 
                 activeFilterImageView = null;
-                at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath,activeShooting.getId()));
+                int shootingID = shootingService.searchIsActive().getId();
+                at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.create(new at.ac.tuwien.sepm.ws16.qse01.entities.Image(destPath, shootingID));
 
 
                 if((currentIndex+1)>=imageList.size()) {
@@ -665,11 +669,13 @@ public class FullScreenImageController {
      * @param imgPath imagepath to delete
      */
     public void deletePreviews(String imgPath){
+
         LOGGER.debug("Entering deletePreviews -> with imgPath ="+imgPath);
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
-        File previewFile=new File(activeShooting.getStorageDir()+imgFilterName);
+
+        File previewFile=new File(tempStorageDir+imgFilterName);
         if(previewFile.isFile())
             previewFile.delete();
     }
