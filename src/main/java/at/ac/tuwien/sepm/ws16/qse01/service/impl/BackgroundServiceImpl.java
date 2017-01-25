@@ -88,11 +88,6 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public List<Background> getAllforCurrentShootingAvailable() throws ServiceException {
-        return null;
-    }
-
-    @Override
     public boolean erase(Background background) throws ServiceException {
         boolean returnValue;
         try {
