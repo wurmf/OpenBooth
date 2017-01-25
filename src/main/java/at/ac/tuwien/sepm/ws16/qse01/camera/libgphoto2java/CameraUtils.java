@@ -20,14 +20,14 @@ package at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.camera.libgphoto2java.jna.GPhoto2Native;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.Closeable;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Martin Vysny
@@ -46,10 +46,10 @@ public class CameraUtils {
         }
         catch (Throwable t)
         {
-            log.log(Level.WARNING, "Failed to close Closeable " + c.getClass().getName(), t);
+            log.error("Failed to close Closeable " + c.getClass().getName(), t);
         }
     }
-    private final static Logger log = Logger.getLogger(CameraUtils.class.getName());
+    private final static Logger log = LoggerFactory.getLogger(CameraUtils.class);
 
     public static int check(int result, String methodName)
     {
@@ -72,7 +72,7 @@ public class CameraUtils {
         }
         catch (Exception ex)
         {
-            log.log(Level.WARNING, "Failed to invoke " + methodName + ": " + ex, ex);
+            log.error("Failed to invoke " + methodName + ": " + ex, ex);
         }
     }
 
