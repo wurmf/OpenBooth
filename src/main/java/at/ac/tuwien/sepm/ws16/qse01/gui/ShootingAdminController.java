@@ -94,14 +94,6 @@ public class ShootingAdminController {
 
             Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
             storageDirLabel.setText(storagepath.toString());
-            List<Profile> prof = profileService.getAllProfiles();
-            if(prof!=null&&!prof.isEmpty()) {
-                ObservableList<Profile> observableListProfile = fittingProfiles(prof);
-                if(observableListProfile!=null||observableListProfile.isEmpty()){
-                    profileChoiceBox.setItems(observableListProfile);
-                    profileChoiceBox.setValue(observableListProfile.get(0));
-                }
-            }
 
         } catch (ServiceException e) {
             LOGGER.error("initialize - ",e);
