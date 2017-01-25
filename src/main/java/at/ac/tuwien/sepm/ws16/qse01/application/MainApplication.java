@@ -40,13 +40,13 @@ public class MainApplication extends Application {
     public void stop() throws Exception {
         LOGGER.info("Stopping Application");
 
+        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
+        imageProcessingManager.stopImageProcessing();
+
         DBHandler dbHandler = applicationContext.getBean(DBHandler.class);
         if(dbHandler!=null) {
             dbHandler.closeConnection();
         }
-
-        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
-        imageProcessingManager.stopImageProcessing();
 
         if (this.applicationContext != null && applicationContext.isRunning()) {
             this.applicationContext.close();
