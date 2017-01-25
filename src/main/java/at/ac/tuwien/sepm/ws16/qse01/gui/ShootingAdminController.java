@@ -194,7 +194,7 @@ public class ShootingAdminController {
                         return;
                     }
 
-                    if(path==null) {
+                    if(path==null || path.isEmpty()) {
                         path = shootingService.createPath();
                     }
 
