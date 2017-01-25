@@ -33,25 +33,28 @@ import java.util.List;
 public class CameraThread extends Thread{
 
     private Logger LOGGER = LoggerFactory.getLogger(CameraThread.class);
+
     private ImageService imageService;
     private ShootingService shootingService;
     private CameraGphoto cameraGphoto;
     private Camera camera;
     private ImageProcessor imageProcessor;
     private ShotFrameController shotFrameController;
-    private ProfileService profileService;
 
     private boolean shouldStop = false;
     private boolean takeImage = false;
     private boolean serieShot = false;
     private int countdown = 0;
 
-    private String tempStorage;
+    private String tempStoragePath;
 
     @Override
     public void run()
     {
-        createTempDir();
+        if(!checkInitialized()){
+            LOGGER.error("CameraThread not properly initialized");
+            shouldStop = true;
+        }
         while(!shouldStop)
         {
             if(takeImage)
@@ -70,19 +73,8 @@ public class CameraThread extends Thread{
             {
                 capturePreview();
             }
-            if(shouldStop)
-            {
-                try
-                {
-                    cameraGphoto.close();
-                }
-                catch (IOException e)
-                {
-                    LOGGER.error("cameraThread run, could not close Camera", e);
-                }
-                LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-            }
         }
+        LOGGER.debug("Stopped CameraThread for Camera {}", camera);
     }
 
 
@@ -126,6 +118,12 @@ public class CameraThread extends Thread{
 
 
             String directoryPath = activeShooting.getStorageDir();
+
+            if(directoryPath == null || directoryPath.isEmpty()){
+                LOGGER.error("captureImage - shooting directory path is null or empty");
+                shouldStop = true;
+                return;
+            }
 
             DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
             Date date = new Date();
@@ -183,7 +181,7 @@ public class CameraThread extends Thread{
             return;
         }
 
-        String imagePath = tempStorage + "/K" + +camera.getId()+".jpg";
+        String imagePath = tempStoragePath + "/K" + +camera.getId()+".jpg";
 
         try {
             cf.save(new File(imagePath).getAbsolutePath());
@@ -196,7 +194,7 @@ public class CameraThread extends Thread{
 
         try {
             imageProcessor.processPreview(imagePath);
-        } catch (ServiceException e) {
+        } catch (ServiceException | NullPointerException e) {
             //Ignore Exception if thread should be stopped
             if(!shouldStop){
                 LOGGER.error("capturePreview - exception in service", e);
@@ -286,6 +284,10 @@ public class CameraThread extends Thread{
         this.countdown = countdown;
     }
 
+    public void setTempStoragePath(String tempStoragePath){
+        this.tempStoragePath = tempStoragePath;
+    }
+
     public void setShootingService(ShootingService shootingService){
         this.shootingService = shootingService;
     }
@@ -294,9 +296,6 @@ public class CameraThread extends Thread{
         this.shotFrameController = shotFrameController;
     }
 
-    public void setProfileService(ProfileService profileService) {
-        this.profileService = profileService;
-    }
 
     public void setCameraGphoto(CameraGphoto cameraGphoto) {
         this.cameraGphoto = cameraGphoto;
@@ -318,24 +317,30 @@ public class CameraThread extends Thread{
         this.shouldStop = shouldStop;
     }
 
-    private void createTempDir(){
 
-        tempStorage = System.getProperty("user.home") + "/.fotostudio/tmp";
-
-        Path tempStoragePath = Paths.get(tempStorage);
-        if(tempStoragePath != null){
-
-            try {
-                Files.createDirectories(tempStoragePath);
-            } catch (FileAlreadyExistsException e) {
-                LOGGER.debug("createTempDir - temp directory already exists");
-            } catch (IOException e) {
-                LOGGER.error("createTempDir - Error creating temp directory", e);
-            }
+    private boolean checkInitialized(){
+        if(imageService == null) {
+            return false;
+        }
+        if(shootingService == null){
+            return false;
+        }
+        if(cameraGphoto == null){
+            return false;
+        }
+        if(camera == null){
+            return false;
+        }
+        if(imageProcessor == null){
+            return false;
+        }
+        if(shotFrameController == null){
+            return false;
+        }
+        if(tempStoragePath == null){
+            return false;
         }
 
-
-
-
+        return true;
     }
 }

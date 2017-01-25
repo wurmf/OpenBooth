@@ -2,13 +2,14 @@ package at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.impl;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
-import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraThread;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
@@ -44,13 +45,12 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     private ImageService imageService;
 
     private OpenCVLoader openCVLoader;
+    private TempStorageHandler tempStorageHandler;
 
     private List<CameraThread> cameraThreadList;
 
-    private RemoteService remoteService;
-
     @Autowired
-    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, RemoteService remoteService, OpenCVLoader openCVLoader){
+    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, OpenCVLoader openCVLoader, TempStorageHandler tempStorageHandler){
 
         this.cameraHandler = cameraHandler;
         this.shotFrameManager = shotFrameManager;
@@ -58,8 +58,8 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         this.shootingService = shootingService;
         this.profileService = profileService;
         this.imageService = imageService;
-        this.remoteService = remoteService;
         this.openCVLoader = openCVLoader;
+        this.tempStorageHandler = tempStorageHandler;
     }
 
     @Override
@@ -124,13 +124,14 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     private Map<Position, ShotFrameController> initShotFrameManager(List<Camera> cameraList) throws ServiceException{
         List<Position> positionList = new ArrayList<>();
 
-        for(Camera c : cameraList){
+        for(int i=0; i<cameraList.size(); i++){
+            Camera c = cameraList.get(i);
             Position p = profileService.getPositionOfCameraOfProfile(c);
             if(p!=null){
                 LOGGER.debug("initShotFrameManager - camera added");
                 positionList.add(p);
             } else{
-                LOGGER.info("initShotFrameManager - no position for this camera: "+c.getId());
+                LOGGER.info("initShotFrameManager - no position for this camera: {}", c);
                 cameraHandler.removeCameraFromList(c);
             }
         }
@@ -190,13 +191,14 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
             }
 
             LogoWatermarkService logoWatermarkService = new LogoWatermarkServiceImpl(profileService, imageHandler);
-            FilterService filterService = new FilterServiceImpl(shootingService, openCVLoader, imageHandler);
+            FilterService filterService = new FilterServiceImpl(openCVLoader, imageHandler, tempStorageHandler);
             GreenscreenService greenscreenService = new GreenscreenServiceImpl(openCVLoader, imageHandler);
 
             ImageProcessor imageProcessor = new ImageProcessorImpl(shotFrameController, shootingService, profileService, imageService, logoWatermarkService, filterService, greenscreenService, position, imageHandler, refreshManager);
 
             cameraThread.setImageService(imageService);
             cameraThread.setShootingService(shootingService);
+            cameraThread.setTempStoragePath(tempStorageHandler.getTempStoragePath());
             cameraThread.setShotFrameController(shotFrameController);
             cameraThread.setImageProcessor(imageProcessor);
         }

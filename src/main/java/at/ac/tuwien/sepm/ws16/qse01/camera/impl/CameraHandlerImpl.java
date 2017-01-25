@@ -34,6 +34,8 @@ public class CameraHandlerImpl implements CameraHandler {
     private List<Camera> cameraList = new ArrayList<>();
     private List<CameraThread> threadList;
 
+    private boolean isInitialized = false;
+
     @Autowired
     public CameraHandlerImpl(CameraService cameraService)
     {
@@ -63,7 +65,7 @@ public class CameraHandlerImpl implements CameraHandler {
 
     @Override
     public List<Camera> getCameras() throws CameraException {
-        if(!cameraList.isEmpty())
+        if(isInitialized)
         {
             for (CameraGphoto camera: cameraGphotoList)
             {
@@ -73,23 +75,6 @@ public class CameraHandlerImpl implements CameraHandler {
                 }
             }
             return cameraList;
-            /*
-            for (CameraGphoto camera: cameraGphotoList)
-            {
-                if(camera.isInitialized())
-                {
-                    try
-                    {
-                        camera.close();
-                    }
-                    catch (IOException e)
-                    {
-                        LOGGER.error("getCameras, close open cameras", e);
-                        throw new CameraException(e.getMessage(),-1);
-                    }
-                }
-            }
-            */
         }
         try
         {
@@ -143,6 +128,7 @@ public class CameraHandlerImpl implements CameraHandler {
         } finally {
             CameraUtils.closeQuietly(cl);
         }
+        isInitialized = true;
         return cameraList;
     }
 
@@ -193,5 +179,12 @@ public class CameraHandlerImpl implements CameraHandler {
         cameraModelList.remove(index);
         cameraPortList.remove(index);
 
+    }
+
+    @Override
+    public void closeCameras() {
+        for(CameraGphoto cameraGphoto : cameraGphotoList){
+            CameraUtils.closeQuietly(cameraGphoto);
+        }
     }
 }

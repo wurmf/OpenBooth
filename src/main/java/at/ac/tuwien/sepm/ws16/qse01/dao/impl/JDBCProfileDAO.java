@@ -286,7 +286,7 @@ public class JDBCProfileDAO implements ProfileDAO {
                 stmt = this.con.prepareStatement(sqlString);
                 stmt.setInt(1, profile.getId());
                 rs = stmt.executeQuery();
-                if (rs.next()) {
+                while (rs.next()) {
                     profile.getBackgroundCategories().add(backgroundCategoryDAO.read(rs.getInt("backgroundcategoryID")));
                 }
                 return profile;

@@ -2,8 +2,10 @@ package at.ac.tuwien.sepm.ws16.qse01.service;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
 import at.ac.tuwien.sepm.util.OpenCVLoader;
+import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
+import at.ac.tuwien.sepm.util.exceptions.StorageHandlingException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.FilterServiceImpl;
@@ -45,19 +47,20 @@ public class FilterServiceTest{
     private String destImgPath;
 
     @Before
-    public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException{
+    public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException, StorageHandlingException{
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
+        TempStorageHandler tempStorageHandler = new TempStorageHandler();
 
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
 
         srcImg = imageHandler.openImage(srcImgPath);
 
-        when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,"",true));
+        //when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,"",true));
        // when(mockShootingService.searchIsActive().getStorageDir()).thenReturn(destImgPath);
 
-        filterService = new FilterServiceImpl(mockShootingService, openCVLoader, imageHandler);
+        filterService = new FilterServiceImpl(openCVLoader, imageHandler, tempStorageHandler);
     }
 
     @Test

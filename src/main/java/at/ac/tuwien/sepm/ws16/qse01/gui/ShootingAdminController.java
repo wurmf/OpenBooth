@@ -35,7 +35,7 @@ public class ShootingAdminController {
 
     private static final boolean enableDebugProfile = true;
     private static final String debugProfileName = "DebugProfile";
-    private static final int debugProfileId = 3; //Welches bestehende Profil als DebugProfil aus der Datenbank ausgewählt werden soll
+    private static final int debugProfileId = 1; //Welches bestehende Profil als DebugProfil aus der Datenbank ausgewählt werden soll
 
     @FXML
     private Label saveing;
@@ -94,14 +94,6 @@ public class ShootingAdminController {
 
             Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
             storageDirLabel.setText(storagepath.toString());
-            List<Profile> prof = profileService.getAllProfiles();
-            if(prof!=null&&!prof.isEmpty()) {
-                ObservableList<Profile> observableListProfile = fittingProfiles(prof);
-                if(observableListProfile!=null||observableListProfile.isEmpty()){
-                    profileChoiceBox.setItems(observableListProfile);
-                    profileChoiceBox.setValue(observableListProfile.get(0));
-                }
-            }
 
         } catch (ServiceException e) {
             LOGGER.error("initialize - ",e);
@@ -202,7 +194,7 @@ public class ShootingAdminController {
                         return;
                     }
 
-                    if(path==null) {
+                    if(path==null || path.isEmpty()) {
                         path = shootingService.createPath();
                     }
 
@@ -306,10 +298,10 @@ public class ShootingAdminController {
     @FXML
     public void onStopShootingPressed() {
         try {
+            imageProcessingManager.stopImageProcessing();
             profileService.resetActiveProfileNonPersistentAttributes();
             shootingService.endShooting();
             inactivemode();
-            imageProcessingManager.stopImageProcessing();
             windowManager.showScene(WindowManager.SHOW_MAINSCENE);
         } catch (ServiceException e) {
             LOGGER.error("onStopShootingPressed - ",e);
