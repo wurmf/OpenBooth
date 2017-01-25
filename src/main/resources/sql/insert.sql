@@ -11,8 +11,9 @@ INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting1/img2.jp
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img1.jpg',2,'2003-06-25 16:52:20');
 INSERT INTO images(imagepath,shootingid,time) VALUES ('/images/shooting2/img2.jpg',2,'2003-06-25 16:53:20');
 
-INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-1','/images/position/pos1.jpg',FALSE);
-INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-2','/images/position/pos2.jpg',FALSE);
+INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-1','/images/position/camerafront.png',FALSE);
+INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-3','/images/position/cameraside.png',FALSE);
+INSERT INTO positions(name,buttonImagePath,isDeleted) VALUES ('DB-Test-Position-2','/images/position/cameratop.png',FALSE);
 
 INSERT INTO logos(label, path) VALUES ('Logo 1', '/images/logos/logo1.jpg');
 INSERT INTO logos(label, path) VALUES ('Logo 2', '/images/logos/logo2.jpg');

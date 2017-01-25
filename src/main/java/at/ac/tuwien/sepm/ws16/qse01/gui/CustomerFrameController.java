@@ -2,12 +2,14 @@ package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
+import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
+import com.sun.javaws.jnl.JavaFXAppDesc;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +20,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.GridPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -331,15 +336,10 @@ public class CustomerFrameController {
                     }*/
                     Button filter = new Button();
                     filter.setText(name);
-                    filter.setStyle("-fx-background-color: GRAY");
+                    //filter.setStyle("-fx-background-color: GRAY");
                     filter.setVisible(true);
                     filter.setPrefWidth(width - high/2);
                     filter.setPrefHeight(high/2);
-                    String url = pairList.get(i).getCameraLable();
-                    LOGGER.debug("url customer: " + url);
-                    filter.setStyle("-fx-background-image: url('" + url + "') " );
-                    filter.setStyle("-fx-background-size: 100%" );
-                    filter.setStyle("-fx-background-color: Gray" );
 
                     double size;
                     if(column==0){
@@ -372,6 +372,14 @@ public class CustomerFrameController {
 
                     gp.prefWidth(width);
                     gp.prefHeight(high);
+
+
+                    String url = pairList.get(i).getPosition().getButtonImagePath();
+                    ImageView buttonimage = new ImageView(new Image(url));
+                    buttonimage.setFitWidth(width-high/2);
+                    buttonimage.setFitHeight(high/1.5);
+                    gp.add(buttonimage,0,0);
+
                     gp.add(filter, 0, 0);
                     gp.add(blend,1,0);
                     //gp.add(iv2, 1, 0);

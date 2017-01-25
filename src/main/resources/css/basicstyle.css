@@ -17,6 +17,9 @@
   -fx-text-fill: white;
   -fx-font-family: HP Simplified;
 }
+#title{
+ -fx-font-size: 2em;
+}
 #wrongCredentialsLabel{
   -fx-text-fill: red;
 }
