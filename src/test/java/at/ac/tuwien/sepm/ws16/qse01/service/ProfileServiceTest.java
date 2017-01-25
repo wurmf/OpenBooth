@@ -207,83 +207,95 @@ public class ProfileServiceTest extends TestEnvironment{
         Assert.assertTrue(profileService.get(1000000) == null);
     }
 
-    /*
-    @Test
-    public void addProfileWithValidArgumentWithAutoID() throws ServiceException {
-        Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profileService.add(profile);
-        assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-    }
-    */
 
-    /*
-    @Test
-    public void addProfileWithValidArgumentWithoutAutoID() throws ServiceException {
-        Profile profile = new Profile(10,"TestprofileNoAutoID",null,null,false,false,false,false);
-        assertTrue(profile.getId() == 10);
-        assertTrue(profile.getName() == "TestprofileNoAutoID");
-        profileService.add(profile);
-        assertTrue(profile.getId()==10);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "TestprofileNoAutoID");
-    }
-    */
-
-    /*
     @Test
     public void editProfileWithValidArgument() throws ServiceException {
-        Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profileService.add(profile);
-        assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profile.setName("Testprofile2");
+        profileB.setPairCameraPositions(pairCameraPositions);
+        profileB.setPairLogoRelativeRectangles(pairLogoRelativeRectangles);
+        profileB.setBackgroundCategories(categories);
+        profileB = profileService.add(profileB);
+        assertTrue(this.profileB != null);
+        assertTrue(profileB.getName().equals("Profile B"));
+        assertTrue(profileB.isPrintEnabled());
+        assertTrue(profileB.isFilerEnabled());
+        assertTrue(profileB.isGreenscreenEnabled());
+        assertTrue(profileB.isMobilEnabled());
+        assertTrue(profileB.getWatermark().equals("/dev/null/watermarkB.jpg"));
+        assertTrue(!profileB.getPairCameraPositions().isEmpty());
+        assertTrue(profileB.getPairCameraPositions().size() == 2);
+        assertTrue(profileB.getPairCameraPositions().get(0).getCamera().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(1).getCamera().getId()==2);
+        assertTrue(profileB.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profileB.getPairLogoRelativeRectangles().isEmpty());
+        assertTrue(profileB.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(relativeRectangleA));
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(relativeRectangleB));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory1));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory2));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory3));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory4));
 
-        profileService.edit(profile);
-        int id = profile.getId();
-        profile = profileService.get(id);
-        assertTrue(profile.getName() == "Testprofile2");
+        //Modifications of the profile
+        profileB.setName("Profile B+++");
+        profileB.setPrintEnabled(false);
+        profileB.setFilerEnabled(false);
+        profileB.setGreenscreenEnabled(false);
+        profileB.setMobilEnabled(false);
+        profileB.setWatermark("/dev/null/watermarkBBB.jpg");
+        categories = profileB.getBackgroundCategories();
+        categories.remove(backgroundCategory3);
+        profileB.setBackgroundCategories(categories);
+        profileService.edit(profileB);
+        profileB = profileService.get(profileB.getId());
+        assertTrue(this.profileB != null);
+        assertTrue(profileB.getName().equals("Profile B+++"));
+        assertTrue(!profileB.isPrintEnabled());
+        assertTrue(!profileB.isFilerEnabled());
+        assertTrue(!profileB.isGreenscreenEnabled());
+        assertTrue(!profileB.isMobilEnabled());
+        assertTrue(profileB.getWatermark().equals("/dev/null/watermarkBBB.jpg"));
+        assertTrue(!profileB.getPairCameraPositions().isEmpty());
+        assertTrue(profileB.getPairCameraPositions().size() == 2);
+        assertTrue(profileB.getPairCameraPositions().get(0).getCamera().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(0).getPosition().getId()==1);
+        assertTrue(profileB.getPairCameraPositions().get(1).getCamera().getId()==2);
+        assertTrue(profileB.getPairCameraPositions().get(1).getPosition().getId()==2);
+        assertTrue(!profileB.getPairLogoRelativeRectangles().isEmpty());
+        assertTrue(profileB.getPairLogoRelativeRectangles().size() == 2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getLogo().getId()==1);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(0).getRelativeRectangle().equals(relativeRectangleA));
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getLogo().getId()==2);
+        assertTrue(profileB.getPairLogoRelativeRectangles().get(1).getRelativeRectangle().equals(relativeRectangleB));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory1));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory2));
+        assertTrue(!profileB.getBackgroundCategories().contains(backgroundCategory3));
+        assertTrue(profileB.getBackgroundCategories().contains(backgroundCategory4));
+
     }
-     */
 
-    /*
+
     @Test
     public void editProfileWithValidValidArgumentButDoesNotExistInPersistenceStore() throws ServiceException{
         Profile profile = new Profile("Testprofile");
-        assertTrue(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
+        assertTrue(profile.getId() == Integer.MIN_VALUE);
+        assertTrue(profile.getName().equals("Testprofile"));
         profileService.add(profile);
         assertTrue(profile.getId()>=1);
-        assertFalse(profile.getId() == Long.MIN_VALUE);
-        assertTrue(profile.getName() == "Testprofile");
-        profile.setName("Testprofile2");
+        assertTrue(profile.getName().equals("Testprofile"));
+        profile.setName("Testprofile changed");
         profile.setId(profile.getId()+1);
         profileService.edit(profile);
         int id = profile.getId();
         profile = profileService.get(id-1);
-        assertFalse(profile.getName()=="Testprofile2");
+        assertTrue(!profile.getName().equals("Testprofile changed"));
     }
-    */
-
-    /*
-    public void getProfileWithValidArgumentThatExistsInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile(100, "Testprofile100", null,null,false,false,false,false);
-        profileService.add(profile);
-        profile = profileService.get(100);
-        assertTrue(profile.getName() == "Testprofile100" && profile.getId() == 100);
-    }
-    */
-
 
     @Test
     public void readProfileWithValidArgumentThatDoesNotExistInPersistenceStore() throws ServiceException{
-        Profile profile = new Profile("Testprofile100");
+        Profile profile = new Profile("Testprofile");
         profile = profileService.add(profile);
         profile = profileService.get(profile.getId()+1);
         assertTrue(profile == null);
@@ -311,5 +323,4 @@ public class ProfileServiceTest extends TestEnvironment{
         assertTrue(!profile1.isMobilEnabled());
         assertTrue(profile1.getWatermark().isEmpty());
     }
-
 }
