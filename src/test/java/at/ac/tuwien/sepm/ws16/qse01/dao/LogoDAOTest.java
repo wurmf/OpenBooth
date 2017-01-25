@@ -35,10 +35,6 @@ public class LogoDAOTest extends TestEnvironment{
         super.tearDown();
     }
 
-    private Logo logoA = new Logo("Logo A", "/dev/null/logoA.jpg");
-    private Logo logoB = new Logo("Logo B", "/dev/null/logoB.jpg");
-    private Logo logoC = new Logo("Logo C", "/dev/null/logoC.jpg");
-    private Logo logo1000000 = new Logo(1000000,"Logo 1000000", "/dev/null/logo1000000.jpg", false);
     private int id = 1;
     /**
      *
@@ -59,14 +55,14 @@ public class LogoDAOTest extends TestEnvironment{
     @Test
     public void test_create_withValidInputArguments() throws Exception {
         assertTrue(logoA.getId() == Integer.MIN_VALUE);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
         Logo returnValue = logoDAO.create(logoA);
         assertTrue(returnValue.getId()>=1);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
     }
 
     @Test
@@ -76,20 +72,20 @@ public class LogoDAOTest extends TestEnvironment{
         Logo returnvalue = mockLogoDAO.create(this.logoA);
         verify(mockPreparedStatement).executeUpdate();
         assertTrue(returnvalue.getId() == 1);
-        assertTrue(returnvalue.getLabel() == "Logo A");
-        assertTrue(returnvalue.getPath() == "/dev/null/logoA.jpg");
+        assertTrue(returnvalue.getLabel().equals("Logo A"));
+        assertTrue(returnvalue.getPath().equals("/dev/null/logoA.jpg"));
     }
 
     @Test(expected = PersistenceException.class)
     public void test_create_withAlreadyExistingInputparameter_fail() throws Exception{
         assertTrue(logo1000000.getId() == 1000000);
-        assertTrue(logo1000000.getLabel() == "Logo 1000000");
-        assertTrue(logo1000000.getPath() == "/dev/null/logo1000000.jpg");
+        assertTrue(logo1000000.getLabel().equals("Logo 1000000"));
+        assertTrue(logo1000000.getPath().equals("/dev/null/logo1000000.jpg"));
         assertTrue(!logo1000000.isDeleted());
         Logo returnValue = logoDAO.create(logo1000000);
         assertTrue(logo1000000.getId() == 1000000);
-        assertTrue(logo1000000.getLabel() == "Logo 1000000");
-        assertTrue(logo1000000.getPath() == "/dev/null/logo1000000.jpg");
+        assertTrue(logo1000000.getLabel().equals("Logo 1000000"));
+        assertTrue(logo1000000.getPath().equals("/dev/null/logo1000000.jpg"));
         assertTrue(!logo1000000.isDeleted());
         Logo returnValue2 = logoDAO.create(logo1000000);
     }
@@ -113,14 +109,14 @@ public class LogoDAOTest extends TestEnvironment{
     @Test
     public void test_update_withValidInputParameter()throws Exception{
         assertTrue(logoA.getId() == Integer.MIN_VALUE);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
         Logo returnValue = logoDAO.create(logoA);
         assertTrue(logoA.getId() >= 1);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
         returnValue.setLabel("Modified Logo A1");
         returnValue.setPath("/dev/null/modifiedlogoA1.jpg");
         boolean returnBoolean = logoDAO.update(returnValue);
@@ -130,14 +126,14 @@ public class LogoDAOTest extends TestEnvironment{
     @Test
     public void test_update_WithNotExisting()throws Exception{
         assertTrue(logoA.getId() == Integer.MIN_VALUE);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
         Logo returnValue = logoDAO.create(logoA);
         assertTrue(logoA.getId() >= 1);
-        assertTrue(logoA.getLabel() == "Logo A");
-        assertTrue(logoA.getPath() == "/dev/null/logoA.jpg");
-        assertTrue(logoA.isDeleted() == false);
+        assertTrue(logoA.getLabel().equals("Logo A"));
+        assertTrue(logoA.getPath().equals("/dev/null/logoA.jpg"));
+        assertTrue(!logoA.isDeleted());
         returnValue.setId(returnValue.getId()+1);
         returnValue.setLabel("Modified Logo A1");
         returnValue.setPath("/dev/null/modifiedlogoA1.jpg");
@@ -222,9 +218,9 @@ public class LogoDAOTest extends TestEnvironment{
     public void test_delete_withNotExistingInputparameter_fail() throws Exception{
         Logo returnValue = logoDAO.create(logo1000000);
         assertTrue(logo1000000.getId() == 1000000);
-        assertTrue(logo1000000.getLabel() == "Logo 1000000");
-        assertTrue(logo1000000.getPath() == "/dev/null/logo1000000.jpg");
-        assertTrue(logo1000000.isDeleted() == false);
+        assertTrue(logo1000000.getLabel().equals("Logo 1000000"));
+        assertTrue(logo1000000.getPath().equals("/dev/null/logo1000000.jpg"));
+        assertTrue(!logo1000000.isDeleted());
         assertTrue(logoDAO.delete(returnValue));
         assertFalse(logoDAO.delete(returnValue));
     }
