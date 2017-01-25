@@ -36,8 +36,6 @@ public class ShootingAdminController {
     @FXML
     private Label saveing;
     @FXML
-    private Label save1;
-    @FXML
     private Label finallsavingplace;
     @FXML
     private GridPane gridSave;
@@ -161,8 +159,8 @@ public class ShootingAdminController {
             gridSave.setVisible(false);
             finallsavingplace.setText(activeShooting.getStorageDir());
             finallsavingplace.setVisible(true);
-            save1.setVisible(true);
-            saveing.setVisible(false);
+
+            saveing.setVisible(true);
             if(activeShooting.getBgPictureFolder()!=null && !activeShooting.getBgPictureFolder().isEmpty()){
                 bgStorageDirLabel.setText(activeShooting.getBgPictureFolder());
             }
@@ -178,7 +176,6 @@ public class ShootingAdminController {
             gridSave.setVisible(true);
             canclebutton.setText("Abbrechen");
             finallsavingplace.setVisible(false);
-            save1.setVisible(false);
             saveing.setVisible(true);
         }
     }
@@ -281,7 +278,7 @@ public class ShootingAdminController {
             bgPath = sourceFolder.getPath();
             bgStorageDirLabel.setText(bgPath);
         } else{
-            storageDirLabel.setText("Keine Hintergründe definiert");
+            bgStorageDirLabel.setText("Keine Hintergründe definiert");
         }
     }
 
