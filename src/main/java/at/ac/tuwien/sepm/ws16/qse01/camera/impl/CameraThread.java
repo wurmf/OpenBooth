@@ -58,6 +58,9 @@ public class CameraThread extends Thread{
                 if(countdown!=0)
                 {
                     shotFrameController.showCountdown(countdown);
+                    while (!shotFrameController.isExpired()){
+                        capturePreview();
+                    }
                 }
                 captureImage();
                 takeImage=false;

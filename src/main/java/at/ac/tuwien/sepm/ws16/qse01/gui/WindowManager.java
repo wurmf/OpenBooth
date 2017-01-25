@@ -4,6 +4,7 @@ import at.ac.tuwien.sepm.util.FileTransfer;
 import at.ac.tuwien.sepm.util.SpringFXMLLoader;
 import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.model.LoginRedirectorModel;
+import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
@@ -176,9 +177,7 @@ public class WindowManager {
         parentrec.getStylesheets().add(cssrec.toExternalForm());
         this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
-
         miniWrapper.getController().init(mainStage);
-
 
 
         //Create Delete Sceen

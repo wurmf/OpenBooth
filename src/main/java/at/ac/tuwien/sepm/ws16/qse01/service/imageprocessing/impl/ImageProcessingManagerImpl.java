@@ -79,7 +79,6 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         for(CameraThread cameraThread : cameraThreadList){
             cameraThread.start();
         }
-        remoteService.start();
         LOGGER.info("initImageProcessing - image processing initialised");
     }
 
@@ -91,11 +90,6 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
             for(CameraThread cameraThread : cameraThreadList){
                 cameraThread.setStop(true);
             }
-        }
-        if(!remoteService.isRunning()){
-            LOGGER.debug("stopImageProcessing - RemoteService not running");
-        } else {
-            remoteService.stop();
         }
     }
 
