@@ -72,6 +72,23 @@ public class WindowManager {
      */
     public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
+        initScenes(mainStage);
+
+        this.mainStage.setTitle("Fotostudio");
+        //TODO: Useless at this moment
+        if(activeShootingAvailable){
+            showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
+        } else {
+            showAdminLogin(SHOW_MAINSCENE, END_APPLICATION);
+        }
+
+        this.mainStage.setFullScreen(true);
+        this.mainStage.show();
+        this.mainStage.setFullScreenExitHint("");
+
+    }
+
+    private void initScenes(Stage mainStage) throws IOException{
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
         LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
@@ -83,7 +100,7 @@ public class WindowManager {
         }
 
         //Creating ImageFullscreenscene
-       SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
+        SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         URL cssf= this.getClass().getResource("/css/fullscreen.css");
         LOGGER.debug("CSSF -"+cssf);
@@ -177,9 +194,6 @@ public class WindowManager {
         parentrec.getStylesheets().add(cssrec.toExternalForm());
         this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
-        miniWrapper.getController().init(mainStage);
-
-
         //Create Delete Sceen
         SpringFXMLLoader.FXMLWrapper<Object, DeleteImageController> deleteWrapper = springFXMLLoader.loadAndWrap("/fxml/deleteFrame.fxml", DeleteImageController.class);
         Parent parentdel = (Parent) deleteWrapper.getLoadedObject();
@@ -189,19 +203,10 @@ public class WindowManager {
         parentdel.getStylesheets().add(cssd.toExternalForm());
         this.deleteScene=new Scene(parentdel ,screenWidth,screenHeight);
         this.deleteImageController = deleteWrapper.getController();
+    }
 
-
-
-        this.mainStage.setTitle("Fotostudio");
-        if(activeShootingAvailable){
-            showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
-        } else {
-            showAdminLogin(SHOW_MAINSCENE, END_APPLICATION);
-        }
-        this.mainStage.setFullScreen(true);
-        this.mainStage.show();
-        this.mainStage.setFullScreenExitHint("");
-
+    public void initMiniController(){
+        miniaturFrameController.init(this.getStage());
     }
 
     /**
@@ -269,7 +274,7 @@ public class WindowManager {
      */
     public void showAdminLogin(int sceneToShow, int callingScene){
         loginRedirectorModel.setScenes(sceneToShow, callingScene);
-        if(callingScene ==SHOW_CUSTOMERSCENE){
+        if(callingScene == SHOW_CUSTOMERSCENE){
             shootingAdminController.inactivemode();
         }
         mainStage.setScene(adminLoginScene);
