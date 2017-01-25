@@ -1,9 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
-import at.ac.tuwien.sepm.ws16.qse01.service.CameraService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
-import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
