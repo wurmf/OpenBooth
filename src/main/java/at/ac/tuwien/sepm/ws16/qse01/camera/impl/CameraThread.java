@@ -51,7 +51,8 @@ public class CameraThread extends Thread{
     @Override
     public void run()
     {
-        if(!checkInitialized()){
+        if(!checkInitialized())
+        {
             LOGGER.error("CameraThread not properly initialized");
             shouldStop = true;
         }
@@ -62,7 +63,8 @@ public class CameraThread extends Thread{
                 if(countdown!=0)
                 {
                     shotFrameController.showCountdown(countdown);
-                    while (!shotFrameController.isExpired()){
+                    while (!shotFrameController.isExpired())
+                    {
                         capturePreview();
                     }
                 }
@@ -78,12 +80,16 @@ public class CameraThread extends Thread{
     }
 
 
-    private void captureImage() {
+    private void captureImage()
+    {
 
         Shooting activeShooting;
-        try {
+        try
+        {
             activeShooting = shootingService.searchIsActive();
-        } catch (ServiceException e) {
+        }
+        catch (ServiceException e)
+        {
             LOGGER.error("captureImage - error in shootingservice -", e);
             return;
         }
