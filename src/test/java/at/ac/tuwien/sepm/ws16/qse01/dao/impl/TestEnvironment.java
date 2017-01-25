@@ -59,9 +59,9 @@ public class TestEnvironment {
     protected Camera camera1,camera2,cameraA,cameraB,cameraC,camera1000000;
     protected Position position1,position2,positionA,positionB,positionC,position1000000;
     protected Logo logo1,logo2,logoA,logoB,logoC,logo1000000;
-    protected RelativeRectangle relativeRectangleA,relativeRectangleB,relativeRectangleC;
+    protected RelativeRectangle relativeRectangleA,relativeRectangleB,relativeRectangleC,relativeRectangleD;
     protected Profile.PairCameraPosition pairCameraPositionA,pairCameraPositionB,pairCameraPositionC,pairCameraPosition1000000;
-    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA,pairLogoRelativeRectangleB,pairLogoRelativeRectangleC;
+    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA,pairLogoRelativeRectangleB,pairLogoRelativeRectangleC,pairLogoRelativeRectangle1000000;
     protected List<Profile.PairCameraPosition> pairCameraPositions;
     protected List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
     protected Profile profileA,profileB,profileC;
@@ -160,6 +160,8 @@ public class TestEnvironment {
         relativeRectangleA = new RelativeRectangle(10.1, 10.2, 30.3, 30.4);
         relativeRectangleB = new RelativeRectangle(80.1, 80.2, 10.3, 10.4);
         relativeRectangleC = new RelativeRectangle(1, 2, 3, 4);
+        relativeRectangleD = new RelativeRectangle(20,21,22,23);
+
         pairCameraPositions = new ArrayList<>();
         pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1, true);
         pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
@@ -172,6 +174,8 @@ public class TestEnvironment {
         pairLogoRelativeRectangleA = new Profile.PairLogoRelativeRectangle(logo1, relativeRectangleA);
         pairLogoRelativeRectangleB = new Profile.PairLogoRelativeRectangle(logo2, relativeRectangleB);
         pairLogoRelativeRectangleC = new Profile.PairLogoRelativeRectangle(logoA, relativeRectangleC);
+        pairLogoRelativeRectangle1000000
+                = new Profile.PairLogoRelativeRectangle(1000000,2,logo1,relativeRectangleD);
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
 

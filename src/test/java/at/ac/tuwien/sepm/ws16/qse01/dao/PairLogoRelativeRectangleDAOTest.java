@@ -26,45 +26,17 @@ import static org.mockito.Mockito.when;
  */
 public class PairLogoRelativeRectangleDAOTest extends TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(PairLogoRelativeRectangleDAOTest.class);
-    private Logo logoA;
-    private Logo logoB;
-    private Logo logoC;
-    private Logo logo1000000;
-    private Logo logo1;
-    private Logo logo2;
-    private RelativeRectangle relativeRectangleA;
-    private RelativeRectangle relativeRectangleB;
-    private RelativeRectangle relativeRectangleC;
-    private RelativeRectangle relativeRectangleD;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleC;
-    private Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle1000000;
+
     private int id;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        logoA = new Logo("Logo A", "/dev/null/logoA.jpg");
-        logoB = new Logo("Logo B", "/dev/null/logoB.jpg");
-        logoC = new Logo("Logo C", "/dev/null/logoC.jpg");
-        logo1 = logoDAO.read(1);
-        logo2 = logoDAO.read(2);
-        logo1000000 = new Logo(1000000,"Logo 1000000", "/dev/null/logo1000000.jpg", false);
 
-        relativeRectangleA = new RelativeRectangle(5,6,10,11);
-        relativeRectangleB = new RelativeRectangle(12,13,14,15);
-        relativeRectangleC = new RelativeRectangle(16,17,18,19);
-        relativeRectangleD = new RelativeRectangle(20,21,22,23);
-
-        pairLogoRelativeRectangleA
-                = new Profile.PairLogoRelativeRectangle(2, logo1,relativeRectangleA);
-        pairLogoRelativeRectangleB
-                = new Profile.PairLogoRelativeRectangle(2, logo2,relativeRectangleB);
-        pairLogoRelativeRectangleC
-                = new Profile.PairLogoRelativeRectangle(2, logo2,relativeRectangleC);
-        pairLogoRelativeRectangle1000000
-                = new Profile.PairLogoRelativeRectangle(1000000,2,logo1,relativeRectangleD);
+        pairLogoRelativeRectangleA.setProfileId(2);
+        pairLogoRelativeRectangleB.setProfileId(2);
+        pairLogoRelativeRectangleC.setProfileId(2);
+        logoDAO.create(logoA);
         id = 1;
     }
 
