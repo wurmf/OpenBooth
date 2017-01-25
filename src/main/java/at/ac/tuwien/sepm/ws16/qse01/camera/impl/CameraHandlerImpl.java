@@ -63,6 +63,7 @@ public class CameraHandlerImpl implements CameraHandler {
         return threadList;
     }
 
+    @PostConstruct
     @Override
     public List<Camera> getCameras() throws CameraException {
         if(isInitialized)
@@ -117,12 +118,14 @@ public class CameraHandlerImpl implements CameraHandler {
                     }
                     cameraService.setCameraActive(camera.getId());
                     cameraList.add(camera);
+                    LOGGER.info("getCameras - camera {} detected", camera);
                 }
                 catch (ServiceException ex)
                 {
                     LOGGER.error("getCameras - Could not create camera entity - ", ex);
                     throw new CameraException(ex.getMessage(), -1);
                 }
+
             }
 
         } finally {
