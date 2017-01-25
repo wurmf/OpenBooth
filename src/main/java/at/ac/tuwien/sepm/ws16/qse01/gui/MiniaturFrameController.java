@@ -54,7 +54,7 @@ public class MiniaturFrameController {
     private Stage stage=null;
     private ImageView activeImageView = null;
     private MouseEvent mouseEventdel;
-    List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
+    private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
 
     @Autowired
     public MiniaturFrameController(ImageService imageService, ShootingService shootingService,WindowManager windowManager) throws ServiceException {
@@ -84,7 +84,7 @@ public class MiniaturFrameController {
         try {
             if(shootingService.searchIsActive().getActive()) {
                 LOGGER.info("Miniaturansicht -> Active Shooting ->" + shootingService.searchIsActive().getId());
-                listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());//shootingService.searchIsActive().getId());
+                listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());
             }else{
                 listOfImages = new ArrayList<>();
                 return;
@@ -148,13 +148,6 @@ public class MiniaturFrameController {
             activeImageView = imageView;
 
         }else{
-            /*
-            activeImageView.setFitHeight(150);
-            activeImageView.setFitWidth(150);
-            activeImageView.setPreserveRatio(true);
-            imageView.setStyle("-fx-background-color: BLACK");
-            ((VBox) activeImageView.getParent()).getChildren().get(1).setVisible(false);
-            activeImageView = null;*/
             windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         }
     }
@@ -218,15 +211,11 @@ public class MiniaturFrameController {
                 ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
                 LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
                 try {
-
                     imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
-
                     tile.getChildren().remove(imageView.getParent());
-
                 } catch (ServiceException e) {
-                    LOGGER.error("prepareHBox->Beim Löschen Fehler aufgetreten: ",e);
+                    LOGGER.error("prepareHBox - Beim Löschen Fehler aufgetreten: ",e);
                 }
-
             }
         });
 
@@ -254,8 +243,8 @@ public class MiniaturFrameController {
                 else
                     tile.getChildren().add(index,vBox);
             }
-        }catch (Exception e){
-            LOGGER.debug("Fehler: ", e);
+        }catch (ServiceException e){
+            LOGGER.error("prepareHBox - ", e);
         }
     }
 

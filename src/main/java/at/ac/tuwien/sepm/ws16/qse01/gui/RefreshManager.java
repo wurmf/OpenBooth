@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
-import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Image;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,12 +9,10 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class RefreshManager {
-    ShotFrameManager shotFrameManager;
-    MiniaturFrameController miniaturFrameController;
+    private MiniaturFrameController miniaturFrameController;
 
     @Autowired
-    public RefreshManager(ShotFrameManager shotFrameManager, MiniaturFrameController miniaturFrameController){
-        this.shotFrameManager=shotFrameManager;
+    public RefreshManager(MiniaturFrameController miniaturFrameController){
         this.miniaturFrameController=miniaturFrameController;
     }
 
