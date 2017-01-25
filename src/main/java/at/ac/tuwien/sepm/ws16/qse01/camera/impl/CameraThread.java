@@ -73,19 +73,8 @@ public class CameraThread extends Thread{
             {
                 capturePreview();
             }
-            if(shouldStop)
-            {
-                try
-                {
-                    cameraGphoto.close();
-                }
-                catch (IOException e)
-                {
-                    LOGGER.error("cameraThread run, could not close Camera", e);
-                }
-                LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-            }
         }
+        LOGGER.debug("Stopped CameraThread for Camera {}", camera);
     }
 
 

@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.application;
 
 import at.ac.tuwien.sepm.util.dbhandler.DBHandler;
+import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.gui.WindowManager;
 import javafx.application.Application;
@@ -42,6 +43,9 @@ public class MainApplication extends Application {
 
         ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
         imageProcessingManager.stopImageProcessing();
+
+        CameraHandler cameraHandler = applicationContext.getBean(CameraHandler.class);
+        cameraHandler.closeCameras();
 
         DBHandler dbHandler = applicationContext.getBean(DBHandler.class);
         if(dbHandler!=null) {
