@@ -49,7 +49,7 @@ public class CameraHandlerImpl implements CameraHandler
      *
      * */
     @Override
-    public List<CameraThread> createThreads() throws CameraException
+    public List<CameraThread> createThreads(List<Camera> cameraList) throws CameraException
     {
 
         threadList = new ArrayList<>();
