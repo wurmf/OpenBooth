@@ -54,7 +54,8 @@ public class ProfileServiceImpl implements ProfileService{
                               LogoDAO logoDAO,
                               CameraDAO cameraDAO,
                               ShootingService shootingService,
-                              CameraService cameraService
+                              CameraService cameraService,
+                              BackgroundService backgroundService
     ) throws ServiceException {
         this.profileDAO = profileDAO;
         this.positionDAO = positionDAO;
@@ -62,6 +63,7 @@ public class ProfileServiceImpl implements ProfileService{
         this.cameraDAO = cameraDAO;
         this.shootingService = shootingService;
         this.cameraService = cameraService;
+        this.backgroundService = backgroundService;
         this.setActiveProfile(1);
 
         try {
