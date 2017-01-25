@@ -7,11 +7,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +37,9 @@ public class ShotFrameController {
     private Label countdownLabel;
 
     private int frameID;
+    private Stage primaryStage;
 
+    final int[] startTimeSec = new int[]{0};
     @FXML
     private void initialize(){
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
@@ -45,8 +50,9 @@ public class ShotFrameController {
         shotView.setFitWidth(screenWidth);
 
     }
-    public void initShotFrame(int cameraID)  {
+    public void initShotFrame(int cameraID,Stage primaryStage)  {
         this.frameID  = cameraID;
+        this.primaryStage = primaryStage;
        // showCountdown(10);
     }
 
@@ -94,7 +100,7 @@ public class ShotFrameController {
     }
     public Timeline createCounter(int countdown){
         Timeline timeline = new Timeline();
-        final int[] startTimeSec = {countdown};
+        startTimeSec[0] = countdown;
         KeyFrame keyframe = new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -118,8 +124,23 @@ public class ShotFrameController {
         timeline.getKeyFrames().add(keyframe);
         return timeline;
     }
+    public boolean isExpired(){
+       return startTimeSec[0]==0?true:false;
+    }
 
     public int getFrameID(){
         return frameID;
+    }
+
+    @FXML
+    public void shotFrameClicked(MouseEvent mouseEvent) {
+        primaryStage.setFullScreen(true);
+        Screen screen = Screen.getPrimary();
+        Rectangle2D bounds = screen.getVisualBounds();
+
+        primaryStage.setX(bounds.getMinX());
+        primaryStage.setY(bounds.getMinY());
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
     }
 }

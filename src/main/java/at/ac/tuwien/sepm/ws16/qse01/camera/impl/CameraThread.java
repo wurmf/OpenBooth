@@ -58,6 +58,9 @@ public class CameraThread extends Thread{
                 if(countdown!=0)
                 {
                     shotFrameController.showCountdown(countdown);
+                    while (!shotFrameController.isExpired()){
+                        capturePreview();
+                    }
                 }
                 captureImage();
                 takeImage=false;
@@ -92,15 +95,13 @@ public class CameraThread extends Thread{
         {
             anz=5;
         }
-        try
-        {
-            final CameraFile cf = cameraGphoto.captureImage();
-            if (cf != null) {
-                Shooting activeShooting = shootingService.searchIsActive();
-                if(activeShooting != null)
-                {
-                    for (int i=0;i<anz;i++)
-                    {
+        try {
+            for (int i = 0; i < anz; i++) {
+
+                CameraFile cf = cameraGphoto.captureImage();
+                if (cf != null) {
+                    Shooting activeShooting = shootingService.searchIsActive();
+                    if (activeShooting != null) {
                         int imageID = imageService.getNextImageID();
 
                         String directoryPath = activeShooting.getStorageDir() + "/";
@@ -113,18 +114,16 @@ public class CameraThread extends Thread{
                         cf.save(new File(imagePath).getAbsolutePath());
                         imageList.add(image);
                         LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
+
+                    } else {
+                        LOGGER.error("no active shooting during capture");
                     }
-                    for (Image shot : imageList)
-                    {
-                        imageProcessor.processShot(shot);
-                        sleep(5000);
-                    }
+                    cf.close();
                 }
-                else
-                {
-                    LOGGER.error("no active shooting during capture");
-                }
-                cf.close();
+            }
+            for(Image shot : imageList){
+                imageProcessor.processShot(shot);
+                sleep(5000);
             }
         }
         catch (CameraException ex)

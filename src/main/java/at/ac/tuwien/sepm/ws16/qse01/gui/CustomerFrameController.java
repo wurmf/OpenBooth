@@ -479,23 +479,33 @@ public class CustomerFrameController {
             pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
             int shotType = pairCameraPosition.getShotType();
             Camera camera = pairCameraPosition.getCamera();
-            if (shotType == pairCameraPosition.SHOT_TYPE_MULTIPLE){cameraHandler.setSerieShot(camera,true);}
-            else if (shotType == pairCameraPosition.SHOT_TYPE_TIMED) {cameraHandler.setCountdown(camera,5);}
-            else {}
+            if (shotType == pairCameraPosition.SHOT_TYPE_MULTIPLE){
+                if (cameras.contains(camera)) {cameraHandler.setSerieShot(camera,true);
+                LOGGER.debug("triggerCall - multiple shot has been set");}
+                else {LOGGER.debug("triggerCall - multiple shot setting not possible, cause no cameraHandler available");}
+                }
+            else if (shotType == pairCameraPosition.SHOT_TYPE_TIMED) {
+                if (cameras.contains(camera)) {cameraHandler.setCountdown(camera,5);
+                LOGGER.debug("triggerCall - timed shot has been set");}
+                else
+                LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
+                }
+            else {
+                LOGGER.debug("triggerCall - standard shot will be kept set");
+                }
 
             if (cameras.contains(camera)) {cameraHandler.captureImage(camera);return;}
             else {
-                LOGGER.debug("Camera that has been triggered is not in cameraHandlers list");
+                LOGGER.debug("triggerCall - Camera that has been triggered is not in cameraHandlers list");
                 return;
-            }
+                }
         }
         else if(index >= 0){
-            messageString = "triggerCall - No camera at this index found, so no action will be triggered";
+                messageString = "triggerCall - No camera at this index found, so no action will be triggered";
         }
         else {
             messageString = "triggerCall - Trigger sequence is invalid";
         }
         LOGGER.debug(messageString);
-
     }
 }

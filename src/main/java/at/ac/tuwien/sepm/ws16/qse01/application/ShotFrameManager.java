@@ -52,12 +52,12 @@ public class ShotFrameManager {
                             "/fxml/shotFrame.fxml"));
                     Parent root = loader.load();
                     ShotFrameController shotFrameController = loader.getController();
-                    shotFrameController.initShotFrame(position.getId());
+                    shotFrameController.initShotFrame(position.getId(),stage);
                     //shotframes.add(shotFrameController);
                     positonShotFrameMap.put(position,shotFrameController);
                     stage.setScene(new Scene(root, 400, 400));
                 } catch (IOException e) {
-                    LOGGER.debug("shotFrame.xml kann nicht geladen werden +" + e.getMessage());
+                    LOGGER.error("shotFrame.xml kann nicht geladen werden ",e);
                 }
                 stage.setFullScreen(false);
                 stage.setX(x);
@@ -114,5 +114,9 @@ public class ShotFrameManager {
     public void closeFrames(){
         for(Stage stage: shotStages)
             stage.close();
+    }
+    public boolean isExpired(Position position){
+        LOGGER.debug("ShotFrameManager->isExpired with position="+position.getName());
+        return getShotframe(position).isExpired();
     }
 }

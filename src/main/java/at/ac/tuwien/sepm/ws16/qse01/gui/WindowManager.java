@@ -177,11 +177,7 @@ public class WindowManager {
         parentrec.getStylesheets().add(cssrec.toExternalForm());
         this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
 
-        try {
-            miniWrapper.getController().init(mainStage);
-        } catch (ServiceException e) {
-            LOGGER.error("start - ",e);
-        }
+        miniWrapper.getController().init(mainStage);
 
 
         //Create Delete Sceen

@@ -15,9 +15,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-/**
- * Implementation of
- */
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
 
