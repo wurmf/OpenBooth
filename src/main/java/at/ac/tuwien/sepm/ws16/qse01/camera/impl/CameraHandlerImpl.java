@@ -64,7 +64,8 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
-    public List<Camera> getCameras() throws CameraException {
+    public List<Camera> getCameras() throws CameraException
+    {
         if(isInitialized)
         {
             for (CameraGphoto camera: cameraGphotoList)
@@ -90,7 +91,8 @@ public class CameraHandlerImpl implements CameraHandler {
         cameraList=new ArrayList<>();
         int count=0;
         final CameraList cl = new CameraList();
-        try {
+        try
+        {
             LOGGER.debug("getCameras - Cameras: " + cl);
 
             count=cl.getCount();
