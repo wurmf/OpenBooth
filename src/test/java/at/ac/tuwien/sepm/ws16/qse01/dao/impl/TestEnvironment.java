@@ -36,35 +36,16 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(TestEnvironment.class);
-    protected LogoDAO logoDAO;
-    protected LogoDAO mockLogoDAO;
-
-    protected CameraDAO cameraDAO;
-    protected CameraDAO mockCameraDAO;
-
-    protected PositionDAO positionDAO;
-    protected PositionDAO mockPositionDAO;
-
-    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
-    protected PairLogoRelativeRectangleDAO mockPairLogoRelativeRectangleDAO;
-
-    protected PairCameraPositionDAO pairCameraPositionDAO;
-    protected PairCameraPositionDAO mockPairCameraPositionDAO;
-
-    protected ProfileDAO profileDAO;
-    protected ProfileDAO mockProfileDAO;
-
-    protected ImageDAO imageDAO;
-    protected ImageDAO mockImageDAO;
-
-    protected ShootingDAO shootingDAO;
-    protected ShootingDAO mockShootingDAO;
-
-    protected BackgroundCategoryDAO backgroundCategoryDAO;
-    protected BackgroundCategoryDAO mockbackgroundCategoryDAO;
-
+    protected LogoDAO logoDAO,mockLogoDAO;
+    protected CameraDAO cameraDAO,mockCameraDAO;
+    protected PositionDAO positionDAO,mockPositionDAO;
+    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO,mockPairLogoRelativeRectangleDAO;
+    protected PairCameraPositionDAO pairCameraPositionDAO,mockPairCameraPositionDAO;
+    protected ProfileDAO profileDAO,mockProfileDAO;
+    protected ImageDAO imageDAO,mockImageDAO;
+    protected ShootingDAO shootingDAO,mockShootingDAO;
+    protected BackgroundCategoryDAO backgroundCategoryDAO,mockbackgroundCategoryDAO;
     protected ProfileService profileService;
-
     protected AdminUserDAO adminUserDAO;
 
     protected Connection con;
@@ -75,42 +56,16 @@ public class TestEnvironment {
     @Mock protected PreparedStatement mockPreparedStatement;
     @Mock protected ResultSet mockResultSet;
 
-    protected Camera cameraA;
-    protected Camera cameraB;
-    protected Camera cameraC;
-    protected Camera camera1000000;
-    protected Position positionA;
-    protected Position positionB;
-    protected Position positionC;
-    protected Position position1000000;
-    protected Logo logoA;
-    protected Logo logoB;
-    protected Logo logoC;
-    protected Logo logo1000000;
-    protected Camera camera1;
-    protected Camera camera2;
-    protected Position position1;
-    protected Position position2;
-    protected Logo logo1;
-    protected Logo logo2;
-    protected Profile.PairCameraPosition pairCameraPositionA;
-    protected Profile.PairCameraPosition pairCameraPositionB;
-    protected Profile.PairCameraPosition pairCameraPositionC;
-    protected Profile.PairCameraPosition pairCameraPosition1000000;
-    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
-    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
-    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleC;
-    protected RelativeRectangle relativeRectangleA;
-    protected RelativeRectangle relativeRectangleB;
-    protected RelativeRectangle relativeRectangleC;
+    protected Camera camera1,camera2,cameraA,cameraB,cameraC,camera1000000;
+    protected Position position1,position2,positionA,positionB,positionC,position1000000;
+    protected Logo logo1,logo2,logoA,logoB,logoC,logo1000000;
+    protected RelativeRectangle relativeRectangleA,relativeRectangleB,relativeRectangleC;
+    protected Profile.PairCameraPosition pairCameraPositionA,pairCameraPositionB,pairCameraPositionC,pairCameraPosition1000000;
+    protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA,pairLogoRelativeRectangleB,pairLogoRelativeRectangleC;
     protected List<Profile.PairCameraPosition> pairCameraPositions;
     protected List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
-    protected Profile profileA;
-    protected Profile profileB;
-    protected Profile profileC;
-    protected Background.Category backgroundCategoryA;
-    protected Background.Category backgroundCategoryB;
-    protected Background.Category backgroundCategory10;
+    protected Profile profileA,profileB,profileC;
+    protected Background.Category backgroundCategoryA,backgroundCategoryB,backgroundCategory10;
 
     @Before public void setUp() throws Exception
     {
