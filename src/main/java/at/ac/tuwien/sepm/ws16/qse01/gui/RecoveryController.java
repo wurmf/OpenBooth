@@ -66,6 +66,7 @@ public class RecoveryController {
                 onEndShootingPressed();
             }
         } catch(ServiceException e){
+            LOGGER.error("onRecoveryPressed - error in service ", e);
             showInformationDialog("Das Shooting konnte nicht wiederhergestellt werden.");
             onEndShootingPressed();
         }

@@ -590,7 +590,7 @@ public class LogoFrameController extends SettingFrameController {
                 LOGGER.error("Fehler: Profil konnte nicht erstellt werden..."+e.getMessage());
             } catch (NumberFormatException e){
                 showError("Bitte in Position Eingabefelder (Xstart,Ystart,Breite,Höhe) nur Zahlen eingeben.");
-                LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e.getMessage());
+                LOGGER.error("Fehler: Bitte nur Zahlen eingeben. "+e);
                 //TODO: Dialogfenster öffnen.
             }
         }

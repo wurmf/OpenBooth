@@ -70,7 +70,7 @@ public class ShotFrameController {
         try {
             shotView.setImage(new Image(imgPath));
         }catch (Exception e){
-            LOGGER.debug("refreshShot(String) - Fehler - ",e);
+            LOGGER.error("refreshShot(String) - Fehler - ",e);
         }
     }
 
@@ -80,7 +80,7 @@ public class ShotFrameController {
         try {
             shotView.setImage(SwingFXUtils.toFXImage(img,null));
         }catch (Exception e){
-            LOGGER.debug("refreshShot(BufferedImage) - Fehler - ",e);
+            LOGGER.error("refreshShot(BufferedImage) - Fehler - ",e);
         }
     }
     public void showCountdown(int countdown){

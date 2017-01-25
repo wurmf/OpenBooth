@@ -442,7 +442,6 @@ public class FullScreenImageController {
                 activ = shootingService.searchIsActive().getId();
                 this.imageList = imageService.getAllImages(activ);
             }
-            System.out.println("imagelist->size" + imageList.size()+"_"+activ);
             if (imageList != null) {
                 LOGGER.debug("imagelist->size" + imageList.size());
                 for (int i = 0; i <imageList.size() ; i++) {
@@ -560,8 +559,8 @@ public class FullScreenImageController {
 
 
 
-        } catch (Exception e) {
-           LOGGER.error("Error: ",e);
+        } catch (ServiceException e) {
+           LOGGER.error("makePreviewFilter - exception in service ",e);
         }
     }
 
@@ -717,7 +716,6 @@ public class FullScreenImageController {
         int maxX =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxX() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinX();
         int maxY =  (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMaxY() - (int)ivfullscreenImage.localToScene(ivfullscreenImage.getBoundsInLocal()).getMinY();
         try {
-            System.out.println(currentIndex+"_"+imageList.size());
             at.ac.tuwien.sepm.ws16.qse01.entities.Image newImage = imageService.crop(imageList.get(currentIndex),activeFilterImageView.getId(), x, x + (int)cropRectangle.getWidth(), y, y + (int)cropRectangle.getHeight(), maxX, maxY);
 
 
@@ -733,7 +731,6 @@ public class FullScreenImageController {
             button4.setVisible(true);
 
             /* changes image of activeImageView */
-            System.out.println("imagepath ->"+newImage.getImagepath());
             ivfullscreenImage.setImage(new Image("file:"+newImage.getImagepath(), base.getWidth(), base.getHeight(),true,true));
 
 
