@@ -23,7 +23,8 @@ import java.util.List;
 
 
 @Component
-public class CameraHandlerImpl implements CameraHandler {
+public class CameraHandlerImpl implements CameraHandler
+{
 
     private Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
 
@@ -48,8 +49,8 @@ public class CameraHandlerImpl implements CameraHandler {
      *
      * */
     @Override
-    public List<CameraThread> createThreads() throws CameraException {
-
+    public List<CameraThread> createThreads() throws CameraException
+    {
         Camera camera;
         threadList = new ArrayList<>();
         for(int i=0;i<cameraGphotoList.size();i++) {
