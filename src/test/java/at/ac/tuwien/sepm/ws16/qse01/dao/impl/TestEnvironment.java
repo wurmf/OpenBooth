@@ -78,6 +78,9 @@ public class TestEnvironment {
     protected Camera cameraA;
     protected Position positionA;
     protected Logo logoA;
+    protected Logo logoB;
+    protected Logo logoC;
+    protected Logo logo1000000;
     protected Camera camera1;
     protected Camera camera2;
     protected Position position1;
@@ -177,6 +180,9 @@ public class TestEnvironment {
         cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
         positionA = new Position("Position A","/dev/null/positionA.jpg");
         logoA = new Logo("Logo A","/dev/null/logoA.jpg");
+        logoB = new Logo("Logo B", "/dev/null/logoB.jpg");
+        logoC = new Logo("Logo C", "/dev/null/logoC.jpg");
+        logo1000000 = new Logo(1000000,"Logo 1000000", "/dev/null/logo1000000.jpg", false);
         camera1 = cameraDAO.read(1);
         camera2 = cameraDAO.read(2);
         position1 = positionDAO.read(1);
