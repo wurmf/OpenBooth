@@ -33,9 +33,9 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
-    private static final boolean enableDebugProfile = true;
-    private static final String debugProfileName = "DebugProfile";
-    private static final int debugProfileId = 1; //Welches bestehende Profil als DebugProfil aus der Datenbank ausgewählt werden soll
+    private static final boolean ENABLE_DEBUG_PROFILE = false;
+    private static final String DEBUG_PROFILE_NAME = "DebugProfile";
+    private static final int DEBUG_PROFILE_ID = 1; //Welches bestehende Profil als DebugProfil aus der Datenbank ausgewählt werden soll
 
     @FXML
     private Label saveing;
@@ -128,9 +128,9 @@ public class ShootingAdminController {
                 }
             }
 
-            if(enableDebugProfile){
-                Profile debugProfile = profileService.get(debugProfileId);
-                debugProfile.setName(debugProfileName);
+            if(ENABLE_DEBUG_PROFILE){
+                Profile debugProfile = profileService.get(DEBUG_PROFILE_ID);
+                debugProfile.setName(DEBUG_PROFILE_NAME);
                 profileObservableList.add(debugProfile);
             }
         } catch (ServiceException e) {
@@ -188,7 +188,7 @@ public class ShootingAdminController {
                     Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
 
 
-                    boolean isDebugProfile = enableDebugProfile && profile.getId() == debugProfileId;
+                    boolean isDebugProfile = ENABLE_DEBUG_PROFILE && profile.getId() == DEBUG_PROFILE_ID;
 
                     if(!imageProcessingManager.checkImageProcessing(profile) && !isDebugProfile){
                         return;

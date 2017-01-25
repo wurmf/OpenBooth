@@ -75,6 +75,7 @@ public class CameraPositionFrameController extends SettingFrameController {
                                 p.getCamera().setLable(t.getNewValue());
                                 cameraService.editCamera(p.getCamera());
                                 kamPosList.add(t.getTablePosition().getRow(),p);
+                                tableKamPos.getSelectionModel().select(t.getTablePosition().getRow());
 
 
                                // refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
@@ -110,7 +111,7 @@ public class CameraPositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Profile.PairCameraPosition,Boolean> call(TableColumn<Profile.PairCameraPosition,Boolean> p) {
-                        return new CamPosCheckbox(kamPosList,pservice,kamList, selectedProfile,"activated",windowManager.getStage());
+                        return new CamPosCheckbox(kamPosList,pservice, selectedProfile,"activated",windowManager.getStage());
                     }
 
                 });
@@ -154,7 +155,7 @@ public class CameraPositionFrameController extends SettingFrameController {
 
                     @Override
                     public TableCell<Profile.PairCameraPosition,Boolean> call(TableColumn<Profile.PairCameraPosition,Boolean> p) {
-                        return new CamPosCheckbox(kamPosList,pservice,kamList, selectedProfile,"greenscreen",windowManager.getStage());
+                        return new CamPosCheckbox(kamPosList,pservice, selectedProfile,"greenscreen",windowManager.getStage());
                     }
 
                 });
@@ -162,6 +163,7 @@ public class CameraPositionFrameController extends SettingFrameController {
 
     public void refreshTableKameraPosition(List<Profile.PairCameraPosition> camposList, ObservableList<Position> posList, ObservableList<Profile> selectedID){
         LOGGER.debug("refreshing the KameraPosition-Zuweisung table..."+posList.size()+posList.toString());
+        kamPosController = this;
         selectedProfile = selectedID;
         this.posList.clear();
         this.posList.addAll(posList);

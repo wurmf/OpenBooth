@@ -10,12 +10,12 @@ import java.util.List;
 public interface CameraHandler {
 
     /**
-     * Detects all connected cameras and saves for them in the Database or sets them active if they are already saved.
+     * Creates a CameraThread for all given cameras
      *
-     *
+     * @param cameraList the list of given cameras
      * @throws CameraException if something goes wrong during the start of the Threads
      * */
-    List<CameraThread> createThreads() throws CameraException;
+    List<CameraThread> createThreads(List<Camera> cameraList) throws CameraException;
 
 
     /**

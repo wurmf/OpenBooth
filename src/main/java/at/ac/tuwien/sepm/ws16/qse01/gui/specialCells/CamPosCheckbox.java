@@ -1,6 +1,5 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui.specialCells;
 
-import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
@@ -23,7 +22,7 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
     private final CheckBox cellCheckbox = new CheckBox();
     private String checkboxTyp;
 
-    public CamPosCheckbox(ObservableList<Profile.PairCameraPosition> kamposList, ProfileService pservice, ObservableList<Camera> kamList, ObservableList<Profile> selectedProfile, String checkboxTyp, Stage primaryStage) {
+    public CamPosCheckbox(ObservableList<Profile.PairCameraPosition> kamposList, ProfileService pservice, ObservableList<Profile> selectedProfile, String checkboxTyp, Stage primaryStage) {
         this.checkboxTyp = checkboxTyp;
 
         cellCheckbox.setOnMouseClicked(new EventHandler<MouseEvent>(){
@@ -52,9 +51,12 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
                                 posID = currentCamPos.getPosition().getId();
                             else
                                 posID = pservice.getAllPositions().get(0).getId();
-                            kamposList.remove(currentCamPos);
+
                             currentCamPos = pservice.addPairCameraPosition(selectedProfile.get(0).getId(), currentCamPos.getCamera().getId(), posID, false);
-                            kamposList.add(currentCamPos);
+                            kamposList.clear();
+                            kamposList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId())); //,posList, selectedProfile);
+                            getTableView().setItems(kamposList);
+
 
                         }
                     }else {
@@ -63,9 +65,11 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
                         }else {
                             pservice.erasePairCameraPosition(currentCamPos);
 
-                            kamposList.remove(currentCamPos);
+
                             currentCamPos = new Profile.PairCameraPosition(selectedProfile.get(0).getId(), currentCamPos.getCamera(), null, false);
-                            kamposList.add(currentCamPos);
+                            kamposList.clear();
+                            kamposList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId())); //,posList, selectedProfile);
+                            getTableView().setItems(kamposList);
                         }
                     }
 

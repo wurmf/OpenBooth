@@ -67,12 +67,41 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         LOGGER.debug("initImageProcessing - entering initImageProcessing method ");
         List<Camera> cameraList = cameraHandler.getCameras();
 
-        Map<Position, ShotFrameController> positionShotFrameMap = initShotFrameManager(cameraList);
-        //If no camerathread has to be initialized then return
-        if(positionShotFrameMap == null)
-            return;
+        List<Position> positionList = new ArrayList<>();
+        List<Camera> activeCameraList = new ArrayList<>();
 
-        cameraThreadList = cameraHandler.createThreads();
+        for(int i=0; i<cameraList.size(); i++){
+            Camera c = cameraList.get(i);
+            Position p = profileService.getPositionOfCameraOfProfile(c);
+            if(p!=null){
+                LOGGER.debug("initImageProcessing - camera added");
+                positionList.add(p);
+                activeCameraList.add(c);
+            } else{
+                LOGGER.info("initImageProcessing - no position for this camera: {}", c);
+                //cameraHandler.removeCameraFromList(c);
+            }
+        }
+        int positionNumber = profileService.getAllPairCameraPositionOfProfile().size();
+
+
+
+        if(positionList.size()!=positionNumber){
+            LOGGER.info("initImageProcessing - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
+            throw new ServiceException("Selected Profile not compatible with attached cameras");
+        }
+
+
+        LOGGER.info("initImageProcessing- attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
+
+        if(positionList.isEmpty()){
+            LOGGER.debug("initShotFrameManager - No cameras specfied in active profile - nothing to initialize");
+            return;
+        }
+
+        Map<Position, ShotFrameController> positionShotFrameMap = initShotFrameManager(positionList);
+
+        cameraThreadList = cameraHandler.createThreads(activeCameraList);
 
         initCameraThreads(positionShotFrameMap);
 
@@ -121,38 +150,8 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     }
 
-    private Map<Position, ShotFrameController> initShotFrameManager(List<Camera> cameraList) throws ServiceException{
-        List<Position> positionList = new ArrayList<>();
+    private Map<Position, ShotFrameController> initShotFrameManager(List<Position> positionList) throws ServiceException{
 
-        for(int i=0; i<cameraList.size(); i++){
-            Camera c = cameraList.get(i);
-            Position p = profileService.getPositionOfCameraOfProfile(c);
-            if(p!=null){
-                LOGGER.debug("initShotFrameManager - camera added");
-                positionList.add(p);
-            } else{
-                LOGGER.info("initShotFrameManager - no position for this camera: {}", c);
-                cameraHandler.removeCameraFromList(c);
-            }
-        }
-        int positionNumber = profileService.getAllPairCameraPositionOfProfile().size();
-
-        //If you want to test without cameras attached, comment out
-        //TODO: make sure to remove the comments before deploying
-
-
-        if(positionList.size()!=positionNumber){
-            LOGGER.info("initShotFrameManager - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
-            throw new ServiceException("Selected Profile not compatible with attached cameras");
-        }
-
-
-        LOGGER.info("initShotFrameManager - attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
-
-        if(positionList.isEmpty()){
-            LOGGER.debug("initShotFrameManager - No cameras specfied in active profile - nothing to initialize");
-            return null;
-        }
 
         Map<Position, ShotFrameController> positionShotFrameMap = shotFrameManager.init(positionList);
         if(positionShotFrameMap == null || positionShotFrameMap.isEmpty()){

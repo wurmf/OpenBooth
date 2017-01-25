@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Profile Service Implementation
@@ -495,6 +493,14 @@ public class ProfileServiceImpl implements ProfileService{
                 allCameras.add(new Profile.PairCameraPosition(profileID,c,null,false));
 
         }
+        Collections.sort(allCameras, new Comparator<Profile.PairCameraPosition>() {
+            @Override
+            public int compare(Profile.PairCameraPosition pair1, Profile.PairCameraPosition pair2)
+            {
+
+                return  pair1.getCamera().getLable().compareTo(pair2.getCamera().getLable());
+            }
+        });
         return allCameras;
     }
 
