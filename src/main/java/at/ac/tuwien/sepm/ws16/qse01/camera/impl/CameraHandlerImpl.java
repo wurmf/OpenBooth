@@ -169,7 +169,8 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
-    public void removeCameraFromList(Camera camera){
+    public void removeCameraFromList(Camera camera)
+    {
         if(cameraList.isEmpty()){
             return;
         }
@@ -182,7 +183,8 @@ public class CameraHandlerImpl implements CameraHandler {
     }
 
     @Override
-    public void closeCameras() {
+    public void closeCameras()
+    {
         for(CameraGphoto cameraGphoto : cameraGphotoList){
             CameraUtils.closeQuietly(cameraGphoto);
         }
