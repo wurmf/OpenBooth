@@ -76,6 +76,9 @@ public class TestEnvironment {
     @Mock protected ResultSet mockResultSet;
 
     protected Camera cameraA;
+    protected Camera cameraB;
+    protected Camera cameraC;
+    protected Camera camera1000000;
     protected Position positionA;
     protected Position positionB;
     protected Position positionC;
@@ -93,6 +96,7 @@ public class TestEnvironment {
     protected Profile.PairCameraPosition pairCameraPositionA;
     protected Profile.PairCameraPosition pairCameraPositionB;
     protected Profile.PairCameraPosition pairCameraPositionC;
+    protected Profile.PairCameraPosition pairCameraPosition1000000;
     protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA;
     protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleB;
     protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleC;
@@ -181,6 +185,9 @@ public class TestEnvironment {
         * Setup Test objects for all testing
          */
         cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
+        cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42");
+        cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999");
+        camera1000000 = new Camera(1000000,"Camera 1000000", "ZZZZZZZ", "OneMillion OM" , "XYZ" );
         positionA = new Position("Position A","/dev/null/positionA.jpg");
         positionB = new Position("Position B", "/dev/null/positionB.jpg");
         positionC = new Position("Position C", "/dev/null/positionC.jpg");
@@ -202,6 +209,8 @@ public class TestEnvironment {
         pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1, true);
         pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
         pairCameraPositionC = new Profile.PairCameraPosition(cameraA, positionA, true);
+        pairCameraPosition1000000
+                = new Profile.PairCameraPosition(1000000,3,camera1,position1,false);
         pairCameraPositions.add(pairCameraPositionA);
         pairCameraPositions.add(pairCameraPositionB);
         pairLogoRelativeRectangles = new ArrayList<>();
