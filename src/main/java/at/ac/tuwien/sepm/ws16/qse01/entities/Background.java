@@ -65,6 +65,15 @@ public class Background extends Picture{
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + category.hashCode();
+        result = 31 * result + (isDeleted ? 1 : 0);
+        return result;
+    }
+
     /**
      * Category entity
      */
@@ -121,6 +130,14 @@ public class Background extends Picture{
                     "id=" + id +
                     ", name='" + name + '\'' +
                     '}';*/
+        }
+
+        @Override
+        public int hashCode() {
+            int result = id;
+            result = 31 * result + name.hashCode();
+            result = 31 * result + (isDeleted ? 1 : 0);
+            return result;
         }
     }
 }

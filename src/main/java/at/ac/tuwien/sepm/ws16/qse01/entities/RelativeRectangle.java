@@ -57,7 +57,7 @@ public class RelativeRectangle {
                 && this.x == ((RelativeRectangle) object).getX()
                 && this.y == ((RelativeRectangle) object).getY()
                 && this.width == ((RelativeRectangle) object).getWidth()
-                && this.getHeight() == ((RelativeRectangle) object).getHeight();
+                && this.height == ((RelativeRectangle) object).getHeight();
     }
 
     @Override
@@ -68,5 +68,20 @@ public class RelativeRectangle {
                 ", height=" + height +
                 ", width=" + width +
                 '}';
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(x);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(y);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(width);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(height);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 }

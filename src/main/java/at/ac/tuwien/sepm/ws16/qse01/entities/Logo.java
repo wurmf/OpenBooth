@@ -85,4 +85,13 @@ public class Logo {
                 ", isDeleted=" + isDeleted +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + label.hashCode();
+        result = 31 * result + path.hashCode();
+        result = 31 * result + (isDeleted ? 1 : 0);
+        return result;
+    }
 }

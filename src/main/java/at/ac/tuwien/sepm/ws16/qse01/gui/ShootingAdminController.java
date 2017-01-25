@@ -33,6 +33,10 @@ import java.util.List;
 @Component
 public class ShootingAdminController {
 
+    private static final boolean enableDebugProfile = true;
+    private static final String debugProfileName = "DebugProfile";
+    private static final int debugProfileId = 3; //Welches bestehende Profil als DebugProfil aus der Datenbank ausgewählt werden soll
+
     @FXML
     private Label saveing;
     @FXML
@@ -63,6 +67,7 @@ public class ShootingAdminController {
     private ProfileService profileService;
     private ImageProcessingManager imageProcessingManager;
     private WindowManager windowManager;
+
 
     @Autowired
     public ShootingAdminController(ProfileService profileService, ShootingService shootingService, ImageProcessingManager imageProcessingManager, WindowManager windowManager) {
@@ -130,17 +135,16 @@ public class ShootingAdminController {
                     profileObservableList.add(profile);
                 }
             }
+
+            if(enableDebugProfile){
+                Profile debugProfile = profileService.get(debugProfileId);
+                debugProfile.setName(debugProfileName);
+                profileObservableList.add(debugProfile);
+            }
         } catch (ServiceException e) {
             LOGGER.debug("fittingProfiles-",e);
-        }finally{
-            if(profileObservableList!=null||profileObservableList.isEmpty()){
-                // just for testing
-                proflist.get(0).setName("Test Example Profile, does not fit camera settings");
-                profileObservableList.add(proflist.get(0));
-                //
-            }
-            return profileObservableList;
         }
+        return profileObservableList;
     }
 
     /**
@@ -186,37 +190,35 @@ public class ShootingAdminController {
      */
     @FXML
     public void onStartShootingPressed() {
-        LOGGER.info("onStartShootingPressed - "+path);
+        LOGGER.debug("onStartShootingPressed - "+path);
         if (profileChoiceBox.getValue() != null) {
                 try{
                     Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
+
+
+                    boolean isDebugProfile = enableDebugProfile && profile.getId() == debugProfileId;
+
+                    if(!imageProcessingManager.checkImageProcessing(profile) && !isDebugProfile){
+                        return;
+                    }
 
                     if(path==null) {
                         path = shootingService.createPath();
                     }
 
-                    Shooting shouting = new Shooting(0, profile.getId(), path,bgPath, true);
+                    Shooting shooting = new Shooting(0, profile.getId(), path,bgPath, true);
 
                     path = "";
 
-                    shootingService.addShooting(shouting);
+                    shootingService.addShooting(shooting);
                     profileService.setActiveProfile(profile.getId());
 
-                    boolean test = true;
-                    try {
-                            boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profile);
-                            if (camerasFitPosition) {
-                                imageProcessingManager.initImageProcessing();
-                                test=false;
-                            }
-                    } catch (ServiceException e) {
-                        LOGGER.debug("fittingProfiles-",e);
-                    }finally{
-                        if(test) {
-                            showInformationDialog("You entered in test mode!");
-                        }
-                        windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+                    if(!isDebugProfile){
+                        imageProcessingManager.initImageProcessing();
                     }
+
+                    windowManager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
+
                 } catch (ServiceException serviceExeption) {
                     LOGGER.error("onStartShootingPressed - ", serviceExeption);
                     showInformationDialog("Es konnte kein Shooting gestartet werden.");

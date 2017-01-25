@@ -26,49 +26,18 @@ import static org.mockito.Mockito.when;
  */
 public class PairCameraPositionDAOTest extends TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(PairCameraPositionDAOTest.class);
-    private Camera cameraA;
-    private Camera cameraB;
-    private Camera cameraC;
-    private Camera camera1000000;
-    private Camera camera1;
-    private Camera camera2;
-    private Position positionA;
-    private Position positionB;
-    private Position positionC;
-    private Position position1000000;
-    private Position position1;
-    private Position position2;
-    private Profile.PairCameraPosition pairCameraPositionA;
-    private Profile.PairCameraPosition pairCameraPositionB;
-    private Profile.PairCameraPosition pairCameraPositionC;
-    private Profile.PairCameraPosition pairCameraPosition1000000;
+
     private int id;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        cameraA = new Camera(Integer.MIN_VALUE,"Camera A", "A", "Alpa A", "666");
-        cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42");
-        cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999");
-        camera1 = cameraDAO.read(1);
-        camera2 = cameraDAO.read(2);
-        camera1000000 = new Camera(1000000,"Camera 1000000", "ZZZZZZZ", "OneMillion OM" , "XYZ" );
 
-        positionA = new Position("Position A","/dev/null/positionA.jpg");
-        positionB = new Position("Position B","/dev/null/positionB.jpg");
-        positionC = new Position("Position C","/dev/null/positionC.jpg");
-        position1 = positionDAO.read(1);
-        position2 = positionDAO.read(2);
-        position1000000 = new Position("Position 1000000","/dev/null/position1000000.jpg");
-
-        pairCameraPositionA
-                = new Profile.PairCameraPosition(3, camera1,position1,true);
-        pairCameraPositionB
-                = new Profile.PairCameraPosition(3, camera2,position2,false);
-        pairCameraPositionC
-                = new Profile.PairCameraPosition(4, camera2,position1, false);
-        pairCameraPosition1000000
-                = new Profile.PairCameraPosition(1000000,3,camera1,position1,false);
+        pairCameraPositionA.setProfileId(3);
+        pairCameraPositionB.setProfileId(3);
+        pairCameraPositionC.setProfileId(4);
+        cameraDAO.create(cameraA);
+        positionDAO.create(positionA);
         id = 1;
     }
 
@@ -98,10 +67,11 @@ public class PairCameraPositionDAOTest extends TestEnvironment {
     @Test
     public void test_create_withValidInputArguments() throws Exception {
         assertTrue(pairCameraPositionA.getId() == Integer.MIN_VALUE);
-        assertTrue(pairCameraPositionA.getProfileId() == 3);
+        assertTrue(pairCameraPositionA.getProfileId()== 3 );
         assertTrue(pairCameraPositionA.getCamera().equals(camera1));
         assertTrue(pairCameraPositionA.getPosition().equals(position1));
         assertTrue(pairCameraPositionA.isGreenScreenReady());
+        pairCameraPositionA.setProfileId(3);
         Profile.PairCameraPosition returnValue = pairCameraPositionDAO.create(pairCameraPositionA);
         assertTrue(returnValue.getId()>=1);
         assertTrue(pairCameraPositionA.getProfileId() == 3);

@@ -35,9 +35,6 @@ public class PositionDAOTest extends TestEnvironment {
         super.tearDown();
     }
 
-    private Position positionB = new Position("Position B", "/dev/null/positionB.jpg");
-    private Position positionC = new Position("Position C", "/dev/null/positionC.jpg");
-    private Position position1000000 = new Position(1000000,"Position 1000000", "/dev/null/position1000000.jpg", false);
     private int id = 1;
     /**
      *

@@ -1,8 +1,7 @@
-package at.ac.tuwien.sepm.ws16.qse01.dao.impl;
+package at.ac.tuwien.sepm.ws16.qse01.dao;
 
-import at.ac.tuwien.sepm.ws16.qse01.dao.BackgroundCategoryDAO;
-import at.ac.tuwien.sepm.ws16.qse01.dao.ProfileDAO;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
+import at.ac.tuwien.sepm.ws16.qse01.dao.impl.TestEnvironment;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Background;
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +21,7 @@ import static org.mockito.Mockito.when;
 /**
  * BackgroundCategoryDAO Tester
  */
-public class BackgroundCategoryDAOTest extends TestEnvironment{
+public class BackgroundCategoryDAOTest extends TestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(BackgroundCategoryDAOTest.class);
 
     @Before
