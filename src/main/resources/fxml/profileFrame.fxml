@@ -14,7 +14,7 @@
 
 <TitledPane fx:id="profile" animated="false" prefHeight="520.0" text="Profilverwaltung" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.ProfileFrameController">
 <content>
-    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+    <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: rgb(180,180,180,1);">
         <children>
             <TableView fx:id="tableProfil" maxWidth="1.7976931348623157E308" prefHeight="427.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <columnResizePolicy>

@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TitledPane fx:id="position" animated="false" prefHeight="522.0" text="Kameraposition" GridPane.columnIndex="1" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.PositionFrameController">
+<TitledPane fx:id="position" animated="false" prefHeight="522.0" text="Kameraposition" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.PositionFrameController">
         <content>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: rgb(180,180,180,1);">
                 <children>
                     <TableView fx:id="tablePosition" prefHeight="427.0" prefWidth="450.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <columnResizePolicy>
@@ -42,12 +42,12 @@
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin></TextField>
-                          <TextField fx:id="txPositionBild" editable="false" onAction="#positionUpload" onMouseClicked="#positionUpload" visible="false" text="Hochladen..." GridPane.columnIndex="2">
+                          <TextField fx:id="txPositionBild" editable="false" onAction="#positionUpload" onMouseClicked="#positionUpload" text="Hochladen..." visible="false" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin></TextField>
                           <Button fx:id="txPositionAdd" mnemonicParsing="false" onAction="#savePosition" GridPane.columnIndex="3" />
-                          <Button fx:id="txPositionUpload" mnemonicParsing="false" onAction="#positionUpload"  GridPane.columnIndex="2" />
+                          <Button fx:id="txPositionUpload" mnemonicParsing="false" onAction="#positionUpload" GridPane.columnIndex="2" />
                </children>
             </GridPane>
                 </children>

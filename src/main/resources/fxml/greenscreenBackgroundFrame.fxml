@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TitledPane fx:id="greenscreenBackground" animated="false" prefHeight="522.0" text="Greenscreen-&gt;Hintergrundverwaltung" GridPane.columnIndex="1" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenBackgroundFrameController">
+<TitledPane fx:id="greenscreenBackground" animated="false" prefHeight="522.0" stylesheets="@../css/profilesetting.css" text="Greenscreen-&gt;Hintergrundverwaltung" GridPane.columnIndex="1" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenBackgroundFrameController">
 <content>
-            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0">
+            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: rgb(180,180,180,1);" stylesheets="@../css/profilesetting.css">
                 <children>
 
                     <TableView fx:id="tableBackground" layoutY="0.0" prefHeight="420.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -43,12 +43,12 @@
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin></TextField>
-                          <TextField fx:id="txBackgroundPath" editable="false" onAction="#backgroundUpload" onMouseClicked="#backgroundUpload" visible="false" text="Hochladen..." GridPane.columnIndex="2">
+                          <TextField fx:id="txBackgroundPath" editable="false" onAction="#backgroundUpload" onMouseClicked="#backgroundUpload" text="Hochladen..." visible="false" GridPane.columnIndex="2">
                      <GridPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </GridPane.margin></TextField>
-                          <Button fx:id="txBackgroundAdd" mnemonicParsing="false" onAction="#saveBackground"  GridPane.columnIndex="3" />
-                          <Button fx:id="txBackgroundUpload" mnemonicParsing="false" onAction="#backgroundUpload"  GridPane.columnIndex="2" />
+                          <Button fx:id="txBackgroundAdd" mnemonicParsing="false" onAction="#saveBackground" GridPane.columnIndex="3" />
+                          <Button fx:id="txBackgroundUpload" mnemonicParsing="false" onAction="#backgroundUpload" GridPane.columnIndex="2" />
                </children>
             </GridPane>
                 </children>

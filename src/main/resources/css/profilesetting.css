@@ -1,5 +1,10 @@
-#container{
- -fx-background-color: dimgray;
+#containerGrid{
+  -fx-background-color: rgb(130,130,130,1);
+
+}
+#scrollpane{
+
+  -fx-background-color: rgb(130,130,130,1);
 }
 #setting{
     -fx-font-size: 2.5em;
@@ -7,25 +12,38 @@
   -fx-font-family: HP Simplified;
 }
 
-.table-view .column-header{
-    -fx-font-size: 0.8em;
+
+.titled-pane{
+
+
+  -fx-font-family: HP Simplified;
+
+  -fx-text-fill: white;
+  -fx-background-color: rgb(130,130,130,1);
+}
+.titled-pane .title{
+  -fx-text-fill: white;
+  -fx-background-color: rgb(80,80,80,1);
 }
 
 
-.table-cell {
-    -fx-font-size: 0.8em;
+.titled-pane .title .text{
+
+  -fx-text-fill: white;
+  -fx-font-family: HP Simplified;
+  -fx-background-color: rgb(80,80,80,1);
+}
+.table-view .table-cell{
+    -fx-font-size: 0.7em;
 }
 
-.button {
-    -fx-font-size: 0.8em;
+
+.label{
+
+    -fx-font-size: 0.65em;
 }
 
-.choice-box{
-  -fx-background-color: darkgray;
-  -fx-pref-width: 30em;
-  -fx-mark-color: green ;
-}
+.scroll-pane .scroll-bar:vertical{
+-fx-pref-width: 1.5em;
 
-.choice-box .context-menu {
-    -fx-background-color: darkgray ;
 }
