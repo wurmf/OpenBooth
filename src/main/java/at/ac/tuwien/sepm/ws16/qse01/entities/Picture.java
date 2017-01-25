@@ -39,4 +39,22 @@ public abstract class Picture {
                 ", path='" + path + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Picture picture = (Picture) o;
+
+        if (id != picture.id) return false;
+        return path.equals(picture.path);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + path.hashCode();
+        return result;
+    }
 }

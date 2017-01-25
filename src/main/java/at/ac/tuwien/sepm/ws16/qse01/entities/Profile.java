@@ -206,6 +206,22 @@ public class Profile {
     @Override
     public String toString(){return this.name;}
 
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + pairCameraPositions.hashCode();
+        result = 31 * result + pairLogoRelativeRectangles.hashCode();
+        result = 31 * result + backgroundCategories.hashCode();
+        result = 31 * result + (isMobilEnabled ? 1 : 0);
+        result = 31 * result + (isPrintEnabled ? 1 : 0);
+        result = 31 * result + (isFilerEnabled ? 1 : 0);
+        result = 31 * result + (isGreenscreenEnabled ? 1 : 0);
+        result = 31 * result + watermark.hashCode();
+        result = 31 * result + (isDeleted ? 1 : 0);
+        return result;
+    }
+
     /**
      * Camera-Position Pair Entity
      * Note: Contains private attribute filterName, background and shotType that are not persisted
