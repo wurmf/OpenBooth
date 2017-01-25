@@ -136,6 +136,7 @@ public class CameraThread extends Thread{
             } catch (CameraException e) {
                 LOGGER.error("captureImage - save image failed, should be saved to {}", imagePath, e);
                 setStop(true);
+                return;
             } finally {
                 CameraUtils.closeQuietly(cf);
             }
@@ -193,14 +194,14 @@ public class CameraThread extends Thread{
             CameraUtils.closeQuietly(cf);
         }
 
-
         try {
             imageProcessor.processPreview(imagePath);
         } catch (ServiceException e) {
-            LOGGER.error("capturePreview - exception in service", e);
+            //Ignore Exception if thread should be stopped
+            if(!shouldStop){
+                LOGGER.error("capturePreview - exception in service", e);
+            }
         }
-
-
     }
 
     /*private void waitForEvent()

@@ -65,9 +65,10 @@ public class ImageProcessorImpl implements ImageProcessor {
 
         BufferedImage preview;
 
+        String filterName = pairCameraPosition.getFilterName();
 
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
-        boolean isFilter = !"".equals(pairCameraPosition.getFilterName());
+        boolean isFilter = !"".equals(filterName) && !"original".equals(filterName);
 
         if(isGreenscreen){
             Background background = pairCameraPosition.getBackground();
@@ -82,7 +83,6 @@ public class ImageProcessorImpl implements ImageProcessor {
             }
         } else if (isFilter){
 
-            String filterName = pairCameraPosition.getFilterName();
             preview = filterService.filter(filterName, imgPath);
             LOGGER.debug("processPreview - Filter {} for position {} added to preview image", filterName, position);
         }else {
@@ -104,8 +104,10 @@ public class ImageProcessorImpl implements ImageProcessor {
 
         BufferedImage shot;
 
+        String filterName = pairCameraPosition.getFilterName();
+
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
-        boolean isFilter = !"".equals(pairCameraPosition.getFilterName());
+        boolean isFilter = !"".equals(filterName) && !"original".equals(filterName);
 
         if(isGreenscreen){
             Background background = pairCameraPosition.getBackground();
@@ -150,6 +152,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             refreshManager.refreshFrames(filteredImage);
         }
 
+        LOGGER.info("processShot - shot {} processed", image);
     }
 
     private Image persistFilteredImage(String originalImgPath, BufferedImage shot) throws ServiceException{
