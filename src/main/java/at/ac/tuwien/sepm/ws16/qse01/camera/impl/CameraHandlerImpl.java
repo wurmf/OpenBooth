@@ -51,19 +51,22 @@ public class CameraHandlerImpl implements CameraHandler
     @Override
     public List<CameraThread> createThreads() throws CameraException
     {
-        Camera camera;
+
         threadList = new ArrayList<>();
-        for(int i=0;i<cameraGphotoList.size();i++) {
-            camera=cameraList.get(i);
+        for(Camera camera : cameraList)
+        {
+            int index = cameraList.indexOf(camera);
             CameraThread cameraThread = new CameraThread();
 
-            cameraThread.setCameraGphoto(cameraGphotoList.get(i));
+            cameraThread.setCameraGphoto(cameraGphotoList.get(index));
             cameraThread.setCamera(camera);
             threadList.add(cameraThread);
         }
+
         return threadList;
     }
 
+    @PostConstruct
     @Override
     public List<Camera> getCameras() throws CameraException
     {
@@ -121,15 +124,18 @@ public class CameraHandlerImpl implements CameraHandler
                     }
                     cameraService.setCameraActive(camera.getId());
                     cameraList.add(camera);
+                    LOGGER.info("getCameras - camera {} detected", camera);
                 }
                 catch (ServiceException ex)
                 {
                     LOGGER.error("getCameras - Could not create camera entity - ", ex);
                     throw new CameraException(ex.getMessage(), -1);
                 }
+
             }
 
-        } finally
+        }
+        finally
         {
             CameraUtils.closeQuietly(cl);
         }
@@ -179,11 +185,14 @@ public class CameraHandlerImpl implements CameraHandler
         if(cameraList.isEmpty()){
             return;
         }
+        /*
         int index=cameraList.indexOf(camera);
         cameraList.remove(index);
+        CameraUtils.closeQuietly(cameraGphotoList.get(index));
         cameraGphotoList.remove(index);
         cameraModelList.remove(index);
         cameraPortList.remove(index);
+        */
 
     }
 
