@@ -58,7 +58,9 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
                         // refreshing kamPos TableView;
                         kamPosList.clear();
-                        kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfilID.get(0).getId()));
+
+                        kamPosList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfilID.get(0).getId()));
+
                         cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfilID);
 
                     } catch (ServiceException e) {

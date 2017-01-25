@@ -88,8 +88,7 @@ public class PositionFrameController extends SettingFrameController {
                                 p.setName(t.getNewValue());
                                 pservice.editPosition(p);
 
-
-                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCameraPositionOfProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
+                                cameraPositionFrameController.refreshTableKameraPosition(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()),posList, selectedProfile);
                             } else {
                                 refreshTablePosition(pservice.getAllPositionsOfProfile(pservice.get(selectedProfile.get(0).getId())));
                             }
@@ -181,7 +180,7 @@ public class PositionFrameController extends SettingFrameController {
                 posList.add(p);
 
                 kamPosList.clear();
-                kamPosList.addAll(pservice.getAllPairCameraPositionOfProfile(selectedProfile.get(0).getId()));
+                kamPosList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfile.get(0).getId()));
 
                 txPositionBild.setText("Hochladen...");
                 txPositionName.clear();
