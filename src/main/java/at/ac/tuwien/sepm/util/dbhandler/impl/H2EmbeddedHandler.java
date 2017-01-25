@@ -213,6 +213,9 @@ public class H2EmbeddedHandler  implements DBHandler {
         String green1Source ="/images/greenscreen/background/test_background1.jpg";
         String green2Source ="/images/greenscreen/background/test_background2.png";
         String green3Source ="/images/greenscreen/background/test_background3.jpg";
+        String button1Source="/images/position/camerafront.png";
+        String button2Source="/images/position/cameraside.png";
+        String button3Source="/images/position/cameratop.png";
 
         String image1Dest = shootingPath+"image1.jpg";
         String image2Dest = shootingPath+"image2.jpg";
@@ -221,6 +224,9 @@ public class H2EmbeddedHandler  implements DBHandler {
         String green1Dest = destPath+"greenBg1.jpg";
         String green2Dest = destPath+"greenBg2.png";
         String green3Dest = destPath+"greenBg3.jpg";
+        String button1Dest = destPath+"camerafront.png";
+        String button2Dest = destPath+"cameraside.png";
+        String button3Dest = destPath+"cameratop.png";
 
         PreparedStatement stmt=null;
         try{
@@ -232,6 +238,9 @@ public class H2EmbeddedHandler  implements DBHandler {
             ft.transfer(green1Source,green1Dest);
             ft.transfer(green2Source,green2Dest);
             ft.transfer(green3Source,green3Dest);
+            ft.transfer(button1Source,button1Dest);
+            ft.transfer(button2Source,button2Dest);
+            ft.transfer(button3Source,button3Dest);
 
             stmt=connection.prepareStatement("UPDATE images SET imagepath=? where imageID=?;");
             stmt.setString(1,image1Dest);
@@ -274,6 +283,21 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             stmt.setString(1,green3Dest);
             stmt.setInt(2,3);
+            stmt.execute();
+
+            stmt.close();
+
+            stmt=connection.prepareStatement("UPDATE positions SET buttonImagePath=? WHERE name=?");
+            stmt.setString(1,button1Dest);
+            stmt.setString(2,"DB-Test-Position-1");
+            stmt.execute();
+
+            stmt.setString(1,button2Dest);
+            stmt.setString(2,"DB-Test-Position-3");
+            stmt.execute();
+
+            stmt.setString(1,button3Dest);
+            stmt.setString(2,"DB-Test-Position-2");
             stmt.execute();
         } catch (IOException|SQLException e){
             LOGGER.error("setUpDefaultImgs - ",e);
