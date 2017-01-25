@@ -60,6 +60,7 @@ public class LoginFrameController {
                         firstLogin=false;
                         windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
                     } else{
+                        windowManager.initMiniController();
                         windowManager.showScene(WindowManager.SHOW_MAINSCENE);
                     }
                 }else{

@@ -39,6 +39,7 @@ public class RecoveryController {
     public void onEndShootingPressed() {
         try {
             shootingService.endShooting();
+            windowmanager.initMiniController();
             windowmanager.showScene(WindowManager.SHOW_MAINSCENE);
             LOGGER.info("showRecoveryDialog - shooting stopped");
         } catch (ServiceException e) {
@@ -58,6 +59,7 @@ public class RecoveryController {
             boolean camerasFitPosition = imageProcessingManager.checkImageProcessing(profileService.getActiveProfile());
             if (camerasFitPosition) {
                 imageProcessingManager.initImageProcessing();
+                windowmanager.initMiniController();
                 windowmanager.showScene(WindowManager.SHOW_CUSTOMERSCENE);
             } else{
                 showInformationDialog("Das Kamerasetup des Studios passt nicht zum gewählten Profil. Das Shooting kann nicht fortgesetzt werden.");
