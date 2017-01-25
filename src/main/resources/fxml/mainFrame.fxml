@@ -26,7 +26,7 @@
             <Font />
          </font>
       </Button>
-      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onEndPressed" prefHeight="55.0" prefWidth="55.0" snapToPixel="false" style="-fx-background-size: 50px 50px; -fx-background-position: center 25px; -fx-background-color: dimgray;" textFill="WHITE" GridPane.columnIndex="2">
+      <Button maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#onEndPressed" prefHeight="55.0" prefWidth="55.0" snapToPixel="false" style="-fx-background-size: 50px 50px; -fx-background-position: center 25px; -fx-background-color: transparent;"  GridPane.columnIndex="2">
          <font>
             <Font name="HP Simplified" size="60.0" />
          </font>

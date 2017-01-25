@@ -145,7 +145,6 @@ public abstract class SettingFrameController {
 
     @FXML
     protected void openMainFrame(){
-        LOGGER.info("backButton clicked...");
         windowManager.showScene(WindowManager.SHOW_MAINSCENE);
     }
     protected void showError(String msg){
