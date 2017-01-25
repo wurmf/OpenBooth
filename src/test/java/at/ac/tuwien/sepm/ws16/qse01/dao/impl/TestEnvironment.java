@@ -5,6 +5,7 @@ import at.ac.tuwien.sepm.ws16.qse01.dao.*;
 import at.ac.tuwien.sepm.ws16.qse01.dao.exceptions.PersistenceException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.*;
 import at.ac.tuwien.sepm.ws16.qse01.service.ProfileService;
+import at.ac.tuwien.sepm.ws16.qse01.service.impl.BackgroundServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.CameraServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ProfileServiceImpl;
 import at.ac.tuwien.sepm.ws16.qse01.service.impl.ShootingServiceImpl;
@@ -45,6 +46,7 @@ public class TestEnvironment {
     protected ImageDAO imageDAO,mockImageDAO;
     protected ShootingDAO shootingDAO,mockShootingDAO;
     protected BackgroundCategoryDAO backgroundCategoryDAO,mockbackgroundCategoryDAO;
+    protected BackgroundDAO backgroundDAO;
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
 
@@ -64,8 +66,9 @@ public class TestEnvironment {
     protected Profile.PairLogoRelativeRectangle pairLogoRelativeRectangleA,pairLogoRelativeRectangleB,pairLogoRelativeRectangleC,pairLogoRelativeRectangle1000000;
     protected List<Profile.PairCameraPosition> pairCameraPositions;
     protected List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
-    protected Profile profileA,profileB,profileC;
-    protected Background.Category backgroundCategoryA,backgroundCategoryB,backgroundCategory10;
+    protected List<Background.Category> categories;
+    protected Profile profileA,profileB,profileC,profile1,profile2;
+    protected Background.Category backgroundCategoryA,backgroundCategoryB,backgroundCategory10,backgroundCategory1,backgroundCategory2,backgroundCategory3,backgroundCategory4;
 
     @Before public void setUp() throws Exception
     {
@@ -107,6 +110,7 @@ public class TestEnvironment {
         shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
         adminUserDAO = new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
         backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(H2EmbeddedHandler.getInstance());
+        backgroundDAO = new JDBCBackgroundDAO(H2EmbeddedHandler.getInstance());
 
         /*
         * Setup Services for all testing
@@ -117,8 +121,9 @@ public class TestEnvironment {
                 new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
                 new JDBCCameraDAO(H2EmbeddedHandler.getInstance()),
                 new ShootingServiceImpl(shootingDAO),
-                new CameraServiceImpl(cameraDAO));
-
+                new CameraServiceImpl(cameraDAO),
+                new BackgroundServiceImpl(backgroundDAO,backgroundCategoryDAO)
+                );
         try {
             con.setAutoCommit(false);
             LOGGER.debug("Turn off AutoCommit before beginning testing");
@@ -179,6 +184,21 @@ public class TestEnvironment {
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
 
+        categories = new ArrayList<>();
+        backgroundCategory1 = backgroundCategoryDAO.read(1);
+        backgroundCategory2 = backgroundCategoryDAO.read(2);
+        backgroundCategory3 = backgroundCategoryDAO.read(3);
+        backgroundCategory4 = backgroundCategoryDAO.read(4);
+        backgroundCategoryA = new Background.Category("Taufe");
+        backgroundCategoryB = new Background.Category("Firmung");
+        categories.add(backgroundCategory1);
+        categories.add(backgroundCategory2);
+        categories.add(backgroundCategory3);
+        categories.add(backgroundCategory4);
+        backgroundCategory10
+                = new Background.Category(10,"Verlobung",false);
+
+        profile1 = profileService.get(1);
         profileA = new Profile("Profile A");
         profileB = new Profile("Profile B",
                 true,
@@ -198,11 +218,6 @@ public class TestEnvironment {
                 true,
                 "/dev/null/watermarkC.jpg",
                 false);
-
-        backgroundCategoryA = new Background.Category("Taufe");
-        backgroundCategoryB = new Background.Category("Firmung");
-        backgroundCategory10
-                = new Background.Category(10,"Verlobung",false);
     }
 
     @After public void tearDown() throws Exception {
