@@ -5,9 +5,7 @@ import at.ac.tuwien.sepm.util.OpenCVLoader;
 import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.exceptions.LibraryLoadingException;
-import at.ac.tuwien.sepm.ws16.qse01.entities.Shooting;
 import at.ac.tuwien.sepm.ws16.qse01.service.FilterService;
-import at.ac.tuwien.sepm.ws16.qse01.service.ShootingService;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -22,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +34,7 @@ public class FilterServiceImpl implements FilterService {
 
     private ImageHandler imageHandler;
 
-    String storageDir;
+    private String storageDir;
 
     @Autowired
     public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, TempStorageHandler tempStorageHandler) throws ServiceException {
