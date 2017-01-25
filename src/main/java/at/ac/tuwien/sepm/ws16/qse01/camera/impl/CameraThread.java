@@ -94,38 +94,43 @@ public class CameraThread extends Thread{
             return;
         }
 
-        if (activeShooting == null) {
+        if (activeShooting == null)
+        {
             LOGGER.error("captureImage - no active shooting during capture");
             return;
         }
-
         Image image;
         int anz = 1;
         List<Image> imageList = new ArrayList<>();
-        if (serieShot) {
+        if (serieShot)
+        {
             anz = 5;
         }
 
-        for (int i = 0; i < anz; i++) {
+        for (int i = 0; i < anz; i++)
+        {
 
             CameraFile cf;
-            try {
+            try
+            {
                 cf = cameraGphoto.captureImage();
-            } catch (CameraException ex) {
+            }
+            catch (CameraException ex)
+            {
                 LOGGER.error("captureImage - capture failed", ex);
                 setStop(true);
                 return;
             }
 
-            if (cf == null) {
+            if (cf == null)
+            {
                 LOGGER.error("captureImage - camerafile is null");
                 return;
             }
-
-
             String directoryPath = activeShooting.getStorageDir();
 
-            if(directoryPath == null || directoryPath.isEmpty()){
+            if(directoryPath == null || directoryPath.isEmpty())
+            {
                 LOGGER.error("captureImage - shooting directory path is null or empty");
                 shouldStop = true;
                 return;
@@ -135,18 +140,24 @@ public class CameraThread extends Thread{
             Date date = new Date();
             String imagePath = directoryPath + "/K" + camera.getId() + "_" + dateFormat.format(date) + ".jpg";
 
-            try {
+            try
+            {
                 cf.save(new File(imagePath).getAbsolutePath());
-            } catch (CameraException e) {
+            }
+            catch (CameraException e)
+            {
                 LOGGER.error("captureImage - save image failed, should be saved to {}", imagePath, e);
                 setStop(true);
                 return;
-            } finally {
+            }
+            finally
+            {
                 CameraUtils.closeQuietly(cf);
             }
 
 
-            try {
+            try
+            {
                 image = new Image(imagePath, activeShooting.getId());
                 image = imageService.create(image);
                 imageList.add(image);
