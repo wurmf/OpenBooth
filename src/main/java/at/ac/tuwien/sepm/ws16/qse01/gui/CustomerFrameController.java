@@ -367,7 +367,7 @@ public class CustomerFrameController {
                     gp.prefHeight(high);
 
 
-                    String url = "file:"+pairList.get(i).getPosition().getButtonImagePath();
+                    String url = pairList.get(i).getPosition().getButtonImagePath();
                     ImageView buttonimage = new ImageView(new Image(url));
                     buttonimage.setFitWidth(width-high/2);
                     buttonimage.setFitHeight(high/1.5);
