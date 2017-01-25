@@ -206,7 +206,6 @@ public class WindowManager {
     }
 
     public void initMiniController(){
-        LOGGER.info("----------------initMiniController - executing--------------");
         miniaturFrameController.init(this.getStage());
     }
 
