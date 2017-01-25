@@ -98,12 +98,9 @@ public class FullScreenImageController {
 
 
 
-    private boolean delete = false;
     private boolean b3=true;
     private boolean b4=true;
     private boolean upperbutton=false;
-
-    private at.ac.tuwien.sepm.ws16.qse01.entities.Image firstImage;
 
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> imageList;
     private int currentIndex=-1;
@@ -201,7 +198,7 @@ public class FullScreenImageController {
     try {
             if(ivfullscreenImage!=null&&imageList!=null){
 
-                windowManager.showDeleteScene(true ,(new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 500, 500, true, true)));
+                windowManager.showDeleteScene(true ,new Image(new FileInputStream(imageList.get(currentIndex).getImagepath()), 500, 500, true, true));
 
             }
         } catch (FileNotFoundException e) {
@@ -354,7 +351,6 @@ public class FullScreenImageController {
      *
      */
     public void onNextImage() {
-        //LOGGER.debug("reach"+currentIndex);
         upperbutton = true;
         FileInputStream fips=null;
         try {
@@ -448,12 +444,12 @@ public class FullScreenImageController {
                     if(imageList.get(i).getImageID()==imgID){
                         currentIndex=i;
                     }
-                //    LOGGER.debug("hear" + imageList.get(i).getImageID());
                 }
 
                 if(currentIndex==0){
                     button4.setVisible(false);
-                }if(currentIndex==(imageList.size()-1)){
+                }
+                if(currentIndex==(imageList.size()-1)){
                     button3.setVisible(false);
                 }
 
@@ -673,8 +669,9 @@ public class FullScreenImageController {
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
-        if(new File(activeShooting.getStorageDir()+imgFilterName).isFile())
-            new File(activeShooting.getStorageDir()+imgFilterName).delete();
+        File previewFile=new File(activeShooting.getStorageDir()+imgFilterName);
+        if(previewFile.isFile())
+            previewFile.delete();
     }
 
     public void onCropPressed()
