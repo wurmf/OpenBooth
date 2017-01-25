@@ -107,7 +107,8 @@ public class CameraHandlerImpl implements CameraHandler {
 
                 cameraGphotoList.get(i).initialize();
                 cameraGphotoList.get(i).ref();
-                try{
+                try
+                {
                     camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
                     camera=cameraService.cameraExists(camera);
                     if(camera==null)
@@ -125,7 +126,8 @@ public class CameraHandlerImpl implements CameraHandler {
                 }
             }
 
-        } finally {
+        } finally
+        {
             CameraUtils.closeQuietly(cl);
         }
         isInitialized = true;
@@ -185,7 +187,8 @@ public class CameraHandlerImpl implements CameraHandler {
     @Override
     public void closeCameras()
     {
-        for(CameraGphoto cameraGphoto : cameraGphotoList){
+        for(CameraGphoto cameraGphoto : cameraGphotoList)
+        {
             CameraUtils.closeQuietly(cameraGphoto);
         }
     }
