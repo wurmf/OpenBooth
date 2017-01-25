@@ -9,7 +9,7 @@ import at.ac.tuwien.sepm.ws16.qse01.entities.Profile;
 import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessingManager;
 import at.ac.tuwien.sepm.ws16.qse01.service.imageprocessing.ImageProcessor;
-import at.ac.tuwien.sepm.ws16.qse01.application.ShotFrameManager;
+import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameManager;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.impl.CameraThread;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
@@ -49,10 +49,8 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     private List<CameraThread> cameraThreadList;
 
-    private RemoteService remoteService;
-
     @Autowired
-    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, RemoteService remoteService, OpenCVLoader openCVLoader, TempStorageHandler tempStorageHandler){
+    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, OpenCVLoader openCVLoader, TempStorageHandler tempStorageHandler){
 
         this.cameraHandler = cameraHandler;
         this.shotFrameManager = shotFrameManager;
@@ -60,7 +58,6 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         this.shootingService = shootingService;
         this.profileService = profileService;
         this.imageService = imageService;
-        this.remoteService = remoteService;
         this.openCVLoader = openCVLoader;
         this.tempStorageHandler = tempStorageHandler;
     }
@@ -127,13 +124,14 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     private Map<Position, ShotFrameController> initShotFrameManager(List<Camera> cameraList) throws ServiceException{
         List<Position> positionList = new ArrayList<>();
 
-        for(Camera c : cameraList){
+        for(int i=0; i<cameraList.size(); i++){
+            Camera c = cameraList.get(i);
             Position p = profileService.getPositionOfCameraOfProfile(c);
             if(p!=null){
                 LOGGER.debug("initShotFrameManager - camera added");
                 positionList.add(p);
             } else{
-                LOGGER.info("initShotFrameManager - no position for this camera: "+c.getId());
+                LOGGER.info("initShotFrameManager - no position for this camera: {}", c);
                 cameraHandler.removeCameraFromList(c);
             }
         }

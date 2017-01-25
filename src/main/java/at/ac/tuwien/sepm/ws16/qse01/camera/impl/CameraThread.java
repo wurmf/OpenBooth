@@ -73,19 +73,8 @@ public class CameraThread extends Thread{
             {
                 capturePreview();
             }
-            if(shouldStop)
-            {
-                try
-                {
-                    cameraGphoto.close();
-                }
-                catch (IOException e)
-                {
-                    LOGGER.error("cameraThread run, could not close Camera", e);
-                }
-                LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-            }
         }
+        LOGGER.debug("Stopped CameraThread for Camera {}", camera);
     }
 
 
@@ -129,6 +118,12 @@ public class CameraThread extends Thread{
 
 
             String directoryPath = activeShooting.getStorageDir();
+
+            if(directoryPath == null || directoryPath.isEmpty()){
+                LOGGER.error("captureImage - shooting directory path is null or empty");
+                shouldStop = true;
+                return;
+            }
 
             DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
             Date date = new Date();

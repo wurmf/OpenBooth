@@ -43,12 +43,19 @@ public interface CameraHandler {
      * @param camera camera that shall be configured
      * @param serieShot whether multiple shots should be taken or not
      */
-    public void setSerieShot(Camera camera, boolean serieShot);
+    void setSerieShot(Camera camera, boolean serieShot);
 
     /**
      * Sets the countdown flag in the CameraThread
      * @param camera camera that shall be configured
      * @param countdown number of seconds a countdown should be displayed
      */
-    public void setCountdown(Camera camera, int countdown);
+    void setCountdown(Camera camera, int countdown);
+
+    /**
+     * Closes all cameras if called
+     */
+    void closeCameras();
+
+
 }

@@ -1,7 +1,6 @@
-package at.ac.tuwien.sepm.ws16.qse01.application;
+package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.ws16.qse01.entities.Position;
-import at.ac.tuwien.sepm.ws16.qse01.gui.ShotFrameController;
 import at.ac.tuwien.sepm.ws16.qse01.service.exceptions.ServiceException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
