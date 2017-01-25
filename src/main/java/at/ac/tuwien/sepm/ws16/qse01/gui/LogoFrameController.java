@@ -116,8 +116,8 @@ public class LogoFrameController extends SettingFrameController {
                     };
                     cell.setOnMouseClicked(e -> {
                         if (!cell.isEmpty() && selectedLogo != null) {
-                            if (selectedLogo.getLogo().getId() == cell.getItem()) {
-                                LOGGER.debug("initialize - Logo Zeile auswählen oder abwählen -> selectedLogo->"+selectedLogo.getLogo().getId());
+                            if (selectedLogo.getId() == cell.getItem()) {
+                                LOGGER.debug("initialize - Logo Zeile auswählen oder abwählen -> selectedLogo->"+selectedLogo.getId());
                                 tableLogo.getSelectionModel().clearSelection();
                                 selectedLogo = null;
                                 try {
@@ -395,9 +395,9 @@ public class LogoFrameController extends SettingFrameController {
 
                 });
 
-            /* ###################
-             *   Vorschau Teil
-             *####################*/
+        /* ###################
+         *   Logo Preview
+         *####################*/
         tableLogo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
@@ -411,7 +411,7 @@ public class LogoFrameController extends SettingFrameController {
                         Image image = SwingFXUtils.toFXImage(logoService.getPreviewForLogo(selectedLogo.getLogo(), selectedLogo.getRelativeRectangle(), width, height), null);
                         previewLogo.setImage(image);
                     } catch (NumberFormatException e) {
-                        LOGGER.error("tableLogo - changeListener - Fehler: Bitte geben Sie eine Zahl an");
+                        LOGGER.error("tableLogo - changeListener - Fehler: Bitte geben Sie eine Zahl an",e);
                     } catch (ServiceException e) {
                         LOGGER.error("tableLogo - changeListener - Fehler: Bitte geben Sie eine Zahl an",e);
                     }
