@@ -12,14 +12,14 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane  xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
+<ScrollPane fx:id="scrollpane" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.SettingFrameController">
     <content>
         <VBox alignment="TOP_CENTER" minHeight="1500">
             <children>
-                <GridPane fx:id="containerGrid" maxHeight="-Infinity" maxWidth="-Infinity"  style="-fx-background-color: dimgray;">
+                <GridPane fx:id="containerGrid" maxHeight="-Infinity" maxWidth="-Infinity" >
                   <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="1400.0" minWidth="10.0" prefWidth="896.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1700.0" minWidth="10.0" prefWidth="504.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
                       <ColumnConstraints />
                   </columnConstraints>
                   <rowConstraints>

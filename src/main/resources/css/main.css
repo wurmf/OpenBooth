@@ -3,21 +3,21 @@
   -fx-background-color: dimgray;
 }
 #base{
-  -fx-background-color: dimgray;
+  -fx-background-color: rgb(130,130,130,1);
    -fx-background-repeat: no-repeat;
    -fx-background-position: center;
    -fx-background-size: 100%;
-   -fx-background-image: url('/images/logo.png');
+   -fx-background-image: url('/images/logograyultra.png');
 }
 #startbutton {
-   -fx-background-color:  rgba(40,40, 40, 0.7);
+   -fx-background-color:   rgb(80,80,80,0.8);
    -fx-text-fill: white;
    -fx-font-family: HP Simplified;
    -fx-pref-height:1em;
    }
 
 #edit{
-   -fx-background-color:  rgba(40,40, 40, 0.7);
+   -fx-background-color:   rgb(80,80,80,0.8);
    -fx-text-fill: white;
    -fx-font-family: HP Simplified;
    -fx-pref-height:1em;
