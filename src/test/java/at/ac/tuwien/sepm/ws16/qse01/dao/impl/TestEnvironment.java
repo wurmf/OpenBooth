@@ -77,6 +77,9 @@ public class TestEnvironment {
 
     protected Camera cameraA;
     protected Position positionA;
+    protected Position positionB;
+    protected Position positionC;
+    protected Position position1000000;
     protected Logo logoA;
     protected Logo logoB;
     protected Logo logoC;
@@ -179,6 +182,9 @@ public class TestEnvironment {
          */
         cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
         positionA = new Position("Position A","/dev/null/positionA.jpg");
+        positionB = new Position("Position B", "/dev/null/positionB.jpg");
+        positionC = new Position("Position C", "/dev/null/positionC.jpg");
+        position1000000 = new Position(1000000,"Position 1000000", "/dev/null/position1000000.jpg", false);
         logoA = new Logo("Logo A","/dev/null/logoA.jpg");
         logoB = new Logo("Logo B", "/dev/null/logoB.jpg");
         logoC = new Logo("Logo C", "/dev/null/logoC.jpg");
