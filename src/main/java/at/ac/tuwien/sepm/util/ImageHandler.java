@@ -69,7 +69,6 @@ public class ImageHandler {
             LOGGER.error("openImage - error loading given image {} ", imagePath, e);
             throw new ImageHandlingException(e);
         }
-        LOGGER.debug("openImage - Image at {} opened", imagePath);
         return img;
     }
 

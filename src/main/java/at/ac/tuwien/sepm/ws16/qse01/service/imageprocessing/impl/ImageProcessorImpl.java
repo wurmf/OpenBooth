@@ -60,9 +60,6 @@ public class ImageProcessorImpl implements ImageProcessor {
         pairCameraPosition = profileService.getPairCameraPosition(camera);
 
 
-
-        LOGGER.debug("entering processPreview method for position {}", position);
-
         BufferedImage preview;
 
         String filterName = pairCameraPosition.getFilterName();
@@ -73,21 +70,16 @@ public class ImageProcessorImpl implements ImageProcessor {
         if(isGreenscreen){
             Background background = pairCameraPosition.getBackground();
 
-            preview =openImageThrowException(imgPath);
+            preview = openImageThrowException(imgPath);
 
-            if(background == null){
-                LOGGER.debug("processPreview - greenscreen activated for position {} but no background set", position);
-            }else {
+            if(background != null){
                 preview = greenscreenService.applyGreenscreen(preview, background);
-                LOGGER.debug("processShot - Background {} applied to shot from position {}", background, position);
             }
         } else if (isFilter){
 
             preview = filterService.filter(filterName, imgPath);
-            LOGGER.debug("processPreview - Filter {} for position {} added to preview image", filterName, position);
         }else {
             preview = openImageThrowException(imgPath);
-            LOGGER.debug("processPreview - No filter or greenscreen detected for position {}", position);
         }
 
         shotFrameController.refreshShot(preview);

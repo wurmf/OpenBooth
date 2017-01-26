@@ -75,8 +75,6 @@ public class ShotFrameController {
     }
 
     public void refreshShot(BufferedImage img) {
-
-        LOGGER.debug("refreshing Shot with Buffered img = "+img);
         try {
             shotView.setImage(SwingFXUtils.toFXImage(img,null));
         }catch (Exception e){
