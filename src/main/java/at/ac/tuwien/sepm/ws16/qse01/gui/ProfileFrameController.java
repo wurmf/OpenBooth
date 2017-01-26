@@ -324,7 +324,6 @@ public class ProfileFrameController extends SettingFrameController{
 
     @FXML
     protected void saveProfil(){
-        LOGGER.error("Profil Add Button has been clicked");
         String name = txProfilName.getText();
         if(name.trim().compareTo("") == 0){
             LOGGER.error("in error");
