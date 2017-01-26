@@ -300,10 +300,12 @@ public class CameraThread extends Thread{
 
     public void setSerieShot(boolean serieShot) {
         this.serieShot = serieShot;
+        this.countdown = 0;
     }
 
     public void setCountdown(int countdown) {
         this.countdown = countdown;
+        this.serieShot = false;
     }
 
     public void setTempStoragePath(String tempStoragePath){

@@ -19,6 +19,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.h2.mvstore.ConcurrentArrayList;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -55,6 +59,7 @@ public class MiniaturFrameController {
     private ImageView activeImageView = null;
     private MouseEvent mouseEventdel;
     private List<at.ac.tuwien.sepm.ws16.qse01.entities.Image> listOfImages=null;
+    private Queue<at.ac.tuwien.sepm.ws16.qse01.entities.Image> newImages=new LinkedBlockingQueue<>();
 
     @Autowired
     public MiniaturFrameController(ImageService imageService, ShootingService shootingService,WindowManager windowManager) throws ServiceException {
@@ -158,13 +163,21 @@ public class MiniaturFrameController {
     }
 
     public void notifyOfNewImage(at.ac.tuwien.sepm.ws16.qse01.entities.Image image,int index) {
-        if(index==-1)
+        if(index==-1) {
             listOfImages.add(image);
-        else
-            listOfImages.add(index,image);
-
-        prepareHBox(image,index);
+            newImages.offer(image);
+        } else {
+            listOfImages.add(index, image);
+            prepareHBox(image,index);
+        }
     }
+
+    public void addNewHBoxes(){
+        while(!newImages.isEmpty()){
+            prepareHBox(newImages.poll(), -1);
+        }
+    }
+
     public void notifyOfDelete(at.ac.tuwien.sepm.ws16.qse01.entities.Image image){
         listOfImages.removeIf(img -> img.getImageID()==image.getImageID());
 

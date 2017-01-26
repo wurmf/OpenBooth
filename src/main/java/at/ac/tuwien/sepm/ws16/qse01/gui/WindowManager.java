@@ -213,24 +213,27 @@ public class WindowManager {
      * @param sceneToShow the number of the scene that shall be set.
      */
     public void showScene(int sceneToShow){
-        if(sceneToShow==SHOW_CUSTOMERSCENE) {
-            customerFrameController.refresh();
-        }
-        if(sceneToShow == SHOW_SHOOTINGSCENE){
-            shootingAdminController.inactivemode();
-        }
         switch (sceneToShow){
-            case END_APPLICATION: closeStages();
+            case END_APPLICATION:
+                closeStages();
                 break;
-            case SHOW_SHOOTINGSCENE: mainStage.setScene(shootingScene);
+            case SHOW_SHOOTINGSCENE:
+                shootingAdminController.inactivemode();
+                mainStage.setScene(shootingScene);
                 break;
-            case SHOW_MINIATURESCENE: mainStage.setScene(miniaturScene);
+            case SHOW_MINIATURESCENE:
+                miniaturFrameController.addNewHBoxes();
+                mainStage.setScene(miniaturScene);
                 break;
-            case SHOW_CUSTOMERSCENE: mainStage.setScene(customerScene);
+            case SHOW_CUSTOMERSCENE:
+                customerFrameController.refresh();
+                mainStage.setScene(customerScene);
                 break;
-            case SHOW_SETTINGSCENE: mainStage.setScene(settingScene);
+            case SHOW_SETTINGSCENE:
+                mainStage.setScene(settingScene);
                 break;
-            case SHOW_RECOVERYSCENE: mainStage.setScene(recoveryScene);
+            case SHOW_RECOVERYSCENE:
+                mainStage.setScene(recoveryScene);
                 break;
             default: mainStage.setScene(mainScene);
                 break;

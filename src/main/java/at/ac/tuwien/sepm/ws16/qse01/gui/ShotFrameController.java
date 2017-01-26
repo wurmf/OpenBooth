@@ -83,21 +83,18 @@ public class ShotFrameController {
             LOGGER.error("refreshShot(BufferedImage) - Fehler - ",e);
         }
     }
+
     public void showCountdown(int countdown){
-        countdownLabel.setText(String.valueOf(countdown));
-        countdownLabel.setVisible(true);
+
         double screenWidth= Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight()-100;
         countdownLabel.setPrefHeight(screenHeight/2);
-        // countdownLabel.setPrefWidth((screenWidth/2));
 
         int paddingBottom =  -((Double)(screenHeight/2)).intValue();
         countdownLabel.setPadding(new Insets(0, 0,paddingBottom,0));
         createCounter(countdown).play();
-
-
-
     }
+
     public Timeline createCounter(int countdown){
         Timeline timeline = new Timeline();
         startTimeSec[0] = countdown;
@@ -106,16 +103,13 @@ public class ShotFrameController {
             public void handle(ActionEvent event) {
 
                 startTimeSec[0]--;
-
-
-
                 if (startTimeSec[0]==0) {
                     timeline.stop();
                     countdownLabel.setVisible(false);
+                }else{
+                    countdownLabel.setText(String.valueOf(startTimeSec[0]));
+                    countdownLabel.setVisible(true);
                 }
-
-                countdownLabel.setText(String.valueOf(startTimeSec[0]));
-
             }
         });
 

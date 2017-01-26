@@ -481,21 +481,29 @@ public class CustomerFrameController {
             int shotType = pairCameraPosition.getShotType();
             Camera camera = pairCameraPosition.getCamera();
             if (shotType == Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE){
-                if (cameras.contains(camera)) {cameraHandler.setSerieShot(camera,true);
-                LOGGER.debug("triggerCall - multiple shot has been set");}
+                if (cameras.contains(camera)) {
+                    cameraHandler.setSerieShot(camera,true);
+                    LOGGER.debug("triggerCall - multiple shot has been set");
+                }
                 else {LOGGER.debug("triggerCall - multiple shot setting not possible, cause no cameraHandler available");}
                 }
             else if (shotType == Profile.PairCameraPosition.SHOT_TYPE_TIMED) {
-                if (cameras.contains(camera)) {cameraHandler.setCountdown(camera,5);
-                LOGGER.debug("triggerCall - timed shot has been set");}
-                else
-                LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
+                if (cameras.contains(camera)) {
+                    cameraHandler.setCountdown(camera,8);
+                    LOGGER.debug("triggerCall - timed shot has been set");
+                } else {
+                    LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
                 }
-            else {
+            } else {
+                cameraHandler.setCountdown(camera, 0);
+                cameraHandler.setSerieShot(camera, false);
                 LOGGER.debug("triggerCall - standard shot will be kept set");
-                }
+            }
 
-            if (cameras.contains(camera)) {cameraHandler.captureImage(camera);return;}
+            if (cameras.contains(camera)){
+                cameraHandler.captureImage(camera);
+            return;
+            }
             else {
                 LOGGER.debug("triggerCall - Camera that has been triggered is not in cameraHandlers list");
                 return;

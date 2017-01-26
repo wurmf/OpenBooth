@@ -17,7 +17,7 @@ public class RefreshManager {
     }
 
     /**
-     * Notifies the ShotFrameManager and the MiniatureFrameController of a newly shot image.
+     * Notifies the MiniatureFrameController of a newly shot image.
      * @param image the Image-Object representing the new image.
      */
     public synchronized void refreshFrames(Image image){
