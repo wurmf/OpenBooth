@@ -61,7 +61,7 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
                         }
                     }else {
                         if(checkboxTyp.equals("greenscreen")){
-                            pservice.editPairCameraPosition(currentCamPos,currentCamPos.getCamera().getId(),currentCamPos.getPosition().getId(),false);
+                            pservice.editPairCameraPosition(currentCamPos,currentCamPos.getCamera().getId(),currentCamPos.getPosition().getId(),true);
                         }else {
                             pservice.erasePairCameraPosition(currentCamPos);
 
