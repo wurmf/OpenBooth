@@ -1,4 +1,4 @@
-image: library/maven
+image: tomsontom/oracle-java8-mvn
 
 build:
     script: "mvn clean compile"
