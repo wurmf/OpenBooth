@@ -472,7 +472,7 @@ public class CustomerFrameController {
         {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
         else
         {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
-        LOGGER.debug(messageString,keystoke);
+        LOGGER.info(messageString,keystoke);
 
         if( numberOfPositions > index && index >= 0 ){
             messageString = "triggerCall - Camera is at this index present and an image capture is triggered";

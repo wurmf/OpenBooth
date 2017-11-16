@@ -32,6 +32,10 @@
             <id>javaopencvbook</id>
             <url>https://raw.github.com/JavaOpenCVBook/code/maven2/</url>
         </repository>
+        <repository>
+            <id>ffmpeg</id>
+            <url>https://mvnrepository.com/artifact/net.bramp.ffmpeg/ffmpeg</url>
+        </repository>
     </repositories>
     <dependencies>
         <!-- compile -->

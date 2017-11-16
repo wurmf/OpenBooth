@@ -56,7 +56,7 @@ public class ShotFrameManager {
                     positonShotFrameMap.put(position,shotFrameController);
                     stage.setScene(new Scene(root, 400, 400));
                 } catch (IOException e) {
-                    LOGGER.error("shotFrame.xml kann nicht geladen werden ",e);
+                    LOGGER.error("shotFrame.fxml kann nicht geladen werden ",e);
                 }
                 stage.setFullScreen(false);
                 stage.setX(x);
