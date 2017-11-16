@@ -54,7 +54,7 @@ public class OpenCVLoader {
                     LOGGER.error("loadLibrary - ",e1);
                     throw new LibraryLoadingException(e1);
                 }
-                System.load(dest);
+                System.load(System.getProperty("user.home")+ "/opencv-3.2.0/build/lib/libopencv_java320.so");
 
                 isLoaded = true;
                 LOGGER.info("OpenCV Library for {} loaded at: {}", operatingSystem,dest);
