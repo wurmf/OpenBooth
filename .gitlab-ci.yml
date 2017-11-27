@@ -1,7 +1,0 @@
-image: tomsontom/oracle-java8-mvn
-
-build:
-    script: "mvn clean compile"
-    
-test:
-    script: "mvn test"
