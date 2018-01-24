@@ -1,6 +1,7 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
 import at.ac.tuwien.sepm.util.ImageHandler;
+import at.ac.tuwien.sepm.util.KeyHandler;
 import at.ac.tuwien.sepm.util.TempStorageHandler;
 import at.ac.tuwien.sepm.util.exceptions.ImageHandlingException;
 import at.ac.tuwien.sepm.util.printer.ImagePrinter;
@@ -718,23 +719,15 @@ public class FullScreenImageController {
     }
 
     public void triggerShot(KeyEvent keyEvent){
+
+
+
         String keystoke = keyEvent.getText();
 
-        int index = -1;
+        int index = KeyHandler.getIndexForKeyEvent(keyEvent);
         String messageString = "";
 
-        switch (keystoke){
-            case "1" : index = 0;break;
-            case "2" : index = 1;break;
-            case "3" : index = 2;break;
-            case "4" : index = 3;break;
-            case "5" : index = 4;break;
-            case "6" : index = 5;break;
-            case "7" : index = 6;break;
-            case "8" : index = 7;break;
-            case "9" : index = 8;break;
-            default: index = -1;return;
-        }
+
         LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
         int numberOfPositions = 0;
         int numberOfCameras = 0;

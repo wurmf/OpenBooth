@@ -1,5 +1,6 @@
 package at.ac.tuwien.sepm.ws16.qse01.gui;
 
+import at.ac.tuwien.sepm.util.KeyHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.CameraHandler;
 import at.ac.tuwien.sepm.ws16.qse01.camera.exeptions.CameraException;
 import at.ac.tuwien.sepm.ws16.qse01.entities.Camera;
@@ -298,24 +299,10 @@ public class MiniaturFrameController {
     }
 
     public void triggerShot(KeyEvent keyEvent){
-        String keystoke = keyEvent.getText();
-
-        int index = -1;
         String messageString = "";
+        String keystoke = keyEvent.getText();
+        int index = KeyHandler.getIndexForKeyEvent(keyEvent);
 
-        switch (keystoke){
-            case "1" : index = 0;break;
-            case "2" : index = 1;break;
-            case "3" : index = 2;break;
-            case "4" : index = 3;break;
-            case "5" : index = 4;break;
-            case "6" : index = 5;break;
-            case "7" : index = 6;break;
-            case "8" : index = 7;break;
-            case "9" : index = 8;break;
-            default: index = -1;return;
-        }
-        LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
         int numberOfPositions = 0;
         int numberOfCameras = 0;
         Profile.PairCameraPosition pairCameraPosition = null;
