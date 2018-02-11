@@ -28,3 +28,11 @@ build:
     - mvn compile
     #Run tests
     - mvn test
+
+integrations:
+  notifications:
+    - integrationName: slack_fotostudio
+      type: slack
+      recipients:
+        - "#build"
+
