@@ -14,9 +14,11 @@ build:
     image_tag: latest
     pull: true
     
-    #- cp /opencv-java-bin/* .
 
   ci:
+    #Copy opencv files and maven
+    - cp /opencv-java-bin/* .
+    - sudo apt-get install maven
     #Build project
     - mvn compile
     #Run tests
