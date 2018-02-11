@@ -11,3 +11,5 @@ build:
   ci:
     #Build project
     - mvn compile
+    #Run tests
+    - mvn test
