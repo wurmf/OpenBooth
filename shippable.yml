@@ -14,7 +14,7 @@ build:
     image_tag: latest
     pull: true
     
-    - cp /opencv-java-bin/* .
+    #- cp /opencv-java-bin/* .
 
   ci:
     #Build project
