@@ -9,11 +9,12 @@ branches:
 
 build:
   pre_ci:
-    - docker build -t fotostudioampunkt/java8-oracle-opencv:$BRANCH.BUILD_NUMBER .
+    - docker build -t fotostudioampunkt/java8-oracle-opencv:latest .
 
   #Prepare Docker-Container with OpenCV and Java 8
   pre_ci_boot:
     image_name: fotostudioampunkt/java8-oracle-opencv
+    image_tag: latest
     pull: false
     
 
