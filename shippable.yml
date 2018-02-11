@@ -13,6 +13,7 @@ build:
     image_name: eedkevin/opencv-java8
     image_tag: latest
     pull: true
+    
     - cp /opencv-java-bin/* .
 
   ci:
