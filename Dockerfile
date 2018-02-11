@@ -2,6 +2,7 @@ FROM eedkevin/opencv-java8
 
 
 RUN \
+  apt-get update && \
   apt-get install software-properties-common -y && \
   echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
   add-apt-repository -y ppa:webupd8team/java && \
