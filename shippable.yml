@@ -7,7 +7,14 @@ branches:
   only:
     - master
 
-build:
+build
+  #Prepare Docker-Container with OpenCV and Java 8
+  pre_ci_boot:
+    image_name: eedkevin/opencv-java8
+    image_tag: latest
+    pull: true
+    - cp /opencv-java-bin/* .
+
   ci:
     #Build project
     - mvn compile
