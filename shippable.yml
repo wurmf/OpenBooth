@@ -18,7 +18,7 @@ build:
   ci:
     #Copy opencv files and maven
     - cp /opencv-java-bin/* .
-    - sudo apt-get install maven
+    - sudo apt-get install maven -y
     #Build project
     - mvn compile
     #Run tests
