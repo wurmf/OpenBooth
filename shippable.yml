@@ -15,7 +15,7 @@ build:
   pre_ci_boot:
     image_name: fotostudioampunkt/java8-oracle-opencv
     image_tag: latest
-    pull: false
+    pull: true
     
 
   ci:
