@@ -14,7 +14,6 @@ build:
   #Prepare Docker-Container with OpenCV and Java 8
   pre_ci_boot:
     image_name: fotostudioampunkt/java8-oracle-opencv
-    image_tag: latest
     pull: false
     
 
