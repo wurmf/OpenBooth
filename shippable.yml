@@ -20,8 +20,9 @@ build:
 
   ci:
     #Copy opencv files and maven
-    - mkdir /root/opencv-java-bin
-    - cp /opencv-java-bin/* /root/opencv-java-bin
+    - mkdir -p /root/opencv-3.2.0/build/lib/
+
+    - cp /opencv-java-bin/* /root/opencv-3.2.0/build/lib/
     - sudo apt-get install maven -y
     #Build project
     - mvn compile
