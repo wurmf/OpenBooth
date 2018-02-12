@@ -23,16 +23,16 @@ build:
     - mkdir -p /root/opencv-3.2.0/build/lib/
     - cp /opencv-java-bin/* /root/opencv-3.2.0/build/lib/
     - sudo apt-get install maven -y
-    
-    #Create folders for test results
-    - mkdir -p shippable/testresults
-    - mkdir -p shippable/codecoverage
 
     #Build project
     - mvn compile
 
     #Run tests
     - mvn test
+    
+    #Copy results to shippable/testresults
+    - mkdir -p shippable/testresults
+    - cp -r target/surefire-reports/* shippable/testresults
 
 integrations:
   notifications:
