@@ -19,10 +19,14 @@ build:
     
 
   ci:
-    #Copy opencv files and maven
+    #Copy opencv files and install maven
     - mkdir -p /root/opencv-3.2.0/build/lib/
     - cp /opencv-java-bin/* /root/opencv-3.2.0/build/lib/
     - sudo apt-get install maven -y
+    
+    #Create folders for test results
+    - mkdir -p shippable/testresults
+    - mkdir -p shippable/codecoverage
 
     #Build project
     - mvn compile
