@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
 
-<TitledPane fx:id="kampos" animated="false" prefHeight="717.0" style="-fx-background-color: rgb(130,130,130,1);" stylesheets="@../css/profilesetting.css" text="Kamera-Position Zuweisung" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.CameraPositionFrameController">
+<TitledPane fx:id="kampos" animated="false" prefHeight="717.0" style="-fx-background-color: rgb(130,130,130,1);" stylesheets="@../css/profilesetting.css" text="Kamera-Position Zuweisung" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.CameraPositionFrameController">
 
 <content>
     <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: rgb(180,180,180,1);">

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<TitledPane fx:id="greenscreenCategory" animated="false" maxWidth="1.7976931348623157E308" prefHeight="522.0" stylesheets="@../css/profilesetting.css" text="Greenscreen-&gt;Kategorieverwaltung" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="at.ac.tuwien.sepm.ws16.qse01.gui.GreenscreenCategoryFrameController">
+<TitledPane fx:id="greenscreenCategory" animated="false" maxWidth="1.7976931348623157E308" prefHeight="522.0" stylesheets="@../css/profilesetting.css" text="Greenscreen-&gt;Kategorieverwaltung" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="3" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.GreenscreenCategoryFrameController">
 <content>
             <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" style="-fx-background-color: rgb(180,180,180,1);">
                 <children>
