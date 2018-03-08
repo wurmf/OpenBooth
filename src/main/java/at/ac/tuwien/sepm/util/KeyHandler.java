@@ -11,11 +11,14 @@ public class KeyHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyHandler.class);
 
+    private KeyHandler(){};
+
     public static int getIndexForKeyEvent(KeyEvent keyEvent){
 
-        LOGGER.debug("triggerShot with keyEventCharacter " + keyEvent.getCharacter());
+        LOGGER.debug("triggerShot with keyCode " + keyEvent.getCode());
 
-        if(keyEvent.getCode() == KeyCode.RIGHT || keyEvent.getCode() == KeyCode.LEFT || keyEvent.getCode() == KeyCode.DOWN || keyEvent.getCode() == KeyCode.UP){
+
+        if(keyEvent.getCode() == KeyCode.PAGE_DOWN || keyEvent.getCode() == KeyCode.PAGE_UP){
             return 0;
         }
 
