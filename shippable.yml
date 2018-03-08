@@ -1,0 +1,43 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  
+branches:
+  only:
+    - master
+
+build:
+  pre_ci:
+    - docker build -t fotostudioampunkt/java8-oracle-opencv:latest .
+
+  #Prepare Docker-Container with OpenCV and Java 8
+  pre_ci_boot:
+    image_name: fotostudioampunkt/java8-oracle-opencv
+    image_tag: latest
+    pull: false
+    
+
+  ci:
+    #Copy opencv files and install maven
+    - mkdir -p /root/opencv-3.2.0/build/lib/
+    - cp /opencv-java-bin/* /root/opencv-3.2.0/build/lib/
+    - sudo apt-get install maven -y
+
+    #Build project
+    - mvn compile
+
+    #Run tests
+    - mvn test
+    
+    #Copy results to shippable/testresults
+    - mkdir -p shippable/testresults
+    - cp -r target/surefire-reports/* shippable/testresults
+
+integrations:
+  notifications:
+    - integrationName: slack_fotostudio
+      type: slack
+      recipients:
+        - "#build"
+

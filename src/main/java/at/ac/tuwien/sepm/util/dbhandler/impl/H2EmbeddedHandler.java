@@ -42,7 +42,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
     private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException, IOException{
-        LOGGER.info("openConnection - Trying to open connection to database "+dbName);
+        LOGGER.info("openConnection - Trying to open connection to database {}", dbName);
         try {
             Class.forName("org.h2.Driver");
             h2Server= Server.createTcpServer().start();
@@ -52,7 +52,7 @@ public class H2EmbeddedHandler  implements DBHandler {
                 LOGGER.info("openConnection - first startup detected");
                 firstStartup();
             }
-            LOGGER.info("openConnection - connected to database '"+dbName+"'");
+            LOGGER.info("openConnection - connected to database '{}'",dbName);
         } catch(ClassNotFoundException|SQLException e){
             LOGGER.error("openConnection - ",e);
             throw e;
@@ -161,6 +161,9 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws DatabaseException if an error occurs while reading the scripts or while making the entries in the database.
      */
     private void insertData() throws DatabaseException{
+        //Only for identifying the origin of the exception
+        String exceptionMsgStart="insertData - ";
+
         ResultSet rs=null;
         InputStream insertStream=null;
         InputStreamReader insertISR=null;
@@ -170,28 +173,28 @@ public class H2EmbeddedHandler  implements DBHandler {
 
             rs=RunScript.execute(connection, insertISR);
         } catch(SQLException e){
-            LOGGER.error("insertData - ",e);
+            LOGGER.error(exceptionMsgStart,e);
             throw new DatabaseException(e);
         } finally{
             if(rs!=null){
                 try {
                     rs.close();
                 } catch (SQLException e) {
-                    LOGGER.error("insertData - ",e);
+                    LOGGER.error(exceptionMsgStart,e);
                 }
             }
             if(insertISR!=null){
                 try {
                     insertISR.close();
                 } catch (IOException e) {
-                    LOGGER.error("insertData - ",e);
+                    LOGGER.error(exceptionMsgStart,e);
                 }
             }
             if(insertStream!=null){
                 try {
                     insertStream.close();
                 } catch (IOException e) {
-                    LOGGER.error("insertData - ",e);
+                    LOGGER.error(exceptionMsgStart,e);
                 }
             }
         }
@@ -307,8 +310,8 @@ public class H2EmbeddedHandler  implements DBHandler {
                 try {
                     stmt.close();
                 } catch (SQLException e) {
-                    LOGGER.error("setUpDefaultImgs - ",e);
-                    throw new DatabaseException(e);
+                    LOGGER.info("setUpDefaultImgs - ",e);
+                    //close quietly
                 }
             }
         }
