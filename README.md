@@ -8,4 +8,4 @@
 
 ## Build Status
 
-[![Run Status](https://api.shippable.com/projects/5a809bc9ef1ac00700bc4167/badge?branch=master)](https://app.shippable.com/gitlab.com/fabian_w/FotostudioAmPunkt)
+[![Run Status](https://api.shippable.com/projects/5aa2d1acfdc5ae150031e6a2/badge?branch=master)](https://app.shippable.com/github/wurmf/OpenBooth)
