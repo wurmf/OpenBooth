@@ -36,7 +36,7 @@ build:
 
 integrations:
   notifications:
-    - integrationName: slack_fotostudio
+    - integrationName: OpenBooth_SlackIntegration
       type: slack
       recipients:
         - "#build"
