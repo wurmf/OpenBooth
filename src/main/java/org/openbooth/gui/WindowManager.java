@@ -72,7 +72,7 @@ public class WindowManager {
         this.mainStage=mainStage;
         initScenes(mainStage);
 
-        this.mainStage.setTitle("Fotostudio");
+        this.mainStage.setTitle("OpenBooth");
         //TODO: Useless at this moment
         if(activeShootingAvailable){
             showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
@@ -367,7 +367,7 @@ public class WindowManager {
      */
     public String copyResource(String resourcePath) throws IOException{
         String[] parts=resourcePath.split("/");
-        String destPath = System.getProperty("user.home") + "/.fotostudio/Resources/"+parts[parts.length-1];
+        String destPath = System.getProperty("user.home") + "/.openbooth/Resources/"+parts[parts.length-1];
         FileTransfer ft= new FileTransfer();
         ft.transfer(resourcePath, destPath);
         return destPath;

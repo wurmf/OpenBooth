@@ -92,7 +92,7 @@ public class ShootingAdminController {
             setButtons();
             String userHome = System.getProperty("user.home");
 
-            Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
+            Path storagepath = Paths.get(userHome+"/openbooth/Studio");
             storageDirLabel.setText(storagepath.toString());
 
         } catch (ServiceException e) {
@@ -167,7 +167,7 @@ public class ShootingAdminController {
             storage.setVisible(true);
             storageDirLabel.setVisible(true);
             String userHome = System.getProperty("user.home");
-            Path storagepath = Paths.get(userHome+"/fotostudio/Studio");
+            Path storagepath = Paths.get(userHome+"/openbooth/Studio");
             storageDirLabel.setText(storagepath.toString());
             gridSave.setVisible(true);
             canclebutton.setText("Abbrechen");

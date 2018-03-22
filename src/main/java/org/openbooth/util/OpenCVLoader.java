@@ -46,7 +46,7 @@ public class OpenCVLoader {
                     throw new LibraryLoadingException("Operating System not supported");
                 }
 
-                String dest=System.getProperty("user.home")+"/.fotostudio"+lib;
+                String dest=System.getProperty("user.home")+"/.openbooth"+lib;
                 FileTransfer ft=new FileTransfer();
                 try {
                     ft.transfer("/lib"+lib,dest,false);

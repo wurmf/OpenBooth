@@ -13,7 +13,7 @@ import java.io.*;
 import java.sql.*;
 
 /**
- * This Singleton-class starts an H2-Server instance and returns a connection to an H2-database called "fotostudio".
+ * This Singleton-class starts an H2-Server instance and returns a connection to an H2-database called "openbooth".
  * The class will always return the same connection-object as long as {@link #closeConnection()} is not called. If it is called a new connection will be opened when calling {@link #getConnection()}.
  */
 @Component
@@ -35,7 +35,7 @@ public class H2EmbeddedHandler  implements DBHandler {
     }
 
     /**
-     * Opens a new connection to an H2-database of the name "fotostudio" with username "sa" and empty password.
+     * Opens a new connection to an H2-database of the name "openbooth" with username "sa" and empty password.
      * If it recognizes that the database has not been initialized yet, {@link #firstStartup()} is called.
      * @throws SQLException if either the driver-class is not found or the DriverManager can't establish a connection to the specified database with the given login credentials.
      * @throws ClassNotFoundException if the driver class is not found.
@@ -68,7 +68,7 @@ public class H2EmbeddedHandler  implements DBHandler {
     public Connection getConnection() throws DatabaseException {
         if(connection==null){
             try {
-                openConnection("fotostudio");
+                openConnection("openbooth");
             } catch (SQLException|ClassNotFoundException|IOException e) {
                 throw new DatabaseException(e);
             }
@@ -86,7 +86,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         if(connection==null){
             try {
                 testState=true;
-                openConnection("fotostudioTest");
+                openConnection("übopenboothTest");
             } catch (SQLException|ClassNotFoundException|IOException e) {
                 throw new DatabaseException(e);
             }
@@ -206,8 +206,8 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws DatabaseException if an error occurs while making the new entries.
      */
     private void setUpDefaultImgs() throws DatabaseException {
-        String destPath = System.getProperty("user.home") + "/.fotostudio/BeispielBilder/";
-        String shootingPath=System.getProperty("user.home") + "/fotostudio/shooting1/";
+        String destPath = System.getProperty("user.home") + "/.openbooth/BeispielBilder/";
+        String shootingPath=System.getProperty("user.home") + "/openbooth/shooting1/";
 
         String image1Source = "/images/dummies/p1.jpg";
         String image2Source ="/images/dummies/p2.jpg";

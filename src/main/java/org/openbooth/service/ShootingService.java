@@ -49,7 +49,7 @@ public interface ShootingService {
      void addUserDefinedBackgrounds(List<Background> bgList) throws ServiceException;
 
     /**
-     * creates default storage Place inside HomeFolder named Fotostudio
+     * creates default storage Place inside HomeFolder named openbooth
      * in this it creats an ordner for mobile or studio and in there a new ordner named with time and date of the started shooting
      * @return the default saving Path
      * @throws ServiceException when ever an IOException or a FolderAlreadyExists Exception occurs.
