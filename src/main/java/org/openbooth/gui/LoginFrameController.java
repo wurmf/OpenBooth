@@ -3,6 +3,7 @@ package org.openbooth.gui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -22,6 +23,7 @@ public class LoginFrameController {
     public TextField tf_password;
     public TextField tf_name;
     public Button b_confirm;
+    public Label l_wrongPoN;
     private WindowManager windowManager;
     private AdminUserService adminUserService;
     private LoginRedirectorModel loginRedirectorModel;
@@ -64,7 +66,7 @@ public class LoginFrameController {
                 }
                 resetValues();
             } else{
-                wrongCredentialsLabel.setVisible(true);
+                l_wrongPoN.setVisible(true);
             }
         } catch (ServiceException e) {
             LOGGER.error("checkLogin - ",e);
@@ -105,7 +107,7 @@ public class LoginFrameController {
      * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible and sets the scene.
      */
     private void resetValues(){
-        wrongCredentialsLabel.setVisible(false);
+        l_wrongPoN.setVisible(false);
         tf_password.setText("");
         tf_name.setText("");
         b_confirm.setVisible(false);

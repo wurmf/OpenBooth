@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -11,7 +12,7 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.LoginFrameController">
    <children>
-      <GridPane layoutY="2.0" prefHeight="400.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0">
+      <GridPane layoutY="2.0" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: white;" AnchorPane.leftAnchor="0.0">
         <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
         </columnConstraints>
@@ -25,8 +26,8 @@
          <children>
             <GridPane GridPane.rowIndex="4">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.3" />
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.3" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="56.7" />
                 <ColumnConstraints hgrow="SOMETIMES" percentWidth="33.3" />
               </columnConstraints>
               <rowConstraints>
@@ -47,6 +48,11 @@
                         <Button fx:id="b_confirm" mnemonicParsing="false" onAction="#onConfirmPressed" style="-fx-background-image: url('/images/trashcan.png'); visibility: false;" GridPane.columnIndex="1" />
                      </children>
                   </GridPane>
+                  <Label fx:id="l_wrongPoN" style="visibility: false;" text="Falscher Name oder Passwort" textFill="#940000" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
                </children>
             </GridPane>
             <GridPane GridPane.rowIndex="1">
