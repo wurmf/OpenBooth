@@ -6,6 +6,7 @@ jdk:
 branches:
   only:
     - master
+    - dev
 
 build:
   pre_ci:
