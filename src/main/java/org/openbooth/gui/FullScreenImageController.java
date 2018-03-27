@@ -839,7 +839,7 @@ public class FullScreenImageController {
     }
 
     private Rectangle createDraggableRectangle(double x, double y, double width, double height) {
-        final double handleRadius = 10 ;
+        final double handleRadius = 20 ;
 
         Rectangle rect = new Rectangle(x, y, width, height);
         rect.setOpacity(0.1);
@@ -870,7 +870,7 @@ public class FullScreenImageController {
         setUpDragging(resizeHandleNW, mouseLocation) ;
         setUpDragging(resizeHandleSE, mouseLocation) ;
 
-        resizeHandleNW.setOnDragDetected(event -> {
+        resizeHandleNW.setOnMouseDragged(event -> {
             if (mouseLocation.value != null) {
                 double deltaX = event.getSceneX() - mouseLocation.value.getX();
                 double deltaY = event.getSceneY() - mouseLocation.value.getY();
