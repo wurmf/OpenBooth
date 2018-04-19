@@ -62,6 +62,8 @@ public class ImageProcessorImpl implements ImageProcessor {
 
         BufferedImage preview;
 
+
+
         String filterName = pairCameraPosition.getFilterName();
 
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
@@ -72,14 +74,18 @@ public class ImageProcessorImpl implements ImageProcessor {
 
             preview = openImageThrowException(imgPath);
 
+            preview = mirrorImage(preview);
+
             if(background != null){
                 preview = greenscreenService.applyGreenscreen(preview, background);
             }
         } else if (isFilter){
 
             preview = filterService.filter(filterName, imgPath);
+            preview = mirrorImage(preview);
         }else {
             preview = openImageThrowException(imgPath);
+            preview = mirrorImage(preview);
         }
 
         shotFrameController.refreshShot(preview);
@@ -105,6 +111,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             Background background = pairCameraPosition.getBackground();
 
             shot = openImageThrowException(imgPath);
+            shot = mirrorImage(shot);
 
             if(background == null){
                 LOGGER.debug("processShot - greenscreen activated for position {} but no background set", position);
@@ -119,6 +126,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         }else {
 
             shot = openImageThrowException(imgPath);
+            shot = mirrorImage(shot);
         }
 
         logoWatermarkService.addLogosToImage(shot);
@@ -176,6 +184,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         boolean logosEnabled = profileService.getAllPairLogoRelativeRectangle().isEmpty();
 
         shot = openImageThrowException(originalImgPath);
+        shot = mirrorImage(shot);
 
         if(logosEnabled){
             logoWatermarkService.addLogosToImage(shot);
@@ -205,5 +214,11 @@ public class ImageProcessorImpl implements ImageProcessor {
         } catch (ImageHandlingException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private BufferedImage mirrorImage(BufferedImage image){
+        BufferedImage mirroredImage = new BufferedImage(image.getWidth(),image.getHeight(),image.getType());
+        mirroredImage.createGraphics().drawImage(image, image.getWidth(),0,- image.getWidth(),image.getHeight(),null);
+        return mirroredImage;
     }
 }
