@@ -1,76 +1,73 @@
 package org.openbooth.gui;
 
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.openbooth.entities.Shooting;
 import org.openbooth.gui.model.LoginRedirectorModel;
 import org.openbooth.service.AdminUserService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
-/**
- * Controller for the loginFrame
- */
-@Controller
+@Component
 public class LoginFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
 
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginFrameController.class);
+    @FXML
+    private TextField passwordTextField;
+    @FXML
+    private TextField nameTextField;
+    @FXML
+    private Button confirmButton;
+    @FXML
+    public Label wrongPoNLabel;
     private WindowManager windowManager;
     private AdminUserService adminUserService;
     private LoginRedirectorModel loginRedirectorModel;
     private ShootingService shootingService;
     private boolean firstLogin;
-    @FXML
-    private TextField adminField;
-    @FXML
-    private PasswordField passwordField;
-    @FXML
-    private Label wrongCredentialsLabel;
 
     @Autowired
-    public LoginFrameController(ShootingService shootingService,AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) throws ServiceException{
+    public LoginFrameController(ShootingService shootingService, AdminUserService adminUserService, WindowManager windowManager, LoginRedirectorModel loginRedirectorModel) {
         this.adminUserService=adminUserService;
         this.windowManager=windowManager;
         this.loginRedirectorModel=loginRedirectorModel;
         this.shootingService =shootingService;
-        firstLogin = true;
+        this.firstLogin = true;
     }
-
     /**
-     * Lets an AdminUserService instance check if the values given in the adminname- and password-TextField correspond to a saved admin-user.
+     * Lets an AdminUserService instance check if the values given in the adminname- and passwordEntered-TextField correspond to a saved admin-user.
      */
     @FXML
-    public void checkLogin(){
-        String adminName=adminField.getText();
-        String password=passwordField.getText();
+    public void onConfirmPressed() {
+        String adminName= nameTextField.getText();
+        String passwordInput = passwordTextField.getText();
         try {
-            boolean correctLogin=adminUserService.checkLogin(adminName,password);
+            boolean correctLogin=adminUserService.checkLogin(adminName,passwordInput);
             if(correctLogin){
                 if(firstLogin){
                     Shooting activeShooting = shootingService.searchIsActive();
                     if(activeShooting.getActive()){
-                        firstLogin=false;
                         windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
                     } else{
                         windowManager.initMiniController();
-                        firstLogin=false;
                         windowManager.showScene(WindowManager.SHOW_MAINSCENE);
                     }
-                }else{
                     firstLogin=false;
+                }else{
                     windowManager.showScene(loginRedirectorModel.getNextScene());
                 }
                 resetValues();
             } else{
-                wrongCredentialsLabel.setVisible(true);
+                wrongPoNLabel.setVisible(true);
             }
         } catch (ServiceException e) {
             LOGGER.error("checkLogin - ",e);
@@ -78,27 +75,24 @@ public class LoginFrameController {
     }
 
     @FXML
-    public void onEnter(KeyEvent keyEvent){
-        if(keyEvent.getCode().equals(KeyCode.ENTER)){
-            checkLogin();
+    public void checkInputs(KeyEvent keyEvent){
+        if(!passwordTextField.getText().isEmpty() && !nameTextField.getText().isEmpty()){
+            if(keyEvent.getCode()==KeyCode.ENTER){
+                onConfirmPressed();
+            }
+            confirmButton.setVisible(true);
+        } else {
+            confirmButton.setVisible(false);
         }
-    }
-    /**
-     * Closes the login-frame and sets back all the values possibly changed during the time it was open.
-     */
-    @FXML
-    public void closeLogin(){
-        resetValues();
-        windowManager.showScene(loginRedirectorModel.getCallingScene());
     }
 
     /**
      * Empties the values in the two textfields and sets the wrongCredentialsLabel to invisible and sets the scene.
      */
     private void resetValues(){
-        wrongCredentialsLabel.setVisible(false);
-        adminField.setText("");
-        passwordField.setText("");
-        adminField.requestFocus();
+        wrongPoNLabel.setVisible(false);
+        passwordTextField.setText("");
+        nameTextField.setText("");
+        confirmButton.setVisible(false);
     }
 }
