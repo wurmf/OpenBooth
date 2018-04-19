@@ -142,10 +142,7 @@ public class WindowManager {
         //Creating Login-Scene
         SpringFXMLLoader.FXMLWrapper<Object, LoginFrameController> adminLoginWrapper = springFXMLLoader.loadAndWrap("/fxml/loginFrame.fxml",LoginFrameController.class);
         Parent parentad = (Parent) adminLoginWrapper.getLoadedObject();
-        URL cssad= this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.debug("CSSAD -"+cssad);
         parentad.setStyle("-fx-font-size:"+ fontSize +"px;");
-        parentad.getStylesheets().add(cssad.toExternalForm());
         this.adminLoginScene = new Scene(parentad,screenWidth,screenHeight);
 
         //Creating Miniatur-Scene
