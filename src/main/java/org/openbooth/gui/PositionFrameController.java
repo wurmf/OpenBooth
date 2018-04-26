@@ -145,7 +145,7 @@ public class PositionFrameController extends SettingFrameController {
         txPositionUpload.setPrefWidth(50);
         txPositionUpload.setPrefHeight(50);
 
-        txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+        txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         txPositionAdd.setPrefWidth(50);
         txPositionAdd.setPrefHeight(50);
 
@@ -153,7 +153,7 @@ public class PositionFrameController extends SettingFrameController {
             if(!newValue.isEmpty() && selectedProfile !=null && txPositionBild.getText().compareTo("Hochladen...") != 0){
                 txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
 
@@ -211,11 +211,11 @@ public class PositionFrameController extends SettingFrameController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txPositionBild.setText(file.getAbsolutePath());
-            txPositionUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txPositionUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
             if(!txPositionName.getText().isEmpty() && selectedProfile !=null){
                 txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         }
     }
 

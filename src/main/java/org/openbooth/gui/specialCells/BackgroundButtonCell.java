@@ -33,7 +33,7 @@ public class BackgroundButtonCell extends TableCell<Background, Boolean> {
         this.bservice = bservice;
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){

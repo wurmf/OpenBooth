@@ -435,7 +435,7 @@ public class LogoFrameController extends SettingFrameController {
         txLogoUpload.setPrefHeight(50);
 
 
-        txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+        txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         txLogoAdd.setPrefWidth(50);
         txLogoAdd.setPrefHeight(50);
 
@@ -444,7 +444,7 @@ public class LogoFrameController extends SettingFrameController {
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
         txLogoX.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -452,7 +452,7 @@ public class LogoFrameController extends SettingFrameController {
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
         txLogoY.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -460,7 +460,7 @@ public class LogoFrameController extends SettingFrameController {
                     !txLogoName.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
         txLogoBreite.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -468,7 +468,7 @@ public class LogoFrameController extends SettingFrameController {
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
         txLogoHoehe.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -476,7 +476,7 @@ public class LogoFrameController extends SettingFrameController {
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
 
@@ -610,10 +610,10 @@ public class LogoFrameController extends SettingFrameController {
         if (file != null) {
             txLogoLogo.setText(file.getAbsolutePath());
             txLogoLogo.setId("");
-            txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
             if(selectedProfile ==null || txLogoName.getText().isEmpty() || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
                     txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
                 txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 

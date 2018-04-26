@@ -151,7 +151,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         txBackgroundUpload.setPrefHeight(50);
         txBackgroundUpload.setPrefWidth(50);
 
-        txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+        txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         txBackgroundAdd.setPrefHeight(50);
         txBackgroundAdd.setPrefWidth(50);
 
@@ -159,7 +159,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
             if(!newValue.isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
                 txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
         });
 
@@ -183,12 +183,12 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txBackgroundPath.setText(file.getAbsolutePath());
-            txBackgroundUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txBackgroundUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
 
             if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
                 txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             }else
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         }
     }
     @FXML
@@ -230,7 +230,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
             txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
         }else
-            txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+            txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
     }
 
