@@ -303,7 +303,7 @@ public class ProfileFrameController extends SettingFrameController{
             txProfilUpload.setPrefWidth(50);
             txProfilUpload.setPrefHeight(50);
 
-            txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+            txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
             txProfilAdd.setPrefWidth(50);
             txProfilAdd.setPrefHeight(50);
 
@@ -311,7 +311,7 @@ public class ProfileFrameController extends SettingFrameController{
                 if(!newValue.isEmpty()){
                     txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
                 }else
-                    txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                    txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
 
             });
 
@@ -373,7 +373,7 @@ public class ProfileFrameController extends SettingFrameController{
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txProfilWatermark.setText(file.getAbsolutePath());
-            txProfilUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txProfilUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
         }
     }
 

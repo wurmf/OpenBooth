@@ -210,7 +210,7 @@ public class MiniaturFrameController {
         hBox.setVisible(false);
         hBox.setStyle("-fx-background-color: white;");
 
-        ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
+        ImageView fullscreen = new ImageView(new Image("/images/fullscreen.jpg"));
         fullscreen.setFitHeight(30);
         fullscreen.setFitWidth(30);
         fullscreen.setOnMouseClicked(mouseEvent -> {
@@ -220,7 +220,7 @@ public class MiniaturFrameController {
             windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         });
 
-        ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
+        ImageView delete = new ImageView( getClass().getResource("/images/delete.png").toExternalForm());
         delete.setFitHeight(30);
         delete.setFitWidth(30);
         delete.setOnMouseClicked((MouseEvent mouseEvent) -> {

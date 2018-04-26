@@ -33,7 +33,7 @@
             <ImageView fx:id="logo" fitHeight="600" fitWidth="700" pickOnBounds="true" preserveRatio="true">
 
                <image>
-                  <Image url="/images/logo.png" />
+                  <Image url="/images/logos/openbooth_logo.png" />
                </image>
             </ImageView>
          </children>
