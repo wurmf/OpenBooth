@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane fx:id="basicpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#triggerShot" prefHeight="400.0" prefWidth="600.0" style="-fx-background-image: url('/images/main-background.jpg')" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.CustomerFrameController">
+<GridPane fx:id="basicpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#triggerShot" prefHeight="400.0" prefWidth="600.0" style="-fx-background-image: url('/images/logos/openbooth_logo.png');" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.CustomerFrameController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="10.0" />
       <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
@@ -30,12 +29,7 @@
          <children>
 
             <Button fx:id="allpicturesview" mnemonicParsing="false" onAction="#switchToMiniaturFrame" text="Alle Bilder ansehen" GridPane.rowIndex="2" />
-            <ImageView fx:id="logo" fitHeight="600" fitWidth="700" pickOnBounds="true" preserveRatio="true">
-
-               <image>
-                  <Image url="/images/logos/openbooth_logo.png" />
-               </image>
-            </ImageView>
+            <ImageView fx:id="logo" fitHeight="600" fitWidth="700" pickOnBounds="true" preserveRatio="true" />
          </children>
       </GridPane>
       <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
