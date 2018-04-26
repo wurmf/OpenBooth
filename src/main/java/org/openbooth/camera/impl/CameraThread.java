@@ -166,7 +166,7 @@ public class CameraThread extends Thread{
             try
             {
                 imageProcessor.processShot(shot);
-                sleep(5000);
+                sleep(2000);
             }
             catch (ServiceException e)
             {
