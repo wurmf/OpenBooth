@@ -1,6 +1,10 @@
 package org.openbooth.gui;
 
+import javafx.scene.input.KeyEvent;
+import org.openbooth.camera.CameraHandler;
+import org.openbooth.camera.exeptions.CameraException;
 import org.openbooth.entities.Background;
+import org.openbooth.entities.Camera;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.ImageService;
 import org.openbooth.service.ProfileService;
@@ -17,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
 import org.openbooth.entities.Profile;
+import org.openbooth.util.KeyHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +30,7 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,15 +72,17 @@ public class CameraFilterController {
 
     private Map<String,BufferedImage> filtermap=null;
 
+    CameraHandler cameraHandler;
 
     @Autowired
 
-    public CameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService ){
+    public CameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService, CameraHandler cameraHandler){
         this.profileservice=profileService;
         this.wm=wm;
         this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
+        this.cameraHandler = cameraHandler;
     }
 
 
@@ -515,4 +523,92 @@ public class CameraFilterController {
         information.initOwner(wm.getStage());
         information.show();
     }
+
+    /**
+     * Trigger shot while in filer mode
+     * @param keyEvent of key pressed
+     */
+    public void triggerShot(KeyEvent keyEvent){
+
+
+
+        String keystoke = keyEvent.getText();
+
+        int index = KeyHandler.getIndexForKeyEvent(keyEvent);
+        String messageString = "";
+
+
+        LOGGER.debug("triggerShot with keyEventCharacter " + keystoke);
+        int numberOfPositions = 0;
+        int numberOfCameras = 0;
+        Profile.PairCameraPosition pairCameraPosition = null;
+        Profile activeProfile = null;
+
+        List<Camera> cameras = new ArrayList<>();
+        try {
+            if (profileservice != null) {activeProfile = profileservice.getActiveProfile();
+                numberOfPositions = activeProfile.getPairCameraPositions().size();}
+        } catch (ServiceException e) {
+            activeProfile = null;
+            LOGGER.error("Active Profile couldn't be determined, thus null value will be assumed", e);
+        }
+        String os = System.getProperty("os.name");
+        try {
+            if (cameraHandler != null && !os.startsWith("Windows")) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
+        } catch (CameraException e) {
+            cameras = new ArrayList<>();
+            LOGGER.error("Cameras couldn't be determined, thus an empty List will be assumed", e);
+        }
+
+
+        if(index >= 0)
+        {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
+        else
+        {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
+        LOGGER.debug(messageString,keystoke);
+
+        if( numberOfPositions > index && index >= 0 ){
+            messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
+            //cameraHandler.captureImage(cameras.get(cameraIndex));
+            pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
+            int shotType = pairCameraPosition.getShotType();
+            Camera camera = pairCameraPosition.getCamera();
+            if (shotType == Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE){
+                if (cameras.contains(camera)) {
+                    cameraHandler.setSerieShot(camera,true);
+                    LOGGER.debug("triggerCall - multiple shot has been set");
+                }
+                else {LOGGER.debug("triggerCall - multiple shot setting not possible, cause no cameraHandler available");}
+            }
+            else if (shotType == Profile.PairCameraPosition.SHOT_TYPE_TIMED) {
+                if (cameras.contains(camera)) {
+                    cameraHandler.setCountdown(camera,8);
+                    LOGGER.debug("triggerCall - timed shot has been set");
+                } else {
+                    LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
+                }
+            } else {
+                cameraHandler.setCountdown(camera, 0);
+                cameraHandler.setSerieShot(camera, false);
+                LOGGER.debug("triggerCall - standard shot will be kept set");
+            }
+
+            if (cameras.contains(camera)){
+                cameraHandler.captureImage(camera);
+                return;
+            }
+            else {
+                LOGGER.debug("triggerCall - Camera that has been triggered is not in cameraHandlers list");
+                return;
+            }
+        }
+        else if(index >= 0){
+            messageString = "triggerCall - No camera at this index found, so no action will be triggered";
+        }
+        else {
+            messageString = "triggerCall - Trigger sequence is invalid";
+        }
+        LOGGER.debug(messageString);
+    }
+
 }
