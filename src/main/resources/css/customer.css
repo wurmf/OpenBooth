@@ -2,7 +2,6 @@
  -fx-background-repeat: no-repeat;
    -fx-background-position: center;
    -fx-background-size: cover;
-   -fx-background-color: transparent;
 }
 #logo{
  -fx-fitWidth: 5em;
