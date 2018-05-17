@@ -181,7 +181,7 @@ public class ImageProcessorImpl implements ImageProcessor {
 
     private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException{
         BufferedImage shot;
-        boolean logosEnabled = profileService.getAllPairLogoRelativeRectangle().isEmpty();
+        boolean logosEnabled =  !profileService.getAllPairLogoRelativeRectangle().isEmpty();
 
         shot = openImageThrowException(originalImgPath);
         shot = mirrorImage(shot);
@@ -190,7 +190,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             logoWatermarkService.addLogosToImage(shot);
 
             saveImageThrowException(shot, originalImgPath);     //Change if cameraHandlerThread stores img in temp folder
-            LOGGER.debug("processShot - {} overwritten with logo image before filtering");
+            LOGGER.debug("processShot - {} overwritten with logo image before filtering", originalImgPath);
         }
 
         String filterName = pairCameraPosition.getFilterName();
