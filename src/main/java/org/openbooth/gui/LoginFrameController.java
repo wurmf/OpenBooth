@@ -108,7 +108,7 @@ public class LoginFrameController {
      */
     public void onAbortPressed(ActionEvent actionEvent) {
 
-        
+
 
         //TODO abort
 
