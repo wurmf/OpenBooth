@@ -2,20 +2,11 @@ package org.openbooth.util;
 
 import org.openbooth.util.exceptions.ImageHandlingException;
 import org.openbooth.util.exceptions.LibraryLoadingException;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
-import javafx.stage.Stage;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -31,6 +22,8 @@ import java.util.List;
  * This class provides methods for opening and saving buffered images
  * and converting buffered images to mat and back
  */
+
+@Scope("prototype")
 @Component
 public class ImageHandler {
 
@@ -199,51 +192,8 @@ public class ImageHandler {
         return mat;
     }
 
-    /**
-     * shows the given image in own stage (popup window)
-     * @param imgPath path of the image
-     * @param stage primary stage - owner of this window
-     */
-    public void popupImage(String imgPath,Stage stage){
-        try {
-            Stage previewStage = new Stage();
-            Group root = new Group();
-            Scene scene = new Scene(root);
 
-            ImageView prevView = new ImageView(new Image("file:"+imgPath));
-            /*prevView.setFitHeight(previewLogo.getImage().getHeight());
-            prevView.setFitWidth(previewLogo.getImage().getWidth());*/
-            root.getChildren().add(prevView);
 
-            previewStage.setTitle("Preview Image");
-            previewStage.setWidth(prevView.getImage().getWidth());
-            previewStage.setHeight(prevView.getImage().getHeight());
-            previewStage.setScene(scene);
-            previewStage.setFullScreen(false);
-            previewStage.initOwner(stage);
-            previewStage.show();
-        }catch(NullPointerException e){
-            LOGGER.error("popupImage ->",e);
-        }
-    }
 
-    /**
-     * creates scene.layout.Background object with given input data
-     * @param resourcePath path of icon in resources directory
-     * @param width width of icon
-     * @param height height of icon
-     * @return Background returns Background object created with given data
-     */
-    public javafx.scene.layout.Background getButtonBackground(String resourcePath, int width, int height){
-        //Image image = new Image("file:"+this.getClass().getResourceAsStream(resourcePath),width,height,true,true);
-        Image image = null ;
-        try {
-            image =  SwingFXUtils.toFXImage(openImage(this.getClass().getResourceAsStream(resourcePath)),null);
-        } catch (ImageHandlingException e) {
-           LOGGER.error("getButtonBackground->Error",e);
-        }
-        BackgroundSize backgroundSize = new BackgroundSize(width, height, true, true, true, false);
-        BackgroundImage backgroundImage = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        return new javafx.scene.layout.Background(backgroundImage);
-    }
+
 }

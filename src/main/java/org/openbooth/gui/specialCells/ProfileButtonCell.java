@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Profile;
 import org.openbooth.service.ProfileService;
@@ -21,19 +22,15 @@ import java.util.Optional;
  * Created by macdnz on 15.12.16.
  */
 public class ProfileButtonCell extends TableCell<Profile, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(ProfileButtonCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileButtonCell.class);
 
-    private  ObservableList<Profile> pList;
-    private ProfileService pservice;
 
     private final Button cellButton;
 
     public ProfileButtonCell(ImageHandler imageHandler,ObservableList<Profile> pList, ProfileService pservice, Stage primaryStage) {
-        this.pList = pList;
-        this.pservice = pservice;
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete.png",40,40));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
 

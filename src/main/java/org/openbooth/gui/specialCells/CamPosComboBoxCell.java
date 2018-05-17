@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
  * Created by macdnz on 16.12.16.
  */
 public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(CamPosComboBoxCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamPosComboBoxCell.class);
 
 
     private ProfileService pservice;
 
-    private ComboBox<Position> comboBox = new ComboBox();
+    private ComboBox<Position> comboBox = new ComboBox<>();
 
     public CamPosComboBoxCell(TableColumn parent, ObservableList<Profile.PairCameraPosition> camPosList, ProfileService pservice, ObservableList<Position> posList, ObservableList<Profile> selectedProfile, Stage primaryStage) {
         this.pservice = pservice;

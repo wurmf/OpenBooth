@@ -430,53 +430,53 @@ public class LogoFrameController extends SettingFrameController {
         });
 
 
-        txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+        txLogoUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
         txLogoUpload.setPrefWidth(50);
         txLogoUpload.setPrefHeight(50);
 
 
-        txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+        txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         txLogoAdd.setPrefWidth(50);
         txLogoAdd.setPrefHeight(50);
 
         txLogoName.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
         txLogoX.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoName.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
         txLogoY.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoName.getText().isEmpty() && (!txLogoBreite.getText().isEmpty() || !txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
         txLogoBreite.textProperty().addListener((observable, oldValue, newValue) -> {
             if((!newValue.isEmpty() || !txLogoHoehe.getText().isEmpty()) && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
         txLogoHoehe.textProperty().addListener((observable, oldValue, newValue) -> {
             if((!newValue.isEmpty() || !txLogoBreite.getText().isEmpty()) && selectedProfile !=null && txLogoLogo.getText().compareTo("Hochladen...")!=0 && !txLogoX.getText().isEmpty() &&
                     !txLogoY.getText().isEmpty() && !txLogoName.getText().isEmpty()){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
 
@@ -583,7 +583,7 @@ public class LogoFrameController extends SettingFrameController {
                 txLogoX.clear();
                 txLogoY.clear();
                 txLogoLogo.setText("Hochladen...");
-                txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+                txLogoUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -610,12 +610,12 @@ public class LogoFrameController extends SettingFrameController {
         if (file != null) {
             txLogoLogo.setText(file.getAbsolutePath());
             txLogoLogo.setId("");
-            txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+            txLogoUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
             if(selectedProfile ==null || txLogoName.getText().isEmpty() || txLogoLogo.getText().compareTo("Hochladen...") == 0 ||
                     txLogoX.getText().isEmpty() || txLogoY.getText().isEmpty() || (txLogoBreite.getText().isEmpty() && txLogoHoehe.getText().isEmpty())){
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txLogoAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txLogoAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
 
         }
@@ -642,14 +642,14 @@ public class LogoFrameController extends SettingFrameController {
         txLogoName.setImageHandler(imageHandler);
     }
 
-    protected List<String> logo2StringArray(List<Logo> logos){
+    private List<String> logo2StringArray(List<Logo> logos){
         List<String> ret = new ArrayList<>();
         for (Logo logo:logos){
             ret.add(logo.getLabel().toLowerCase()+" #"+logo.getId());
         }
         return ret;
     }
-    protected Map<String,ImageView> logo2imgViews(List<Logo> logos){
+    private Map<String,ImageView> logo2imgViews(List<Logo> logos){
         Map<String,ImageView> ret = new HashMap<>();
         for (Logo logo:logos){
             String logoPath;

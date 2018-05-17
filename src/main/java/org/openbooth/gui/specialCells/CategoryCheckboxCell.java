@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * Created by macdnz on 15.12.16.
  */
 public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(CategoryCheckboxCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryCheckboxCell.class);
     private ObservableList<Background.Category> categoryListOfProfile;
 
     private final CheckBox cellCheckbox = new CheckBox();

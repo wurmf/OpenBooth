@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Created by macdnz on 15.12.16.
  */
 public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(ProfileCheckboxCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCheckboxCell.class);
     private  ObservableList<Profile> pList;
     private ProfileService pservice;
     private String checkboxTyp;

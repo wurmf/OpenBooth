@@ -141,19 +141,19 @@ public class PositionFrameController extends SettingFrameController {
                 });
 
 
-        txPositionUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+        txPositionUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
         txPositionUpload.setPrefWidth(50);
         txPositionUpload.setPrefHeight(50);
 
-        txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+        txPositionAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         txPositionAdd.setPrefWidth(50);
         txPositionAdd.setPrefHeight(50);
 
         txPositionName.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null && txPositionBild.getText().compareTo("Hochladen...") != 0){
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txPositionAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txPositionAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
 
@@ -184,7 +184,7 @@ public class PositionFrameController extends SettingFrameController {
 
                 txPositionBild.setText("Hochladen...");
                 txPositionName.clear();
-                txPositionUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+                txPositionUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
 
 
                 cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList, selectedProfile);
@@ -211,11 +211,11 @@ public class PositionFrameController extends SettingFrameController {
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txPositionBild.setText(file.getAbsolutePath());
-            txPositionUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+            txPositionUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
             if(!txPositionName.getText().isEmpty() && selectedProfile !=null){
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txPositionAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txPositionAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txPositionAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         }
     }
 

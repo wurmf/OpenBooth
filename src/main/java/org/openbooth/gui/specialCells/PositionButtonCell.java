@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Position;
 import org.openbooth.entities.Profile;
@@ -23,14 +24,14 @@ import java.util.Optional;
  * Created by macdnz on 16.12.16.
  */
 public class PositionButtonCell extends TableCell<Position, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
 
 
     private final Button cellButton;
 
     public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, ObservableList<Profile> selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete.png",50,50));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",50,50));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -56,7 +57,7 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
                     try {
                         pservice.erasePosition(currentPosition);
 
-                        // refreshing kamPos TableView;
+                        // refreshing kamPos TableView
                         kamPosList.clear();
 
                         kamPosList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfilID.get(0).getId()));

@@ -154,15 +154,15 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
             }
         });
 
-        txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+        txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         txCategoryAdd.setPrefHeight(50);
         txCategoryAdd.setPrefWidth(50);
 
         txCategoryName.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null ){
-                txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
 
