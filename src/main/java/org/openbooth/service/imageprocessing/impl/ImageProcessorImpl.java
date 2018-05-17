@@ -179,14 +179,14 @@ public class ImageProcessorImpl implements ImageProcessor {
         return filteredImage;
     }
 
-    private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException{
+    private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException {
         BufferedImage shot;
-        boolean logosEnabled =  !profileService.getAllPairLogoRelativeRectangle().isEmpty();
+        boolean logosEnabled = !profileService.getAllPairLogoRelativeRectangle().isEmpty();
 
         shot = openImageThrowException(originalImgPath);
         shot = mirrorImage(shot);
 
-        if(logosEnabled){
+        if (logosEnabled) {
             logoWatermarkService.addLogosToImage(shot);
 
             saveImageThrowException(shot, originalImgPath);     //Change if cameraHandlerThread stores img in temp folder
@@ -196,6 +196,10 @@ public class ImageProcessorImpl implements ImageProcessor {
         String filterName = pairCameraPosition.getFilterName();
         shot = filterService.filter(filterName, originalImgPath);
         LOGGER.debug("processShot - Filter {} for position {} added to shot", filterName, position);
+
+        if (logosEnabled) {
+            logoWatermarkService.addLogosToImage(shot);
+        }
 
         return shot;
     }
