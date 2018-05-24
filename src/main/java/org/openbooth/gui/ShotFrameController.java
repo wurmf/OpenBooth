@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
 
@@ -25,7 +27,8 @@ import java.awt.image.BufferedImage;
  * Controller for the shotFrame.
  *
  */
-/*@Controller*/
+@Controller
+@Scope("prototype")
 
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);

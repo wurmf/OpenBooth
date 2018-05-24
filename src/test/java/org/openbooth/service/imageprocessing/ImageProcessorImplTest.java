@@ -70,7 +70,9 @@ public class ImageProcessorImplTest {
         resultImage = imageHandler.openImage(testImageStream);
         when(mockImageHandler.openImage(testImgPath)).thenReturn(resultImage);
 
-        imageProcessor = new ImageProcessorImpl(mockShotFrameController, mockShootingService, mockProfileService, mockImageService, mockLogoWatermarkService, mockFilterService, mockGreenscreenService, position, mockImageHandler, mockRefreshManager);
+        imageProcessor = new ImageProcessorImpl(mockShootingService, mockProfileService, mockImageService, mockLogoWatermarkService, mockFilterService, mockGreenscreenService, mockImageHandler, mockRefreshManager);
+        imageProcessor.setShotFrameController(mockShotFrameController);
+        imageProcessor.setPosition(position);
     }
 
 

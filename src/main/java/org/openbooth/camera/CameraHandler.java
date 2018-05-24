@@ -1,7 +1,7 @@
 package org.openbooth.camera;
 
 import org.openbooth.camera.exeptions.CameraException;
-import org.openbooth.camera.impl.CameraThread;
+import org.openbooth.camera.impl.CameraThreadImpl;
 import org.openbooth.entities.Camera;
 
 import java.util.List;

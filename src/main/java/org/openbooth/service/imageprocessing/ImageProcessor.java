@@ -1,6 +1,8 @@
 package org.openbooth.service.imageprocessing;
 
 import org.openbooth.entities.Image;
+import org.openbooth.entities.Position;
+import org.openbooth.gui.ShotFrameController;
 import org.openbooth.service.exceptions.ServiceException;
 
 /**
@@ -28,4 +30,16 @@ public interface ImageProcessor {
      * @param image must specify a valid image
      */
     void processShot(Image image) throws ServiceException;
+
+    /**
+     * Sets the Shotframecontroller, to which the processed image should be forwarded to display the images.
+     * @param shotFrameController the ShotFrameController to which the images will be forwarded
+     */
+    void setShotFrameController(ShotFrameController shotFrameController);
+
+    /**
+     * Sets the position, to which this imageprocessor and shotframe belong to. This determines which filter or greenscreen should be applied.
+     * @param position the position to which this imageprocessor belongs.
+     */
+    void setPosition(Position position);
 }

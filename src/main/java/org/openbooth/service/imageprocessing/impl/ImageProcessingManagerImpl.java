@@ -1,9 +1,7 @@
 package org.openbooth.service.imageprocessing.impl;
 
-import org.openbooth.util.ImageHandler;
+import org.openbooth.camera.CameraThread;
 import org.openbooth.util.OpenCVLoader;
-import org.openbooth.util.TempStorageHandler;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.entities.Camera;
 import org.openbooth.entities.Position;
 import org.openbooth.entities.Profile;
@@ -14,14 +12,10 @@ import org.openbooth.service.imageprocessing.ImageProcessingManager;
 import org.openbooth.service.imageprocessing.ImageProcessor;
 import org.openbooth.gui.ShotFrameManager;
 import org.openbooth.camera.CameraHandler;
-import org.openbooth.camera.impl.CameraThread;
-import org.openbooth.gui.RefreshManager;
-import org.openbooth.service.impl.FilterServiceImpl;
-import org.openbooth.service.impl.GreenscreenServiceImpl;
-import org.openbooth.service.impl.LogoWatermarkServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -38,28 +32,23 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     private CameraHandler cameraHandler;
     private ShotFrameManager shotFrameManager;
-    private RefreshManager refreshManager;
 
-    private ShootingService shootingService;
     private ProfileService profileService;
-    private ImageService imageService;
+
+    private ApplicationContext applicationContext;
 
     private OpenCVLoader openCVLoader;
-    private TempStorageHandler tempStorageHandler;
 
     private List<CameraThread> cameraThreadList;
 
     @Autowired
-    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, RefreshManager refreshManager, ShootingService shootingService, ProfileService profileService, ImageService imageService, OpenCVLoader openCVLoader, TempStorageHandler tempStorageHandler){
+    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, ProfileService profileService, OpenCVLoader openCVLoader, ApplicationContext applicationContext){
 
         this.cameraHandler = cameraHandler;
         this.shotFrameManager = shotFrameManager;
-        this.refreshManager = refreshManager;
-        this.shootingService = shootingService;
         this.profileService = profileService;
-        this.imageService = imageService;
         this.openCVLoader = openCVLoader;
-        this.tempStorageHandler = tempStorageHandler;
+        this.applicationContext = applicationContext;
     }
 
     @Override
@@ -87,12 +76,12 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
 
         if(positionList.size()!=positionNumber){
-            LOGGER.info("initImageProcessing - attached cameras not compatible with profile positionList.size: "+positionList.size() + " | number of Positions for profile: "+positionNumber);
+            LOGGER.info("initImageProcessing - attached cameras not compatible with profile positionList.size: {} | number of Positions for profile: {}", positionList.size(), positionNumber);
             throw new ServiceException("Selected Profile not compatible with attached cameras");
         }
 
 
-        LOGGER.info("initImageProcessing- attached cameras compatible with profile. Number of assigned positions to connected cameras: "+positionList.size() + " | number of positions for profile: "+positionNumber);
+        LOGGER.info("initImageProcessing- attached cameras compatible with profile. Number of assigned positions to connected cameras: {} | number of positions for profile: {}", positionList.size(), positionNumber);
 
         if(positionList.isEmpty()){
             LOGGER.debug("initShotFrameManager - No cameras specfied in active profile - nothing to initialize");
@@ -181,25 +170,17 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
                 throw new ServiceException("Missing ShotFrameController for position");
             }
 
-            ImageHandler imageHandler;
-            try {
-                imageHandler = new ImageHandler(openCVLoader);
-            } catch (LibraryLoadingException e) {
-                shotFrameManager.closeFrames();
-                throw new ServiceException(e);
-            }
 
-            LogoWatermarkService logoWatermarkService = new LogoWatermarkServiceImpl(profileService, imageHandler);
-            FilterService filterService = new FilterServiceImpl(openCVLoader, imageHandler, tempStorageHandler);
-            GreenscreenService greenscreenService = new GreenscreenServiceImpl(openCVLoader, imageHandler);
+            ImageProcessor imageProcessor = applicationContext.getBean(ImageProcessor.class);
 
-            ImageProcessor imageProcessor = new ImageProcessorImpl(shotFrameController, shootingService, profileService, imageService, logoWatermarkService, filterService, greenscreenService, position, imageHandler, refreshManager);
+            imageProcessor.setShotFrameController(shotFrameController);
+            imageProcessor.setPosition(position);
 
-            cameraThread.setImageService(imageService);
-            cameraThread.setShootingService(shootingService);
-            cameraThread.setTempStoragePath(tempStorageHandler.getTempStoragePath());
             cameraThread.setShotFrameController(shotFrameController);
             cameraThread.setImageProcessor(imageProcessor);
+
+
+
         }
     }
 }

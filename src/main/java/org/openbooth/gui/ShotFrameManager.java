@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.openbooth.util.SpringFXMLLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,11 +26,14 @@ public class ShotFrameManager {
     private List<Stage> shotStages;
     private Map<Position, ShotFrameController> positonShotFrameMap;
 
+    private SpringFXMLLoader springFXMLLoader;
 
-    public ShotFrameManager() throws ServiceException {
+
+    public ShotFrameManager(SpringFXMLLoader springFXMLLoader) throws ServiceException {
         shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
         positonShotFrameMap = new HashMap<>();
+        this.springFXMLLoader = springFXMLLoader;
     }
     public Map<Position,ShotFrameController> init(List<Position> positionList){
         Set<Position> oldPositions = positonShotFrameMap.keySet();
@@ -47,12 +51,11 @@ public class ShotFrameManager {
                 stage.setTitle("Shot Frame " + position.getName());
 
                 try {
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                            "/fxml/shotFrame.fxml"));
-                    Parent root = loader.load();
-                    ShotFrameController shotFrameController = loader.getController();
+                    SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotFrameWrapper = springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
+                    Parent root =  (Parent) shotFrameWrapper.getLoadedObject();
+                    ShotFrameController shotFrameController = shotFrameWrapper.getController();
                     shotFrameController.initShotFrame(position.getId(),stage);
-                    //shotframes.add(shotFrameController);
+
                     positonShotFrameMap.put(position,shotFrameController);
                     stage.setScene(new Scene(root, 400, 400));
                 } catch (IOException e) {

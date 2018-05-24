@@ -10,12 +10,17 @@ import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 
 /**
  * This class implements an image processor
  */
+@Component
+@Scope("prototype")
 public class ImageProcessorImpl implements ImageProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
@@ -37,8 +42,8 @@ public class ImageProcessorImpl implements ImageProcessor {
     private RefreshManager refreshManager;
 
 
-    public ImageProcessorImpl(ShotFrameController shotFrameController, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, GreenscreenService greenscreenService, Position position, ImageHandler imageHandler, RefreshManager refreshManager){
-        this.shotFrameController = shotFrameController;
+    @Autowired
+    public ImageProcessorImpl(ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, GreenscreenService greenscreenService, ImageHandler imageHandler, RefreshManager refreshManager){
 
         this.shootingService = shootingService;
         this.profileService = profileService;
@@ -48,10 +53,19 @@ public class ImageProcessorImpl implements ImageProcessor {
         this.filterService = filterService;
         this.greenscreenService = greenscreenService;
 
-        this.position = position;
 
         this.imageHandler = imageHandler;
         this.refreshManager = refreshManager;
+    }
+
+    @Override
+    public void setShotFrameController(ShotFrameController shotFrameController) {
+        this.shotFrameController = shotFrameController;
+    }
+
+    @Override
+    public void setPosition(Position position){
+        this.position = position;
     }
 
     @Override

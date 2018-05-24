@@ -1,20 +1,22 @@
 package org.openbooth.camera.impl;
 
+import org.openbooth.camera.CameraThread;
 import org.openbooth.camera.libgphoto2java.CameraUtils;
-import org.openbooth.gui.ShotFrameController;
-import org.openbooth.service.imageprocessing.ImageProcessor;
 import org.openbooth.camera.exeptions.CameraException;
 
 import org.openbooth.camera.libgphoto2java.CameraFile;
 import org.openbooth.camera.libgphoto2java.CameraGphoto;
-import org.openbooth.entities.Camera;
 import org.openbooth.entities.Image;
 import org.openbooth.entities.Shooting;
 import org.openbooth.service.ImageService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
+import org.openbooth.util.TempStorageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -23,24 +25,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Component
+@Scope("prototype")
+public class CameraThreadImpl extends CameraThread {
 
-public class CameraThread extends Thread{
-
-    private Logger LOGGER = LoggerFactory.getLogger(CameraThread.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CameraThreadImpl.class);
 
     private ImageService imageService;
     private ShootingService shootingService;
+    private TempStorageHandler tempStorageHandler;
+
     private CameraGphoto cameraGphoto;
-    private Camera camera;
-    private ImageProcessor imageProcessor;
-    private ShotFrameController shotFrameController;
 
-    private boolean shouldStop = false;
-    private boolean takeImage = false;
-    private boolean serieShot = false;
-    private int countdown = 0;
-
-    private String tempStoragePath;
+    @Autowired
+    public CameraThreadImpl(ImageService imageService, ShootingService shootingService, TempStorageHandler tempStorageHandler){
+        this.imageService = imageService;
+        this.shootingService = shootingService;
+        this.tempStorageHandler = tempStorageHandler;
+    }
 
     @Override
     public void run()
@@ -197,7 +199,7 @@ public class CameraThread extends Thread{
             return;
         }
 
-        String imagePath = tempStoragePath + "/K" + +camera.getId()+".jpg";
+        String imagePath = tempStorageHandler.getTempStoragePath() + "/K" + +camera.getId()+".jpg";
 
         try {
             cf.save(new File(imagePath).getAbsolutePath());
@@ -218,147 +220,17 @@ public class CameraThread extends Thread{
         }
     }
 
-    /*private void waitForEvent()
-    {
-        LOGGER.info("Camera Thread for Camera {} started", camera);
-        int i = 1;
-        boolean imageSaved = false;
-
-        while (i == 1)
-        {
-            Image image=null;
-            try {
-
-                final CameraFile cf = cameraGphoto.waitForImage();
-                if (cf != null) {
-                    Shooting activeShooting = shootingService.searchIsActive();
-                    if(activeShooting != null){
-                        int imageID = imageService.getNextImageID();
-
-                        String directoryPath = activeShooting.getStorageDir() + "/";
-
-                        DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
-                        Date date = new Date();
-                        String imagePath = directoryPath + "K"+camera.getId()+ "_" + dateFormat.format(date) + ".jpg";
-                        image = new Image(imageID, imagePath, activeShooting.getId(), new Date());
-                        image = imageService.create(image);
-                        cf.save(new File(imagePath).getAbsolutePath());
-
-                        imageSaved=true;
-
-                        LOGGER.debug(imageService.getLastImgPath(activeShooting.getId()));
-                    }else{
-                        LOGGER.error("no active shooting during capture");
-                    }
-                    cf.close();
-
-                }
 
 
-            } catch (CameraException ex) {
-                LOGGER.debug("waitForImage failed" + ex);
-                return;
-            } catch (ServiceException ex) {
-                LOGGER.debug("Exception in service: {}", ex);
-            }
 
-            if(shouldStop){
-                LOGGER.debug("Stopped CameraThread for Camera {}", camera);
-                return;
-            }
-
-            if(imageSaved)
-            {
-                try {
-                    imageProcessor.processShot(image);
-                } catch (ServiceException e) {
-                    LOGGER.error("An Error during the image processing occured", e);
-                }
-                imageSaved=false;
-            }
-        }
-        CameraUtils.closeQuietly(cameraGphoto);
-    }*/
-
-    public static void main(String[] args) {
-        (new Thread(new CameraThread())).start();
-    }
-
-    public void setImageService(ImageService imageService) {
-        this.imageService = imageService;
-    }
-
-    public void setTakeImage(boolean takeImage) {
-        this.takeImage = takeImage;
-    }
-
-    public void setSerieShot(boolean serieShot) {
-        this.serieShot = serieShot;
-        this.countdown = 0;
-    }
-
-    public void setCountdown(int countdown) {
-        this.countdown = countdown;
-        this.serieShot = false;
-    }
-
-    public void setTempStoragePath(String tempStoragePath){
-        this.tempStoragePath = tempStoragePath;
-    }
-
-    public void setShootingService(ShootingService shootingService){
-        this.shootingService = shootingService;
-    }
-
-    public void setShotFrameController(ShotFrameController shotFrameController){
-        this.shotFrameController = shotFrameController;
-    }
-
-
-    public void setCameraGphoto(CameraGphoto cameraGphoto) {
+    void setCameraGphoto(CameraGphoto cameraGphoto) {
         this.cameraGphoto = cameraGphoto;
     }
 
-    public void setCamera(Camera camera) {
-        this.camera = camera;
-    }
-
-    public Camera getCamera(){
-        return this.camera;
-    }
-
-    public void setImageProcessor(ImageProcessor imageProcessor){
-        this.imageProcessor = imageProcessor;
-    }
-
-    public void setStop(boolean shouldStop){
-        this.shouldStop = shouldStop;
-    }
 
 
     private boolean checkInitialized(){
-        if(imageService == null) {
-            return false;
-        }
-        if(shootingService == null){
-            return false;
-        }
-        if(cameraGphoto == null){
-            return false;
-        }
-        if(camera == null){
-            return false;
-        }
-        if(imageProcessor == null){
-            return false;
-        }
-        if(shotFrameController == null){
-            return false;
-        }
-        if(tempStoragePath == null){
-            return false;
-        }
+        return cameraGphoto != null && camera != null && imageProcessor != null && shotFrameController != null;
 
-        return true;
     }
 }
