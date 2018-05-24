@@ -4,12 +4,14 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.LoginFrameController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: blue;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.LoginFrameController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
   </columnConstraints>
@@ -17,7 +19,29 @@
     <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <GridPane style="-fx-background-color: white;">
+      <GridPane style="-fx-background-color: #302A3D;">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+          <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints percentHeight="25.0" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="50.0" vgrow="SOMETIMES" />
+          <RowConstraints percentHeight="25.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <GridPane style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+         </children>
+      </GridPane>
+      <GridPane style="-fx-background-color: transperent;">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
          </columnConstraints>
@@ -29,45 +53,34 @@
          <children>
             <GridPane GridPane.rowIndex="1">
                <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="60.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="37.5" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="35.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" percentWidth="37.5" />
                </columnConstraints>
                <rowConstraints>
                   <RowConstraints percentHeight="27.0" vgrow="SOMETIMES" />
-                  <RowConstraints percentHeight="5.0" vgrow="SOMETIMES" />
+                  <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
                   <RowConstraints percentHeight="27.0" vgrow="SOMETIMES" />
                   <RowConstraints percentHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints percentHeight="31.0" vgrow="SOMETIMES" />
+                  <RowConstraints percentHeight="26.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
-                  <PasswordField fx:id="passwordTextField" onKeyReleased="#checkInputs" promptText="Passwort" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                  <PasswordField fx:id="passwordTextField" onKeyReleased="#checkInputs" promptText="Passwort" style="-fx-border-color: #629e98, white, white; -fx-border-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="36.0" />
                      </font>
                   </PasswordField>
-                  <TextField fx:id="nameTextField" onKeyReleased="#checkInputs" promptText="Name" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                  <TextField fx:id="nameTextField" onKeyReleased="#checkInputs" promptText="Name" style="-fx-border-color: #629e98, white, white; -fx-border-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;" GridPane.columnIndex="1" GridPane.halignment="CENTER">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="36.0" />
                      </font>
                   </TextField>
-                  <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="80.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                     <children>
-                        <Label fx:id="wrongPoNLabel" style="visibility: false;" text="Falscher Name oder Passwort" textFill="#940000" GridPane.halignment="CENTER">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#onConfirmPressed" onMouseClicked="#onConfirmPressed" text="Login" textAlignment="CENTER" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
-                     </children>
-                  </GridPane>
+                  <Button fx:id="confirmButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfirmPressed" onMouseClicked="#onConfirmPressed" style="-fx-background-color: #629e98; -fx-border-radius: 5;" text="Login" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
+                     <font>
+                        <Font size="36.0" />
+                     </font></Button>
+                  <Label fx:id="wrongPoNLabel" style="visibility: false;" text="Der eingegebene Name oder das Passwort stimmen nicht!" textFill="#940000" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" />
+                  <Label fx:id="wrongPoNLabel" style="visibility: false;" text="Der eingegebene Name oder das Passwort stimmen nicht!" textFill="#940000" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                </children>
             </GridPane>
             <GridPane GridPane.rowIndex="2">
@@ -80,11 +93,34 @@
                 <RowConstraints percentHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Button fx:id="abortButton" mnemonicParsing="false" onAction="#onAbortPressed" style="-fx-background-color: transparent;" text="Abbrechen" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <Button fx:id="abortButton" mnemonicParsing="false" onAction="#onAbortPressed" style="-fx-background-color: transparent;" text="Abbrechen" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1">
                      <font>
-                        <Font size="18.0" />
+                        <Font size="26.0" />
                      </font>
                   </Button>
+               </children>
+            </GridPane>
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="30.0" />
+              </columnConstraints>
+              <rowConstraints>
+                  <RowConstraints percentHeight="80.0" vgrow="SOMETIMES" />
+                <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label text="OpenBooth" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+                     <font>
+                        <Font size="36.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                     <image>
+                        <Image url="@../images/logoheader.png" />
+                     </image>
+                  </ImageView>
                </children>
             </GridPane>
          </children>
