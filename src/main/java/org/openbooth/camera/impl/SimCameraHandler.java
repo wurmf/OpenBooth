@@ -6,13 +6,16 @@ import org.openbooth.camera.exeptions.CameraException;
 import org.openbooth.entities.Camera;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimCameraHandler implements CameraHandler {
 
-    private Camera simulatedCamera;
+    private List<Camera> simulatedCameraList;
 
     public SimCameraHandler(){
+        simulatedCameraList = new ArrayList<>();
+        simulatedCameraList.add(new Camera(-1, "simulated_label", "simulated_port", "simulated_model", "simulated_serialnumber"));
 
     }
 
