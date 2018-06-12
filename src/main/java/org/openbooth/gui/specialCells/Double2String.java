@@ -40,6 +40,6 @@ public class Double2String extends StringConverter<Double> {
             return "";
         }
 
-        return (Double.toString(((Double)value).doubleValue()));
+        return (Double.toString(value.doubleValue()));
     }
 }

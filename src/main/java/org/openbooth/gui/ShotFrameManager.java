@@ -29,7 +29,7 @@ public class ShotFrameManager {
     private SpringFXMLLoader springFXMLLoader;
 
 
-    public ShotFrameManager(SpringFXMLLoader springFXMLLoader) throws ServiceException {
+    public ShotFrameManager(SpringFXMLLoader springFXMLLoader) {
         shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
         positonShotFrameMap = new HashMap<>();

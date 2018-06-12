@@ -87,7 +87,7 @@ public abstract class SettingFrameController {
 
 
     @Autowired
-    public SettingFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) throws ServiceException {
+    public SettingFrameController(ProfileService pservice, LogoWatermarkService logoService, BackgroundService bservice, WindowManager windowmanager, ImageHandler imageHandler) {
         this.pservice = pservice;
         this.bservice = bservice;
         this.logoService = logoService;

@@ -70,7 +70,7 @@ public class FilterServiceImpl implements FilterService {
         return filteredImgPaths;
     }
     @Override
-    public String resize(String imgPath,int width,int height) throws ServiceException{
+    public String resize(String imgPath,int width,int height) {
         LOGGER.debug("Entering resize->imgPath->"+imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,  Imgcodecs.CV_LOAD_IMAGE_COLOR);

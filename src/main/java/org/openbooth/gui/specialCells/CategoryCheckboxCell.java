@@ -29,7 +29,7 @@ public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean
 
             @Override
             public void handle(MouseEvent event) {
-                Background.Category currentCategory = (Background.Category) CategoryCheckboxCell.this.getTableView().getItems().get(CategoryCheckboxCell.this.getIndex());
+                Background.Category currentCategory = CategoryCheckboxCell.this.getTableView().getItems().get(CategoryCheckboxCell.this.getIndex());
                 try {
                     if(cellCheckbox.isSelected()) {
                         bservice.createPairProfileCategory(selectedProfile.get(0).getId(), currentCategory.getId());
@@ -61,7 +61,7 @@ public class CategoryCheckboxCell extends TableCell<Background.Category, Boolean
         if(empty) {
             setGraphic(null);
         }else{
-            Background.Category currentCategory = (Background.Category) CategoryCheckboxCell.this.getTableView().getItems().get(CategoryCheckboxCell.this.getIndex());
+            Background.Category currentCategory = CategoryCheckboxCell.this.getTableView().getItems().get(CategoryCheckboxCell.this.getIndex());
             if(categoryListOfProfile.contains(currentCategory)) {
                 cellCheckbox.setSelected(true);
             }else

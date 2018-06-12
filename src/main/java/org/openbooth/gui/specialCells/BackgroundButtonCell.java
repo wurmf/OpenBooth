@@ -49,7 +49,7 @@ public class BackgroundButtonCell extends TableCell<Background, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background currentBackground = (Background) BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
+                    Background currentBackground = BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     backgroundList.remove(currentBackground);

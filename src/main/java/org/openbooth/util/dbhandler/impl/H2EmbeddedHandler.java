@@ -41,7 +41,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws ClassNotFoundException if the driver class is not found.
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
-    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException, IOException{
+    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException {
         LOGGER.info("openConnection - Trying to open connection to database {}", dbName);
         try {
             Class.forName("org.h2.Driver");

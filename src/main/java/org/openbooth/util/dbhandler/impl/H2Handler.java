@@ -65,7 +65,7 @@ public class H2Handler implements DBHandler {
     }
 
     @Override
-    public Connection getTestConnection() throws DatabaseException {
+    public Connection getTestConnection() {
         return null;
     }
 }

@@ -44,7 +44,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
                 Platform.runLater(new Runnable() {
                     @Override public void run() {
                         if(getIndex()<getTableView().getItems().size() && getIndex()>=0) {
-                            Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
+                            Profile.PairCameraPosition currentCamPos = getTableView().getItems().get(getIndex());
 
                             LOGGER.debug("currentCambox id = " + currentCamPos.getId() + " Selected Pos ->" + (selectedPos == null ? "keine" : selectedPos.getName()));
                             LOGGER.debug(currentCamPos.getCamera().getLable() + "_" + currentCamPos.getPosition());
@@ -91,7 +91,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
             setGraphic(null);
         }else{
 
-            Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
+            Profile.PairCameraPosition currentCamPos = getTableView().getItems().get(getIndex());
            try {
 
                 int index2select = -1;

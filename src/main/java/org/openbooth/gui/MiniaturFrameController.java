@@ -72,7 +72,7 @@ public class MiniaturFrameController {
     private Queue<org.openbooth.entities.Image> newImages=new LinkedBlockingQueue<>();
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraHandler cameraHandler, ProfileService profileService) throws ServiceException {
+    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraHandler cameraHandler, ProfileService profileService) {
         this.imageService = imageService;
         this.shootingService = shootingService;
         this.windowManager = windowManager;

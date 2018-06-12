@@ -11,7 +11,7 @@ public class KeyHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyHandler.class);
 
-    private KeyHandler(){};
+    private KeyHandler(){}
 
     public static int getIndexForKeyEvent(KeyEvent keyEvent){
 

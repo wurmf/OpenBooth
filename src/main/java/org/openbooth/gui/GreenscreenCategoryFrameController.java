@@ -74,9 +74,8 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Background.Category, String> t) {
                         try {
-                            Background.Category p = ((Background.Category) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Background.Category p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.setName(t.getNewValue());
                                 bservice.editCategory(p);

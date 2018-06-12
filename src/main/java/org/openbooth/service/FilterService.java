@@ -16,7 +16,7 @@ public interface FilterService {
      * @return List list of existing filters
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public List<String> getExistingFilters() throws ServiceException;
+    List<String> getExistingFilters() throws ServiceException;
     /**
      * converts given image to filtered image with existing filters.
      *

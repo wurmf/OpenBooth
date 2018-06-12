@@ -86,5 +86,5 @@ public interface ImageService {
      * @return reference to the cropped image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public Image crop(Image original,String filterName, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException;
+    Image crop(Image original, String filterName, int x1, int x2, int y1, int y2, int maxX, int maxY) throws ServiceException;
 }

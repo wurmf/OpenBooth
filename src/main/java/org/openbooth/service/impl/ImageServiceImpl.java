@@ -33,7 +33,7 @@ public class ImageServiceImpl implements ImageService {
     private FilterService filterService;
 
     @Autowired
-    public ImageServiceImpl(ImageDAO imageDAO, ShootingDAO shootingDAO, ImageHandler imageHandler, FilterService filterService) throws ServiceException {
+    public ImageServiceImpl(ImageDAO imageDAO, ShootingDAO shootingDAO, ImageHandler imageHandler, FilterService filterService) {
         this.dao = imageDAO;
         this.shootingDAO = shootingDAO;
         this.imageHandler = imageHandler;

@@ -26,8 +26,7 @@ public class BackgroundServiceImpl implements BackgroundService{
     private BackgroundCategoryDAO backgroundCategoryDAO;
 
     public BackgroundServiceImpl(BackgroundDAO backgroundDAO,
-                                 BackgroundCategoryDAO backgroundCategoryDAO)
-        throws ServiceException {
+                                 BackgroundCategoryDAO backgroundCategoryDAO) {
         this.backgroundDAO = backgroundDAO;
         this.backgroundCategoryDAO = backgroundCategoryDAO;
     }
