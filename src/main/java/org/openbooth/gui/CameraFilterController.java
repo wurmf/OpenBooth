@@ -64,7 +64,6 @@ public class CameraFilterController {
     private FilterService filterService;
     private ProfileService profileservice;
     private WindowManager wm;
-    private ImageService imageService;
     private ShootingService shootingService;
 
     private Map<String,BufferedImage> filtermap=null;
@@ -73,10 +72,9 @@ public class CameraFilterController {
 
     @Autowired
 
-    public CameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ImageService imageService, ShootingService shootingService, CameraTrigger cameraTrigger){
+    public CameraFilterController(FilterService filterService, ProfileService profileService, WindowManager wm, ShootingService shootingService, CameraTrigger cameraTrigger){
         this.profileservice=profileService;
         this.wm=wm;
-        this.imageService=imageService;
         this.shootingService = shootingService;
         this.filterService=filterService;
         this.cameraTrigger = cameraTrigger;
@@ -90,16 +88,6 @@ public class CameraFilterController {
     @FXML
     private void initialize(){
         filtermap = new HashMap<>();
-         /*try {
-           if(shootingService.searchIsActive().getActive()) {
-
-                profile = profileservice.get(shootingService.searchIsActive().getProfileid());
-
-            }
-
-        } catch (ServiceException e) {
-            e.printStackTrace();
-        }*/
     }
 
     /**
@@ -146,16 +134,8 @@ public class CameraFilterController {
 
             int columcount = 0;
             int rowcount = 0;
-           /* Image image1 = null;
-            if ( imageService.getAllImages(shootingService.searchIsActive().getId())!=null&&!imageService.getAllImages(shootingService.searchIsActive().getId()).isEmpty() ){
-                image1= imageService.getAllImages(shootingService.searchIsActive().getId()).get(1);
 
-            }
-           */
-            /*if(profileservice.getActiveProfile().getId()!=profileservice.getActiveProfile().getId()){
-                profile=profileservice.getActiveProfile();
-                filtermap.clear();
-            }*/
+
             if(filtermap==null||filtermap.isEmpty()){
                 try {
                     String filterPreviewImagePath = wm.copyResource("/images/filterPreview.png");
@@ -164,9 +144,9 @@ public class CameraFilterController {
                     LOGGER.error("createButtons - could not copy preview filter image", e);
                 }
             }
-           // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
-            for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {//imagefilter.size
-           // for(Image im : imlist){
+
+            for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {
+
                 if (columcount == 6) {
                     rowcount++;
                     columcount = 0;
@@ -192,27 +172,22 @@ public class CameraFilterController {
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
                     }
                 }
-              //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
+
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
                     if(activiv!=null){
                         activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
-                        //activiv.setStyle("-fx-background-color: black;");
-                       //activiv.setBlendMode(BlendMode.BLUE);
                     }
                     activiv=iv;
                     iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
                     iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
-                    //iv.setStyle("-fx-background-color: green;");
-                    //iv.setBlendMode(BlendMode.GREEN);
+
                     try {
                         profileservice.getActiveProfile().getPairCameraPositions().get(index).setFilterName(filterentety.getKey());
                     } catch (ServiceException e) {
                         LOGGER.error("create button -",e);
                     }
-                   /* if(fId==){
 
-                    }*/
                 });
                 filtergrid.add(iv, columcount, rowcount);
                 columcount++;
@@ -261,7 +236,6 @@ public class CameraFilterController {
             greengrid.getRowConstraints().add(3, new RowConstraints());
             greengrid.getColumnConstraints().add(4, new ColumnConstraints());
             greengrid.getRowConstraints().add(4, new RowConstraints());
-         //   filtergrid.getColumnConstraints().add(5, new ColumnConstraints());
             greengrid.getRowConstraints().add(5, new RowConstraints());
 
             greengrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);

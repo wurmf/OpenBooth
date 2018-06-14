@@ -52,7 +52,7 @@ public class MainApplication extends Application {
             dbHandler.closeConnection();
         }
 
-        if (this.applicationContext != null && applicationContext.isRunning()) {
+        if ( applicationContext.isRunning() ) {
             this.applicationContext.close();
         }
 
