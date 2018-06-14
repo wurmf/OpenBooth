@@ -41,7 +41,7 @@
             </GridPane>
          </children>
       </GridPane>
-      <GridPane style="-fx-background-color: transperent;">
+      <GridPane style="-fx-background-color: transparent;">
          <columnConstraints>
             <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="100.0" />
          </columnConstraints>

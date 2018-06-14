@@ -54,6 +54,11 @@ public class LoginFrameController {
      * Lets an AdminUserService instance check if the values given in the adminname- and passwordEntered-TextField correspond to a saved admin-user.
      */
 
+    @FXML
+    public void initialize(){
+        resetValues();
+    }
+
 
 
     @FXML
@@ -103,6 +108,7 @@ public class LoginFrameController {
         wrongPoNLabel.setVisible(false);
         passwordTextField.setText("");
         nameTextField.setText("");
+        nameTextField.requestFocus();
         confirmButton.setVisible(false);
     }
 
@@ -111,8 +117,8 @@ public class LoginFrameController {
      */
     public void onAbortPressed(ActionEvent actionEvent) {
 
-        System.exit(0);
-
+        resetValues();
+        windowManager.showScene(loginRedirectorModel.getCallingScene());
 
     }
 }
