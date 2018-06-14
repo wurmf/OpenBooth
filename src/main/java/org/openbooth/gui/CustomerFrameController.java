@@ -1,9 +1,6 @@
 package org.openbooth.gui;
 
-import org.openbooth.util.KeyHandler;
-import org.openbooth.camera.CameraHandler;
-import org.openbooth.camera.exeptions.CameraException;
-import org.openbooth.entities.Camera;
+import org.openbooth.util.CameraTrigger;
 import org.openbooth.entities.Profile;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.ProfileService;
@@ -19,6 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import org.openbooth.util.exceptions.TriggerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +25,6 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,15 +59,15 @@ public class CustomerFrameController {
     private ShootingService shootingservice;
     private ProfileService profileservice;
     private FilterService filterservice;
-    private CameraHandler cameraHandler;
+    private CameraTrigger cameraTrigger;
 
     @Autowired
-    public CustomerFrameController(FilterService filterservice, WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice, CameraHandler cameraHandler){
+    public CustomerFrameController(FilterService filterservice, WindowManager windowmanager, ShootingService shootingservice, ProfileService profileservice, CameraTrigger cameraTrigger){
         this.windowmanager=windowmanager;
         this.shootingservice=shootingservice;
         this.profileservice=profileservice;
         this.filterservice=filterservice;
-        this.cameraHandler=cameraHandler;
+        this.cameraTrigger=cameraTrigger;
 
         miniLastVisit = false;
         isButtoncreated =false;
@@ -108,7 +105,7 @@ public class CustomerFrameController {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                 }
                 List<Profile.PairCameraPosition> pairList = profileservice.getAllPairCameraPositionOfProfile();
-                if (pairList.isEmpty() || pairList.size() == 0) {
+                if (pairList == null || pairList.isEmpty()) {
                     rightbutton.setVisible(false);
                 }
                 allpicturesview.setVisible(true);
@@ -135,7 +132,8 @@ public class CustomerFrameController {
                 }
                 filterChouseside = false;
             }
-            if (profileservice.getActiveProfile().getPairCameraPositions().isEmpty() || profileservice.getActiveProfile().getPairCameraPositions().size() == 0) {
+            List<Profile.PairCameraPosition> pcps = profileservice.getActiveProfile().getPairCameraPositions();
+            if (pcps == null || pcps.isEmpty()) {
                 rightbutton.setVisible(false);
             }
             miniLastVisit=false;
@@ -228,8 +226,6 @@ public class CustomerFrameController {
                 rightbutton.setVisible(false);
             }else {
 
-              //  LOGGER.debug("buttons:" + buttonList.size() + "");
-               // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
                 int width;
                 if(pairList.size()>3){
@@ -256,7 +252,6 @@ public class CustomerFrameController {
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
                     if(!pairList.get(i).isGreenScreenReady()){
-                       // if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
 
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()==null|| profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName().equals("")){
                             imageView.setImage(new Image("/images/filterPreview.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
@@ -264,9 +259,7 @@ public class CustomerFrameController {
                         }else {
                             imageView.setImage(SwingFXUtils.toFXImage(filterList.get(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()), null));
 
-                        } //}else {
-                         //   imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
-                     //  }
+                        }
                     }else{
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground()!=null) {
                             if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground().getPath() != null) {
@@ -318,19 +311,9 @@ public class CustomerFrameController {
                             countcolumn=+2;
                         }
                     }
-                  /*  if (countrow < 2) {
-                        countrow++;
-                    } else {
-                        countrow = 0;
-                        if (countcolumn < column) {
-                            countcolumn++;
-                        } else {
-                           LOGGER.debug("not enoth columns" + column);
-                        }
-                    }*/
+
                     Button filter = new Button();
                     filter.setText(name);
-                    //filter.setStyle("-fx-background-color: GRAY");
                     filter.setVisible(true);
                     filter.setPrefWidth(width - high/2);
                     filter.setPrefHeight(high/2);
@@ -356,7 +339,6 @@ public class CustomerFrameController {
                     imageView.setFitWidth(high/1.5);
                     imageView.setFitHeight(high/1.5);
 
-                    //imageView.setBlendMode(BlendMode.DIFFERENCE);
 
                     Group blend = new Group(
                             imageView,
@@ -376,8 +358,6 @@ public class CustomerFrameController {
 
                     gp.add(filter, 0, 0);
                     gp.add(blend,1,0);
-                    //gp.add(iv2, 1, 0);
-                    //gp.add(imageView,2,0);
                     grid.add(gp, countcolumn, countrow);
                     GridPane fill = new GridPane();
                     fill.setPrefHeight(high/2);
@@ -389,8 +369,6 @@ public class CustomerFrameController {
                         grid.add(fillside,countcolumn+1, countrow);
                     }
                     grid.add(fill, countcolumn,countrow+1);
-                    // Image image = new Image(pairList.get(i).getCameraLable());
-                  //  LOGGER.debug("count calls "+i+"");
                 }
                 basicpane.add(grid, 1, 0);
                 isButtoncreated = true;
@@ -430,80 +408,13 @@ public class CustomerFrameController {
 
     public void triggerShot(KeyEvent keyEvent){
 
-
-        int index = KeyHandler.getIndexForKeyEvent(keyEvent);
-
-        String messageString = "";
-
-        int numberOfPositions = 0;
-        int numberOfCameras = 0;
-        Profile.PairCameraPosition pairCameraPosition = null;
-        Profile activeProfile = null;
-
-        List<Camera> cameras = new ArrayList<>();
         try {
-            if (profileservice != null) {activeProfile = profileservice.getActiveProfile();
-                numberOfPositions = activeProfile.getPairCameraPositions().size();}
-        } catch (ServiceException e) {
-            activeProfile = null;
-            LOGGER.error("Active Profile couldn't be determined, thus null value will be assumed", e);
-        }
-        String os = System.getProperty("os.name");
-        try {
-            if (cameraHandler != null && !os.startsWith("Windows")) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
-        } catch (CameraException e) {
-            cameras = new ArrayList<>();
-            LOGGER.error("Cameras couldn't be determined, thus an empty List will be assumed", e);
+            this.cameraTrigger.triggerShotIfCorrectKey(keyEvent);
+        } catch (TriggerException e) {
+            //TODO: add error message for the user
+            LOGGER.error("Unable to take shot.",e);
         }
 
-
-        if(index >= 0)
-        {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
-        else
-        {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
-        LOGGER.info(messageString,keyEvent.getCharacter());
-
-        if( numberOfPositions > index && index >= 0 ){
-            messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
-            //cameraHandler.captureImage(cameras.get(cameraIndex));
-            pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
-            int shotType = pairCameraPosition.getShotType();
-            Camera camera = pairCameraPosition.getCamera();
-            if (shotType == Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE){
-                if (cameras.contains(camera)) {
-                    cameraHandler.setSerieShot(camera,true);
-                    LOGGER.debug("triggerCall - multiple shot has been set");
-                }
-                else {LOGGER.debug("triggerCall - multiple shot setting not possible, cause no cameraHandler available");}
-                }
-            else if (shotType == Profile.PairCameraPosition.SHOT_TYPE_TIMED) {
-                if (cameras.contains(camera)) {
-                    cameraHandler.setCountdown(camera,8);
-                    LOGGER.debug("triggerCall - timed shot has been set");
-                } else {
-                    LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
-                }
-            } else {
-                cameraHandler.setCountdown(camera, 0);
-                cameraHandler.setSerieShot(camera, false);
-                LOGGER.debug("triggerCall - standard shot will be kept set");
-            }
-
-            if (cameras.contains(camera)){
-                cameraHandler.captureImage(camera);
-            return;
-            }
-            else {
-                LOGGER.debug("triggerCall - Camera that has been triggered is not in cameraHandlers list");
-                return;
-                }
-        }
-        else if(index >= 0){
-                messageString = "triggerCall - No camera at this index found, so no action will be triggered";
-        }
-        else {
-            messageString = "triggerCall - Trigger sequence is invalid";
-        }
-        LOGGER.debug(messageString);
     }
+
 }

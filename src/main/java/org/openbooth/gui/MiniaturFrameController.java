@@ -1,12 +1,7 @@
 package org.openbooth.gui;
 
-import org.openbooth.util.KeyHandler;
-import org.openbooth.camera.CameraHandler;
-import org.openbooth.camera.exeptions.CameraException;
-import org.openbooth.entities.Camera;
-import org.openbooth.entities.Profile;
+import org.openbooth.util.CameraTrigger;
 import org.openbooth.service.ImageService;
-import org.openbooth.service.ProfileService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
@@ -26,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.openbooth.util.exceptions.TriggerException;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,13 +49,10 @@ public class MiniaturFrameController {
     private ImageService imageService;
     @Resource
     private ShootingService shootingService;
+    private CameraTrigger cameraTrigger;
 
     private WindowManager windowManager;
 
-    @Resource
-    private CameraHandler cameraHandler;
-    @Resource
-    private ProfileService profileservice;
     @FXML
     private TilePane tile;
     @FXML
@@ -72,12 +65,11 @@ public class MiniaturFrameController {
     private Queue<org.openbooth.entities.Image> newImages=new LinkedBlockingQueue<>();
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraHandler cameraHandler, ProfileService profileService) {
+    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraTrigger cameraTrigger) {
         this.imageService = imageService;
         this.shootingService = shootingService;
         this.windowManager = windowManager;
-        this.cameraHandler = cameraHandler;
-        this.profileservice = profileService;
+        this.cameraTrigger = cameraTrigger;
     }
 
     public void init(Stage stage) {
@@ -100,7 +92,7 @@ public class MiniaturFrameController {
 
         try {
             if(shootingService.searchIsActive().getActive()) {
-                LOGGER.info("Miniaturansicht -> Active Shooting ->" + shootingService.searchIsActive().getId());
+                LOGGER.info("Miniaturansicht -> Active Shooting -> {}", shootingService.searchIsActive().getId());
                 listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());
             }else{
                 listOfImages = new ArrayList<>();
@@ -215,7 +207,7 @@ public class MiniaturFrameController {
         fullscreen.setFitWidth(30);
         fullscreen.setOnMouseClicked(mouseEvent -> {
             ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-            LOGGER.debug("fullscreen clicked...imageID = "+imageView.getId());
+            LOGGER.debug("fullscreen clicked...imageID = {}",imageView.getId());
 
             windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         });
@@ -234,7 +226,7 @@ public class MiniaturFrameController {
 
             if(result.isPresent()&&result.get()==ButtonType.OK){
                 ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-                LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+                LOGGER.debug("Bild wird gelöscht -> imageID = {}",imageView.getId());
                 try {
                     imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
                     tile.getChildren().remove(imageView.getParent());
@@ -253,12 +245,12 @@ public class MiniaturFrameController {
             if(new File(img.getImagepath()).isFile()) {
                 imageView = createImageView(new File(img.getImagepath()));
             }else {
-                LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
+                LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht -> {}",img);
                 imageService.delete(img.getImageID());
             }
             if(imageView!=null){
                 VBox vBox = new VBox();
-                LOGGER.debug("imageview id = "+img.getImageID());
+                LOGGER.debug("imageview id = {}",img.getImageID());
                 imageView.setId(String.valueOf(img.getImageID()));
                 imageView.setUserData(img.getImagepath());
                 vBox.getChildren().addAll(imageView,hBox);
@@ -281,7 +273,7 @@ public class MiniaturFrameController {
     {
         if(delete){
             ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEventdel.getSource()).getParent().getParent())).getChildren().get(0);
-            LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+            LOGGER.debug("Bild wird gelöscht -> imageID = {}",imageView.getId());
             try {
 
                 imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
@@ -296,80 +288,16 @@ public class MiniaturFrameController {
         }
     }
 
+    @FXML
     public void triggerShot(KeyEvent keyEvent){
-        String messageString = "";
-        String keystoke = keyEvent.getText();
-        int index = KeyHandler.getIndexForKeyEvent(keyEvent);
 
-        int numberOfPositions = 0;
-        int numberOfCameras = 0;
-        Profile.PairCameraPosition pairCameraPosition = null;
-        Profile activeProfile = null;
-
-        List<Camera> cameras = new ArrayList<>();
         try {
-            if (profileservice != null) {activeProfile = profileservice.getActiveProfile();
-                numberOfPositions = activeProfile.getPairCameraPositions().size();}
-        } catch (ServiceException e) {
-            activeProfile = null;
-            LOGGER.error("Active Profile couldn't be determined, thus null value will be assumed", e);
-        }
-        String os = System.getProperty("os.name");
-        try {
-            if (cameraHandler != null && !os.startsWith("Windows")) {cameras = cameraHandler.getCameras();numberOfCameras = cameras.size();}
-        } catch (CameraException e) {
-            cameras = new ArrayList<>();
-            LOGGER.error("Cameras couldn't be determined, thus an empty List will be assumed", e);
+            this.cameraTrigger.triggerShotIfCorrectKey(keyEvent);
+        } catch (TriggerException e) {
+            //TODO: add error message for the user
+            LOGGER.error("Unable to take shot.",e);
         }
 
-
-        if(index >= 0)
-        {messageString = "triggerCall - Attempting to trigger camera object at paitcameraposition list index " + index + " because of valid trigger sequence{}";}
-        else
-        {messageString = "triggerCall - No action is attempted to be triggered associated to trigger sequence{}";}
-        LOGGER.info(messageString,keystoke);
-
-        if( numberOfPositions > index && index >= 0 ){
-            messageString = "triggerCall - Camera is at this index present and an image capture is triggered";
-            //cameraHandler.captureImage(cameras.get(cameraIndex));
-            pairCameraPosition = activeProfile.getPairCameraPositions().get(index);
-            int shotType = pairCameraPosition.getShotType();
-            Camera camera = pairCameraPosition.getCamera();
-            if (shotType == Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE){
-                if (cameras.contains(camera)) {
-                    cameraHandler.setSerieShot(camera,true);
-                    LOGGER.debug("triggerCall - multiple shot has been set");
-                }
-                else {LOGGER.debug("triggerCall - multiple shot setting not possible, cause no cameraHandler available");}
-            }
-            else if (shotType == Profile.PairCameraPosition.SHOT_TYPE_TIMED) {
-                if (cameras.contains(camera)) {
-                    cameraHandler.setCountdown(camera,8);
-                    LOGGER.debug("triggerCall - timed shot has been set");
-                } else {
-                    LOGGER.debug("triggerCall - timed shot setting not possible, cause no cameraHandler available");
-                }
-            } else {
-                cameraHandler.setCountdown(camera, 0);
-                cameraHandler.setSerieShot(camera, false);
-                LOGGER.debug("triggerCall - standard shot will be kept set");
-            }
-
-            if (cameras.contains(camera)){
-                cameraHandler.captureImage(camera);
-                return;
-            }
-            else {
-                LOGGER.debug("triggerCall - Camera that has been triggered is not in cameraHandlers list");
-                return;
-            }
-        }
-        else if(index >= 0){
-            messageString = "triggerCall - No camera at this index found, so no action will be triggered";
-        }
-        else {
-            messageString = "triggerCall - Trigger sequence is invalid";
-        }
-        LOGGER.debug(messageString);
     }
+
 }
