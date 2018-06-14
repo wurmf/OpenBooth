@@ -1,6 +1,9 @@
 package org.openbooth.util;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +17,19 @@ public class FileTransferTest {
     private FileTransfer ft;
     private final String realSourcePath;
     private final String alternativeSourcePath;
-    private final String realDestPath;
+    private String realDestPath;
     public FileTransferTest(){
         this.ft=new FileTransfer();
         this.realSourcePath="/images/test_logo_img.jpg";
         this.alternativeSourcePath="/images/test_imageprocessor_img.jpg";
-        this.realDestPath=System.getProperty("user.home")+"/test_img_for_FileTransferTest.jpg";
+    }
+
+    @Rule
+    public TemporaryFolder testFolder = new TemporaryFolder();
+
+    @Before
+    public void setUp(){
+        this.realDestPath = testFolder.getRoot().getPath() + "test_img_for_FileTransferTest.jpg";
     }
 
     @Test(expected = IOException.class)

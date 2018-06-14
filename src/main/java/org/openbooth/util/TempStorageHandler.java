@@ -13,7 +13,7 @@ import java.io.File;
 @Component
 public class TempStorageHandler {
 
-    private static final String TEMP_STORAGE_PATH = System.getProperty("user.home") + "/.fotostudio/temp";
+    private static final String TEMP_STORAGE_PATH = System.getProperty("user.home") + "/.openbooth/temp";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TempStorageHandler.class);
 

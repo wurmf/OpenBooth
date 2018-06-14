@@ -89,7 +89,7 @@ public class ShootingServiceImpl implements ShootingService {
         Path storagepath = null;
 
         String resource = System.getProperty("user.home");
-        storagepath = Paths.get(resource + "/fotostudio/Studio");
+        storagepath = Paths.get(resource + "/openbooth/Studio");
         if (storagepath != null) {
             try {
                 Files.createDirectories(storagepath);

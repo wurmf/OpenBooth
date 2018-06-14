@@ -10,7 +10,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * This Singleton-class returns a connection to an H2-database called "fotostudio".
+ * This Singleton-class returns a connection to an H2-database called "openbooth".
  * The class will always return the same connection-object as long as {@link #closeConnection()} is not called. If it is called a new connection will be opened when calling {@link #getConnection()}.
  */
 public class H2Handler implements DBHandler {
@@ -27,16 +27,16 @@ public class H2Handler implements DBHandler {
         return ourInstance;
     }
     /*
-    Precondition: The H2-DB-application is running with a database called "fotostudio" and a user "sa" with an empty password.
+    Precondition: The H2-DB-application is running with a database called "openbooth" and a user "sa" with an empty password.
      */
     /**
-     * Opens a new connection to an H2-database of the name "fotostudio" with username "sa" and empty password
+     * Opens a new connection to an H2-database of the name "openbooth" with username "sa" and empty password
      * @throws DatabaseException if either the driver-class is not found or the DriverManager can't establish a connection to the specified database with the given login credentials.
      */
     private void openConnection() throws DatabaseException{
         try {
             Class.forName("org.h2.Driver");
-            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/fotostudio", "sa","");
+            connection = DriverManager.getConnection("jdbc:h2:tcp://localhost/~/openbooth", "sa","");
         } catch(ClassNotFoundException|SQLException e){
             LOGGER.error("openConnection - ",e);
             throw new DatabaseException(e);
