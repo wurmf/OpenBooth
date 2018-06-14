@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Logo;
 import org.openbooth.entities.Profile;
@@ -24,14 +25,14 @@ import java.io.File;
  * Created by macdnz on 16.12.16.
  */
 public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, String>  {
-    final static Logger LOGGER = LoggerFactory.getLogger(LogoImgCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LogoImgCell.class);
 
     private  ObservableList<Profile.PairLogoRelativeRectangle> logoList;
     private ProfileService pservice;
 
 
-    final ImageView img = new ImageView();
-    final ImageView cellImgView;
+    private final ImageView img = new ImageView();
+    private final ImageView cellImgView;
 
     public LogoImgCell(ObservableList<Profile.PairLogoRelativeRectangle> logoList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage,AutoCompleteTextField txLogoName) {
         this.logoList = logoList;
@@ -121,16 +122,16 @@ public class LogoImgCell extends TableCell<Profile.PairLogoRelativeRectangle, St
             @Override
             public void handle(MouseEvent event) {
                 if(logoList.get(getIndex()).getPath()==null)
-                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                    GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    imageHandler.popupImage(logoList.get(getIndex()).getLogo().getPath(),primaryStage);
+                    GUIImageHelper.popupImage(logoList.get(getIndex()).getLogo().getPath(),primaryStage);
 
             }
 
         });
     }
 
-    public Image getImage(String path) {
+    private Image getImage(String path) {
 
         if(new File(path).isFile()){
             return new Image("file:" + path, true);

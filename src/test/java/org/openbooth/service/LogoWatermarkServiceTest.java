@@ -292,7 +292,7 @@ public class LogoWatermarkServiceTest {
     }
 
 
-    private void testImage(String testImagePath, BufferedImage resultImage) throws  ServiceException, ImageHandlingException{
+    private void testImage(String testImagePath, BufferedImage resultImage) throws ImageHandlingException{
 
         BufferedImage testImage = imageHandler.openImage(testImagePath);
 

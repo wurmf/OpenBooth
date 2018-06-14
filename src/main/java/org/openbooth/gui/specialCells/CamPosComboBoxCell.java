@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
  * Created by macdnz on 16.12.16.
  */
 public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(CamPosComboBoxCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamPosComboBoxCell.class);
 
 
     private ProfileService pservice;
 
-    private ComboBox<Position> comboBox = new ComboBox();
+    private ComboBox<Position> comboBox = new ComboBox<>();
 
     public CamPosComboBoxCell(TableColumn parent, ObservableList<Profile.PairCameraPosition> camPosList, ProfileService pservice, ObservableList<Position> posList, ObservableList<Profile> selectedProfile, Stage primaryStage) {
         this.pservice = pservice;
@@ -44,7 +44,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
                 Platform.runLater(new Runnable() {
                     @Override public void run() {
                         if(getIndex()<getTableView().getItems().size() && getIndex()>=0) {
-                            Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
+                            Profile.PairCameraPosition currentCamPos = getTableView().getItems().get(getIndex());
 
                             LOGGER.debug("currentCambox id = " + currentCamPos.getId() + " Selected Pos ->" + (selectedPos == null ? "keine" : selectedPos.getName()));
                             LOGGER.debug(currentCamPos.getCamera().getLable() + "_" + currentCamPos.getPosition());
@@ -91,7 +91,7 @@ public class CamPosComboBoxCell extends TableCell<Profile.PairCameraPosition, Bo
             setGraphic(null);
         }else{
 
-            Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) getTableView().getItems().get(getIndex());
+            Profile.PairCameraPosition currentCamPos = getTableView().getItems().get(getIndex());
            try {
 
                 int index2select = -1;

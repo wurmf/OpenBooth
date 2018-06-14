@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Position;
 import org.openbooth.service.ProfileService;
@@ -23,14 +24,14 @@ import java.io.File;
  * Created by macdnz on 16.12.16.
  */
 public class PositionImgCell extends TableCell<Position, String> {
-    final static Logger LOGGER = LoggerFactory.getLogger(PositionImgCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PositionImgCell.class);
 
     private  ObservableList<Position> posList;
     private ProfileService pservice;
 
 
-    final ImageView img = new ImageView();
-    final ImageView cellImgView;
+    private final ImageView img = new ImageView();
+    private final ImageView cellImgView;
 
     public PositionImgCell(ObservableList<Position> posList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
         this.posList = posList;
@@ -92,9 +93,9 @@ public class PositionImgCell extends TableCell<Position, String> {
             @Override
             public void handle(MouseEvent event) {
                 if(posList.get(getIndex()).getButtonImagePath()==null)
-                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                    GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    imageHandler.popupImage(posList.get(getIndex()).getButtonImagePath(),primaryStage);
+                    GUIImageHelper.popupImage(posList.get(getIndex()).getButtonImagePath(),primaryStage);
 
             }
 

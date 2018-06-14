@@ -74,9 +74,8 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Background.Category, String> t) {
                         try {
-                            Background.Category p = ((Background.Category) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Background.Category p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.setName(t.getNewValue());
                                 bservice.editCategory(p);
@@ -154,15 +153,15 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
             }
         });
 
-        txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+        txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         txCategoryAdd.setPrefHeight(50);
         txCategoryAdd.setPrefWidth(50);
 
         txCategoryName.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedProfile !=null ){
-                txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txCategoryAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txCategoryAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
 

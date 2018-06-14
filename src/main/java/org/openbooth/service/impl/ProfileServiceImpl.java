@@ -257,7 +257,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Position> getAllPositionsOfProfile(Profile profile) throws ServiceException {
+    public List<Position> getAllPositionsOfProfile(Profile profile) {
         List<Position> returnvalue = new ArrayList<>();
         for(Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions()) {
             returnvalue.add(pairCameraPosition.getPosition());
@@ -266,7 +266,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Camera> getAllCamerasOfProfile(Profile profile) throws ServiceException {
+    public List<Camera> getAllCamerasOfProfile(Profile profile) {
         List<Camera> returnvalue = new ArrayList<>();
         for(Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions()) {
             returnvalue.add(pairCameraPosition.getCamera());
@@ -275,7 +275,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<RelativeRectangle> getAllRelativeRectanglesOfProfile(Profile profile) throws ServiceException {
+    public List<RelativeRectangle> getAllRelativeRectanglesOfProfile(Profile profile) {
         List<RelativeRectangle> returnvalue = new ArrayList<>();
         for(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             returnvalue.add(pairLogoRelativeRectangle.getRelativeRectangle());
@@ -284,7 +284,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<Logo> getAllLogosOfProfile(Profile profile) throws ServiceException {
+    public List<Logo> getAllLogosOfProfile(Profile profile) {
         List<Logo> returnvalue = new ArrayList<>();
         for(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             returnvalue.add(pairLogoRelativeRectangle.getLogo());
@@ -293,7 +293,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Position getPositionOfCameraOfProfile(Profile profile, Camera camera) throws ServiceException {
+    public Position getPositionOfCameraOfProfile(Profile profile, Camera camera) {
         for(Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions()) {
             if(pairCameraPosition.getCamera().getId()==camera.getId())
                 return pairCameraPosition.getPosition();
@@ -302,7 +302,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Camera getCameraOfPositionOfProfile(Profile profile, Position position) throws ServiceException {
+    public Camera getCameraOfPositionOfProfile(Profile profile, Position position) {
         for(Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions()) {
             if(pairCameraPosition.getPosition().getId()==position.getId())
                 return pairCameraPosition.getCamera();
@@ -311,7 +311,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public boolean isPositionGreenScreenReadyPositionOfProfile(Profile profile, Position position) throws ServiceException {
+    public boolean isPositionGreenScreenReadyPositionOfProfile(Profile profile, Position position) {
         for(Profile.PairCameraPosition pairCameraPosition : profile.getPairCameraPositions()) {
             if(pairCameraPosition.getPosition().getId()==position.getId())
                 return pairCameraPosition.isGreenScreenReady();
@@ -320,7 +320,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Logo getLogoOfRelativeRectangleOfProfile(Profile profile, RelativeRectangle relativeRectangle) throws ServiceException {
+    public Logo getLogoOfRelativeRectangleOfProfile(Profile profile, RelativeRectangle relativeRectangle) {
         for(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             if(pairLogoRelativeRectangle.getRelativeRectangle().equals(relativeRectangle))
                 return pairLogoRelativeRectangle.getLogo();
@@ -329,7 +329,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public RelativeRectangle getRelativeRectangleOfLogoOfProfile(Profile profile, Logo logo) throws ServiceException {
+    public RelativeRectangle getRelativeRectangleOfLogoOfProfile(Profile profile, Logo logo) {
         for(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             if(pairLogoRelativeRectangle.getLogo().getId()==logo.getId())
                 return pairLogoRelativeRectangle.getRelativeRectangle();
@@ -338,7 +338,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Logo getProfileWaterMark(Profile profile) throws ServiceException {
+    public Logo getProfileWaterMark(Profile profile) {
         for(Profile.PairLogoRelativeRectangle pairLogoRelativeRectangle : profile.getPairLogoRelativeRectangles()) {
             RelativeRectangle relativeRectangle = pairLogoRelativeRectangle.getRelativeRectangle();
             if (relativeRectangle.getX() == -1
@@ -352,22 +352,22 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public String getProfileName(Profile profile) throws ServiceException {
+    public String getProfileName(Profile profile) {
         return profile.getName();
     }
 
     @Override
-    public boolean isProfilePrintEnabled(Profile profile) throws ServiceException {
+    public boolean isProfilePrintEnabled(Profile profile) {
         return profile.isPrintEnabled();
     }
 
     @Override
-    public boolean isProfileFilerEnabled(Profile profile) throws ServiceException {
+    public boolean isProfileFilerEnabled(Profile profile) {
         return profile.isFilerEnabled();
     }
 
     @Override
-    public boolean isProfileGreenscreenEnabled(Profile profile) throws ServiceException {
+    public boolean isProfileGreenscreenEnabled(Profile profile) {
         return profile.isGreenscreenEnabled();
     }
 

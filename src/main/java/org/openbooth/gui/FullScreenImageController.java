@@ -136,7 +136,7 @@ public class FullScreenImageController {
     String tempStorageDir;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, TempStorageHandler tempStorageHandler, CameraHandler cameraHandler, ProfileService profileservice) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, TempStorageHandler tempStorageHandler, CameraHandler cameraHandler, ProfileService profileservice) {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;

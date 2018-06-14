@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Profile;
 import org.openbooth.service.ProfileService;
@@ -23,7 +24,7 @@ import java.io.File;
  * Created by macdnz on 15.12.16.
  */
 public class ProfileImgCell extends TableCell<Profile, String> {
-    final static Logger LOGGER = LoggerFactory.getLogger(ProfileImgCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileImgCell.class);
 
     private  ObservableList<Profile> pList;
     private ProfileService pservice;
@@ -83,9 +84,9 @@ public class ProfileImgCell extends TableCell<Profile, String> {
             public void handle(MouseEvent event) {
 
                 if(pList.get(getIndex()).getWatermark()==null)
-                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                    GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    imageHandler.popupImage(pList.get(getIndex()).getWatermark(),primaryStage);
+                    GUIImageHelper.popupImage(pList.get(getIndex()).getWatermark(),primaryStage);
 
             }
 

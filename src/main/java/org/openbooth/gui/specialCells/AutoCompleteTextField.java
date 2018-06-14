@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -115,7 +116,7 @@ public class AutoCompleteTextField extends TextField
                     setText(parts[0]); //result.substring(0,result.lastIndexOf(" #")));
                     txLogoPath.setText(logo.getId());
                     txLogoPath.setId(parts[1]); //if logo is selected -> to avoid a new creation of logo
-                    txLogoUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+                    txLogoUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
                     entriesPopup.hide();
                 }
             });

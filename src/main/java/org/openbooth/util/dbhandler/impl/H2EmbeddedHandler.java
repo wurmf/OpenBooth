@@ -41,7 +41,7 @@ public class H2EmbeddedHandler  implements DBHandler {
      * @throws ClassNotFoundException if the driver class is not found.
      * @throws FileNotFoundException if {@link #firstStartup()} throws one.
      */
-    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException, IOException{
+    private void openConnection(String dbName) throws SQLException, ClassNotFoundException, DatabaseException {
         LOGGER.info("openConnection - Trying to open connection to database {}", dbName);
         try {
             Class.forName("org.h2.Driver");
@@ -69,7 +69,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         if(connection==null){
             try {
                 openConnection("openbooth");
-            } catch (SQLException|ClassNotFoundException|IOException e) {
+            } catch (SQLException|ClassNotFoundException e) {
                 throw new DatabaseException(e);
             }
         }
@@ -87,7 +87,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             try {
                 testState=true;
                 openConnection("übopenboothTest");
-            } catch (SQLException|ClassNotFoundException|IOException e) {
+            } catch (SQLException|ClassNotFoundException e) {
                 throw new DatabaseException(e);
             }
         } else if(!testState){
@@ -211,8 +211,8 @@ public class H2EmbeddedHandler  implements DBHandler {
 
         String image1Source = "/images/dummies/p1.jpg";
         String image2Source ="/images/dummies/p2.jpg";
-        String logo1Ssource ="/images/logos/logofamp.jpg";
-        String logo2Source ="/images/logos/logo1.jpg";
+        String logo1Ssource = "/images/logos/logofamp.jpg";
+        String logo2Source = "/images/logos/logo1.jpg";
         String green1Source ="/images/greenscreen/background/test_background1.jpg";
         String green2Source ="/images/greenscreen/background/test_background2.png";
         String green3Source ="/images/greenscreen/background/test_background3.jpg";

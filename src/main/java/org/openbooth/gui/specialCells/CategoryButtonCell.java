@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Background;
 import org.openbooth.entities.Profile;
@@ -22,7 +23,7 @@ import java.util.Optional;
  * Created by macdnz on 16.12.16.
  */
 public class CategoryButtonCell extends TableCell<Background.Category, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
 
 
 
@@ -32,7 +33,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
 
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -51,7 +52,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background.Category currentCategory = (Background.Category) CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
+                    Background.Category currentCategory = CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     categories.remove(currentCategory);

@@ -66,7 +66,7 @@ public class ImagePrinter {
         }
 
         @Override
-        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+        public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
             if(pageIndex==0&&this.image!=null) {
                 Graphics2D g2d=(Graphics2D) graphics;
                 double pageWidth=pageFormat.getImageableWidth();

@@ -54,7 +54,7 @@
                               <RowConstraints percentHeight="100.0" valignment="CENTER" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" snapToPixel="false" style="-fx-background-image: url('/images/trashcan.png');" />
+                              <Button fx:id="button1" mnemonicParsing="false" onAction="#onDeletePressed" snapToPixel="false" style="-fx-background-image: url('/images/delete.png');" />
                               <Button fx:id="button11" mnemonicParsing="false" onAction="#onPrintPressed" style="-fx-background-image: url('/images/printer.png');" GridPane.columnIndex="1" />
                               <Button fx:id="button12" mnemonicParsing="false" onAction="#onCropPressed" style="-fx-background-image: url('/images/crop.png');" GridPane.columnIndex="2" />
       

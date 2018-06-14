@@ -10,12 +10,17 @@ import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.entities.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
 
 /**
  * This class implements an image processor
  */
+@Component
+@Scope("prototype")
 public class ImageProcessorImpl implements ImageProcessor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageProcessorImpl.class);
@@ -37,8 +42,8 @@ public class ImageProcessorImpl implements ImageProcessor {
     private RefreshManager refreshManager;
 
 
-    public ImageProcessorImpl(ShotFrameController shotFrameController, ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, GreenscreenService greenscreenService, Position position, ImageHandler imageHandler, RefreshManager refreshManager){
-        this.shotFrameController = shotFrameController;
+    @Autowired
+    public ImageProcessorImpl(ShootingService shootingService, ProfileService profileService, ImageService imageService, LogoWatermarkService logoWatermarkService, FilterService filterService, GreenscreenService greenscreenService, ImageHandler imageHandler, RefreshManager refreshManager){
 
         this.shootingService = shootingService;
         this.profileService = profileService;
@@ -48,10 +53,19 @@ public class ImageProcessorImpl implements ImageProcessor {
         this.filterService = filterService;
         this.greenscreenService = greenscreenService;
 
-        this.position = position;
 
         this.imageHandler = imageHandler;
         this.refreshManager = refreshManager;
+    }
+
+    @Override
+    public void setShotFrameController(ShotFrameController shotFrameController) {
+        this.shotFrameController = shotFrameController;
+    }
+
+    @Override
+    public void setPosition(Position position){
+        this.position = position;
     }
 
     @Override
@@ -61,6 +75,8 @@ public class ImageProcessorImpl implements ImageProcessor {
 
 
         BufferedImage preview;
+
+
 
         String filterName = pairCameraPosition.getFilterName();
 
@@ -72,14 +88,18 @@ public class ImageProcessorImpl implements ImageProcessor {
 
             preview = openImageThrowException(imgPath);
 
+            preview = mirrorImage(preview);
+
             if(background != null){
                 preview = greenscreenService.applyGreenscreen(preview, background);
             }
         } else if (isFilter){
 
             preview = filterService.filter(filterName, imgPath);
+            preview = mirrorImage(preview);
         }else {
             preview = openImageThrowException(imgPath);
+            preview = mirrorImage(preview);
         }
 
         shotFrameController.refreshShot(preview);
@@ -105,6 +125,7 @@ public class ImageProcessorImpl implements ImageProcessor {
             Background background = pairCameraPosition.getBackground();
 
             shot = openImageThrowException(imgPath);
+            shot = mirrorImage(shot);
 
             if(background == null){
                 LOGGER.debug("processShot - greenscreen activated for position {} but no background set", position);
@@ -119,6 +140,7 @@ public class ImageProcessorImpl implements ImageProcessor {
         }else {
 
             shot = openImageThrowException(imgPath);
+            shot = mirrorImage(shot);
         }
 
         logoWatermarkService.addLogosToImage(shot);
@@ -171,22 +193,27 @@ public class ImageProcessorImpl implements ImageProcessor {
         return filteredImage;
     }
 
-    private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException{
+    private BufferedImage saveUnfilterdImageAndApplyFilter(String originalImgPath) throws ServiceException {
         BufferedImage shot;
-        boolean logosEnabled = profileService.getAllPairLogoRelativeRectangle().isEmpty();
+        boolean logosEnabled = !profileService.getAllPairLogoRelativeRectangle().isEmpty();
 
         shot = openImageThrowException(originalImgPath);
+        shot = mirrorImage(shot);
 
-        if(logosEnabled){
+        if (logosEnabled) {
             logoWatermarkService.addLogosToImage(shot);
 
             saveImageThrowException(shot, originalImgPath);     //Change if cameraHandlerThread stores img in temp folder
-            LOGGER.debug("processShot - {} overwritten with logo image before filtering");
+            LOGGER.debug("processShot - {} overwritten with logo image before filtering", originalImgPath);
         }
 
         String filterName = pairCameraPosition.getFilterName();
         shot = filterService.filter(filterName, originalImgPath);
         LOGGER.debug("processShot - Filter {} for position {} added to shot", filterName, position);
+
+        if (logosEnabled) {
+            logoWatermarkService.addLogosToImage(shot);
+        }
 
         return shot;
     }
@@ -205,5 +232,11 @@ public class ImageProcessorImpl implements ImageProcessor {
         } catch (ImageHandlingException e) {
             throw new ServiceException(e);
         }
+    }
+
+    private BufferedImage mirrorImage(BufferedImage image){
+        BufferedImage mirroredImage = new BufferedImage(image.getWidth(),image.getHeight(),image.getType());
+        mirroredImage.createGraphics().drawImage(image, image.getWidth(),0,- image.getWidth(),image.getHeight(),null);
+        return mirroredImage;
     }
 }

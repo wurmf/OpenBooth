@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Background;
 import org.openbooth.service.BackgroundService;
@@ -21,19 +22,15 @@ import java.util.Optional;
  * Created by macdnz on 16.12.16.
  */
 public class BackgroundButtonCell extends TableCell<Background, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(BackgroundButtonCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackgroundButtonCell.class);
 
-    private  ObservableList<Background> backgroundList;
-    private BackgroundService bservice;
 
     private final Button cellButton;
 
     public BackgroundButtonCell(ImageHandler imageHandler,ObservableList<Background> backgroundList, BackgroundService bservice, Stage primaryStage) {
-        this.backgroundList = backgroundList;
-        this.bservice = bservice;
 
         cellButton = new Button();
-        cellButton.setBackground(imageHandler.getButtonBackground("/images/delete4.png",40,40));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -52,7 +49,7 @@ public class BackgroundButtonCell extends TableCell<Background, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background currentBackground = (Background) BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
+                    Background currentBackground = BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     backgroundList.remove(currentBackground);

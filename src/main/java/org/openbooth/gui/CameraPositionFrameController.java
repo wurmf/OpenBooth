@@ -65,9 +65,8 @@ public class CameraPositionFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Profile.PairCameraPosition, String> t) {
                         try {
-                            Profile.PairCameraPosition p = ((Profile.PairCameraPosition) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Profile.PairCameraPosition p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 kamPosList.remove(p);
                                 p.getCamera().setLable(t.getNewValue());

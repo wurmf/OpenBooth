@@ -1,5 +1,6 @@
 package org.openbooth.gui.specialCells;
 
+import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Background;
 import org.openbooth.service.BackgroundService;
@@ -92,9 +93,9 @@ public class BackgroundImgCell extends TableCell<Background, String> {
             @Override
             public void handle(MouseEvent event) {
                 if(backgroundList.get(getIndex()).getPath()==null)
-                    imageHandler.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
+                    GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    imageHandler.popupImage(backgroundList.get(getIndex()).getPath(),primaryStage);
+                    GUIImageHelper.popupImage(backgroundList.get(getIndex()).getPath(),primaryStage);
 
             }
 

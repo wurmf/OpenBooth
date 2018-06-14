@@ -72,7 +72,7 @@ public class MiniaturFrameController {
     private Queue<org.openbooth.entities.Image> newImages=new LinkedBlockingQueue<>();
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraHandler cameraHandler, ProfileService profileService) throws ServiceException {
+    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraHandler cameraHandler, ProfileService profileService) {
         this.imageService = imageService;
         this.shootingService = shootingService;
         this.windowManager = windowManager;
@@ -210,7 +210,7 @@ public class MiniaturFrameController {
         hBox.setVisible(false);
         hBox.setStyle("-fx-background-color: white;");
 
-        ImageView fullscreen = new ImageView(new Image("/images/fullscreen3.jpg"));
+        ImageView fullscreen = new ImageView(new Image("/images/fullscreen.jpg"));
         fullscreen.setFitHeight(30);
         fullscreen.setFitWidth(30);
         fullscreen.setOnMouseClicked(mouseEvent -> {
@@ -220,7 +220,7 @@ public class MiniaturFrameController {
             windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         });
 
-        ImageView delete = new ImageView( getClass().getResource( "/images/delete3.png").toExternalForm());
+        ImageView delete = new ImageView( getClass().getResource("/images/delete.png").toExternalForm());
         delete.setFitHeight(30);
         delete.setFitWidth(30);
         delete.setOnMouseClicked((MouseEvent mouseEvent) -> {

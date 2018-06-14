@@ -14,6 +14,7 @@ import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -26,6 +27,7 @@ import static java.lang.Math.*;
  * This class implements a greenscreen service
  */
 @Service
+@Scope("prototype")
 public class GreenscreenServiceImpl implements GreenscreenService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GreenscreenServiceImpl.class);

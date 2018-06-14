@@ -11,6 +11,7 @@ import org.openbooth.service.exceptions.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -26,6 +27,7 @@ import java.util.Map;
  *
  */
 @Service
+@Scope("prototype")
 public class LogoWatermarkServiceImpl implements LogoWatermarkService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LogoWatermarkServiceImpl.class);

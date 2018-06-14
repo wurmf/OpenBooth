@@ -1,6 +1,7 @@
 package org.openbooth.camera.impl;
 
 import org.openbooth.camera.CameraHandler;
+import org.openbooth.camera.CameraThread;
 import org.openbooth.camera.exeptions.CameraException;
 
 import org.openbooth.camera.libgphoto2java.CameraGphoto;
@@ -13,6 +14,7 @@ import com.sun.jna.Pointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -26,18 +28,21 @@ public class CameraHandlerImpl implements CameraHandler
 
     private Logger LOGGER = LoggerFactory.getLogger(CameraHandlerImpl.class);
 
+    private ApplicationContext applicationContext;
+
     private CameraService cameraService;
     private List<CameraGphoto> cameraGphotoList=new ArrayList<>();
     private List<String> cameraModelList = new ArrayList<>();
     private List<String> cameraPortList = new ArrayList<>();
     private List<Camera> cameraList = new ArrayList<>();
-    private List<CameraThread> threadList;
+    private List<CameraThreadImpl> internalThreadList;
 
     private boolean isInitialized = false;
 
     @Autowired
-    public CameraHandlerImpl(CameraService cameraService)
+    public CameraHandlerImpl(CameraService cameraService, ApplicationContext applicationContext)
     {
+        this.applicationContext = applicationContext;
         this.cameraService=cameraService;
     }
 
@@ -50,14 +55,18 @@ public class CameraHandlerImpl implements CameraHandler
     public List<CameraThread> createThreads(List<Camera> cameraList) throws CameraException
     {
 
-        threadList = new ArrayList<>();
+
+        internalThreadList = new ArrayList<>();
+
+        List<CameraThread> threadList = new ArrayList<>();
         for(Camera camera : cameraList)
         {
             int index = cameraList.indexOf(camera);
-            CameraThread cameraThread = new CameraThread();
+            CameraThreadImpl cameraThread = applicationContext.getBean(CameraThreadImpl.class);
 
             cameraThread.setCameraGphoto(cameraGphotoList.get(index));
             cameraThread.setCamera(camera);
+            internalThreadList.add(cameraThread);
             threadList.add(cameraThread);
         }
 
@@ -144,7 +153,7 @@ public class CameraHandlerImpl implements CameraHandler
     @Override
     public void captureImage(Camera camera)
     {
-        for (CameraThread thread: threadList)
+        for (CameraThreadImpl thread: internalThreadList)
         {
             if(thread.getCamera().getId()==camera.getId())
             {
@@ -156,7 +165,7 @@ public class CameraHandlerImpl implements CameraHandler
     @Override
     public void setSerieShot(Camera camera, boolean serieShot)
     {
-        for (CameraThread thread: threadList)
+        for (CameraThreadImpl thread: internalThreadList)
         {
             if(thread.getCamera().getId()==camera.getId())
             {
@@ -168,7 +177,7 @@ public class CameraHandlerImpl implements CameraHandler
     @Override
     public void setCountdown(Camera camera, int countdown)
     {
-        for (CameraThread thread: threadList)
+        for (CameraThreadImpl thread: internalThreadList)
         {
             if(thread.getCamera().getId()==camera.getId())
             {

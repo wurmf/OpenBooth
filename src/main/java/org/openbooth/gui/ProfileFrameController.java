@@ -115,9 +115,8 @@ public class ProfileFrameController extends SettingFrameController{
                         @Override
                         public void handle(TableColumn.CellEditEvent<Profile, String> t) {
                             try {
-                                Profile p = ((Profile) t.getTableView().getItems().get(
-                                        t.getTablePosition().getRow())
-                                );
+                                Profile p = t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow());
                                 if (t.getNewValue().compareTo("") != 0) {
                                     p.setName(t.getNewValue());
                                     pservice.edit(p);
@@ -299,19 +298,19 @@ public class ProfileFrameController extends SettingFrameController{
             });
 
 
-            txProfilUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+            txProfilUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
             txProfilUpload.setPrefWidth(50);
             txProfilUpload.setPrefHeight(50);
 
-            txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+            txProfilAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             txProfilAdd.setPrefWidth(50);
             txProfilAdd.setPrefHeight(50);
 
             txProfilName.textProperty().addListener((observable, oldValue, newValue) -> {
                 if(!newValue.isEmpty()){
-                    txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                    txProfilAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
                 }else
-                    txProfilAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                    txProfilAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
             });
 
@@ -350,7 +349,7 @@ public class ProfileFrameController extends SettingFrameController{
                 txProfilWatermark.setText("Hochladen...");
 
 
-                txProfilUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+                txProfilUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -373,7 +372,7 @@ public class ProfileFrameController extends SettingFrameController{
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txProfilWatermark.setText(file.getAbsolutePath());
-            txProfilUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txProfilUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
         }
     }
 

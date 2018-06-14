@@ -14,14 +14,14 @@ public interface CameraDAO {
      * @return persisted camera object with autoassigned id
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public Camera create(Camera camera) throws PersistenceException;
+    Camera create(Camera camera) throws PersistenceException;
 
     /**
      * Remove given camera from persistence store
      * @param cameraID - camera to be removed is identified by its id
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public void delete(int cameraID) throws PersistenceException;
+    void delete(int cameraID) throws PersistenceException;
 
     /**
      * Retrieve a Camera entity identified by id from the persistence store (independent from its activity status)
@@ -36,34 +36,34 @@ public interface CameraDAO {
      * @return list of camera objects that are set active
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public List<Camera> readActive() throws PersistenceException;
+    List<Camera> readActive() throws PersistenceException;
 
     /**
      * Sets the camera with the given ID to active
      * @param cameraID - ID of the camera that will be set active
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public void setActive(int cameraID) throws PersistenceException;
+    void setActive(int cameraID) throws PersistenceException;
 
     /**
      * Sets the camera with the given ID to inactive
      * @param cameraID - ID of the camera that will be set inactive
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public void setInactive(int cameraID) throws PersistenceException;
+    void setInactive(int cameraID) throws PersistenceException;
 
     /**
      * Sets all saved Cameras to inactive
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public void setAllInactive() throws PersistenceException;
+    void setAllInactive() throws PersistenceException;
 
     /**
      * returns all Cameras
      * @return list of all Cameras
      * @throws PersistenceException if persistence data store can not be accessed
      */
-    public List<Camera> getAll() throws PersistenceException;
+    List<Camera> getAll() throws PersistenceException;
 
     /**
      * Looks a given camera up and returns if it already exists
@@ -71,7 +71,7 @@ public interface CameraDAO {
      * @return true if the given camera is already saved (identified by portnumber and cameramodel)
      * @throws PersistenceException
      */
-    public Camera exists(Camera camera) throws PersistenceException;
+    Camera exists(Camera camera) throws PersistenceException;
 
     /**
      * Looks a given camera up and returns if it already exists
@@ -79,5 +79,5 @@ public interface CameraDAO {
      * @return edited camera
      * @throws PersistenceException
      */
-    public Camera editCamera(Camera camera) throws PersistenceException;
+    Camera editCamera(Camera camera) throws PersistenceException;
 }

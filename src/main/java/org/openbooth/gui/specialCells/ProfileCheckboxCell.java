@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
  * Created by macdnz on 15.12.16.
  */
 public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
-    final static Logger LOGGER = LoggerFactory.getLogger(ProfileCheckboxCell.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileCheckboxCell.class);
     private  ObservableList<Profile> pList;
     private ProfileService pservice;
     private String checkboxTyp;
@@ -30,7 +30,7 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
 
             @Override
             public void handle(MouseEvent event) {
-                Profile currentProfile = (Profile) ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
+                Profile currentProfile = ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
 
                 if(checkboxTyp.equals("mobil"))
                    currentProfile.setMobilEnabled(cellCheckbox.isSelected());
@@ -64,7 +64,7 @@ public class ProfileCheckboxCell extends TableCell<Profile, Boolean> {
         if(empty) {
             setGraphic(null);
         }else{
-            Profile currentProfile = (Profile) ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
+            Profile currentProfile = ProfileCheckboxCell.this.getTableView().getItems().get(ProfileCheckboxCell.this.getIndex());
             if(checkboxTyp.equals("mobil"))
                 cellCheckbox.setSelected(currentProfile.isMobilEnabled());
             else if (checkboxTyp.equals("green"))

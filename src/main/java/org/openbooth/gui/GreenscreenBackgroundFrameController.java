@@ -87,9 +87,8 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
                     @Override
                     public void handle(TableColumn.CellEditEvent<Background, String> t) {
                         try {
-                            Background p = ((Background) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Background p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.setName(t.getNewValue());
                                 bservice.edit(p);
@@ -147,19 +146,19 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
                 });
 
 
-        txBackgroundUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+        txBackgroundUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
         txBackgroundUpload.setPrefHeight(50);
         txBackgroundUpload.setPrefWidth(50);
 
-        txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+        txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         txBackgroundAdd.setPrefHeight(50);
         txBackgroundAdd.setPrefWidth(50);
 
         txBackgroundName.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue.isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
         });
 
@@ -183,12 +182,12 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
             txBackgroundPath.setText(file.getAbsolutePath());
-            txBackgroundUpload.setBackground(imageHandler.getButtonBackground("/images/upload2.png",50,50));
+            txBackgroundUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
 
             if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+                txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
             }else
-                txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+                txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         }
     }
     @FXML
@@ -210,7 +209,7 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
 
                 txBackgroundPath.setText("Hochladen...");
                 txBackgroundName.clear();
-                txBackgroundUpload.setBackground(imageHandler.getButtonBackground("/images/upload1.png",50,50));
+                txBackgroundUpload.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/upload1.png",50,50));
 
 
             } catch (ServiceException e) {
@@ -228,9 +227,9 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
         tableBackground.setItems(this.backgroundList);
 
         if(!txBackgroundName.getText().isEmpty() && selectedCategory!=null && selectedProfile !=null && txBackgroundPath.getText().compareTo("Hochladen...")!=0 ){
-            txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add.png",50,50));
+            txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
         }else
-            txBackgroundAdd.setBackground(imageHandler.getButtonBackground("/images/add3.png",50,50));
+            txBackgroundAdd.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/add.png",50,50));
 
     }
 
