@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -16,6 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.awt.event.KeyListener;
+import java.security.Key;
 
 @Component
 public class LoginFrameController {
@@ -45,7 +49,6 @@ public class LoginFrameController {
         this.loginRedirectorModel=loginRedirectorModel;
         this.shootingService =shootingService;
         this.firstLogin = true;
-
     }
     /**
      * Lets an AdminUserService instance check if the values given in the adminname- and passwordEntered-TextField correspond to a saved admin-user.

@@ -65,16 +65,17 @@
                   <RowConstraints percentHeight="26.0" vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
+                   <TextField fx:id="nameTextField" onKeyReleased="#checkInputs" promptText="Name" style="-fx-border-color: #629e98, white, white; -fx-border-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                   <font>
+                       <Font size="36.0" />
+                   </font>
+               </TextField>
                   <PasswordField fx:id="passwordTextField" onKeyReleased="#checkInputs" promptText="Passwort" style="-fx-border-color: #629e98, white, white; -fx-border-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <font>
                         <Font size="36.0" />
                      </font>
                   </PasswordField>
-                  <TextField fx:id="nameTextField" onKeyReleased="#checkInputs" promptText="Name" style="-fx-border-color: #629e98, white, white; -fx-border-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;" GridPane.columnIndex="1" GridPane.halignment="CENTER">
-                     <font>
-                        <Font size="36.0" />
-                     </font>
-                  </TextField>
+
                   <Button fx:id="confirmButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onConfirmPressed" onMouseClicked="#onConfirmPressed" style="-fx-background-color: #629e98; -fx-border-radius: 5;" text="Login" textAlignment="CENTER" textFill="WHITE" visible="false" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4">
                      <font>
                         <Font size="36.0" />
