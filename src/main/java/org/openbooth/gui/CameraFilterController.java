@@ -3,7 +3,6 @@ package org.openbooth.gui;
 import javafx.scene.input.KeyEvent;
 import org.openbooth.entities.Background;
 import org.openbooth.service.FilterService;
-import org.openbooth.service.ImageService;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
@@ -95,11 +94,9 @@ public class CameraFilterController {
      * marks the chousen filter
      */
     private void creatButtons(){
-
         try {
             filtergrid = new GridPane();
             filtergrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
-            filterscrollplanel= new ScrollPane();
             filtergrid.setStyle("-fx-background-color: black;");
             filterscrollplanel.setStyle("-fx-background-color: black;");
             filterscrollplanel.setFitToWidth(true);
@@ -256,9 +253,7 @@ public class CameraFilterController {
 
             List<Background>  greenList =profileservice.getAllBackgroundOfProfile();
             shootingService.addUserDefinedBackgrounds(greenList);
-            // List<Image> imlist= imageService.getAllImages(shootingService.searchIsActive().getId());
-            for (Background backround : greenList) {//imagefilter.size
-                // for(Image im : imlist){
+            for (Background backround : greenList) {
                 if (columcount == 5) {
                     rowcount++;
                     columcount = 0;
@@ -267,14 +262,13 @@ public class CameraFilterController {
                         greengrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
                     }
                 }
-               // profileservice.getAllBackgroundOfProfile().get(1).getPath()
 
                 ImageView iv = new ImageView();
                 iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
                 iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
 
-                //iv.setStyle("-fx-background-color: green;");
-                iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
+
+                iv.setStyle("-fx-padding: 5;");
                 fips=new FileInputStream(backround.getPath());
                 iv.setImage(new javafx.scene.image.Image(fips, iv.getFitHeight(), iv.getFitWidth(), true, true));
                 fips.close();
@@ -285,20 +279,17 @@ public class CameraFilterController {
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/5-40);
                     }
                 }
-                //  iv.setImage(new javafx.scene.image.Image(new FileInputStream(im.getImagepath()), iv.getFitHeight(), iv.getFitWidth(), true, true));
+
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
                     if (activiv != null) {
                         activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
                         activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
-                        //activiv.setStyle("-fx-background-color: black;");
-                        //activiv.setBlendMode(BlendMode.BLUE);
                     }
+
                     activiv = iv;
                     iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
                     iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
 
-                    //iv.setStyle("-fx-background-color: green;");
-                    //iv.setBlendMode(BlendMode.GREEN);
                     try {
                         profileservice.getActiveProfile().getPairCameraPositions().get(index).setBackground(backround);
                     } catch (ServiceException e) {
@@ -415,19 +406,11 @@ public class CameraFilterController {
                     titel.setVisible(true);
                     createGreenscreenButton();
                 } else {
-                   // if (buttonList.isEmpty()) {
                         greengrid.setVisible(false);
                         filtergrid.setVisible(true);
                         titel.setText("Kamera " + profileservice.getActiveProfile().getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
                         titel.setVisible(true);
                         creatButtons();
-                    /*} else {
-                        greengrid.setVisible(false);
-                        filtergrid.setVisible(true);
-                        titel.setText("Kamera " + profile.getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
-                        titel.setVisible(true);
-                        loadButton();
-                    }*/
                 }
             }
         } catch (ServiceException e) {
