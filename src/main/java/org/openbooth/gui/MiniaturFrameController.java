@@ -1,13 +1,7 @@
 package org.openbooth.gui;
 
 import org.openbooth.util.CameraTrigger;
-import org.openbooth.util.KeyHandler;
-import org.openbooth.camera.CameraHandler;
-import org.openbooth.camera.exeptions.CameraException;
-import org.openbooth.entities.Camera;
-import org.openbooth.entities.Profile;
 import org.openbooth.service.ImageService;
-import org.openbooth.service.ProfileService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.fxml.FXML;
@@ -55,7 +49,7 @@ public class MiniaturFrameController {
     private ImageService imageService;
     @Resource
     private ShootingService shootingService;
-    CameraTrigger cameraTrigger;
+    private CameraTrigger cameraTrigger;
 
     private WindowManager windowManager;
 
@@ -71,7 +65,7 @@ public class MiniaturFrameController {
     private Queue<org.openbooth.entities.Image> newImages=new LinkedBlockingQueue<>();
 
     @Autowired
-    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraTrigger cameraTrigger) throws ServiceException {
+    public MiniaturFrameController(ImageService imageService, ShootingService shootingService, WindowManager windowManager, CameraTrigger cameraTrigger) {
         this.imageService = imageService;
         this.shootingService = shootingService;
         this.windowManager = windowManager;
@@ -98,7 +92,7 @@ public class MiniaturFrameController {
 
         try {
             if(shootingService.searchIsActive().getActive()) {
-                LOGGER.info("Miniaturansicht -> Active Shooting ->" + shootingService.searchIsActive().getId());
+                LOGGER.info("Miniaturansicht -> Active Shooting -> {}", shootingService.searchIsActive().getId());
                 listOfImages = imageService.getAllImages(shootingService.searchIsActive().getId());
             }else{
                 listOfImages = new ArrayList<>();
@@ -213,7 +207,7 @@ public class MiniaturFrameController {
         fullscreen.setFitWidth(30);
         fullscreen.setOnMouseClicked(mouseEvent -> {
             ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-            LOGGER.debug("fullscreen clicked...imageID = "+imageView.getId());
+            LOGGER.debug("fullscreen clicked...imageID = {}",imageView.getId());
 
             windowManager.showFullscreenImage(Integer.parseInt(imageView.getId()));
         });
@@ -232,7 +226,7 @@ public class MiniaturFrameController {
 
             if(result.isPresent()&&result.get()==ButtonType.OK){
                 ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEvent.getSource()).getParent().getParent())).getChildren().get(0);
-                LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+                LOGGER.debug("Bild wird gelöscht -> imageID = {}",imageView.getId());
                 try {
                     imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
                     tile.getChildren().remove(imageView.getParent());
@@ -251,12 +245,12 @@ public class MiniaturFrameController {
             if(new File(img.getImagepath()).isFile()) {
                 imageView = createImageView(new File(img.getImagepath()));
             }else {
-                LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht ->"+img.toString());
+                LOGGER.debug("Foto in der DB wurde im Filesystem nicht gefunden und daher gelöscht -> {}",img);
                 imageService.delete(img.getImageID());
             }
             if(imageView!=null){
                 VBox vBox = new VBox();
-                LOGGER.debug("imageview id = "+img.getImageID());
+                LOGGER.debug("imageview id = {}",img.getImageID());
                 imageView.setId(String.valueOf(img.getImageID()));
                 imageView.setUserData(img.getImagepath());
                 vBox.getChildren().addAll(imageView,hBox);
@@ -279,7 +273,7 @@ public class MiniaturFrameController {
     {
         if(delete){
             ImageView imageView =(ImageView) ((VBox) (((ImageView) mouseEventdel.getSource()).getParent().getParent())).getChildren().get(0);
-            LOGGER.debug("Bild wird gelöscht -> imageID ="+imageView.getId());
+            LOGGER.debug("Bild wird gelöscht -> imageID = {}",imageView.getId());
             try {
 
                 imageService.delete(Integer.parseInt(imageView.getId())); //löschen aus Datenbank
@@ -305,4 +299,5 @@ public class MiniaturFrameController {
         }
 
     }
+
 }

@@ -58,46 +58,19 @@ public class FullScreenImageController {
     @FXML
     private GridPane mainPane;
     @FXML
-    private GridPane wholePane;
-    @FXML
     private Pane planetop;
     @FXML
     private AnchorPane forCropping;
 
     private GridPane planbottom;
     @FXML
-    private Button button5;
-    @FXML
-    private Button button6;
-    @FXML
-    private Button button9;
-    @FXML
-    private Button button7;
-    @FXML
-    private Button button8;
-    @FXML
     private Button button3;
     @FXML
     private Button button4;
     @FXML
-    private Button button2;
-    @FXML
-    private Button button13;
-    @FXML
-    private ImageView image4;
-    @FXML
-    private ImageView image3;
-    @FXML
     private ImageView ivfullscreenImage;
     @FXML
     private Button saveFilteredButton;
-    @FXML
-    private Button button1;
-    @FXML
-    private Button button11;
-    @FXML
-    private Button button12;
-
 
 
 
@@ -130,7 +103,7 @@ public class FullScreenImageController {
     private String tempStorageDir;
 
     @Autowired
-    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, TempStorageHandler tempStorageHandler, CameraTrigger cameraTrigger) throws ServiceException {
+    public FullScreenImageController(WindowManager windowManager, ShootingService shootingService, FilterService filterService, ImageService imageService, ImagePrinter imagePrinter, ImageHandler imageHandler, RefreshManager refreshManager, TempStorageHandler tempStorageHandler, CameraTrigger cameraTrigger) {
         this.filterService = filterService;
         this.imageService=imageService;
         this.shootingService= shootingService;
@@ -434,7 +407,7 @@ public class FullScreenImageController {
      * @param imgID image id given from miniaturframe
      */
     public void changeImage(int imgID){
-        LOGGER.info("Entering changeImage with imgID ="+imgID);
+        LOGGER.info("Entering changeImage with imgID = {}",imgID);
 
         activ = -1;
         FileInputStream fips=null;
@@ -445,7 +418,7 @@ public class FullScreenImageController {
                 this.imageList = imageService.getAllImages(activ);
             }
             if (imageList != null) {
-                LOGGER.debug("imagelist->size" + imageList.size());
+                LOGGER.debug("imagelist->size {}", this.imageList.size());
                 for (int i = 0; i <imageList.size() ; i++) {
                     if(imageList.get(i).getImageID()==imgID){
                         currentIndex=i;
@@ -494,7 +467,7 @@ public class FullScreenImageController {
      * @param imgOriginalPath path of the image to show
      */
     public void makePreviewFilter(String imgOriginalPath){
-        LOGGER.debug("Entering makePreviewFilter with imgPath->", imgOriginalPath);
+        LOGGER.debug("Entering makePreviewFilter with imgPath-> {}", imgOriginalPath);
 
         try {
             String imgPath = filterService.resize(imgOriginalPath,80,80);
@@ -626,7 +599,7 @@ public class FullScreenImageController {
         }
         else
         {
-            LOGGER.debug("Entering saveFilteredImg... "+filteredImgPath);
+            LOGGER.debug("Entering saveFilteredImg... {}",this.filteredImgPath);
             try {
 
 
@@ -674,7 +647,7 @@ public class FullScreenImageController {
      */
     public void deletePreviews(String imgPath){
 
-        LOGGER.debug("Entering deletePreviews -> with imgPath ="+imgPath);
+        LOGGER.debug("Entering deletePreviews -> with imgPath = {}",imgPath);
         //exporting image name from imagePath
         String[] parts = imgPath.split("/");
         String imgFilterName = parts[parts.length-1].replace(".jpg","_preview.jpg");
@@ -720,6 +693,7 @@ public class FullScreenImageController {
         }
 
     }
+
 
     private void onCheckPressed()
     {

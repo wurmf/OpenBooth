@@ -70,7 +70,7 @@ public class WindowManager {
      */
     public void start(Stage mainStage) throws IOException{
         this.mainStage=mainStage;
-        initScenes(mainStage);
+        initScenes();
 
         this.mainStage.setTitle("OpenBooth");
         //TODO: Useless at this moment
@@ -86,10 +86,10 @@ public class WindowManager {
 
     }
 
-    private void initScenes(Stage mainStage) throws IOException{
+    private void initScenes() throws IOException{
         double screenWidth=Screen.getPrimary().getBounds().getWidth();
         double screenHeight=Screen.getPrimary().getBounds().getHeight();
-        LOGGER.info("PrimaryScreen Bounds: Width: "+screenWidth+" Height: "+screenHeight);
+        LOGGER.info("PrimaryScreen Bounds: Width: {} Height: {}",screenWidth,screenHeight);
 
         setFontSize(screenWidth,screenHeight);
         if(fontSize ==0){
@@ -101,7 +101,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, FullScreenImageController> pictureWrapper = springFXMLLoader.loadAndWrap("/fxml/fullscreenFrame.fxml", FullScreenImageController.class);
         Parent root = (Parent) pictureWrapper.getLoadedObject();
         URL cssf= this.getClass().getResource("/css/fullscreen.css");
-        LOGGER.debug("CSSF -"+cssf);
+        LOGGER.debug("CSSF - {}",cssf);
         root.setStyle("-fx-font-size:"+fontSize+"px;");
         root.getStylesheets().add(cssf.toExternalForm());
         this.pictureFullScene=new Scene(root ,screenWidth,screenHeight);
@@ -111,7 +111,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, MainFrameController> mfWrapper = springFXMLLoader.loadAndWrap("/fxml/mainFrame.fxml", MainFrameController.class);
         Parent parentmain = (Parent) mfWrapper.getLoadedObject();
         URL css= this.getClass().getResource("/css/main.css");
-        LOGGER.debug("CSSM -"+css);
+        LOGGER.debug("CSSM - {}",css);
         int sice = (fontSize *3);
         parentmain.setStyle("-fx-font-size:"+sice+"px;");
         parentmain.getStylesheets().add(css.toExternalForm());
@@ -121,7 +121,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, ShootingAdminController> shootingWrapper = springFXMLLoader.loadAndWrap("/fxml/shootingFrame.fxml", ShootingAdminController.class);
         Parent parentsf = (Parent) shootingWrapper.getLoadedObject();
         URL csssf= this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.debug("CSSSF -"+csssf);
+        LOGGER.debug("CSSSF - {}",csssf);
         parentsf.setStyle("-fx-font-size:"+fontSize+"px;");
         parentsf.getStylesheets().add(csssf.toExternalForm());
         this.shootingScene=new Scene(parentsf,screenWidth,screenHeight);
@@ -134,7 +134,7 @@ public class WindowManager {
         Parent parentsett = (Parent) settingWrapper.getLoadedObject();
         //Anmerkung: Css für Einstellungen wird erst dann hinzugefügt, wenn einstellungen-gui fertig ist. - Deniz
         URL csssett = this.getClass().getResource("/css/profilesetting.css");
-        LOGGER.debug("CSSSETT:"+csssett);
+        LOGGER.debug("CSSSETT: {}",csssett);
         parentsett.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentsett.getStylesheets().add(csssett.toExternalForm());
         this.settingScene = new Scene(parentsett,screenWidth,screenHeight);
@@ -150,7 +150,7 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/miniaturFrame.fxml", MiniaturFrameController.class);
         Parent parentmin = (Parent) miniWrapper.getLoadedObject();
         URL cssmin = this.getClass().getResource("/css/miniatur.css");
-        LOGGER.debug("CSSSETT:"+cssmin);
+        LOGGER.debug("CSSSETT: {}",cssmin);
         parentmin.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentmin.getStylesheets().add(cssmin.toExternalForm());
         this.miniaturScene=new Scene(parentmin,screenWidth,screenHeight);
@@ -162,7 +162,7 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/customerFrame.fxml", CustomerFrameController.class);
         Parent parentcos = (Parent) customerWrapper.getLoadedObject();
         URL csscos= this.getClass().getResource("/css/customer.css");
-        LOGGER.debug("CSSCOS -"+csscos);
+        LOGGER.debug("CSSCOS - {}",csscos);
         parentcos.setStyle("-fx-font-size:"+ fontSize*3 +"px;");
         parentcos.getStylesheets().add(csscos.toExternalForm());
         this.customerScene = new Scene(parentcos,screenWidth,screenHeight);
@@ -173,7 +173,7 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/kameraFilterFrame.fxml", CameraFilterController.class);
         Parent parentkaf = (Parent) kameraFilterFXMLWrapper.getLoadedObject();
         URL csskaf= this.getClass().getResource("/css/camerafilter.css");
-        LOGGER.debug("CSSKAF -"+csskaf);
+        LOGGER.debug("CSSKAF - {}",csskaf);
         parentkaf.setStyle("-fx-font-size:"+ fontSize +"px;");
         parentkaf.getStylesheets().add(csskaf.toExternalForm());
         this.kamerafilterScene = new Scene(parentkaf,screenWidth,screenHeight);
@@ -184,7 +184,7 @@ public class WindowManager {
                 springFXMLLoader.loadAndWrap("/fxml/recoveryFrame.fxml", RecoveryController.class);
         Parent parentrec = (Parent) recoveryControllerFXMLWrapper.getLoadedObject();
         URL cssrec = this.getClass().getResource("/css/recovery.css");
-        LOGGER.debug("CSSREC:"+cssrec);
+        LOGGER.debug("CSSREC: {}",cssrec);
         parentrec.setStyle("-fx-font-size:"+ fontSize*1.5 +"px;");
         parentrec.getStylesheets().add(cssrec.toExternalForm());
         this.recoveryScene=new Scene(parentrec,screenWidth,screenHeight);
@@ -193,7 +193,7 @@ public class WindowManager {
         SpringFXMLLoader.FXMLWrapper<Object, DeleteImageController> deleteWrapper = springFXMLLoader.loadAndWrap("/fxml/deleteFrame.fxml", DeleteImageController.class);
         Parent parentdel = (Parent) deleteWrapper.getLoadedObject();
         URL cssd= this.getClass().getResource("/css/basicstyle.css");
-        LOGGER.debug("CSSF -"+cssd);
+        LOGGER.debug("CSSF - {}",cssd);
         parentdel.setStyle("-fx-font-size:"+fontSize*1.5+"px;");
         parentdel.getStylesheets().add(cssd.toExternalForm());
         this.deleteScene=new Scene(parentdel ,screenWidth,screenHeight);

@@ -1,10 +1,6 @@
 package org.openbooth.gui;
 
 import org.openbooth.util.CameraTrigger;
-import org.openbooth.util.KeyHandler;
-import org.openbooth.camera.CameraHandler;
-import org.openbooth.camera.exeptions.CameraException;
-import org.openbooth.entities.Camera;
 import org.openbooth.entities.Profile;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.ProfileService;
@@ -29,7 +25,6 @@ import org.springframework.stereotype.Component;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,7 +105,7 @@ public class CustomerFrameController {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                 }
                 List<Profile.PairCameraPosition> pairList = profileservice.getAllPairCameraPositionOfProfile();
-                if (pairList.isEmpty() || pairList.size() == 0) {
+                if (pairList == null || pairList.isEmpty()) {
                     rightbutton.setVisible(false);
                 }
                 allpicturesview.setVisible(true);
@@ -137,7 +132,8 @@ public class CustomerFrameController {
                 }
                 filterChouseside = false;
             }
-            if (profileservice.getActiveProfile().getPairCameraPositions().isEmpty() || profileservice.getActiveProfile().getPairCameraPositions().size() == 0) {
+            List<Profile.PairCameraPosition> pcps = profileservice.getActiveProfile().getPairCameraPositions();
+            if (pcps == null || pcps.isEmpty()) {
                 rightbutton.setVisible(false);
             }
             miniLastVisit=false;
@@ -230,8 +226,6 @@ public class CustomerFrameController {
                 rightbutton.setVisible(false);
             }else {
 
-              //  LOGGER.debug("buttons:" + buttonList.size() + "");
-               // LOGGER.debug("pair:"+pairList.size()+"");
                 int column = (int) ((float) pairList.size() / 3.0f);
                 int width;
                 if(pairList.size()>3){
@@ -258,7 +252,6 @@ public class CustomerFrameController {
                     imageView.prefHeight(high);
                     imageView.prefWidth(20);
                     if(!pairList.get(i).isGreenScreenReady()){
-                       // if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()!=null) {
 
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()==null|| profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName().equals("")){
                             imageView.setImage(new Image("/images/filterPreview.png", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
@@ -266,9 +259,7 @@ public class CustomerFrameController {
                         }else {
                             imageView.setImage(SwingFXUtils.toFXImage(filterList.get(profileservice.getActiveProfile().getPairCameraPositions().get(i).getFilterName()), null));
 
-                        } //}else {
-                         //   imageView.setImage(new Image("/images/studio.jpg", imageView.getFitHeight(), imageView.getFitWidth(), true, true));
-                     //  }
+                        }
                     }else{
                         if(profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground()!=null) {
                             if (profileservice.getActiveProfile().getPairCameraPositions().get(i).getBackground().getPath() != null) {
@@ -320,19 +311,9 @@ public class CustomerFrameController {
                             countcolumn=+2;
                         }
                     }
-                  /*  if (countrow < 2) {
-                        countrow++;
-                    } else {
-                        countrow = 0;
-                        if (countcolumn < column) {
-                            countcolumn++;
-                        } else {
-                           LOGGER.debug("not enoth columns" + column);
-                        }
-                    }*/
+
                     Button filter = new Button();
                     filter.setText(name);
-                    //filter.setStyle("-fx-background-color: GRAY");
                     filter.setVisible(true);
                     filter.setPrefWidth(width - high/2);
                     filter.setPrefHeight(high/2);
@@ -358,7 +339,6 @@ public class CustomerFrameController {
                     imageView.setFitWidth(high/1.5);
                     imageView.setFitHeight(high/1.5);
 
-                    //imageView.setBlendMode(BlendMode.DIFFERENCE);
 
                     Group blend = new Group(
                             imageView,
@@ -378,8 +358,6 @@ public class CustomerFrameController {
 
                     gp.add(filter, 0, 0);
                     gp.add(blend,1,0);
-                    //gp.add(iv2, 1, 0);
-                    //gp.add(imageView,2,0);
                     grid.add(gp, countcolumn, countrow);
                     GridPane fill = new GridPane();
                     fill.setPrefHeight(high/2);
@@ -391,8 +369,6 @@ public class CustomerFrameController {
                         grid.add(fillside,countcolumn+1, countrow);
                     }
                     grid.add(fill, countcolumn,countrow+1);
-                    // Image image = new Image(pairList.get(i).getCameraLable());
-                  //  LOGGER.debug("count calls "+i+"");
                 }
                 basicpane.add(grid, 1, 0);
                 isButtoncreated = true;
@@ -440,4 +416,5 @@ public class CustomerFrameController {
         }
 
     }
+
 }
