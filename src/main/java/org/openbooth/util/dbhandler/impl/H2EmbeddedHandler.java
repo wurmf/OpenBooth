@@ -69,7 +69,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         if(connection==null){
             try {
                 openConnection("openbooth");
-            } catch (SQLException|ClassNotFoundException|IOException e) {
+            } catch (SQLException|ClassNotFoundException e) {
                 throw new DatabaseException(e);
             }
         }
@@ -87,7 +87,7 @@ public class H2EmbeddedHandler  implements DBHandler {
             try {
                 testState=true;
                 openConnection("übopenboothTest");
-            } catch (SQLException|ClassNotFoundException|IOException e) {
+            } catch (SQLException|ClassNotFoundException e) {
                 throw new DatabaseException(e);
             }
         } else if(!testState){
