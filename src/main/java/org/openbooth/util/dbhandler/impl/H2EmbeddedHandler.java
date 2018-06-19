@@ -86,7 +86,7 @@ public class H2EmbeddedHandler  implements DBHandler {
         if(connection==null){
             try {
                 testState=true;
-                openConnection("übopenboothTest");
+                openConnection("openboothTest");
             } catch (SQLException|ClassNotFoundException e) {
                 throw new DatabaseException(e);
             }
