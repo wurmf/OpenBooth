@@ -41,7 +41,7 @@ ENV filename jdk-8u172-linux-x64.tar.gz
 ENV downloadlink http://download.oracle.com/otn-pub/java/jdk/8u172-b11/a58eab1ec242421181065cdc37240b08/$filename
 
 # download java, accepting the license agreement
-RUN wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" $downloadlink -O $filename
+RUN wget --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" -O /tmp/$filename $downloadlink 
 
 # unpack java
 RUN mkdir /opt/java-oracle && tar -zxf /tmp/$filename -C /opt/java-oracle/
