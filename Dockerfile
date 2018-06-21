@@ -1,4 +1,4 @@
-FROM eedkevin/opencv-java8
+FROM ubuntu:18.04
 
 
 RUN \
@@ -11,5 +11,6 @@ RUN \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/oracle-jdk8-installer && \
   export JAVA_HOME=/usr/lib/jvm/java-8-oracle
+  apt-get install -y maven
 
 CMD bash

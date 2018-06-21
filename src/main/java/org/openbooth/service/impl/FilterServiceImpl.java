@@ -39,15 +39,10 @@ public class FilterServiceImpl implements FilterService {
     private String storageDir;
 
     @Autowired
-    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, TempStorageHandler tempStorageHandler) throws ServiceException {
+    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, TempStorageHandler tempStorageHandler) {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
-        try {
-            openCVLoader.loadLibrary();
-        } catch (LibraryLoadingException e) {
-            LOGGER.error("error loading opencv library - ", e);
-            throw new ServiceException("error loading opencv library - ", e);
-        }
+        openCVLoader.loadLibrary();
 
         storageDir = tempStorageHandler.getTempStoragePath();
 
