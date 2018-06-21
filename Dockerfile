@@ -2,6 +2,7 @@ FROM ubuntu:18.04
 
 
 RUN \
+  apt-get update && \
   apt-get install software-properties-common -y && \
   apt-add-repository -y universe && \
   add-apt-repository -y ppa:webupd8team/java && \
