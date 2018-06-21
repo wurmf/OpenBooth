@@ -182,7 +182,7 @@ public class FilterServiceTest{
     }
 
 
-    private void testImage(BufferedImage testImage, BufferedImage resultImage) throws  ServiceException{
+    private void testImage(BufferedImage testImage, BufferedImage resultImage) {
         for(int y = 0; y < resultImage.getHeight(); y++){
             for(int x = 0; x < resultImage.getWidth(); x++){
                 int testClr = testImage.getRGB(x,y);

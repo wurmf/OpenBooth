@@ -120,7 +120,7 @@ public class ShotFrameController {
         return timeline;
     }
     public boolean isExpired(){
-       return startTimeSec[0]==0?true:false;
+       return startTimeSec[0] == 0;
     }
 
     public int getFrameID(){

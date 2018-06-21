@@ -29,7 +29,7 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
 
             @Override
             public void handle(MouseEvent event) {
-                Profile.PairCameraPosition currentCamPos = (Profile.PairCameraPosition) CamPosCheckbox.this.getTableView().getItems().get(CamPosCheckbox.this.getIndex());
+                Profile.PairCameraPosition currentCamPos = CamPosCheckbox.this.getTableView().getItems().get(CamPosCheckbox.this.getIndex());
                 try {
                     if(cellCheckbox.isSelected()) {
                         if(checkboxTyp.equals("greenscreen")) {
@@ -95,7 +95,7 @@ public class CamPosCheckbox extends TableCell<Profile.PairCameraPosition, Boolea
         if(empty) {
             setGraphic(null);
         }else{
-            Profile.PairCameraPosition currentCamPos = ( Profile.PairCameraPosition) CamPosCheckbox.this.getTableView().getItems().get(CamPosCheckbox.this.getIndex());
+            Profile.PairCameraPosition currentCamPos = CamPosCheckbox.this.getTableView().getItems().get(CamPosCheckbox.this.getIndex());
 
             if(checkboxTyp.equals("greenscreen")){
                 if(currentCamPos.isGreenScreenReady())

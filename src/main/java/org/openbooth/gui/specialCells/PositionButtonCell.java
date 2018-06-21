@@ -50,7 +50,7 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Position currentPosition = (Position) PositionButtonCell.this.getTableView().getItems().get(PositionButtonCell.this.getIndex());
+                    Position currentPosition = PositionButtonCell.this.getTableView().getItems().get(PositionButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     posList.remove(currentPosition);

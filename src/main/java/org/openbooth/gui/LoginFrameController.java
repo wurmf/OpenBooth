@@ -1,5 +1,6 @@
 package org.openbooth.gui;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class LoginFrameController {
 
@@ -27,6 +29,8 @@ public class LoginFrameController {
     private TextField nameTextField;
     @FXML
     private Button confirmButton;
+    @FXML
+    private Button abortButton;
     @FXML
     public Label wrongPoNLabel;
     private WindowManager windowManager;
@@ -46,6 +50,14 @@ public class LoginFrameController {
     /**
      * Lets an AdminUserService instance check if the values given in the adminname- and passwordEntered-TextField correspond to a saved admin-user.
      */
+
+    @FXML
+    public void initialize(){
+        resetValues();
+    }
+
+
+
     @FXML
     public void onConfirmPressed() {
         String adminName= nameTextField.getText();
@@ -93,6 +105,17 @@ public class LoginFrameController {
         wrongPoNLabel.setVisible(false);
         passwordTextField.setText("");
         nameTextField.setText("");
+        nameTextField.requestFocus();
         confirmButton.setVisible(false);
+    }
+
+    /*
+    abort action
+     */
+    public void onAbortPressed(ActionEvent actionEvent) {
+
+        resetValues();
+        windowManager.showScene(loginRedirectorModel.getCallingScene());
+
     }
 }

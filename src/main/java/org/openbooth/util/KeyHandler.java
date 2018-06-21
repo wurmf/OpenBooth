@@ -11,11 +11,11 @@ public class KeyHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KeyHandler.class);
 
-    private KeyHandler(){};
+    private KeyHandler(){}
 
     public static int getIndexForKeyEvent(KeyEvent keyEvent){
 
-        LOGGER.debug("triggerShot with keyCode " + keyEvent.getCode());
+        LOGGER.debug("triggerShot with keyCode {}", keyEvent.getCode());
 
 
         if(keyEvent.getCode() == KeyCode.PAGE_DOWN || keyEvent.getCode() == KeyCode.PAGE_UP){
@@ -24,7 +24,7 @@ public class KeyHandler {
 
         String keystoke = keyEvent.getText();
 
-        int index = -1;
+        int index;
 
         switch (keystoke){
             case "1" : index = 0;break;

@@ -87,9 +87,8 @@ public class GreenscreenBackgroundFrameController extends SettingFrameController
                     @Override
                     public void handle(TableColumn.CellEditEvent<Background, String> t) {
                         try {
-                            Background p = ((Background) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Background p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.setName(t.getNewValue());
                                 bservice.edit(p);

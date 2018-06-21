@@ -52,7 +52,7 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background.Category currentCategory = (Background.Category) CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
+                    Background.Category currentCategory = CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     categories.remove(currentCategory);

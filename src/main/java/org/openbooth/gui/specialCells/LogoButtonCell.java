@@ -50,7 +50,7 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile.PairLogoRelativeRectangle currentPairLogo = (Profile.PairLogoRelativeRectangle) LogoButtonCell.this.getTableView().getItems().get(LogoButtonCell.this.getIndex());
+                    Profile.PairLogoRelativeRectangle currentPairLogo = LogoButtonCell.this.getTableView().getItems().get(LogoButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     posList.remove(currentPairLogo);

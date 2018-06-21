@@ -73,17 +73,10 @@ public class Camera {
     @Override
     public boolean equals(Object object){
         //TODO: Change equals compare only id?
-        if(object instanceof Camera
-                && ((Camera) object).getId()==this.getId()
-                && ((Camera) object).getPort()==this.getPort()
-                && ((Camera) object).getModel()==this.getModel()
-                && ((Camera) object).getSerialnumber()==this.getSerialnumber()
-                )
-        {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return object instanceof Camera
+                && ((Camera) object).getId() == this.getId()
+                && ((Camera) object).getPort() == this.getPort()
+                && ((Camera) object).getModel() == this.getModel()
+                && ((Camera) object).getSerialnumber() == this.getSerialnumber();
     }
 }

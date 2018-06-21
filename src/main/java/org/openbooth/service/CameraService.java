@@ -8,21 +8,21 @@ import java.util.List;
 
 public interface CameraService {
 
-    public Camera createCamera(Camera camera) throws ServiceException;
+    Camera createCamera(Camera camera) throws ServiceException;
 
-    public void deleteCamera(int cameraID) throws ServiceException;
+    void deleteCamera(int cameraID) throws ServiceException;
 
-    public List<Camera> getActiveCameras() throws ServiceException;
+    List<Camera> getActiveCameras() throws ServiceException;
 
-    public Camera cameraExists(Camera camera) throws ServiceException;
+    Camera cameraExists(Camera camera) throws ServiceException;
 
-    public void setCameraActive(int cameraID) throws ServiceException;
+    void setCameraActive(int cameraID) throws ServiceException;
 
-    public void setCameraInactive(int cameraID) throws ServiceException;
+    void setCameraInactive(int cameraID) throws ServiceException;
 
-    public void setAllCamerasInactive() throws ServiceException;
+    void setAllCamerasInactive() throws ServiceException;
 
-    public List<Camera> getAllCameras() throws ServiceException;
+    List<Camera> getAllCameras() throws ServiceException;
 
-    public Camera editCamera(Camera camera) throws ServiceException;
+    Camera editCamera(Camera camera) throws ServiceException;
 }

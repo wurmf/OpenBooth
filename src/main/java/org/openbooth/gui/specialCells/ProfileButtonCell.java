@@ -50,7 +50,7 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile currentProfile = (Profile) ProfileButtonCell.this.getTableView().getItems().get(ProfileButtonCell.this.getIndex());
+                    Profile currentProfile = ProfileButtonCell.this.getTableView().getItems().get(ProfileButtonCell.this.getIndex());
 
                     //remove selected item from the table list
                     pList.remove(currentProfile);

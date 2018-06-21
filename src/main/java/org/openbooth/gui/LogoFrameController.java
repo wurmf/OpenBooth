@@ -218,9 +218,8 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
                         try {
-                            Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Profile.PairLogoRelativeRectangle p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (!t.getNewValue().isNaN()) {
 
                                 p.getRelativeRectangle().setX(t.getNewValue());
@@ -256,9 +255,8 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
                         try {
-                            Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Profile.PairLogoRelativeRectangle p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (!t.getNewValue().isNaN()) {
 
                                 p.getRelativeRectangle().setY(t.getNewValue());
@@ -293,9 +291,8 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
                         try {
-                            Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Profile.PairLogoRelativeRectangle p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (!t.getNewValue().isNaN()) {
                                 p.getRelativeRectangle().setWidth(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
@@ -328,9 +325,8 @@ public class LogoFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double> t) {
                         try {
-                            Profile.PairLogoRelativeRectangle p = ((Profile.PairLogoRelativeRectangle) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Profile.PairLogoRelativeRectangle p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (!t.getNewValue().isNaN()) {
                                 p.getRelativeRectangle().setHeight(t.getNewValue());
                                 pservice.editPairLogoRelativeRectangle(p);
@@ -400,7 +396,7 @@ public class LogoFrameController extends SettingFrameController {
          *####################*/
         tableLogo.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                Profile.PairLogoRelativeRectangle selectedLogo = (Profile.PairLogoRelativeRectangle) newSelection;
+                Profile.PairLogoRelativeRectangle selectedLogo = newSelection;
                 LOGGER.debug("tableLogo - changeListener - Logo row selected..."+selectedLogo.getId());
 
                 this.selectedLogo = selectedLogo;

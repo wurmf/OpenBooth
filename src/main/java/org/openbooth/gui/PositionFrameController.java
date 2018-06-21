@@ -81,9 +81,8 @@ public class PositionFrameController extends SettingFrameController {
                     @Override
                     public void handle(TableColumn.CellEditEvent<Position, String> t) {
                         try {
-                            Position p = ((Position) t.getTableView().getItems().get(
-                                    t.getTablePosition().getRow())
-                            );
+                            Position p = t.getTableView().getItems().get(
+                                    t.getTablePosition().getRow());
                             if (t.getNewValue().compareTo("") != 0) {
                                 p.setName(t.getNewValue());
                                 pservice.editPosition(p);

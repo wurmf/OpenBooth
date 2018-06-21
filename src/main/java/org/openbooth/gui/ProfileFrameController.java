@@ -115,9 +115,8 @@ public class ProfileFrameController extends SettingFrameController{
                         @Override
                         public void handle(TableColumn.CellEditEvent<Profile, String> t) {
                             try {
-                                Profile p = ((Profile) t.getTableView().getItems().get(
-                                        t.getTablePosition().getRow())
-                                );
+                                Profile p = t.getTableView().getItems().get(
+                                        t.getTablePosition().getRow());
                                 if (t.getNewValue().compareTo("") != 0) {
                                     p.setName(t.getNewValue());
                                     pservice.edit(p);
