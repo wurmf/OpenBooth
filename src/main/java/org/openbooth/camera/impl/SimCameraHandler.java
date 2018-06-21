@@ -2,30 +2,58 @@ package org.openbooth.camera.impl;
 
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.camera.CameraThread;
-import org.openbooth.camera.exeptions.CameraException;
 import org.openbooth.entities.Camera;
+import org.openbooth.service.CameraService;
+import org.openbooth.service.exceptions.ServiceException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SimCameraHandler implements CameraHandler {
 
-    private List<Camera> simulatedCameraList;
+    private List<Camera> simulatedCameraList = new ArrayList<>();
+    private List<SimCameraThread> simulatedCameraThreadList = new ArrayList<>();
 
-    public SimCameraHandler(){
-        simulatedCameraList = new ArrayList<>();
-        simulatedCameraList.add(new Camera(-1, "simulated_label", "simulated_port", "simulated_model", "simulated_serialnumber"));
 
+    private ApplicationContext applicationContext;
+
+    public SimCameraHandler(ApplicationContext applicationContext, CameraService cameraService) throws ServiceException{
+        this.applicationContext = applicationContext;
+
+        Camera newCamera = new Camera(-1, "simulated_label", "simulated_port", "simulated_model", "simulated_serialnumber");
+        Camera storedCamera = cameraService.cameraExists(newCamera);
+
+        if(storedCamera == null)
+            storedCamera = cameraService.createCamera(newCamera);
+
+        cameraService.setCameraActive(storedCamera.getId());
+        simulatedCameraList.add(storedCamera);
     }
 
     @Override
-    public List<CameraThread> createThreads(List<Camera> cameraList) throws CameraException {
-        throw new UnsupportedOperationException();
+    public List<CameraThread> createThreads(List<Camera> cameraList){
+
+        List<CameraThread> cameraThreadList = new ArrayList<>();
+
+        for(Camera camera : simulatedCameraList){
+            SimCameraThread cameraThread = applicationContext.getBean(SimCameraThread.class);
+            cameraThread.setCamera(camera);
+            cameraThreadList.add(cameraThread);
+            simulatedCameraThreadList.add(cameraThread);
+
+        }
+
+        return cameraThreadList;
     }
 
     @Override
-    public List<Camera> getCameras() throws CameraException {
-        throw new UnsupportedOperationException();
+    public List<Camera> getCameras() {
+
+
+        return simulatedCameraList;
     }
 
     @Override
@@ -35,21 +63,33 @@ public class SimCameraHandler implements CameraHandler {
 
     @Override
     public void captureImage(Camera camera) {
-        throw new UnsupportedOperationException();
+        for(SimCameraThread cameraThread : simulatedCameraThreadList){
+            if(cameraThread.getCamera().getId() == camera.getId()) {
+                cameraThread.setTakeImage(true);
+            }
+        }
     }
 
     @Override
     public void setSerieShot(Camera camera, boolean serieShot) {
-        throw new UnsupportedOperationException();
+        for(SimCameraThread cameraThread : simulatedCameraThreadList){
+            if(cameraThread.getCamera().getId() == camera.getId()){
+                cameraThread.setSerieShot(true);
+            }
+        }
     }
 
     @Override
     public void setCountdown(Camera camera, int countdown) {
-        throw new UnsupportedOperationException();
+        for(SimCameraThread cameraThread : simulatedCameraThreadList){
+            if(cameraThread.getCamera().getId() == camera.getId()){
+                cameraThread.setCountdown(countdown);
+            }
+        }
     }
 
     @Override
     public void closeCameras() {
-        throw new UnsupportedOperationException();
+        //This method is empty, because the simulated cameras don't have to be closed
     }
 }

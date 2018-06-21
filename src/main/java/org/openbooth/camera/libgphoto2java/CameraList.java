@@ -110,9 +110,9 @@ public class CameraList implements Closeable {
     }
 
     /**
-     * Returns a displayable name of the camera.
-     * @param i the camera index, must be 0 .. {@link #getCount()} - 1.
-     * @return the displayable camera name, never null, for example Canon EOS 1000D
+     * Returns a displayable name of the simcam.
+     * @param i the simcam index, must be 0 .. {@link #getCount()} - 1.
+     * @return the displayable simcam name, never null, for example Canon EOS 1000D
      */
     public String getModel(int i)
 	{
@@ -122,9 +122,9 @@ public class CameraList implements Closeable {
     }
 
     /**
-     * Returns a displayable name of the port to which the camera is connected.
-     * @param i the camera index, must be 0 .. {@link #getCount()} - 1.
-     * @return the displayable camera name, never null, for example usb:002,019
+     * Returns a displayable name of the port to which the simcam is connected.
+     * @param i the simcam index, must be 0 .. {@link #getCount()} - 1.
+     * @return the displayable simcam name, never null, for example usb:002,019
      */
     public String getPort(int i)
 	{
@@ -134,9 +134,9 @@ public class CameraList implements Closeable {
     }
 
 	/**
-	 * Returns a displayable name of the port to which the camera is connected.
-	 * @param i the camera index, must be 0 .. {@link #getCount()} - 1.
-	 * @return the displayable camera name, never null, for example usb:002,019
+	 * Returns a displayable name of the port to which the simcam is connected.
+	 * @param i the simcam index, must be 0 .. {@link #getCount()} - 1.
+	 * @return the displayable simcam name, never null, for example usb:002,019
 	 */
 	public Pointer getPort(int i, boolean string )
 	{
@@ -146,8 +146,8 @@ public class CameraList implements Closeable {
 	}
 
     /**
-     * Returns connected camera count.
-     * @return connected camera count.
+     * Returns connected simcam count.
+     * @return connected simcam count.
      */
     public int getCount() {
 	return CameraUtils.check(GPhoto2Native.INSTANCE.gp_list_count(list), "gp_list_count");

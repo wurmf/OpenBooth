@@ -1,7 +1,7 @@
 package org.openbooth.entities;
 
 /**
- * Entitiy class for camera-entries in the database.
+ * Entitiy class for simcam-entries in the database.
  */
 public class Camera {
     private int id;

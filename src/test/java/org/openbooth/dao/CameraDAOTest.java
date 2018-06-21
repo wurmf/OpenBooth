@@ -16,7 +16,7 @@ public class CameraDAOTest {
     }
 
     /**
-     * This test creates a null-camera.
+     * This test creates a null-simcam.
      * DAO should throw IllegalArgumentException.
      */
     /*
@@ -32,30 +32,30 @@ public class CameraDAOTest {
     /*
     @Test
     public void createValidCamera() throws Throwable  {
-        Camera camera = new Camera(-1, "", "", "", "");
+        Camera simcam = new Camera(-1, "", "", "", "");
 
-        camera = cameraDAO.create(camera);
+        simcam = cameraDAO.create(simcam);
 
-        assertThat(cameraDAO.exists(camera).getId()==camera.getId(), is(true));
+        assertThat(cameraDAO.exists(simcam).getId()==simcam.getId(), is(true));
 
     }
     */
 
     /**
-     * This test sets an existing camera to active.
+     * This test sets an existing simcam to active.
      */
     /*
     @Test
     public void setExistingCameraActive() throws Throwable  {
 
-        Camera camera = new Camera(-1, "", "", "", "");
+        Camera simcam = new Camera(-1, "", "", "", "");
 
-        camera = cameraDAO.create(camera);
-        cameraDAO.setActive(camera.getId());
+        simcam = cameraDAO.create(simcam);
+        cameraDAO.setActive(simcam.getId());
         int i=0;
         for (Camera camera1 :cameraDAO.readActive())
         {
-            if(camera1.getId()==camera.getId())
+            if(camera1.getId()==simcam.getId())
             {
                 i++;
             }
@@ -65,7 +65,7 @@ public class CameraDAOTest {
     */
 
     /**
-     * This test sets an not existing camera to active.
+     * This test sets an not existing simcam to active.
      */
     /*
     @Test
@@ -74,40 +74,40 @@ public class CameraDAOTest {
 
         cameraDAO.setActive(-1);
 
-        for (Camera camera :cameraDAO.readActive())
+        for (Camera simcam :cameraDAO.readActive())
         {
-            assertThat(camera.getId()==-1, is(false));
+            assertThat(simcam.getId()==-1, is(false));
         }
     }
     */
 
     /**
-     * This test deletes an existing camera  to active.
+     * This test deletes an existing simcam  to active.
      */
     /*
     @Test
     public void deleteExistingCamera() throws Throwable  {
 
 
-        Camera camera = new Camera(-1, "", "", "", "");
+        Camera simcam = new Camera(-1, "", "", "", "");
 
-        camera = cameraDAO.create(camera);
-        cameraDAO.setActive(camera.getId());
+        simcam = cameraDAO.create(simcam);
+        cameraDAO.setActive(simcam.getId());
         int i=0;
         for (Camera camera1 :cameraDAO.readActive())
         {
-            if(camera1.getId()==camera.getId())
+            if(camera1.getId()==simcam.getId())
             {
                 i++;
             }
         }
         assertThat(i, is(1));
 
-        cameraDAO.delete(camera.getId());
+        cameraDAO.delete(simcam.getId());
         i=0;
         for (Camera camera1 :cameraDAO.readActive())
         {
-            if(camera1.getId()==camera.getId())
+            if(camera1.getId()==simcam.getId())
             {
                 i++;
             }
@@ -154,30 +154,30 @@ public class CameraDAOTest {
     */
 
     /**
-     * This test sets an existing camera to inactive.
+     * This test sets an existing simcam to inactive.
      */
     /*
     @Test
     public void setExistingCameraInactive() throws Throwable  {
 
-        Camera camera = new Camera(-1, "", "", "", "");
+        Camera simcam = new Camera(-1, "", "", "", "");
 
-        camera = cameraDAO.create(camera);
-        cameraDAO.setActive(camera.getId());
+        simcam = cameraDAO.create(simcam);
+        cameraDAO.setActive(simcam.getId());
         int i=0;
         for (Camera camera1 :cameraDAO.readActive())
         {
-            if(camera1.getId()==camera.getId())
+            if(camera1.getId()==simcam.getId())
             {
                 i++;
             }
         }
         assertThat(i, is(1));
-        cameraDAO.setInactive(camera.getId());
+        cameraDAO.setInactive(simcam.getId());
         i=0;
         for (Camera camera1 :cameraDAO.readActive())
         {
-            if(camera1.getId()==camera.getId())
+            if(camera1.getId()==simcam.getId())
             {
                 i++;
             }

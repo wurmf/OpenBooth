@@ -63,11 +63,11 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
             Camera c = cameraList.get(i);
             Position p = profileService.getPositionOfCameraOfProfile(c);
             if(p!=null){
-                LOGGER.debug("initImageProcessing - camera added");
+                LOGGER.debug("initImageProcessing - simcam added");
                 positionList.add(p);
                 activeCameraList.add(c);
             } else{
-                LOGGER.info("initImageProcessing - no position for this camera: {}", c);
+                LOGGER.info("initImageProcessing - no position for this simcam: {}", c);
                 //cameraHandler.removeCameraFromList(c);
             }
         }
@@ -120,10 +120,10 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         for(Camera camera : cameraList){
             Position correspondingPosition = profileService.getPositionOfCameraOfProfile(profile, camera);
             if(correspondingPosition != null){
-                LOGGER.debug("checkImageProcessing - included camera detected");
+                LOGGER.debug("checkImageProcessing - included simcam detected");
                 cameraCount++;
             }else {
-                LOGGER.debug("checkImageProcessing - no positon: camera {} ignored", camera);
+                LOGGER.debug("checkImageProcessing - no positon: simcam {} ignored", camera);
             }
         }
 
@@ -155,12 +155,12 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
         for(CameraThread cameraThread : cameraThreadList){
             if(cameraThread.getCamera() == null){
-                LOGGER.error("initCameraThreads - No camera set for camerathread {}", cameraThread);
+                LOGGER.error("initCameraThreads - No simcam set for camerathread {}", cameraThread);
             }
             Position position  = profileService.getPositionOfCameraOfProfile(cameraThread.getCamera());
             if(position == null){
-                LOGGER.error("initCameraThreads - No position set for camera {}", cameraThread.getCamera());
-                throw new ServiceException("invalid camera - no position set");
+                LOGGER.error("initCameraThreads - No position set for simcam {}", cameraThread.getCamera());
+                throw new ServiceException("invalid simcam - no position set");
             }
 
             ShotFrameController shotFrameController = positionShotFrameMap.get(position);

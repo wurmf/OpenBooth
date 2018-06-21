@@ -414,7 +414,7 @@ public class CameraFilterController {
                 }
             }
         } catch (ServiceException e) {
-            LOGGER.debug("no camera pair found", e);
+            LOGGER.debug("no simcam pair found", e);
             showInformationDialog("Es konnte keine Kamera gefunden werden.");
         }
     }

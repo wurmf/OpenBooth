@@ -7,14 +7,16 @@ import org.openbooth.util.FileTransfer;
 import org.openbooth.util.TempStorageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+@Component
 public class SimCameraThread extends CameraThread {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(SimCameraHandler.class);
-    private static final String SIM_PREVIEW_IMAGE_PATH = SimCameraThread.class.getResource("/images/simulated.camera/sim_preview_image.png").getPath();
-    private static final String SIM_SHOT_IMAGE_PATH = SimCameraThread.class.getResource("/images/simulated.camera/sim_shot_image.png").getPath();
+    private static final String SIM_PREVIEW_IMAGE_PATH = "/images/simcam/sim_preview_image.png";
+    private static final String SIM_SHOT_IMAGE_PATH = "/images/simcam/sim_shot_image.png";
 
     private FileTransfer fileTransfer;
 
@@ -45,6 +47,6 @@ public class SimCameraThread extends CameraThread {
     }
 
     protected void checkImplInitialized(){
-        //Nothing to check for simulated camera
+        //Nothing to check for simulated simcam
     }
 }

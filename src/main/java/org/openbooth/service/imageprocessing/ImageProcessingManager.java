@@ -25,8 +25,8 @@ public interface ImageProcessingManager {
     /**
      * Checks wether the give profile is compatible with the connected cameras.
      * If all cameras included in the give profile are connected, true will be returned
-     * If a connected camera has no positon in the give profile it will be ignored
-     * If any camera included in the give profile is not connected false will be returned
+     * If a connected simcam has no positon in the give profile it will be ignored
+     * If any simcam included in the give profile is not connected false will be returned
      * @param profile the given profile
      * @return wether the give profile is compatible with the connected cameras
      * @throws ServiceException if an error during the checking occurs
