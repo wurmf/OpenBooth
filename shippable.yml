@@ -7,7 +7,6 @@ branches:
   only:
     - master
     - dev
-    - opencv_included
 
 build:
 
