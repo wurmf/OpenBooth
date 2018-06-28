@@ -63,7 +63,6 @@ public class FilterServiceTest{
     }
 
     @Test
-    @Ignore
     public void checkGaussianFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("gaussian",srcImgPath);
@@ -77,7 +76,6 @@ public class FilterServiceTest{
 
     }
     @Test
-    @Ignore
     public void checkGrayscaleFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("grayscale",srcImgPath);
@@ -91,7 +89,6 @@ public class FilterServiceTest{
 
     }
     @Test
-    @Ignore
     public void checkColorspaceFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("colorspace",srcImgPath);
@@ -105,7 +102,6 @@ public class FilterServiceTest{
 
     }
     @Test
-    @Ignore
     public void checkSobelFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("sobel",srcImgPath);
@@ -138,7 +134,6 @@ public class FilterServiceTest{
     }
 
     @Test
-    @Ignore
     public void checkTreshzeroFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("threshzero",srcImgPath);
@@ -154,7 +149,6 @@ public class FilterServiceTest{
     }
 
     @Test
-    @Ignore
     public void checkTreshbinaryinvertFilter() throws ServiceException, ImageHandlingException {
 
         BufferedImage filteredImage = filterService.filter("threshbinaryinvert",srcImgPath);
