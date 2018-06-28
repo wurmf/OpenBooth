@@ -38,14 +38,8 @@ public class GreenscreenServiceImpl implements GreenscreenService {
 
 
     @Autowired
-    public GreenscreenServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler) throws ServiceException{
-        try {
-            openCVLoader.loadLibrary();
-        } catch (LibraryLoadingException e) {
-            LOGGER.error("error loading opencv library - ", e);
-            throw new ServiceException("error loading opencv library");
-        }
-
+    public GreenscreenServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler) {
+        openCVLoader.loadLibrary();
         this.imageHandler = imageHandler;
     }
 

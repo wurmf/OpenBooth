@@ -7,24 +7,18 @@ branches:
   only:
     - master
     - dev
+    - opencv_included
 
 build:
-  pre_ci:
-    - docker build -t fotostudioampunkt/java8-oracle-opencv:latest .
 
   #Prepare Docker-Container with OpenCV and Java 8
   pre_ci_boot:
-    image_name: fotostudioampunkt/java8-oracle-opencv
+    image_name: schrer/bionic-java8-maven
     image_tag: latest
-    pull: false
+    pull: true
     
 
   ci:
-    #Copy opencv files and install maven
-    - mkdir -p /root/opencv-3.2.0/build/lib/
-    - cp /opencv-java-bin/* /root/opencv-3.2.0/build/lib/
-    - sudo apt-get install maven -y
-
     #Build project
     - mvn compile
 
