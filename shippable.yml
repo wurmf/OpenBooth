@@ -10,14 +10,12 @@ branches:
     - opencv_included
 
 build:
-  pre_ci:
-    - docker build -t openbooth/java8-maven:latest .
 
   #Prepare Docker-Container with OpenCV and Java 8
   pre_ci_boot:
-    image_name: openbooth/java8-maven
+    image_name: schrer/bionic-java8-maven
     image_tag: latest
-    pull: false
+    pull: true
     
 
   ci:
