@@ -32,7 +32,7 @@ import java.io.IOException;
 import static org.openbooth.camera.libgphoto2java.jna.GPhoto2Native.GP_EVENT_FILE_ADDED;
 
 /**
- * Represents a camera. Thread-unsafe.
+ * Represents a simcam. Thread-unsafe.
  * @author Martin Vysny
  */
 public class CameraGphoto implements Closeable {
@@ -42,7 +42,7 @@ public class CameraGphoto implements Closeable {
 
 
     /**
-     * Creates a reference to the first connected camera.
+     * Creates a reference to the first connected simcam.
      */
     public CameraGphoto() {
         final PointerByReference ref = new PointerByReference();
@@ -52,7 +52,7 @@ public class CameraGphoto implements Closeable {
     private boolean isInitialized = false;
 
     /**
-     * Initializes the camera.
+     * Initializes the simcam.
      */
     public void initialize() {
         checkNotClosed();
@@ -71,7 +71,7 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * De-initializes the camera.
+     * De-initializes the simcam.
      */
     public void deinitialize() throws IOException
     {
@@ -86,7 +86,7 @@ public class CameraGphoto implements Closeable {
     private boolean closed = false;
 
     /**
-     * De-initializes the camera and frees all resources. Further invocations to this method do nothing. Any camera method
+     * De-initializes the simcam and frees all resources. Further invocations to this method do nothing. Any simcam method
      * will fail from now on with {@link java.lang.IllegalStateException}.
      */
     public void close() throws IOException
@@ -108,8 +108,8 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * Captures a quick preview image on the camera.
-     * @return camera file, never null. Must be closed afterwards.
+     * Captures a quick preview image on the simcam.
+     * @return simcam file, never null. Must be closed afterwards.
      */
     public CameraFile capturePreview()
     {
@@ -145,7 +145,7 @@ public class CameraGphoto implements Closeable {
                 final CameraFilePath path = new CameraFilePath(event_data.getValue());
                 path.read();
                 final CameraFile.Path p = new CameraFile.Path(path);
-                LOGGER.debug("file on camera added");
+                LOGGER.debug("file on simcam added");
                 return p.newFile(camera);
             }
             else
@@ -162,7 +162,7 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * Returns new configuration for the camera.e
+     * Returns new configuration for the simcam.e
      * @return the configuration, never null. Must be closed afterwards.
      */
     public CameraWidgets newConfiguration()
@@ -172,8 +172,8 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * Captures a full-quality image image on the camera.
-     * @return camera file, never null. Must be closed afterwards.
+     * Captures a full-quality image image on the simcam.
+     * @return simcam file, never null. Must be closed afterwards.
      */
     public CameraFile captureImage()
     {

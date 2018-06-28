@@ -71,7 +71,7 @@ public class CameraServiceImpl implements CameraService {
         }
         catch (PersistenceException ex)
         {
-            LOGGER.error("cameraExists - Failure at searching given camera");
+            LOGGER.error("cameraExists - Failure at searching given simcam");
             throw new ServiceException(ex);
         }
     }

@@ -25,7 +25,7 @@ import org.openbooth.camera.libgphoto2java.jna.GPhoto2Native;
 
 
 /**
- * Represents a file on the camera.
+ * Represents a file on the simcam.
  * @author Martin Vysny
  */
 public class CameraFile implements Closeable {
@@ -33,7 +33,7 @@ public class CameraFile implements Closeable {
     final Pointer cf;
 
     /**
-     * Creates a new file link. The file is not yet linked to any particular camera file - the link is performed later on, by invoking gphoto functions.
+     * Creates a new file link. The file is not yet linked to any particular simcam file - the link is performed later on, by invoking gphoto functions.
      */
     CameraFile() {
 	final PointerByReference p = new PointerByReference();
@@ -54,7 +54,7 @@ public class CameraFile implements Closeable {
     }
 
     /**
-     * Saves the file from the camera to the local file system.
+     * Saves the file from the simcam to the local file system.
      * @param filename OS-dependent path on the local file system.
      */
     public void save(String filename) {
@@ -70,7 +70,7 @@ public class CameraFile implements Closeable {
     }
 
     /**
-     * Represents a path of a camera file.
+     * Represents a path of a simcam file.
      */
     static class Path
 	{
@@ -101,9 +101,9 @@ public class CameraFile implements Closeable {
 		}
 
 		/**
-		 * Returns a referenced camera file.
-		 * @param cam the camera handle.
-		 * @return camera file.
+		 * Returns a referenced simcam file.
+		 * @param cam the simcam handle.
+		 * @return simcam file.
 		 */
 		CameraFile newFile(Pointer cam)
 		{

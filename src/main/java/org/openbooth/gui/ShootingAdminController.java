@@ -107,7 +107,7 @@ public class ShootingAdminController {
             List<Profile> prof = profileService.getAllProfiles();
             if(prof!=null&&!prof.isEmpty()) {
                 ObservableList<Profile> observableListProfile = fittingProfiles(prof);
-                if(observableListProfile!=null||observableListProfile.isEmpty()){
+                if(!observableListProfile.isEmpty()){
                     profileChoiceBox.setItems(observableListProfile);
                     profileChoiceBox.setValue(observableListProfile.get(0));
                 }

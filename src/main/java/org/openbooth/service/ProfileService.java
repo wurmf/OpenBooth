@@ -121,9 +121,9 @@ public interface ProfileService {
     boolean eraseLogo(Logo logo) throws ServiceException;
 
     /**
-     * Get a certain camera by its id
-     * @param id - camera id
-     * @return camera object with given id
+     * Get a certain simcam by its id
+     * @param id - simcam id
+     * @return simcam object with given id
      * @throws ServiceException if getting is not possible
      */
     Camera getCamera(int id) throws ServiceException;
@@ -147,14 +147,14 @@ public interface ProfileService {
      * Get all cameras of given profile
      * @param profile - given profile
      * @return List<Camera> list of cameras of active profile
-     * if no camera included, list will be just empty, but not null value
+     * if no simcam included, list will be just empty, but not null value
      */
     List<Camera> getAllCamerasOfProfile(Profile profile) throws ServiceException;
 
     /**
      * Get all cameras of active profile
      * @return List<Camera> list of cameras of active profile
-     * if no camera included, list will be just empty, but not null value
+     * if no simcam included, list will be just empty, but not null value
      */
     List<Camera> getAllCamerasOfProfile() throws ServiceException;
 
@@ -189,11 +189,11 @@ public interface ProfileService {
     List<Logo> getAllLogosOfProfile()throws ServiceException;
 
     /**
-     * Get position of given camera of given profile
+     * Get position of given simcam of given profile
      * @param profile - given profile
-     * @param camera - given camera
-     * @return Position - position of the given camera
-     * if given camera is not included in given profile, null value will be returned
+     * @param camera - given simcam
+     * @return Position - position of the given simcam
+     * if given simcam is not included in given profile, null value will be returned
      */
     Position getPositionOfCameraOfProfile(Profile profile,Camera camera)throws ServiceException;
 
@@ -205,20 +205,20 @@ public interface ProfileService {
     Position getPositionOfCameraOfProfile(Camera camera)throws ServiceException;
 
     /**
-     * Get camera of given position of given profile
+     * Get simcam of given position of given profile
      * @param profile - given profile
      * @param position - given position
-     * @return Camera - camera of the given position
-     * if given camera is not included in given profile, null value will be returned
+     * @return Camera - simcam of the given position
+     * if given simcam is not included in given profile, null value will be returned
      */
     Camera getCameraOfPositionOfProfile(Profile profile, Position position)throws ServiceException;
 
 
     /**
-     * Get camera of given position of active profile
+     * Get simcam of given position of active profile
      * @param position - given position
-     * @return Camera - camera of the given position
-     * if given camera is not included in active profile, null value will be returned
+     * @return Camera - simcam of the given position
+     * if given simcam is not included in active profile, null value will be returned
      */
     Camera getCameraOfPositionOfProfile(Position position)throws ServiceException;
 
@@ -365,9 +365,9 @@ public interface ProfileService {
     List<Profile.PairCameraPosition> getAllPairCameraPositionOfProfile() throws ServiceException;
 
     /**
-     * Add a combination of camera and position to a given profile(and also tell, if it is greeenscreenready
+     * Add a combination of simcam and position to a given profile(and also tell, if it is greeenscreenready
      * @param profileId - id of a profile where to add this combination
-     * @param cameraId - id of camera that has to be part of this combination
+     * @param cameraId - id of simcam that has to be part of this combination
      * @param positionId - id of position that has to be paer of this combination
      * @param isGreenScreenReady - true, if this combination has to be greenscreenready
      * @return Profile.PairCameraPosition object that has been generated and added to Profile
@@ -376,8 +376,8 @@ public interface ProfileService {
             throws ServiceException;
 
     /**
-     * Add a combination of camera and position of currently active profile(and also tell, if it is greeenscreenready
-     * @param cameraId - id of camera that has to be part of this combination
+     * Add a combination of simcam and position of currently active profile(and also tell, if it is greeenscreenready
+     * @param cameraId - id of simcam that has to be part of this combination
      * @param positionId - id of position that has to be paer of this combination
      * @param isGreenScreenReady - true, if this combination has to be greenscreenready
      * @return Profile.PairCameraPosition object that has been generated and added to Profile
@@ -523,9 +523,9 @@ public interface ProfileService {
     boolean eraseBackgroundCategoryFromProfile(Background.Category backgroundCategory) throws ServiceException;
 
     /**
-     * Get pairCameraPosition object that contains given camera object in active profile
-     * @param camera - given camera object
-     * @return pairCameraPosition object that contains given camera
+     * Get pairCameraPosition object that contains given simcam object in active profile
+     * @param camera - given simcam object
+     * @return pairCameraPosition object that contains given simcam
      * @throws ServiceException if this action can't be completed
      */
     Profile.PairCameraPosition getPairCameraPosition(Camera camera)throws ServiceException;

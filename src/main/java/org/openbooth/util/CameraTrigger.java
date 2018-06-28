@@ -43,13 +43,13 @@ public class CameraTrigger {
 
         int cameraIndex = KeyHandler.getIndexForKeyEvent(keyEvent);
         if(cameraIndex < 0){
-            // Return if key is not assigned to trigger a camera.
+            // Return if key is not assigned to trigger a simcam.
             LOGGER.debug("triggerShotIfCorrectKey - key not assigned to trigger cameras");
             return;
         }
 
 
-        LOGGER.debug( "triggerShotIfCorrectKey - Attempting to trigger camera at index {} on keypress of {}.", cameraIndex, keyEvent.getCharacter());
+        LOGGER.debug( "triggerShotIfCorrectKey - Attempting to trigger simcam at index {} on keypress of {}.", cameraIndex, keyEvent.getCharacter());
 
 
         //get active profile or throw exception if no profile is found
@@ -73,7 +73,7 @@ public class CameraTrigger {
             if (cameraHandler != null ) {
                 cameras = cameraHandler.getCameras();
             }
-        } catch (CameraException e) {
+        } catch (CameraException | ServiceException e) {
             throw new TriggerException("Unable to get cameras.",e);
         }
 
@@ -87,7 +87,7 @@ public class CameraTrigger {
             Camera camera = pairCameraPosition.getCamera();
 
             if(!cameras.contains(camera)){
-                LOGGER.debug("triggerShotIfCorrectKey - Selected camera is not connected to the computer.");
+                LOGGER.debug("triggerShotIfCorrectKey - Selected simcam is not connected to the computer.");
             }
 
             setShotType(camera, shotType);
@@ -98,7 +98,7 @@ public class CameraTrigger {
 
         }
         else {
-            LOGGER.debug("triggerShotIfCorrectKey - KeyHandler returned an index no camera is assigned to");
+            LOGGER.debug("triggerShotIfCorrectKey - KeyHandler returned an index no simcam is assigned to");
         }
     }
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Component
+//@Component
 public class CameraHandlerImpl implements CameraHandler
 {
 
@@ -75,7 +75,7 @@ public class CameraHandlerImpl implements CameraHandler
 
     @PostConstruct
     @Override
-    public List<Camera> getCameras() throws CameraException
+    public List<Camera> getCameras() throws CameraException, ServiceException
     {
         if(isInitialized)
         {
@@ -107,7 +107,7 @@ public class CameraHandlerImpl implements CameraHandler
             LOGGER.debug("getCameras - Cameras: " + cl);
 
             count=cl.getCount();
-            Camera camera;
+            Camera newCamera;
             for(int i=0;i<count;i++)
             {
                 cameraGphotoList.add(new CameraGphoto());
@@ -120,24 +120,16 @@ public class CameraHandlerImpl implements CameraHandler
 
                 cameraGphotoList.get(i).initialize();
                 cameraGphotoList.get(i).ref();
-                try
+
+                newCamera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
+                Camera storedCamera = cameraService.cameraExists(newCamera);
+                if(storedCamera == null)
                 {
-                    camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
-                    camera=cameraService.cameraExists(camera);
-                    if(camera==null)
-                    {
-                        camera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
-                        cameraService.createCamera(camera);
-                    }
-                    cameraService.setCameraActive(camera.getId());
-                    cameraList.add(camera);
-                    LOGGER.info("getCameras - camera {} detected", camera);
+                    storedCamera = cameraService.createCamera(newCamera);
                 }
-                catch (ServiceException ex)
-                {
-                    LOGGER.error("getCameras - Could not create camera entity - ", ex);
-                    throw new CameraException(ex.getMessage(), -1);
-                }
+                cameraService.setCameraActive(storedCamera.getId());
+                cameraList.add(storedCamera);
+                LOGGER.info("getCameras - simcam {} detected", storedCamera);
 
             }
 
@@ -193,7 +185,7 @@ public class CameraHandlerImpl implements CameraHandler
             return;
         }
         /*
-        int index=cameraList.indexOf(camera);
+        int index=cameraList.indexOf(simcam);
         cameraList.remove(index);
         CameraUtils.closeQuietly(cameraGphotoList.get(index));
         cameraGphotoList.remove(index);

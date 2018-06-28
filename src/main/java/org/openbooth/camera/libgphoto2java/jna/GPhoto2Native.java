@@ -40,7 +40,7 @@ public interface GPhoto2Native extends Library {
     /**
      * Corrupted data received
      *
-     * Data is corrupt. This error is reported by camera drivers if corrupted
+     * Data is corrupt. This error is reported by simcam drivers if corrupted
      * data has been received that can not be automatically handled. Normally,
      * drivers will do everything possible to automatically recover from this
      * error.
@@ -56,7 +56,7 @@ public interface GPhoto2Native extends Library {
      */
     int GP_ERROR_FILE_EXISTS = -103;
     /**
-     * Specified camera model was not found
+     * Specified simcam model was not found
      *
      * The specified model could not be found. This error is reported when the
      * user specified a model that does not seem to be supported by any driver.
@@ -88,7 +88,7 @@ public interface GPhoto2Native extends Library {
      */
     int GP_ERROR_DIRECTORY_EXISTS = -109;
     /**
-     * The camera is already busy
+     * The simcam is already busy
      *
      * CameraGphoto I/O or a command is in progress.
      *
@@ -113,18 +113,18 @@ public interface GPhoto2Native extends Library {
      */
     int GP_ERROR_CANCEL = -112;
     /**
-     * Unspecified camera error
+     * Unspecified simcam error
      *
-     * The camera reported some kind of error. This can be either a photographic
+     * The simcam reported some kind of error. This can be either a photographic
      * error, such as failure to autofocus, underexposure, or violating storage
-     * permission, anything else that stops the camera from performing the
+     * permission, anything else that stops the simcam from performing the
      * operation.
      */
     int GP_ERROR_CAMERA_ERROR = -113;
     /**
      * Unspecified failure of the operating system
      *
-     * There was some sort of OS error in communicating with the camera, e.g.
+     * There was some sort of OS error in communicating with the simcam, e.g.
      * lack of permission for an operation.
      */
     int GP_ERROR_OS_FAILURE = -114;
@@ -147,7 +147,7 @@ public interface GPhoto2Native extends Library {
      */
     int GP_ERROR_NO_MEMORY = -3;
     /**
-     * \brief Error in the camera driver
+     * \brief Error in the simcam driver
      */
     int GP_ERROR_LIBRARY = -4;
     /**

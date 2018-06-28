@@ -1,5 +1,8 @@
 package org.openbooth.util;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -7,6 +10,8 @@ import java.nio.file.Paths;
 /**
  * Used to transfer files out of an executing JAR-File to a destination in the computers filesystem.
  */
+@Component
+@Scope("prototype")
 public class FileTransfer{
 
     /**
