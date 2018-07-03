@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to implement a simulated camera, it does not use the libgphoto2 library.
+ * @author Fabian Wurm
+ */
 
 @Component
 @Profile("simulated_camera")
@@ -30,16 +34,17 @@ public class SimCameraHandler implements CameraHandler {
     public SimCameraHandler(ApplicationContext applicationContext, CameraService cameraService) throws ServiceException{
         this.applicationContext = applicationContext;
 
-        Camera newCamera = new Camera(-1, "simulated_label", "simulated_port", "simulated_model", "simulated_serialnumber");
-        Camera storedCamera = cameraService.cameraExists(newCamera);
+        Camera newCamera = new Camera(-1, "SIMULATED_CAMERA", "SIMULATED_PORT", "SIMULATED_MODEL", "SIMULATED_SERIALNUMBER");
+        Camera storedCamera = cameraService.cameraExists(newCamera); //Check if the simulated camera is already stored in the persistence layer
 
         if(storedCamera == null)
             storedCamera = cameraService.createCamera(newCamera);
 
+        //Set camera as active in persistence, so it can be used in a profile
         cameraService.setCameraActive(storedCamera.getId());
         simulatedCameraList.add(storedCamera);
 
-        LOGGER.info("using simulated camera instead of real camera");
+        LOGGER.info("Simulated Camera active!");
     }
 
     @Override

@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+/**
+ * This class represents one simulated camera and is responsible for simulating the preview and shot images.
+ */
+
 @Component
 public class SimCameraThread extends CameraThread {
 
