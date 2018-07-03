@@ -5,14 +5,21 @@ import org.openbooth.camera.CameraThread;
 import org.openbooth.entities.Camera;
 import org.openbooth.service.CameraService;
 import org.openbooth.service.exceptions.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Component
+@Profile("simulated_camera")
 public class SimCameraHandler implements CameraHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimCameraHandler.class);
 
     private List<Camera> simulatedCameraList = new ArrayList<>();
     private List<SimCameraThread> simulatedCameraThreadList = new ArrayList<>();
@@ -31,6 +38,8 @@ public class SimCameraHandler implements CameraHandler {
 
         cameraService.setCameraActive(storedCamera.getId());
         simulatedCameraList.add(storedCamera);
+
+        LOGGER.info("using simulated camera instead of real camera");
     }
 
     @Override
