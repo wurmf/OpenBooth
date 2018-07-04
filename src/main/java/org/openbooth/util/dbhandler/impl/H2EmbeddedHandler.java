@@ -211,7 +211,6 @@ public class H2EmbeddedHandler  implements DBHandler {
 
         String image1Source = "/images/dummies/p1.jpg";
         String image2Source ="/images/dummies/p2.jpg";
-        String logo1Ssource = "/images/logos/logofamp.jpg";
         String logo2Source = "/images/logos/logo1.jpg";
         String green1Source ="/images/greenscreen/background/test_background1.jpg";
         String green2Source ="/images/greenscreen/background/test_background2.png";
@@ -222,7 +221,6 @@ public class H2EmbeddedHandler  implements DBHandler {
 
         String image1Dest = shootingPath+"image1.jpg";
         String image2Dest = shootingPath+"image2.jpg";
-        String logo1Dest = destPath+"logofamp.jpg";
         String logo2Dest = destPath+"logo1.jpg";
         String green1Dest = destPath+"greenBg1.jpg";
         String green2Dest = destPath+"greenBg2.png";
@@ -236,7 +234,6 @@ public class H2EmbeddedHandler  implements DBHandler {
             FileTransfer ft=new FileTransfer();
             ft.transfer(image1Source,image1Dest);
             ft.transfer(image2Source, image2Dest);
-            ft.transfer(logo1Ssource, logo1Dest);
             ft.transfer(logo2Source, logo2Dest);
             ft.transfer(green1Source,green1Dest);
             ft.transfer(green2Source,green2Dest);
@@ -257,11 +254,6 @@ public class H2EmbeddedHandler  implements DBHandler {
             stmt.close();
 
             stmt=connection.prepareStatement("UPDATE logos SET path=?, label=? where logoID=?;");
-            stmt.setString(1,logo1Dest);
-            stmt.setString(2,"Fotografie am Punkt");
-            stmt.setInt(3,1);
-            stmt.execute();
-
             stmt.setString(1,logo2Dest);
             stmt.setString(2,"Beispiel-Logo");
             stmt.setInt(3,2);
