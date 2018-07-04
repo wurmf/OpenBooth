@@ -43,7 +43,7 @@ public class ImageHandler {
     /**
      * Opens the image specified by imagePath as BufferedImage
      *
-     * @param imagePath thi given path, must specify a valid image
+     * @param imagePath the given path, must specify a valid image
      * @return the given image opened as BufferedImage
      * @throws ImageHandlingException if an error during the file opening occurs
      */
@@ -58,7 +58,7 @@ public class ImageHandler {
 
         try {
             img = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
+        } catch (IOException | ArrayIndexOutOfBoundsException e) {
             LOGGER.error("openImage - error loading given image {} ", imagePath, e);
             throw new ImageHandlingException(e);
         }
