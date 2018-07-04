@@ -68,10 +68,9 @@ public interface BackgroundService {
     /**
      * edit background category stored in persistence store
      * @param category - non null background category object
-     * @return true, if edit has been successful, else false
      * @throws ServiceException if action fails
      */
-    boolean editCategory(Background.Category category) throws ServiceException;
+    void editCategory(Background.Category category) throws ServiceException;
 
     /**
      * get background category stored in persistence store
@@ -91,10 +90,9 @@ public interface BackgroundService {
     /**
      * erase given background category from persistence store
      * @param category to be erased
-     * @return true, if erasing has been successful , else false
      * @throws ServiceException if action fails
      */
-    boolean eraseCategory(Background.Category category) throws ServiceException;
+    void eraseCategory(Background.Category category) throws ServiceException;
 
 
     void createPairProfileCategory(int profileID,int categoryID) throws ServiceException;

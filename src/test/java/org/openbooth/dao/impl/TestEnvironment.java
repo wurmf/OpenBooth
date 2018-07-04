@@ -68,7 +68,7 @@ public class TestEnvironment {
     protected List<Profile.PairLogoRelativeRectangle> pairLogoRelativeRectangles;
     protected List<Background.Category> categories;
     protected Profile profileA,profileB,profileC,profile1,profile2;
-    protected Background.Category backgroundCategoryA,backgroundCategoryB,backgroundCategory10,backgroundCategory1,backgroundCategory2,backgroundCategory3,backgroundCategory4;
+    protected Background.Category backgroundCategory1,backgroundCategory2,backgroundCategory3,backgroundCategory4;
 
     @Before public void setUp() throws Exception
     {
@@ -124,6 +124,8 @@ public class TestEnvironment {
                 new CameraServiceImpl(cameraDAO),
                 new BackgroundServiceImpl(backgroundDAO,backgroundCategoryDAO)
                 );
+
+        /*
         try {
             con.setAutoCommit(false);
             LOGGER.debug("Turn off AutoCommit before beginning testing");
@@ -131,15 +133,16 @@ public class TestEnvironment {
         catch (SQLException e) {
             throw new PersistenceException("Error! AutoCommit couldn't be deactivated:" + e);
         }
+        */
 
         //Run delete.sql, insert.sql
         String deletePath=this.getClass().getResource("/sql/delete.sql").getPath();
         String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
 
-        ResultSet rs= RunScript.execute(con, new FileReader(deletePath));
-        if(rs!=null&&!rs.isClosed()) rs.close();
-        rs= RunScript.execute(con, new FileReader(insertPath));
-        if(rs!=null&&!rs.isClosed()) rs.close();
+        RunScript.execute(con, new FileReader(deletePath));
+
+        RunScript.execute(con, new FileReader(insertPath));
+
 
         /*
         * Setup Test objects for all testing
@@ -184,19 +187,18 @@ public class TestEnvironment {
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleA);
         pairLogoRelativeRectangles.add(pairLogoRelativeRectangleB);
 
+
         categories = new ArrayList<>();
         backgroundCategory1 = backgroundCategoryDAO.read(1);
         backgroundCategory2 = backgroundCategoryDAO.read(2);
         backgroundCategory3 = backgroundCategoryDAO.read(3);
         backgroundCategory4 = backgroundCategoryDAO.read(4);
-        backgroundCategoryA = new Background.Category("Taufe");
-        backgroundCategoryB = new Background.Category("Firmung");
+
         categories.add(backgroundCategory1);
         categories.add(backgroundCategory2);
         categories.add(backgroundCategory3);
         categories.add(backgroundCategory4);
-        backgroundCategory10
-                = new Background.Category(10,"Verlobung",false);
+
 
         profile1 = profileService.get(1);
         profileA = new Profile("Profile A");
@@ -223,6 +225,7 @@ public class TestEnvironment {
     @After public void tearDown() throws Exception {
         // Good tests clean up their environment and reset to initial condition
         // Therefore a database session rollback is performed
+        /*
         try {
             con.rollback();
             LOGGER.debug("Rollback after finished testing");
@@ -230,6 +233,7 @@ public class TestEnvironment {
         catch (SQLException e) {
             throw new PersistenceException("Error! Rollback couldn't be performed:" + e);
         }
+        */
     }
 }
 

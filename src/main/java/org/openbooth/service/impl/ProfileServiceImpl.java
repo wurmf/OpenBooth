@@ -718,7 +718,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<Background.Category> getAllCategoryOfProfile(int profileId) throws ServiceException{
         try {
-            return backgroundCategoryDAO.readAllOfProfile(profileId); //this.get(profileId).getBackgroundCategories();
+            return backgroundCategoryDAO.getAllCategoriesForProfile(profileId); //this.get(profileId).getBackgroundCategories();
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getting background categories from profile object in service layer has failed.:" + e);
         }
