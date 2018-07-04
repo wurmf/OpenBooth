@@ -1,7 +1,6 @@
 package org.openbooth.util;
 
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
@@ -32,18 +31,17 @@ public class ImageHandler {
     private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
 
     /**
-     * Instantiates an imagehandler using the given OpenCVLoader to load the opencv library
+     * Instantiates an ImageHandler using the given OpenCVLoader to load the OpenCV library
      * @param openCVLoader the given OpenCVLoader
-     * @throws LibraryLoadingException if the opencv library could not be loaded
      */
-    public ImageHandler(OpenCVLoader openCVLoader) throws LibraryLoadingException {
+    public ImageHandler(OpenCVLoader openCVLoader) {
         openCVLoader.loadLibrary();
     }
 
     /**
      * Opens the image specified by imagePath as BufferedImage
      *
-     * @param imagePath thi given path, must specify a valid image
+     * @param imagePath the given path, must specify a valid image
      * @return the given image opened as BufferedImage
      * @throws ImageHandlingException if an error during the file opening occurs
      */
@@ -58,7 +56,7 @@ public class ImageHandler {
 
         try {
             img = ImageIO.read(new File(imagePath));
-        } catch (IOException e) {
+        } catch (IOException | ArrayIndexOutOfBoundsException e) {
             LOGGER.error("openImage - error loading given image {} ", imagePath, e);
             throw new ImageHandlingException(e);
         }
@@ -79,7 +77,7 @@ public class ImageHandler {
             LOGGER.error("openImage - error loading given image ", e);
             throw new ImageHandlingException(e);
         }
-        LOGGER.debug("openImage - image from inputstream opened");
+        LOGGER.debug("openImage - image from input stream opened");
         return img;
     }
 
@@ -117,11 +115,11 @@ public class ImageHandler {
     }
 
     /**
-     * Converts a given opencv Mat to a BufferedImage
-     * The Mat must have either CV_8UC1 or CV_8UC3 as type (Grayscale or 3 Byte unsigned int as color)
+     * Converts a given OpenCV Mat to a BufferedImage
+     * The Mat must have either CV_8UC1 or CV_8UC3 as type (gray scale or 3 Byte unsigned int as color)
      * The given Mat can be released afterwards if necessary
      *
-     * @param srcMat the given opencv Mat
+     * @param srcMat the given OpenCV Mat
      * @return the converted BufferedImage
      * @throws ImageHandlingException when an error during the conversion occurs
      */
@@ -165,7 +163,7 @@ public class ImageHandler {
     }
 
     /**
-     * Converts a given BufferedImage to an opencv Mat
+     * Converts a given BufferedImage to an OpenCV Mat
      * The BufferedImage must have type TYPE_3BYTE_BGR
      * @param srcImg the given BufferedImage
      * @return the converted Mat (Type CV_8UC3)

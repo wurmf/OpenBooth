@@ -4,7 +4,6 @@ import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.TempStorageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.embed.swing.SwingFXUtils;

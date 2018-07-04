@@ -83,26 +83,30 @@ public class ImageProcessorImpl implements ImageProcessor {
         boolean isGreenscreen = pairCameraPosition.isGreenScreenReady();
         boolean isFilter = !"".equals(filterName) && !"original".equals(filterName);
 
-        if(isGreenscreen){
-            Background background = pairCameraPosition.getBackground();
+        try {
+            if(isGreenscreen){
+                Background background = pairCameraPosition.getBackground();
 
-            preview = openImageThrowException(imgPath);
+                preview = imageHandler.openImage(imgPath);
 
-            preview = mirrorImage(preview);
+                preview = mirrorImage(preview);
 
-            if(background != null){
-                preview = greenscreenService.applyGreenscreen(preview, background);
+                if(background != null){
+                    preview = greenscreenService.applyGreenscreen(preview, background);
+                }
+            } else if (isFilter){
+
+                preview = filterService.filter(filterName, imgPath);
+                preview = mirrorImage(preview);
+            }else {
+                preview = imageHandler.openImage(imgPath);
+                preview = mirrorImage(preview);
             }
-        } else if (isFilter){
 
-            preview = filterService.filter(filterName, imgPath);
-            preview = mirrorImage(preview);
-        }else {
-            preview = openImageThrowException(imgPath);
-            preview = mirrorImage(preview);
+            shotFrameController.refreshShot(preview);
+        } catch (ImageHandlingException e) {
+            LOGGER.error("processPreview - image could not be opened - skipping image", e);
         }
-
-        shotFrameController.refreshShot(preview);
     }
 
     @Override

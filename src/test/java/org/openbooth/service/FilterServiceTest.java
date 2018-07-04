@@ -4,12 +4,10 @@ import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.TempStorageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.util.exceptions.StorageHandlingException;
 import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.service.impl.FilterServiceImpl;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -46,7 +44,7 @@ public class FilterServiceTest{
     private String destImgPath;
 
     @Before
-    public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException, StorageHandlingException{
+    public void setUp() throws  ServiceException, ImageHandlingException, StorageHandlingException{
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
         TempStorageHandler tempStorageHandler = new TempStorageHandler();

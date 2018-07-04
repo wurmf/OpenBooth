@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * This class provides a method for loading the opencv library
+ * This class provides a method for loading the OpenCV library
  */
 @Component
 public class OpenCVLoader {
@@ -15,14 +15,14 @@ public class OpenCVLoader {
     private boolean isLoaded = false;
 
     /**
-     * This method loads the OpenCVLibrary using the loader provided by OpenPNP/opencv
+     * This method loads the OpenCV library using the loader provided by OpenPNP/OpenCV
      */
     public void loadLibrary() {
         if(!isLoaded) {
 
             nu.pattern.OpenCV.loadShared();
             isLoaded = true;
-            LOGGER.debug("OpenCV loaded by openPNP/opencv");
+            LOGGER.debug("OpenCV loaded by openPNP/OpenCV");
 
         }
     }
