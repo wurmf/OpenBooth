@@ -128,7 +128,7 @@ public class CustomerFrameController {
                 if(filterChouseside){
                     basicpane.getChildren().remove(grid);
                     grid = new GridPane();
-                    creatButtons();
+                    createButtons();
                 }
                 filterChouseside = false;
             }
@@ -184,7 +184,7 @@ public class CustomerFrameController {
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                     }
                     profileold = profile;
-                    creatButtons();
+                    createButtons();
                 }
             }else {
 
@@ -215,7 +215,7 @@ public class CustomerFrameController {
      * if a change oared or a new profile got installed
      * the filter buttons get created
      */
-    private void creatButtons(){
+    private void createButtons(){
        try {
 
             if (shootingservice.searchIsActive().getActive()) {
@@ -235,7 +235,7 @@ public class CustomerFrameController {
                 }else{
                     width = (int) ((float) gridpanel.getWidth()) - 10;
                 }
-                int high = (int) ((float) gridpanel.getWidth() / 6) - 7;
+                int height = (int) ((float) gridpanel.getWidth() / 6) - 7;
                 int countrow = 1;
                 int countcolumn = 0;
                 grid = new GridPane();
@@ -249,7 +249,7 @@ public class CustomerFrameController {
 
                     ImageView imageView = new ImageView();
                     imageView.setVisible(true);
-                    imageView.prefHeight(high);
+                    imageView.prefHeight(height);
                     imageView.prefWidth(20);
                     if(!pairList.get(i).isGreenScreenReady()){
 
@@ -292,7 +292,7 @@ public class CustomerFrameController {
                     if(pairList.size()<=3){
                         if(countrow==1){
                             GridPane top = new GridPane();
-                            top.setPrefHeight(high/2);
+                            top.setPrefHeight(height/2);
                             top.setStyle("-fx-background-color: transparent");
                             grid.add(top, countcolumn,0);
                         }
@@ -302,7 +302,7 @@ public class CustomerFrameController {
                             countcolumn=+2;
                             if(countrow==1){
                                 GridPane top = new GridPane();
-                                top.setPrefHeight(high/4);
+                                top.setPrefHeight(height/4);
                                 top.setStyle("-fx-background-color: transparent");
                                 grid.add(top, countcolumn,0);
                             }
@@ -315,8 +315,8 @@ public class CustomerFrameController {
                     Button filter = new Button();
                     filter.setText(name);
                     filter.setVisible(true);
-                    filter.setPrefWidth(width - high/2);
-                    filter.setPrefHeight(high/2);
+                    filter.setPrefWidth(width - height/2);
+                    filter.setPrefHeight(height/2);
 
                     double size;
                     if(column==0){
@@ -334,10 +334,10 @@ public class CustomerFrameController {
                     });
 
 
-                    iv2.setFitWidth(high/4);
-                    iv2.setFitHeight(high/4);
-                    imageView.setFitWidth(high/1.5);
-                    imageView.setFitHeight(high/1.5);
+                    iv2.setFitWidth(height/4);
+                    iv2.setFitHeight(height/4);
+                    imageView.setFitWidth(height/1.5);
+                    imageView.setFitHeight(height/1.5);
 
 
                     Group blend = new Group(
@@ -347,20 +347,20 @@ public class CustomerFrameController {
 
 
                     gp.prefWidth(width);
-                    gp.prefHeight(high);
+                    gp.prefHeight(height);
 
 
                     String url = "file:" + pairList.get(i).getPosition().getButtonImagePath();
                     ImageView buttonimage = new ImageView(new Image(url));
-                    buttonimage.setFitWidth(width-high/2);
-                    buttonimage.setFitHeight(high/1.5);
+                    buttonimage.setFitWidth(width-height/2);
+                    buttonimage.setFitHeight(height/1.5);
                     gp.add(buttonimage,0,0);
 
                     gp.add(filter, 0, 0);
                     gp.add(blend,1,0);
                     grid.add(gp, countcolumn, countrow);
                     GridPane fill = new GridPane();
-                    fill.setPrefHeight(high/2);
+                    fill.setPrefHeight(height/2);
                     fill.setStyle("-fx-background-color: transparent");
                     if(pairList.size()>3) {
                         GridPane fillside = new GridPane();
@@ -374,15 +374,15 @@ public class CustomerFrameController {
                 isButtoncreated = true;
             }
        } catch (ServiceException e) {
-           LOGGER.error("creatButtons - ",e);
+           LOGGER.error("createButtons - ",e);
            showInformationDialog(e.getMessage());
        }catch (IOException e) {
-           LOGGER.error("creatButtons -", e);
+           LOGGER.error("createButtons -", e);
        }
     }
 
     /**
-     * if no chanches ocured the buttons can be loaded
+     * if no changes occurred the buttons can be loaded
      */
     private void loadButton() {
 
@@ -398,7 +398,7 @@ public class CustomerFrameController {
      *
      * @param info String to be shown as error message to the user
      */
-    public void showInformationDialog(String info){
+    private void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
 

@@ -8,7 +8,7 @@
   -fx-font-size: 2em;
 }
 
-#singel{
+#singleButton{
 -fx-pref-width: 4.5em;
    -fx-pref-height:4.3em;
  -fx-background-repeat: no-repeat;
@@ -16,7 +16,7 @@
     -fx-background-size: 100%;
     -fx-background-color: transparent;
 }
-#serien{
+#burstModeButton{
 -fx-pref-width: 4.5em;
    -fx-pref-height:4.3em;
    -fx-background-repeat: no-repeat;
@@ -25,7 +25,7 @@
     -fx-background-color: transparent;
 }
 
-#ontime{
+#onTimeButton{
 -fx-pref-width: 4.5em;
    -fx-pref-height:4.3em;
    -fx-background-repeat: no-repeat;
@@ -33,7 +33,7 @@
       -fx-background-size: 100%;
     -fx-background-color: transparent;
 }
-#backbutton{
+#backButton{
 -fx-pref-width: 4.5em;
    -fx-pref-height:4.5em;
    -fx-background-repeat: no-repeat;

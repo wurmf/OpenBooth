@@ -28,14 +28,14 @@
           <RowConstraints percentHeight="100.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label fx:id="titel" GridPane.columnIndex="1" />
-            <Button fx:id="backbutton" mnemonicParsing="false" onAction="#onBackbuttonpressed" style="-fx-background-image: url('/images/arrowleft.png');" />
-            <Button fx:id="singel" mnemonicParsing="false" onAction="#onSinglePressed" style="-fx-background-image: url('/images/singleshot.png');" GridPane.columnIndex="2" />
-            <Button fx:id="serien" mnemonicParsing="false" onAction="#onSerialPressed" style="-fx-background-image: url('/images/multishot.png');" GridPane.columnIndex="3" />
-            <Button fx:id="ontime" mnemonicParsing="false" onAction="#onTimerPressed" style="-fx-background-image: url('/images/timer.png');" GridPane.columnIndex="4" />
+            <Label fx:id="title" GridPane.columnIndex="1" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#onBackButtonPressed" style="-fx-background-image: url('/images/arrowleft.png');" />
+            <Button fx:id="singleButton" mnemonicParsing="false" onAction="#onSinglePressed" style="-fx-background-image: url('/images/singleshot.png');" GridPane.columnIndex="2" />
+            <Button fx:id="burstModeButton" mnemonicParsing="false" onAction="#onSerialPressed" style="-fx-background-image: url('/images/multishot.png');" GridPane.columnIndex="3" />
+            <Button fx:id="onTimeButton" mnemonicParsing="false" onAction="#onTimerPressed" style="-fx-background-image: url('/images/timer.png');" GridPane.columnIndex="4" />
          </children>
       </GridPane>
-      <ScrollPane fx:id="filterscrollplanel" hbarPolicy="NEVER" hmax="0.0" pannable="false" vbarPolicy="NEVER" onKeyPressed="#triggerShot" vmax="0.0" GridPane.rowIndex="1">
+      <ScrollPane fx:id="filterScrollPanel" hbarPolicy="NEVER" hmax="0.0" pannable="false" vbarPolicy="NEVER" onKeyPressed="#triggerShot" vmax="0.0" GridPane.rowIndex="1">
       </ScrollPane>
    </children>
 </GridPane>

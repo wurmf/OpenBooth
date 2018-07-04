@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
-import org.openbooth.entities.Profile;
 import org.openbooth.util.CameraTrigger;
 import org.openbooth.util.exceptions.TriggerException;
 import org.slf4j.Logger;
@@ -31,6 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.openbooth.entities.Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE;
+import static org.openbooth.entities.Profile.PairCameraPosition.SHOT_TYPE_SINGLE;
+import static org.openbooth.entities.Profile.PairCameraPosition.SHOT_TYPE_TIMED;
+
 /**
  * Kamera Filter frame controller
  */
@@ -38,34 +41,33 @@ import java.util.Map;
 public class CameraFilterController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomerFrameController.class);
+    private static final String MODE_FRAME_COLOR = "green";
 
 
     @FXML
-    private GridPane root;
+    private Button singleButton;
     @FXML
-    private Button singel;
+    private Button burstModeButton;
     @FXML
-    private Button serien;
+    private Button onTimeButton;
     @FXML
-    private Button ontime;
+    private Label title;
     @FXML
-    private Label titel;
-    @FXML
-    private ScrollPane filterscrollplanel;
+    private ScrollPane filterScrollPanel;
 
 
-    private GridPane filtergrid;
-    private GridPane greengrid;
+    private GridPane filterGrid;
+    private GridPane greenScreenGrid;
     private int index;
     private int currentMode;
-    private ImageView activiv=null;
+    private ImageView activeIv = null;
 
     private FilterService filterService;
     private ProfileService profileservice;
     private WindowManager wm;
     private ShootingService shootingService;
 
-    private Map<String,BufferedImage> filtermap=null;
+    private Map<String,BufferedImage> filterMap = null;
 
     private CameraTrigger cameraTrigger;
 
@@ -81,172 +83,163 @@ public class CameraFilterController {
 
 
     /**
-     * inizialises chousenimage and buttonList
-     * and findes aktuell profile
+     * Initialises chosen image and buttonList and finds current profile
      */
     @FXML
     private void initialize(){
-        filtermap = new HashMap<>();
+        filterMap = new HashMap<>();
     }
 
     /**
-     * creats the filter selection for all kameras
-     * marks the chousen filter
+     * Creates the filter selection for all cameras
+     * Marks the chosen filter
      */
-    private void creatButtons(){
+    private void createButtons(){
         try {
-            filtergrid = new GridPane();
-            filtergrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
-            filtergrid.setStyle("-fx-background-color: black;");
-            filterscrollplanel.setStyle("-fx-background-color: black;");
-            filterscrollplanel.setFitToWidth(true);
-            filterscrollplanel.setFitToHeight(false);
-            filterscrollplanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            filterGrid = new GridPane();
+            filterGrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            filterGrid.setStyle("-fx-background-color: black;");
+            filterScrollPanel.setStyle("-fx-background-color: black;");
+            filterScrollPanel.setFitToWidth(true);
+            filterScrollPanel.setFitToHeight(false);
+            filterScrollPanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
 
-            filtergrid.getColumnConstraints().add(0,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(0,new RowConstraints());
-            filtergrid.getColumnConstraints().add(1,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(1,new RowConstraints());
-            filtergrid.getColumnConstraints().add(2,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(2,new RowConstraints());
-            filtergrid.getColumnConstraints().add(3,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(3,new RowConstraints());
-            filtergrid.getColumnConstraints().add(4,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(4,new RowConstraints());
-            filtergrid.getColumnConstraints().add(5,new ColumnConstraints());
-            filtergrid.getRowConstraints().add(5,new RowConstraints());
+            filterGrid.getColumnConstraints().add(0,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(0,new RowConstraints());
+            filterGrid.getColumnConstraints().add(1,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(1,new RowConstraints());
+            filterGrid.getColumnConstraints().add(2,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(2,new RowConstraints());
+            filterGrid.getColumnConstraints().add(3,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(3,new RowConstraints());
+            filterGrid.getColumnConstraints().add(4,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(4,new RowConstraints());
+            filterGrid.getColumnConstraints().add(5,new ColumnConstraints());
+            filterGrid.getRowConstraints().add(5,new RowConstraints());
 
-            filtergrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
-            filtergrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth()/6);
+            filterGrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
 
             int columcount = 0;
             int rowcount = 0;
 
 
-            if(filtermap==null||filtermap.isEmpty()){
+            if(filterMap ==null|| filterMap.isEmpty()){
                 try {
                     String filterPreviewImagePath = wm.copyResource("/images/filterPreview.png");
-                    filtermap = filterService.getAllFilteredImages(filterPreviewImagePath);
+                    filterMap = filterService.getAllFilteredImages(filterPreviewImagePath);
                 } catch (IOException e) {
                     LOGGER.error("createButtons - could not copy preview filter image", e);
                 }
             }
 
-            for (Map.Entry<String, BufferedImage> filterentety: filtermap.entrySet()) {
+            for (Map.Entry<String, BufferedImage> filterEntity: filterMap.entrySet()) {
 
                 if (columcount == 6) {
                     rowcount++;
                     columcount = 0;
                 }
                 if(rowcount>=6){
-                    filtergrid.getRowConstraints().add(rowcount,new RowConstraints());
+                    filterGrid.getRowConstraints().add(rowcount,new RowConstraints());
 
-                    filtergrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+                    filterGrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
                 }
                 ImageView iv = new ImageView();
-              iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
-              iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+                iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
+                iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
 
                 iv.setStyle("-fx-background-color: green;");
                 iv.setStyle("-fx-padding: 5;");//imagefilter.get(i).getImagepath()
-              iv.setImage(SwingFXUtils.toFXImage(filterentety.getValue(), null));
+                iv.setImage(SwingFXUtils.toFXImage(filterEntity.getValue(), null));
 
-                if(profileservice.getActiveProfile().getPairCameraPositions().get(index).getFilterName()!=null) {
-                    if (filterentety.getKey().equals(profileservice.getActiveProfile().getPairCameraPositions().get(index).getFilterName())) {
+                String filterName = profileservice.getActiveProfile().getPairCameraPositions().get(index).getFilterName();
 
-                        activiv = iv;
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
-                    }
+                if (filterEntity.getKey().equals(filterName)) {
+
+                    activeIv = iv;
+                    activeIv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
+                    activeIv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
                 }
 
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                    if(activiv!=null){
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
+                    if(activeIv !=null){
+                        activeIv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-10);
+                        activeIv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-10);
                     }
-                    activiv=iv;
+                    activeIv =iv;
                     iv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/6-40);
                     iv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/6-40);
 
                     try {
-                        profileservice.getActiveProfile().getPairCameraPositions().get(index).setFilterName(filterentety.getKey());
+                        profileservice.getActiveProfile().getPairCameraPositions().get(index).setFilterName(filterEntity.getKey());
                     } catch (ServiceException e) {
                         LOGGER.error("create button -",e);
                     }
 
                 });
-                filtergrid.add(iv, columcount, rowcount);
+                filterGrid.add(iv, columcount, rowcount);
                 columcount++;
             }
-            filtergrid.setVisible(true);
-            filterscrollplanel.setVisible(true);
-            filterscrollplanel.setContent(filtergrid);
-            root.add(filterscrollplanel,0,1);
+
+            filterGrid.setVisible(true);
+            filterScrollPanel.setVisible(true);
+            filterScrollPanel.setContent(filterGrid);
         } catch (ServiceException e) {
-            LOGGER.error("creatButtons - ", e);
+            LOGGER.error("createButtons - ", e);
             showInformationDialog("Es konnte keine Filterauswahl erstellt werden");
         }
     }
 
     /**
-     * loads the button
-     */
-    private void loadButton() {
-
-        filtergrid.setVisible(true);
-    }
-
-    /**
-     * creats image buttons for green screen image and marks chousen one
+     * Creates image buttons for green screen image and marks chosen one
      */
     private void createGreenscreenButton(){
 
        FileInputStream fips=null;
         try {
-            greengrid = new GridPane();
-            greengrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
-            filterscrollplanel = new ScrollPane();
-            greengrid.setStyle("-fx-background-color: black;");
-            filterscrollplanel.setStyle("-fx-background-color: black;");
-            filterscrollplanel.setFitToWidth(true);
-            filterscrollplanel.setFitToHeight(false);
-            filterscrollplanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            greenScreenGrid = new GridPane();
+            greenScreenGrid.prefWidth(Screen.getPrimary().getBounds().getWidth());
+            filterScrollPanel = new ScrollPane();
+            greenScreenGrid.setStyle("-fx-background-color: black;");
+            filterScrollPanel.setStyle("-fx-background-color: black;");
+            filterScrollPanel.setFitToWidth(true);
+            filterScrollPanel.setFitToHeight(false);
+            filterScrollPanel.prefWidth(Screen.getPrimary().getBounds().getWidth());
 
-            greengrid.getColumnConstraints().add(0, new ColumnConstraints());
-            greengrid.getRowConstraints().add(0, new RowConstraints());
-            greengrid.getColumnConstraints().add(1, new ColumnConstraints());
-            greengrid.getRowConstraints().add(1, new RowConstraints());
-            greengrid.getColumnConstraints().add(2, new ColumnConstraints());
-            greengrid.getRowConstraints().add(2, new RowConstraints());
-            greengrid.getColumnConstraints().add(3, new ColumnConstraints());
-            greengrid.getRowConstraints().add(3, new RowConstraints());
-            greengrid.getColumnConstraints().add(4, new ColumnConstraints());
-            greengrid.getRowConstraints().add(4, new RowConstraints());
-            greengrid.getRowConstraints().add(5, new RowConstraints());
+            greenScreenGrid.getColumnConstraints().add(0, new ColumnConstraints());
+            greenScreenGrid.getRowConstraints().add(0, new RowConstraints());
+            greenScreenGrid.getColumnConstraints().add(1, new ColumnConstraints());
+            greenScreenGrid.getRowConstraints().add(1, new RowConstraints());
+            greenScreenGrid.getColumnConstraints().add(2, new ColumnConstraints());
+            greenScreenGrid.getRowConstraints().add(2, new RowConstraints());
+            greenScreenGrid.getColumnConstraints().add(3, new ColumnConstraints());
+            greenScreenGrid.getRowConstraints().add(3, new RowConstraints());
+            greenScreenGrid.getColumnConstraints().add(4, new ColumnConstraints());
+            greenScreenGrid.getRowConstraints().add(4, new RowConstraints());
+            greenScreenGrid.getRowConstraints().add(5, new RowConstraints());
 
-            greengrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            greengrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            greengrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            greengrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-            greengrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
-           // filtergrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
-            greengrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greenScreenGrid.getColumnConstraints().get(0).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(0).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greenScreenGrid.getColumnConstraints().get(1).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(1).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greenScreenGrid.getColumnConstraints().get(2).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(2).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greenScreenGrid.getColumnConstraints().get(3).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(3).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+            greenScreenGrid.getColumnConstraints().get(4).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(4).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
+           // filterGrid.getColumnConstraints().get(5).setPrefWidth(Screen.getPrimary().getBounds().getWidth() / 4);
+            greenScreenGrid.getRowConstraints().get(5).setPrefHeight(Screen.getPrimary().getBounds().getWidth() / 6);
 
             int columcount = 0;
             int rowcount = 0;
@@ -258,8 +251,8 @@ public class CameraFilterController {
                     rowcount++;
                     columcount = 0;
                     if(rowcount>=6){
-                        greengrid.getRowConstraints().add(rowcount,new RowConstraints());
-                        greengrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
+                        greenScreenGrid.getRowConstraints().add(rowcount,new RowConstraints());
+                        greenScreenGrid.getRowConstraints().get(rowcount).setPrefHeight(Screen.getPrimary().getBounds().getWidth()/6);
                     }
                 }
 
@@ -274,19 +267,19 @@ public class CameraFilterController {
                 fips.close();
                 if(profileservice.getActiveProfile().getPairCameraPositions().get(index).getBackground()!=null) {
                     if (backround.getId()==profileservice.getActiveProfile().getPairCameraPositions().get(index).getBackground().getId()) {
-                        activiv = iv;
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/5-40);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/5-40);
+                        activeIv = iv;
+                        activeIv.setFitHeight(Screen.getPrimary().getBounds().getWidth()/5-40);
+                        activeIv.setFitWidth(Screen.getPrimary().getBounds().getWidth()/5-40);
                     }
                 }
 
                 iv.setOnMouseClicked((MouseEvent mouseEvent) -> {
-                    if (activiv != null) {
-                        activiv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
-                        activiv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
+                    if (activeIv != null) {
+                        activeIv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
+                        activeIv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 10);
                     }
 
-                    activiv = iv;
+                    activeIv = iv;
                     iv.setFitHeight(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
                     iv.setFitWidth(Screen.getPrimary().getBounds().getWidth() / 5 - 40);
 
@@ -297,13 +290,12 @@ public class CameraFilterController {
                     }
 
                 });
-                greengrid.add(iv, columcount, rowcount);
+                greenScreenGrid.add(iv, columcount, rowcount);
                 columcount++;
             }
-            greengrid.setVisible(true);
-            filterscrollplanel.setVisible(true);
-            filterscrollplanel.setContent(greengrid);
-            root.add(filterscrollplanel, 0, 1);
+            greenScreenGrid.setVisible(true);
+            filterScrollPanel.setVisible(true);
+            filterScrollPanel.setContent(greenScreenGrid);
         } catch (ServiceException|IOException e) {
             LOGGER.error("Camers Filter, greenscreen creat button- ", e);
         } finally{
@@ -320,21 +312,20 @@ public class CameraFilterController {
     /**
      * goes back to customer frame
      */
-    public void onBackbuttonpressed() {
+    @FXML
+    public void onBackButtonPressed() {
         wm.showScene(WindowManager.SHOW_CUSTOMERSCENE);
     }
 
     /**
      * on single image pressed
      */
+    @FXML
     public void onSinglePressed() {
         try {
-            unmark();
-
-            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_SINGLE);
-            singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-
-            currentMode = 0;
+            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(SHOT_TYPE_SINGLE);
+            currentMode = SHOT_TYPE_SINGLE;
+            markCurrentMode();
         } catch (ServiceException e) {
             LOGGER.error("onSinglePressed - ",e);
         }
@@ -343,14 +334,12 @@ public class CameraFilterController {
     /**
      * on serien pictures pressed
      */
+    @FXML
     public void onSerialPressed() {
         try {
-            unmark();
-
-            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_MULTIPLE);
-            serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-
-            currentMode = 1;
+            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(SHOT_TYPE_MULTIPLE);
+            currentMode = SHOT_TYPE_MULTIPLE;
+            markCurrentMode();
         } catch (ServiceException e) {
             LOGGER.error("onSerialPressed - ", e);
         }
@@ -359,26 +348,17 @@ public class CameraFilterController {
     /**
      * on time image pressed
      */
+    @FXML
     public void onTimerPressed() {
         try {
-            unmark();
 
-            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(Profile.PairCameraPosition.SHOT_TYPE_TIMED);
+            profileservice.getActiveProfile().getPairCameraPositions().get(index).setShotType(SHOT_TYPE_TIMED);
+            currentMode = SHOT_TYPE_TIMED;
+            markCurrentMode();
 
-            ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-
-            currentMode = 2;
         } catch (ServiceException e) {
             LOGGER.error("onTimerPressed - ",e );
         }
-    }
-
-    /**
-     * gives currentMode
-     * @return current mode (on time, single, serien)
-     */
-    public int getCurrentMode(){
-        return  currentMode;
     }
 
     /**
@@ -390,27 +370,27 @@ public class CameraFilterController {
     public void currentlyChosen(int index, int idFilter, boolean greenscreen){
         try{
         this.index=index;
-        titel.setText("");
-        greengrid=new GridPane();
-        if(filtergrid==null){
-            filtergrid = new GridPane();
+        title.setText("");
+        greenScreenGrid =new GridPane();
+        if(filterGrid ==null){
+            filterGrid = new GridPane();
         }
             if(index>-1) {
 
                 currentMode=profileservice.getActiveProfile().getPairCameraPositions().get(index).getShotType();
-                markfirst();
+                markCurrentMode();
                 if (greenscreen) {
-                    filtergrid.setVisible(false);
-                    greengrid.setVisible(true);
-                    titel.setText("Kamera " + profileservice.getActiveProfile().getPairCameraPositions().get(index).getPosition().getName() + " Hintergrund auswahl");
-                    titel.setVisible(true);
+                    filterGrid.setVisible(false);
+                    greenScreenGrid.setVisible(true);
+                    title.setText("Kamera " + profileservice.getActiveProfile().getPairCameraPositions().get(index).getPosition().getName() + " Hintergrundauswahl");
+                    title.setVisible(true);
                     createGreenscreenButton();
                 } else {
-                        greengrid.setVisible(false);
-                        filtergrid.setVisible(true);
-                        titel.setText("Kamera " + profileservice.getActiveProfile().getPairCameraPositions().get(index).getPosition().getName() + " Filter auswahl");
-                        titel.setVisible(true);
-                        creatButtons();
+                        greenScreenGrid.setVisible(false);
+                        filterGrid.setVisible(true);
+                        title.setText("Kamera " + profileservice.getActiveProfile().getPairCameraPositions().get(index).getPosition().getName() + " Filterauswahl");
+                        title.setVisible(true);
+                        createButtons();
                 }
             }
         } catch (ServiceException e) {
@@ -421,48 +401,26 @@ public class CameraFilterController {
 
 
     /**
-     * markes the currently used item in gui
+     * Marks the currently used mode in GUI (single shot, multiple shots, timed shot) and unmarks the old one
      */
-    private void markfirst(){
+    private void markCurrentMode(){
         switch (currentMode) {
-            case 0:
-                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+            case SHOT_TYPE_MULTIPLE:
+                burstModeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf(MODE_FRAME_COLOR), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                onTimeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                singleButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
                 break;
-            case 1:
-                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+            case SHOT_TYPE_TIMED:
+                onTimeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf(MODE_FRAME_COLOR), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                singleButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                burstModeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
                 break;
-            case 2:
-                ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("green"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                break;
-        }
-    }
-
-    /**
-     * unmarks the old model
-     * so the new model can be marked
-     */
-    private void unmark(){
-        try {
-            int i= currentMode;
-            switch (i) {
-                case 0:
-                    singel.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                    break;
-                case 1:
-                    serien.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                    break;
-                case 2:
-                    ontime.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-                    break;
-            }
-        }catch (NullPointerException n){
-            LOGGER.error("unmark Button",n);
+             default:
+                 //SHOT_TYPE_SINGLE or anything else
+                 singleButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf(MODE_FRAME_COLOR), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                 onTimeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                 burstModeButton.setBorder(new Border(new BorderStroke(javafx.scene.paint.Paint.valueOf("transparent"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+                 break;
         }
     }
 
@@ -471,7 +429,7 @@ public class CameraFilterController {
      *
      * @param info String to be shown as error message to the user
      */
-    public void showInformationDialog(String info){
+    private void showInformationDialog(String info){
         Alert information = new Alert(Alert.AlertType.INFORMATION, info);
         information.setHeaderText("Ein Fehler ist Aufgetreten");
         information.initOwner(wm.getStage());
@@ -482,6 +440,7 @@ public class CameraFilterController {
      * Trigger shot while in filer mode
      * @param keyEvent of key pressed
      */
+    @FXML
     public void triggerShot(KeyEvent keyEvent) {
         try {
             this.cameraTrigger.triggerShotIfCorrectKey(keyEvent);

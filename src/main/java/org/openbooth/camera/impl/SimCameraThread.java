@@ -7,6 +7,7 @@ import org.openbooth.util.FileTransfer;
 import org.openbooth.util.TempStorageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.io.IOException;
  */
 
 @Component
+@Scope("prototype")
 public class SimCameraThread extends CameraThread {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(SimCameraHandler.class);
