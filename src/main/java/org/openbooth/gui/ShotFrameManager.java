@@ -1,8 +1,6 @@
 package org.openbooth.gui;
 
 import org.openbooth.entities.Position;
-import org.openbooth.service.exceptions.ServiceException;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -75,19 +73,19 @@ public class ShotFrameManager {
     }
 
     public void refreshShot(int cameraID,String imgPath) {
-        LOGGER.debug("ShotFrameManager->refreshshot with cameraID="+cameraID+", imgPath="+imgPath);
+        LOGGER.debug("ShotFrameManager->refreshshot with cameraID={}, imgPath={}",cameraID,imgPath);
         getShotframe(cameraID).refreshShot(imgPath);
 
     }
     public void refreshShot(int cameraID,BufferedImage img) {
-        LOGGER.debug("ShotFrameManager->refreshshot with cameraID="+cameraID);
+        LOGGER.debug("ShotFrameManager->refreshshot with cameraID={}",cameraID);
         getShotframe(cameraID).refreshShot(img);
 
     }
 
 
     public void refreshShot(Position position, BufferedImage img){
-        LOGGER.debug("ShotFrameManager->refreshshot with position="+position.getName());
+        LOGGER.debug("ShotFrameManager->refreshshot with position={}",position.getName());
         getShotframe(position).refreshShot(img);
     }
 
@@ -109,7 +107,7 @@ public class ShotFrameManager {
     }
 
     public void showCountdown(Position position,int countdown){
-        LOGGER.debug("ShotFrameManager->showCountdown with position="+position.getName()+" and countdown = "+countdown);
+        LOGGER.debug("ShotFrameManager->showCountdown with position={} and countdown = {}",position.getName(),countdown);
         getShotframe(position).showCountdown(countdown);
 
     }
@@ -118,7 +116,7 @@ public class ShotFrameManager {
             stage.close();
     }
     public boolean isExpired(Position position){
-        LOGGER.debug("ShotFrameManager->isExpired with position="+position.getName());
+        LOGGER.debug("ShotFrameManager->isExpired with position={}",position.getName());
         return getShotframe(position).isExpired();
     }
 }

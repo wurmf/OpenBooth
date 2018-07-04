@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="pane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.ShotFrameController">
-   <center>
+<StackPane fx:id="pane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.ShotFrameController" style="-fx-background-color: #000000;">
+    <children>
 
-      <ImageView fx:id="shotView" onMouseClicked="#shotFrameClicked"  pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-         <image>
-            <Image url="@/images/noimage.png" />
-         </image></ImageView>
-
-   </center>
-   <top>
-      <Label fx:id="countdownLabel" prefHeight="580.0" text="Countdown" textFill="#e45252" visible="false" BorderPane.alignment="CENTER">
+        <ImageView fx:id="shotView" onMouseClicked="#shotFrameClicked" preserveRatio="true">
+            <image>
+                <Image url="@/images/noimage.png" />
+            </image>
+        </ImageView>
+        <Label fx:id="countdownLabel" text="Countdown" textFill="#e45252" visible="false">
          <font>
             <Font name="System Bold" size="400.0" />
          </font>
-         <BorderPane.margin>
-            <Insets bottom="-580.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
-</BorderPane>
+        </Label>
+    </children>
+</StackPane>
