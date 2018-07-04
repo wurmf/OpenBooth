@@ -4,7 +4,6 @@ import org.junit.Ignore;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.entities.Camera;
 import org.openbooth.entities.Position;
 import org.openbooth.entities.Profile;
@@ -55,7 +54,7 @@ public class ImageProcessorImplTest {
     private BufferedImage resultImage;
 
     @Before
-    public void setUp() throws ServiceException, ImageHandlingException, LibraryLoadingException {
+    public void setUp() throws ServiceException, ImageHandlingException {
         imageHandler = new ImageHandler(new OpenCVLoader());
 
         position = new Position("testposition");

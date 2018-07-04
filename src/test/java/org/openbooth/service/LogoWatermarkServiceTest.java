@@ -3,7 +3,6 @@ package org.openbooth.service;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.entities.Logo;
 import org.openbooth.entities.Profile;
 import org.openbooth.entities.RelativeRectangle;
@@ -47,7 +46,7 @@ public class LogoWatermarkServiceTest {
     private String destImgPath;
 
     @Before
-    public void setUp() throws  ServiceException, ImageHandlingException, LibraryLoadingException {
+    public void setUp() throws  ServiceException, ImageHandlingException {
         imageHandler = new ImageHandler(new OpenCVLoader());
 
         String logoPath1 = this.getClass().getResource("/logos/logofamp.jpg").getPath();

@@ -3,7 +3,6 @@ package org.openbooth.service.impl;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.entities.Background;
 import org.openbooth.service.GreenscreenService;
 import org.openbooth.service.exceptions.ServiceException;

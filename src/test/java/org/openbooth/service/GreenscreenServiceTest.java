@@ -3,7 +3,6 @@ package org.openbooth.service;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.LibraryLoadingException;
 import org.openbooth.entities.Background;
 import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.service.impl.GreenscreenServiceImpl;
@@ -31,7 +30,7 @@ public class GreenscreenServiceTest {
 
 
     @Before
-    public void setUp() throws ServiceException, LibraryLoadingException, ImageHandlingException {
+    public void setUp() throws ImageHandlingException {
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
         greenscreenService = new GreenscreenServiceImpl(openCVLoader, imageHandler);
