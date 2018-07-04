@@ -18,7 +18,6 @@
  */
 package org.openbooth.camera.libgphoto2java;
 
-import org.openbooth.camera.exeptions.CameraException;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 import org.openbooth.camera.libgphoto2java.jna.GPhoto2Native;
@@ -32,7 +31,7 @@ import java.io.IOException;
 import static org.openbooth.camera.libgphoto2java.jna.GPhoto2Native.GP_EVENT_FILE_ADDED;
 
 /**
- * Represents a simcam. Thread-unsafe.
+ * Represents a camera. Thread-unsafe.
  * @author Martin Vysny
  */
 public class CameraGphoto implements Closeable {
@@ -42,7 +41,7 @@ public class CameraGphoto implements Closeable {
 
 
     /**
-     * Creates a reference to the first connected simcam.
+     * Creates a reference to the first connected cam.
      */
     public CameraGphoto() {
         final PointerByReference ref = new PointerByReference();
@@ -52,7 +51,7 @@ public class CameraGphoto implements Closeable {
     private boolean isInitialized = false;
 
     /**
-     * Initializes the simcam.
+     * Initializes the camera.
      */
     public void initialize() {
         checkNotClosed();
@@ -71,7 +70,7 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * De-initializes the simcam.
+     * De-initializes the camera.
      */
     public void deinitialize() throws IOException
     {
@@ -86,7 +85,7 @@ public class CameraGphoto implements Closeable {
     private boolean closed = false;
 
     /**
-     * De-initializes the simcam and frees all resources. Further invocations to this method do nothing. Any simcam method
+     * De-initializes the camera and frees all resources. Further invocations to this method do nothing. Any camera method
      * will fail from now on with {@link java.lang.IllegalStateException}.
      */
     public void close() throws IOException
@@ -108,8 +107,8 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * Captures a quick preview image on the simcam.
-     * @return simcam file, never null. Must be closed afterwards.
+     * Captures a quick preview image on the camera.
+     * @return camera file, never null. Must be closed afterwards.
      */
     public CameraFile capturePreview()
     {
@@ -131,38 +130,8 @@ public class CameraGphoto implements Closeable {
         }
     }
 
-    public CameraFile waitForImage() throws CameraException
-    {
-        checkNotClosed();
-        PointerByReference event = new PointerByReference();
-        try
-        {
-            final PointerByReference event_data = new PointerByReference();
-            CameraUtils.check(GPhoto2Native.INSTANCE.gp_camera_wait_for_event(camera, 0, event, event_data, CameraList.CONTEXT), "gp_camera_wait_for_event");
-
-            if(event.getPointer().getInt(0)==GP_EVENT_FILE_ADDED)
-            {
-                final CameraFilePath path = new CameraFilePath(event_data.getValue());
-                path.read();
-                final CameraFile.Path p = new CameraFile.Path(path);
-                LOGGER.debug("file on simcam added");
-                return p.newFile(camera);
-            }
-            else
-            {
-                return null;
-            }
-        }
-        catch(CameraException ex)
-        {
-            LOGGER.error("wait for image failed", ex);
-            throw new CameraException(ex.getMessage(), ex.getResult());
-        }
-
-    }
-
     /**
-     * Returns new configuration for the simcam.e
+     * Returns new configuration for the camera.
      * @return the configuration, never null. Must be closed afterwards.
      */
     public CameraWidgets newConfiguration()
@@ -172,8 +141,8 @@ public class CameraGphoto implements Closeable {
     }
 
     /**
-     * Captures a full-quality image image on the simcam.
-     * @return simcam file, never null. Must be closed afterwards.
+     * Captures a full-quality image image on the camera.
+     * @return camera file, never null. Must be closed afterwards.
      */
     public CameraFile captureImage()
     {

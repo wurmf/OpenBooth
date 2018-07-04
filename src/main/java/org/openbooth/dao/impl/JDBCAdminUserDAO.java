@@ -32,53 +32,31 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
     @Autowired
     public JDBCAdminUserDAO(DBHandler handler) throws PersistenceException{
         try {
-            con=handler.getConnection();
+            con = handler.getConnection();
         } catch (DatabaseException e) {
-            LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
     }
+
+    private static final String READ_ADMIN_QUERY = "SELECT * FROM adminusers WHERE adminname=?";
 
     @Override
     public AdminUser read(String adminName) throws PersistenceException{
-        String loggerFuncName="read";
-        String query="SELECT * FROM adminusers WHERE adminname=?";
-        PreparedStatement stmt=null;
-        ResultSet rs=null;
-        try {
-            stmt=con.prepareStatement(query);
+        try (PreparedStatement stmt = con.prepareStatement(READ_ADMIN_QUERY)){
             stmt.setString(1,adminName);
-            rs=stmt.executeQuery();
-            if(rs.next()){
-                String newAdminName=rs.getString("adminname");
-                byte[] password=rs.getBytes("password");
-                return new AdminUser(newAdminName, password);
-            } else{
-                return null;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String newAdminName = rs.getString("adminname");
+                    byte[] password = rs.getBytes("password");
+                    LOGGER.trace("Read user {} from database", adminName);
+                    return new AdminUser(newAdminName, password);
+                } else {
+                    LOGGER.debug("No user with name {} found", adminName);
+                    return null;
+                }
             }
         } catch (SQLException e) {
-            LOGGER.error(loggerFuncName+" - "+e);
             throw new PersistenceException(e);
-        } finally{
-            closeResource(stmt,loggerFuncName);
-            closeResource(rs,loggerFuncName);
-        }
-    }
-
-    /**
-     * This method closes any resource that is given to it.
-     * @param c an AutoCloseable that shall be closed.
-     * @param loggerFuncName the name of the function that called this function, used for the logger statement if an exception occurs.
-     * @throws PersistenceException if the resource cannot be closed.
-     */
-    private void closeResource(AutoCloseable c, String loggerFuncName) throws PersistenceException{
-        if(c!=null){
-            try{
-                c.close();
-            } catch(Exception e){
-                LOGGER.error(loggerFuncName+" - "+e);
-                throw new PersistenceException(e);
-            }
         }
     }
 }

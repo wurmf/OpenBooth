@@ -108,14 +108,12 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public boolean editCategory(Background.Category category) throws ServiceException {
-        boolean returnValue;
+    public void editCategory(Background.Category category) throws ServiceException {
         try {
-            returnValue = backgroundCategoryDAO.update(category);
+             backgroundCategoryDAO.update(category);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! editing backgroundCategory object in service layer has failed.:" + e);
         }
-        return returnValue;
     }
 
     @Override
@@ -141,29 +139,27 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public boolean eraseCategory(Background.Category category) throws ServiceException {
-        boolean returnValue;
+    public void eraseCategory(Background.Category category) throws ServiceException {
         try {
-            returnValue = backgroundCategoryDAO.delete(category);
+            backgroundCategoryDAO.delete(category);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! erasing backgroundCategory object in service layer has failed.:" + e);
         }
-        return returnValue;
     }
     @Override
     public void createPairProfileCategory(int profileID,int categoryID) throws ServiceException{
         try {
-            backgroundCategoryDAO.createPairProfileCategory(profileID,categoryID);
+            backgroundCategoryDAO.createProfileCategoryRelation(profileID,categoryID);
         } catch (PersistenceException e) {
-            throw new ServiceException("Error! createPairProfileCategory  object in service layer has failed.:",e);
+            throw new ServiceException("Error! createProfileCategoryRelation  object in service layer has failed.:",e);
         }
     }
     @Override
     public void deletePairProfileCategory(int profileID,int categoryID) throws ServiceException{
         try {
-            backgroundCategoryDAO.deletePairProfileCategory(profileID,categoryID);
+            backgroundCategoryDAO.deleteProfileCategoryRelation(profileID,categoryID);
         } catch (PersistenceException e) {
-            throw new ServiceException("Error! deletePairProfileCategory  object in service layer has failed.:",e);
+            throw new ServiceException("Error! deleteProfileCategoryRelation  object in service layer has failed.:",e);
         }
     }
 }
