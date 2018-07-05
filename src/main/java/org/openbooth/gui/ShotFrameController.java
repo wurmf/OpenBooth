@@ -85,12 +85,13 @@ public class ShotFrameController {
     public void shotFrameClicked() {
 
         Screen screen = getScreenOfWindow();
-        Rectangle2D bounds = screen.getVisualBounds();
+        Rectangle2D visualBounds = screen.getVisualBounds();
+        Rectangle2D fullBounds = screen.getBounds();
 
-        primaryStage.setX(bounds.getMinX());
-        primaryStage.setY(bounds.getMinY());
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
+        primaryStage.setX(visualBounds.getMinX());
+        primaryStage.setY(visualBounds.getMinY());
+        primaryStage.setWidth(visualBounds.getWidth());
+        primaryStage.setHeight(visualBounds.getHeight());
 
         StackPane root = (StackPane) primaryStage.getScene().getRoot();
         Node child = root.getChildren().get(0);
@@ -103,13 +104,14 @@ public class ShotFrameController {
             iv = (ImageView) root.getChildren().get(1);
         }
 
-        iv.setFitHeight(bounds.getHeight());
-        iv.setFitWidth(bounds.getWidth());
+        iv.setFitHeight(fullBounds.getHeight());
+        iv.setFitWidth(fullBounds.getWidth());
         primaryStage.setFullScreen(true);
 
     }
 
     private Screen getScreenOfWindow(){
+
         double stageX = primaryStage.getX();
         double stageY = primaryStage.getY();
         double stageWidth = primaryStage.getWidth();
