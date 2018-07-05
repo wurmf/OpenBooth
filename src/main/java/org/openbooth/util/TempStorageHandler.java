@@ -41,13 +41,13 @@ public class TempStorageHandler {
                 }
             }
 
-            LOGGER.info("initializeTempStorage - temporary storage cleaned");
+            LOGGER.debug("initializeTempStorage - temporary storage cleaned");
         }else{
             boolean created = tempStorageFile.mkdirs();
             if(!created){
                 throw new StorageHandlingException("could not create temporary storage");
             }
-            LOGGER.info("initializeTempStorage - new temporary storage created");
+            LOGGER.debug("initializeTempStorage - new temporary storage created");
         }
 
 
