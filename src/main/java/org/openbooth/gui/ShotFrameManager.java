@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
 
@@ -20,7 +19,6 @@ import java.util.*;
 @Component
 public class ShotFrameManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameManager.class);
-    private List<ShotFrameController> shotframes;
     private List<Stage> shotStages;
     private Map<Position, ShotFrameController> positonShotFrameMap;
 
@@ -28,12 +26,11 @@ public class ShotFrameManager {
 
 
     public ShotFrameManager(SpringFXMLLoader springFXMLLoader) {
-        shotframes = new ArrayList<>();
         shotStages = new ArrayList<>();
         positonShotFrameMap = new HashMap<>();
         this.springFXMLLoader = springFXMLLoader;
     }
-    public Map<Position,ShotFrameController> init(List<Position> positionList){
+    public Map<Position,ShotFrameController> init(List<Position> positionList) throws IOException {
         Set<Position> oldPositions = positonShotFrameMap.keySet();
 
          /* Creating shotFrame */
@@ -48,19 +45,15 @@ public class ShotFrameManager {
                 Stage stage = new Stage();
                 stage.setTitle("Shot Frame " + position.getName());
 
-                try {
-                    SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotFrameWrapper = springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
-                    Parent root =  (Parent) shotFrameWrapper.getLoadedObject();
-                    ShotFrameController shotFrameController = shotFrameWrapper.getController();
-                    shotFrameController.initShotFrame(position.getId(),stage);
+                SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotFrameWrapper = springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
+                Parent root = (Parent) shotFrameWrapper.getLoadedObject();
+                ShotFrameController shotFrameController = shotFrameWrapper.getController();
+                shotFrameController.initShotFrame(position.getId(),stage);
 
-                    positonShotFrameMap.put(position,shotFrameController);
-                    stage.setWidth(400);
-                    stage.setHeight(400);
-                    stage.setScene(new Scene(root));
-                } catch (IOException e) {
-                    LOGGER.error("shotFrame.fxml kann nicht geladen werden ",e);
-                }
+                positonShotFrameMap.put(position,shotFrameController);
+                stage.setWidth(400);
+                stage.setHeight(400);
+                stage.setScene(new Scene(root));
                 stage.setFullScreen(false);
                 stage.setX(x);
                 stage.show();
@@ -74,51 +67,9 @@ public class ShotFrameManager {
 
     }
 
-    public void refreshShot(int cameraID,String imgPath) {
-        LOGGER.debug("ShotFrameManager->refreshshot with cameraID={}, imgPath={}",cameraID,imgPath);
-        getShotframe(cameraID).refreshShot(imgPath);
 
-    }
-    public void refreshShot(int cameraID,BufferedImage img) {
-        LOGGER.debug("ShotFrameManager->refreshshot with cameraID={}",cameraID);
-        getShotframe(cameraID).refreshShot(img);
-
-    }
-
-
-    public void refreshShot(Position position, BufferedImage img){
-        LOGGER.debug("ShotFrameManager->refreshshot with position={}",position.getName());
-        getShotframe(position).refreshShot(img);
-    }
-
-    public ShotFrameController getShotframe(int cameraID){
-        for(ShotFrameController shotFrameController: shotframes){
-            if(shotFrameController.getFrameID()==cameraID){
-               return shotFrameController;
-            }
-        }
-        return null;
-    }
-
-    public ShotFrameController getShotframe(Position position){
-        for(Position pos: positonShotFrameMap.keySet()){
-            if(pos.equals(position))
-                return positonShotFrameMap.get(pos);
-        }
-        return null;
-    }
-
-    public void showCountdown(Position position,int countdown){
-        LOGGER.debug("ShotFrameManager->showCountdown with position={} and countdown = {}",position.getName(),countdown);
-        getShotframe(position).showCountdown(countdown);
-
-    }
     public void closeFrames(){
         for(Stage stage: shotStages)
             stage.close();
-    }
-    public boolean isExpired(Position position){
-        LOGGER.debug("ShotFrameManager->isExpired with position={}",position.getName());
-        return getShotframe(position).isExpired();
     }
 }

@@ -1,7 +1,6 @@
 package org.openbooth.service.imageprocessing.impl;
 
 import org.openbooth.camera.CameraThread;
-import org.openbooth.util.OpenCVLoader;
 import org.openbooth.entities.Camera;
 import org.openbooth.entities.Position;
 import org.openbooth.entities.Profile;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,17 +37,14 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
 
     private ApplicationContext applicationContext;
 
-    private OpenCVLoader openCVLoader;
-
     private List<CameraThread> cameraThreadList;
 
     @Autowired
-    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, ProfileService profileService, OpenCVLoader openCVLoader, ApplicationContext applicationContext){
+    public ImageProcessingManagerImpl(CameraHandler cameraHandler, ShotFrameManager shotFrameManager, ProfileService profileService, ApplicationContext applicationContext){
 
         this.cameraHandler = cameraHandler;
         this.shotFrameManager = shotFrameManager;
         this.profileService = profileService;
-        this.openCVLoader = openCVLoader;
         this.applicationContext = applicationContext;
     }
 
@@ -59,8 +56,8 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
         List<Position> positionList = new ArrayList<>();
         List<Camera> activeCameraList = new ArrayList<>();
 
-        for(int i=0; i<cameraList.size(); i++){
-            Camera c = cameraList.get(i);
+
+        for(Camera c: cameraList){
             Position p = profileService.getPositionOfCameraOfProfile(c);
             if(p!=null){
                 LOGGER.debug("initImageProcessing - simcam added");
@@ -68,9 +65,9 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
                 activeCameraList.add(c);
             } else{
                 LOGGER.info("initImageProcessing - no position for this simcam: {}", c);
-                //cameraHandler.removeCameraFromList(c);
             }
         }
+
         int positionNumber = profileService.getAllPairCameraPositionOfProfile().size();
 
 
@@ -142,7 +139,13 @@ public class ImageProcessingManagerImpl implements ImageProcessingManager {
     private Map<Position, ShotFrameController> initShotFrameManager(List<Position> positionList) throws ServiceException {
 
 
-        Map<Position, ShotFrameController> positionShotFrameMap = shotFrameManager.init(positionList);
+        Map<Position, ShotFrameController> positionShotFrameMap;
+        try {
+            positionShotFrameMap = shotFrameManager.init(positionList);
+        } catch (IOException e) {
+            throw new ServiceException(e);
+        }
+
         if(positionShotFrameMap == null || positionShotFrameMap.isEmpty()){
             LOGGER.error("initShotFrameManager - initializing ShotFrames failed - positionShotFrameMap is null or empty");
             throw new ServiceException("Initializing ShotFrames failed");
