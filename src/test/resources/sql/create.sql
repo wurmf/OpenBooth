@@ -73,6 +73,7 @@ CREATE TABLE backgrounds(
                         backgroundID BIGINT DEFAULT backgrounds_seq.nextval PRIMARY KEY,
                         name VARCHAR(50) NOT NULL,
                         path VARCHAR(250) NOT NULL DEFAULT '',
+                        backgroundcategoryID BIGINT REFERENCES backgroundcategories(backgroundcategoryID) ON DELETE CASCADE,
                         isDeleted BOOLEAN DEFAULT false
                         );
 

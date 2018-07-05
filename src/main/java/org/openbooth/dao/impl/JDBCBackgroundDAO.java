@@ -20,266 +20,225 @@ import java.util.List;
  */
 @Repository
 public class JDBCBackgroundDAO implements BackgroundDAO{
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCBackgroundDAO.class);
+
+    private static final String TABLE_NAME = "backgrounds";
+    private static final String NAME_COLUMN = "name";
+    private static final String ID_COLUMN = "backgroundID";
+    private static final String PATH_COLUMN = "path";
+    private static final String DELETED_COLUMN = "isDeleted";
+    private static final String CATEGORY_COLUMN = "backgroundcategoryID";
+
+    private static final String CONSISTENCY_ERROR_MESSAGE = "The consistency of the database is broken! Multiple rows have been affected.";
+
     private Connection con;
     private BackgroundCategoryDAO backgroundCategoryDAO;
 
     @Autowired
-    public JDBCBackgroundDAO(DBHandler handler) throws PersistenceException {
-        LOGGER.debug("Entering constructor");
+    public JDBCBackgroundDAO(DBHandler handler, BackgroundCategoryDAO backgroundCategoryDAO) throws PersistenceException {
         try {
             con = handler.getConnection();
         } catch (DatabaseException e) {
-            LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
-        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(handler);
+        this.backgroundCategoryDAO = backgroundCategoryDAO;
     }
+
+    private static final String CREATE_STATEMENT =
+            "INSERT INTO "+TABLE_NAME+" ("+NAME_COLUMN+","+PATH_COLUMN+") VALUES (?,?);";
 
     @Override
     public Background create(Background background) throws PersistenceException {
-        LOGGER.debug("Entering create method with parameters " + background);
-        if(background==null)
-            throw new IllegalArgumentException("Error!:Called create method with null pointer.");
+        if(background == null) throw new IllegalArgumentException("Background is null");
 
-        PreparedStatement stmt = null;
 
-        try {
-            //AutoID
-            if(background.getId()== Integer.MIN_VALUE)
-            {
-                String sqlString = "INSERT INTO"
-                        + " backgrounds (name,path,backgroundcategoryID)"
-                        + " VALUES (?,?,?);";
+        try (PreparedStatement stmt = con.prepareStatement(CREATE_STATEMENT)){
+            stmt.setString(1,background.getName());
+            stmt.setString(2,background.getPath());
 
-                stmt = this.con.prepareStatement(sqlString, Statement.RETURN_GENERATED_KEYS);
-                stmt.setString(1,background.getName());
-                stmt.setString(2,background.getPath());
-                stmt.setInt(3,background.getCategory().getId());
+            stmt.executeUpdate();
+            try(ResultSet rs = stmt.getGeneratedKeys()) {
+            rs.next();
+            int generatedID = rs.getInt(1);
 
-                stmt.executeUpdate();
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next())
-                {background.setId(rs.getInt(1));}
-                LOGGER.debug("Persisted Profile successfully with AutoID:" + background.getId());
-            }
-            //NoAutoID
-            else
-            {
-                String sqlString = "INSERT INTO"
-                        + " backgrounds (backgroundID,name,path,backgroundcategoryID)"
-                        + " VALUES (?,?,?,?);";
-                stmt = this.con.prepareStatement(sqlString);
-                stmt.setInt(1,background.getId());
-                stmt.setString(2,background.getName());
-                stmt.setString(3,background.getPath());
-                stmt.setInt(4,background.getCategory().getId());
 
-                stmt.executeUpdate();
-                LOGGER.debug("Persisted object creation successfully without AutoID:" + background);
+            Background persistedBackground = new Background(generatedID, background.getName(), background.getPath(), background.getCategory(), background.isDeleted());
+            LOGGER.trace("Background {} successfully stored in database", persistedBackground);
+            setCategoryForBackground(persistedBackground, background.getCategory());
+            return persistedBackground;
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Creating in persistence layer has failed.:" + e);
+            throw new PersistenceException(e);
         }
-        finally {
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of creating method call has failed.:" + e);}
-        }
-        return background;
     }
 
+    private static final String SET_CATEGORY_STATEMENT =
+            "UPDATE "+TABLE_NAME+" SET "+CATEGORY_COLUMN+" = ? WHERE "+ID_COLUMN+" = ?;";
+
+    private void setCategoryForBackground(Background background, Background.Category category) throws PersistenceException{
+        try(PreparedStatement pstmt = con.prepareStatement(SET_CATEGORY_STATEMENT)){
+            pstmt.setInt(1, category.getId());
+            pstmt.setInt(2, background.getId());
+            int updateCount = pstmt.executeUpdate();
+
+            if(updateCount == 1){
+                LOGGER.trace("Relation between background {} and category {} successfully presisted", background, category);
+            } else if (updateCount == 0){
+                throw new PersistenceException("The given relation could not be persisted, because no background with the given id was found");
+            } else {
+                throw new PersistenceException(CONSISTENCY_ERROR_MESSAGE);
+            }
+        } catch (SQLException e){
+            throw new PersistenceException(e);
+        }
+    }
+
+    private static final String UPDATE_STATEMENT =
+            "UPDATE "+TABLE_NAME+
+                    " SET " +NAME_COLUMN+" = ?, "+PATH_COLUMN+" = ? " +
+                    "WHERE "+ID_COLUMN+" = ?;";
+
     @Override
-    public boolean update(Background background) throws PersistenceException {
-        LOGGER.debug("Entering update method with parameters " + background);
-        if(background==null)
-            throw new IllegalArgumentException("Error! Called update method with null pointer.");
-        LOGGER.debug("Passed:Checking parameters according to specification.");
+    public void update(Background background) throws PersistenceException {
+        if(background==null) throw new IllegalArgumentException("Background is null.");
 
-        String sqlString;
-        PreparedStatement stmt = null;
 
-        sqlString = "UPDATE backgrounds"
-                + " SET name = ?, path = ?, backgroundcategoryID = ?"
-                + " WHERE backgroundID = ?;";
-
-        try {
-            stmt = this.con.prepareStatement(sqlString);
+        try (PreparedStatement stmt = con.prepareStatement(UPDATE_STATEMENT)){
             stmt.setString(1,background.getName());
             stmt.setString(2,background.getPath());
-            stmt.setInt(3,background.getCategory().getId());
-            stmt.setInt(4,background.getId());
+            stmt.setInt(3,background.getId());
             stmt.executeUpdate();
             int returnUpdateCount = stmt.executeUpdate();
 
-            // Check, if object has been updated and return suitable boolean value or throw Exception
             if (returnUpdateCount == 1){
-                LOGGER.debug("Update has been successfully(return value true)");
-                return true;
+                LOGGER.trace("Background {} has been successfully update in database", background);
             }
             else if (returnUpdateCount == 0) {
-                LOGGER.debug("Updated nothing , since it doesn't exist in persistence data store(return value false)");
-                return false;}
-            else {
-                throw new PersistenceException("Error! Updating in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+                throw new PersistenceException("The given background could not be updated because no background with the given id was found in the database");
+            } else {
+                throw new PersistenceException(CONSISTENCY_ERROR_MESSAGE);
             }
         } catch (SQLException e) {
-            throw new PersistenceException("Error! Updating in persistence layer has failed.:" + e);
-        }
-        finally {
-            // Return resources
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of update method call has failed.:" + e);}
+            throw new PersistenceException(e);
         }
     }
+
+    private static final String READ_ONE_STATEMENT =
+            "SELECT * FROM "+TABLE_NAME+" WHERE "+ID_COLUMN+" = ?;";
 
     @Override
     public Background read(int id) throws PersistenceException {
-        LOGGER.debug("Entering read method with parameter id=" + id);
-
-        ResultSet rs;
-        String sqlString;
-        PreparedStatement stmt = null;
-
-        sqlString = "SELECT * FROM backgrounds WHERE backgroundID = ?;";
-
-        try {
-            stmt = this.con.prepareStatement(sqlString);
+        try (PreparedStatement stmt = con.prepareStatement(READ_ONE_STATEMENT)){
             stmt.setInt(1, id);
-            rs = stmt.executeQuery();
-            if (rs.next()) {
+            try(ResultSet rs = stmt.executeQuery()) {
+                rs.next();
                 Background background = new Background(
-                        rs.getInt("backgroundID"),
-                        rs.getString("name"),
-                        rs.getString("path"),
-                        backgroundCategoryDAO.read(id),
-                        rs.getBoolean("isDeleted")
+                        rs.getInt(ID_COLUMN),
+                        rs.getString(NAME_COLUMN),
+                        rs.getString(PATH_COLUMN),
+                        backgroundCategoryDAO.read(rs.getInt(CATEGORY_COLUMN)),
+                        rs.getBoolean(DELETED_COLUMN)
                 );
-                if(background.getPath() == null)
-                    {background.setPath("");}
+                if (background.getPath() == null) {
+                    background.setPath("");
+                }
+                LOGGER.trace("Background {} successfully read from database", background);
                 return background;
-            }
-            else {
-                LOGGER.debug("Read nothing, since it doesn't exist in persistence data store(return null)");
-                return null;
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Reading in persistence layer has failed.:" + e);
-        }
-        finally {
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
+            throw new PersistenceException(e);
         }
     }
+
+    private static final String READ_ALL_STATEMENT =
+            "SELECT * FROM "+TABLE_NAME+" WHERE "+DELETED_COLUMN+" ='false';";
 
     @Override
     public List<Background> readAll() throws PersistenceException {
-        LOGGER.debug("Entering readAll method");
-        String sqlString = "SELECT * FROM backgrounds where isDeleted ='false';";
-        PreparedStatement stmt = null;
 
-        try {
-            stmt = this.con.prepareStatement(sqlString);
-            ResultSet rs = stmt.executeQuery();
+        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT);
+             ResultSet rs = stmt.executeQuery()){
+
             List<Background> returnList = new ArrayList<>();
 
             while (rs.next()) {
-                Background background = this.read(rs.getInt("backgroundID"));
+                Background background = new Background(
+                        rs.getInt(ID_COLUMN),
+                        rs.getString(NAME_COLUMN),
+                        rs.getString(PATH_COLUMN),
+                        backgroundCategoryDAO.read(rs.getInt(CATEGORY_COLUMN)),
+                        rs.getBoolean(DELETED_COLUMN)
+                );
                 returnList.add(background);
             }
-            LOGGER.debug("Persisted object readingAll has been successfully. " + returnList);
+            LOGGER.trace("All backgrounds have been read from database: {}", returnList);
+
             return returnList;
         } catch (SQLException e) {
-            throw new PersistenceException("Error! ReadAll objects in persistence layer has failed.:" + e);
-        }
-        finally {
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of readAll method call has failed.:" + e);}
+            throw new PersistenceException(e);
         }
     }
 
+
+    private static final String READ_ALL_WITH_CATEGORY_STATEMENT =
+            "SELECT * FROM "+TABLE_NAME+" WHERE "+CATEGORY_COLUMN+" = ? AND "+DELETED_COLUMN+" ='false';";
+
     @Override
-    public List<Background> readAllWithCategory(int id) throws PersistenceException {
-        LOGGER.debug("Entering readAllWithCategory method");
-        String sqlString = "SELECT * FROM backgrounds where backgroundcategoryID = ? AND isDeleted ='false';";
-        PreparedStatement stmt = null;
+    public List<Background> readAllWithCategory(Background.Category category) throws PersistenceException {
+        if(category == null) throw new IllegalArgumentException("Category is null");
 
-        try {
-            stmt = this.con.prepareStatement(sqlString);
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-            List<Background> returnList = new ArrayList<>();
+        try(PreparedStatement stmt = con.prepareStatement(READ_ALL_WITH_CATEGORY_STATEMENT)) {
+            stmt.setInt(1, category.getId());
+            try(ResultSet rs = stmt.executeQuery()) {
+                List<Background> returnList = new ArrayList<>();
 
-            while (rs.next()) {
-                Background background = this.read(rs.getInt("backgroundID"));
-                returnList.add(background);
+                while (rs.next()) {
+                    Background background = new Background(
+                            rs.getInt(ID_COLUMN),
+                            rs.getString(NAME_COLUMN),
+                            rs.getString(PATH_COLUMN),
+                            new Background.Category(category.getId(), category.getName(), category.isDeleted()),
+                            rs.getBoolean(DELETED_COLUMN)
+                    );
+                    returnList.add(background);
+                }
+
+                LOGGER.trace("All backgrounds with category {} have been read from database: {}", category, returnList);
+                return returnList;
             }
-            LOGGER.debug("Persisted object readAllWithCategory has been successfully. " + returnList);
-            return returnList;
         } catch (SQLException e) {
-            throw new PersistenceException("Error! readAllWithCategory objects in persistence layer has failed.:" + e);
-        }
-        finally {
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of readAllWithCategory method call has failed.:" + e);}
+            throw new PersistenceException(e);
         }
     }
 
+    private static final String DELETE_STATEMENT =
+            "UPDATE "+TABLE_NAME+" SET "+DELETED_COLUMN+" = 'true' WHERE "+ID_COLUMN+" = ? AND "+DELETED_COLUMN+" = 'false';";
+
     @Override
-    public boolean delete(Background background) throws PersistenceException {
-        LOGGER.debug("Entering delete method with parameters " + background);
+    public void delete(Background background) throws PersistenceException {
 
-        if (background==null)
-            throw new IllegalArgumentException("Error!:Called delete method with null pointer.");
+        if (background==null) throw new IllegalArgumentException("background is null");
 
-        String sqlString;
-        PreparedStatement stmt = null;
-
-        sqlString = "UPDATE backgrounds SET isDeleted = 'true' WHERE backgroundID = ? AND isDeleted = 'false';";
-
-        try {
-            stmt = this.con.prepareStatement(sqlString);
+        try (PreparedStatement stmt = con.prepareStatement(DELETE_STATEMENT)){
             stmt.setInt(1,background.getId());
             int returnUpdateCount  = stmt.executeUpdate();
 
             // Check, if row has been deleted and return suitable boolean value
             if (returnUpdateCount == 1){
-                LOGGER.debug("Delete has been successfully(returned value true)");
-                return true;
+                LOGGER.trace("Background {} successfully deleted from database", background);
             }
             else if (returnUpdateCount == 0){
-                LOGGER.debug("Deleted nothing, since it didn't exist in persistence data store(returned value false)");
-                return false;
+                throw new PersistenceException("The given background could not be deleted because no background with the given id was found in the database");
             }
             else {
-                throw new PersistenceException("Error! Deleting in persistence layer has failed.:Consistence of persistence store is broken! This should not happen!");
+                throw new PersistenceException(CONSISTENCY_ERROR_MESSAGE);
             }
         }
         catch (SQLException e) {
-            throw new PersistenceException("Error! Deleting in persistence layer has failed.:" + e);
-        }
-        finally {
-            try
-            {if (stmt != null)
-                stmt.close();}
-            catch (SQLException e) {
-                throw new PersistenceException("Error! Closing resource at end of deleting method call has failed.:" + e);}
+            throw new PersistenceException(e);
         }
     }
 }

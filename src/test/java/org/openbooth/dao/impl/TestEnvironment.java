@@ -46,7 +46,7 @@ public class TestEnvironment {
     protected ImageDAO imageDAO,mockImageDAO;
     protected ShootingDAO shootingDAO,mockShootingDAO;
     protected BackgroundCategoryDAO backgroundCategoryDAO,mockbackgroundCategoryDAO;
-    protected BackgroundDAO backgroundDAO;
+    protected BackgroundDAO backgroundDAO, mockBackgroundDAO;
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
 
@@ -96,6 +96,7 @@ public class TestEnvironment {
         mockImageDAO = new JDBCImageDAO(mockH2Handler);
         mockShootingDAO = new JDBCShootingDAO(mockH2Handler);
         mockbackgroundCategoryDAO = new JDBCBackgroundCategoryDAO(mockH2Handler);
+        mockBackgroundDAO = new JDBCBackgroundDAO(mockH2Handler, mockbackgroundCategoryDAO);
 
 
         /* Setup DAOs for all testing
@@ -110,7 +111,7 @@ public class TestEnvironment {
         shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
         adminUserDAO = new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
         backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(H2EmbeddedHandler.getInstance());
-        backgroundDAO = new JDBCBackgroundDAO(H2EmbeddedHandler.getInstance());
+        backgroundDAO = new JDBCBackgroundDAO(H2EmbeddedHandler.getInstance(), backgroundCategoryDAO);
 
         /*
         * Setup Services for all testing

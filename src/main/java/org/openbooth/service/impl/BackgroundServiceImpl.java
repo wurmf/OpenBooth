@@ -42,14 +42,12 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public boolean edit(Background background) throws ServiceException {
-        boolean returnValue;
+    public void edit(Background background) throws ServiceException {
         try {
-            returnValue = backgroundDAO.update(background);
+            backgroundDAO.update(background);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! editing background object in service layer has failed.:" + e);
         }
-        return returnValue;
     }
 
     @Override
@@ -75,10 +73,10 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public List<Background> getAllWithCategory(int id) throws ServiceException {
+    public List<Background> getAllWithCategory(Background.Category category) throws ServiceException {
         List<Background> backgrounds;
         try {
-            backgrounds = backgroundDAO.readAllWithCategory(id);
+            backgrounds = backgroundDAO.readAllWithCategory(category);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! getting all background objects in service layer has failed.:" + e);
         }
@@ -87,14 +85,12 @@ public class BackgroundServiceImpl implements BackgroundService{
     }
 
     @Override
-    public boolean erase(Background background) throws ServiceException {
-        boolean returnValue;
+    public void erase(Background background) throws ServiceException {
         try {
-            returnValue = backgroundDAO.delete(background);
+            backgroundDAO.delete(background);
         } catch (PersistenceException e) {
             throw new ServiceException("Error! erasing background object in service layer has failed.:" + e);
         }
-        return returnValue;
     }
 
     @Override

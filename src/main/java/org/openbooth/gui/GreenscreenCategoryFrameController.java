@@ -146,7 +146,7 @@ public class GreenscreenCategoryFrameController extends SettingFrameController {
                 selectedCategory = (Background.Category) newSelection;
                 LOGGER.debug("Kategorie ausgewählt ->"+selectedCategory.getId());
                 try {
-                    greenscreenBackgroundController.refreshTableBackground(bservice.getAllWithCategory(selectedCategory.getId()), selectedProfile,selectedCategory);
+                    greenscreenBackgroundController.refreshTableBackground(bservice.getAllWithCategory(selectedCategory), selectedProfile,selectedCategory);
                 } catch (ServiceException e) {
                     LOGGER.error("Backgroundservice couldnt get categories ->"+selectedCategory.getId(),e);
                 }

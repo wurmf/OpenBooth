@@ -134,7 +134,7 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
                         rs.getBoolean(DELETED_COLUMN));
                 returnList.add(backgroundcategory);
             }
-            LOGGER.trace("Background categories have been read from persistence: {}", returnList);
+            LOGGER.trace("Background categories have been read from database: {}", returnList);
             return returnList;
         } catch (SQLException e) {
             throw new PersistenceException(e);

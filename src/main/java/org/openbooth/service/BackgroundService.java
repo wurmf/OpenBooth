@@ -21,10 +21,9 @@ public interface BackgroundService {
     /**
      * edit background stored in persistence store
      * @param background - non null background object
-     * @return true, if edit has been successful, else false
      * @throws ServiceException if action fails
      */
-    boolean edit(Background background) throws ServiceException;
+    void edit(Background background) throws ServiceException;
 
     /**
      * get background stored in persistence store
@@ -42,20 +41,19 @@ public interface BackgroundService {
     List<Background> getAll() throws ServiceException;
 
     /**
-     * get all backgrounds with category of given category id
-     * @param id - id of category object
-     * @return list of backgrounds with given category id
+     * get all backgrounds with the given category, identified by id
+     * @param category - the category object
+     * @return list of backgrounds with given category
      * @throws ServiceException if action fails
      */
-    List<Background> getAllWithCategory(int id) throws ServiceException;
+    List<Background> getAllWithCategory(Background.Category category) throws ServiceException;
 
     /**
      * erase given background from persistence store
      * @param background to be erased
-     * @return true, if erasing has been successful , else false
      * @throws ServiceException if action fails
      */
-    boolean erase(Background background) throws ServiceException;
+    void erase(Background background) throws ServiceException;
 
     /**
      * add background category to persistence store

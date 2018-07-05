@@ -10,12 +10,9 @@ import java.util.List;
  */
 public interface BackgroundDAO {
     /**
-     * Persists a given Background object with or without known id
-     * (case, if id = Integer.MIN_VALUE)
-     * In case id is unknown an unique id will be auto-assigned
+     * Persists a given background object, a unique id will be auto-assigned
      * @param background - a non null Background object
-     * @return persisted persisted Background object with possible auto-assigned id
-     * (in case, if id = Integer.MIN_VALUE)
+     * @return the persisted background object with auto-assigned id
      * @throws PersistenceException if persistence data store can not be accessed
      */
     Background create(Background background) throws PersistenceException;
@@ -28,10 +25,9 @@ public interface BackgroundDAO {
      * if Background.Category object with given id doesn't exist in persistence store,
      * nothing will be updated and false value will be returned
      * @param background - a non null Background object to be updated
-     * @return true, if given object is updated in persistence store successfully, false otherwise
-     * @throws PersistenceException if persistence data store can not be accessed
+     * @throws PersistenceException if persistence data store can not be accessed or no background with the given id could be found
      */
-    boolean update(Background background) throws  PersistenceException;
+    void update(Background background) throws  PersistenceException;
 
     /**
      * Retrieve a Background object identified by id from the persistence store
@@ -50,13 +46,18 @@ public interface BackgroundDAO {
      */
     List<Background> readAll() throws PersistenceException;
 
-    List<Background> readAllWithCategory(int id) throws PersistenceException;
+    /**
+     * Returns empty list if there is no background for this category or this category does not exists
+     * @param category
+     * @return
+     * @throws PersistenceException
+     */
+    List<Background> readAllWithCategory(Background.Category category) throws PersistenceException;
 
     /**
      * Remove given Background from persistence store(in fact mark it as deleted in the persistence store
      * @param background - a non null Background object to be deleted
-     * @return true if given Background object is deleted in persistence store successfully, false otherwise
-     * @throws PersistenceException if persistence data store can not be accessed
+     * @throws PersistenceException if persistence data store can not be accessed or no background with the given id could be found
      */
-    boolean delete(Background background) throws PersistenceException;
+    void delete(Background background) throws PersistenceException;
 }

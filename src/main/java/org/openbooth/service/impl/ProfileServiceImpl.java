@@ -735,7 +735,7 @@ public class ProfileServiceImpl implements ProfileService {
         Profile profile = this.get(profileId);
         for (Background.Category backgroundCategory:profile.getBackgroundCategories())
             {
-                backgrounds.addAll(backgroundService.getAllWithCategory(backgroundCategory.getId()));
+                backgrounds.addAll(backgroundService.getAllWithCategory(backgroundCategory));
             }
         return backgrounds;
     }
