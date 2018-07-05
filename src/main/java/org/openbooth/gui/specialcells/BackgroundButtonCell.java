@@ -1,11 +1,9 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.entities.Position;
-import org.openbooth.entities.Profile;
-import org.openbooth.gui.CameraPositionFrameController;
-import org.openbooth.service.ProfileService;
+import org.openbooth.entities.Background;
+import org.openbooth.service.BackgroundService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,15 +21,16 @@ import java.util.Optional;
 /**
  * Created by macdnz on 16.12.16.
  */
-public class PositionButtonCell extends TableCell<Position, Boolean> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
+public class BackgroundButtonCell extends TableCell<Background, Boolean> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackgroundButtonCell.class);
 
 
     private final Button cellButton;
 
-    public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, ObservableList<Profile> selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
+    public BackgroundButtonCell(ImageHandler imageHandler,ObservableList<Background> backgroundList, BackgroundService bservice, Stage primaryStage) {
+
         cellButton = new Button();
-        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",50,50));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
@@ -41,8 +40,8 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Diese Position wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie diese Position mit den zugehörigen Daten löschen wollen?");
+                alert.setHeaderText("Dieser Hintergrund wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie dieser Background mit den zugehörigen Daten löschen wollen?");
                 alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");
@@ -50,22 +49,17 @@ public class PositionButtonCell extends TableCell<Position, Boolean> {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Position currentPosition = PositionButtonCell.this.getTableView().getItems().get(PositionButtonCell.this.getIndex());
+                    Background currentBackground = BackgroundButtonCell.this.getTableView().getItems().get(BackgroundButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    posList.remove(currentPosition);
+                    backgroundList.remove(currentBackground);
                     try {
-                        pservice.erasePosition(currentPosition);
 
-                        // refreshing kamPos TableView
-                        kamPosList.clear();
+                        bservice.erase(currentBackground);
 
-                        kamPosList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfilID.get(0).getId()));
-
-                        cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfilID);
 
                     } catch (ServiceException e) {
-                        LOGGER.error("PositionButtonCell->Löschen Button -> Position konnte nicht gelöscht werden.",e);
+                        LOGGER.error("hintergrund konnte nicht von db gelöscht werden",e);
                     }
 
 

@@ -1,9 +1,9 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.entities.Background;
-import org.openbooth.service.BackgroundService;
+import org.openbooth.entities.Profile;
+import org.openbooth.service.ProfileService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -21,25 +21,24 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * Created by macdnz on 16.12.16.
+ * Created by macdnz on 15.12.16.
  */
-public class BackgroundImgCell extends TableCell<Background, String> {
-    final static Logger LOGGER = LoggerFactory.getLogger(BackgroundImgCell.class);
+public class ProfileImgCell extends TableCell<Profile, String> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileImgCell.class);
 
-    private  ObservableList<Background> backgroundList;
-    private BackgroundService bservice;
+    private  ObservableList<Profile> pList;
+    private ProfileService pservice;
 
-
-    final ImageView img = new ImageView();
+    final ImageView img;
     final ImageView cellImgView;
+    
+    public ProfileImgCell(ObservableList<Profile> pList, ProfileService pservice, ImageHandler imageHandler, Stage primaryStage) {
+        this.pList = pList;
+        this.pservice = pservice;
 
-    public BackgroundImgCell(ObservableList<Background> backgroundList, BackgroundService bservice, ImageHandler imageHandler, Stage primaryStage) {
-        this.backgroundList = backgroundList;
-        this.bservice = bservice;
-
+        img = new ImageView();
         img.setFitHeight(35);
         img.setFitWidth(35);
-
 
         cellImgView = new ImageView(new Image("file:"+ this.getClass().getResource("/images/edit.png").getPath())); //new Button("edit");
         cellImgView.setFitHeight(35);
@@ -48,7 +47,6 @@ public class BackgroundImgCell extends TableCell<Background, String> {
 
             @Override
             public void handle(MouseEvent t) {
-
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Bild Hochladen...");
                 fileChooser.setInitialDirectory(
@@ -63,26 +61,18 @@ public class BackgroundImgCell extends TableCell<Background, String> {
                 if (file != null) {
                     try {
 
-                        Background p = backgroundList.get(getIndex());
+                        Profile p = pList.get(getIndex());
 
-                        p.setPath(file.getAbsolutePath());
+                        p.setWatermark(file.getAbsolutePath());
 
+                        pservice.edit(p);
 
-                        /* UPDATE TABLEVIEW */
-                        backgroundList.remove(getIndex());
-                        backgroundList.add(getIndex(),p);
-
-                        img.setImage(getImage(p.getPath()));
-                        HBox hb = new HBox(img,cellImgView);
-                        hb.setSpacing(10);
-                        hb.setAlignment(Pos.CENTER);
-                        setGraphic(hb);
-
-                        bservice.edit(p);
+                        pList.removeAll(pList);
+                        pList.addAll(pservice.getAllProfiles());
 
 
                     } catch (ServiceException e) {
-                        LOGGER.error("background bild konnte nicht in db gespeichert werden",e);
+                        LOGGER.error("ProfileImgCell->Error bei updating Img Cell ",e);
                     }
                 }
 
@@ -92,10 +82,11 @@ public class BackgroundImgCell extends TableCell<Background, String> {
 
             @Override
             public void handle(MouseEvent event) {
-                if(backgroundList.get(getIndex()).getPath()==null)
+
+                if(pList.get(getIndex()).getWatermark()==null)
                     GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    GUIImageHelper.popupImage(backgroundList.get(getIndex()).getPath(),primaryStage);
+                    GUIImageHelper.popupImage(pList.get(getIndex()).getWatermark(),primaryStage);
 
             }
 
@@ -107,7 +98,7 @@ public class BackgroundImgCell extends TableCell<Background, String> {
         if(path == null) {
             return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
         }else
-            return new javafx.scene.image.Image("file:"+path,true);
+            return new Image("file:"+path,true);
 
 
     }

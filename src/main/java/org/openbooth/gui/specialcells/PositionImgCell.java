@@ -1,8 +1,8 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.entities.Profile;
+import org.openbooth.entities.Position;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -21,24 +21,25 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 
 /**
- * Created by macdnz on 15.12.16.
+ * Created by macdnz on 16.12.16.
  */
-public class ProfileImgCell extends TableCell<Profile, String> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileImgCell.class);
+public class PositionImgCell extends TableCell<Position, String> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PositionImgCell.class);
 
-    private  ObservableList<Profile> pList;
+    private  ObservableList<Position> posList;
     private ProfileService pservice;
 
-    final ImageView img;
-    final ImageView cellImgView;
-    
-    public ProfileImgCell(ObservableList<Profile> pList, ProfileService pservice, ImageHandler imageHandler, Stage primaryStage) {
-        this.pList = pList;
+
+    private final ImageView img = new ImageView();
+    private final ImageView cellImgView;
+
+    public PositionImgCell(ObservableList<Position> posList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
+        this.posList = posList;
         this.pservice = pservice;
 
-        img = new ImageView();
         img.setFitHeight(35);
         img.setFitWidth(35);
+
 
         cellImgView = new ImageView(new Image("file:"+ this.getClass().getResource("/images/edit.png").getPath())); //new Button("edit");
         cellImgView.setFitHeight(35);
@@ -47,6 +48,7 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
             @Override
             public void handle(MouseEvent t) {
+
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Bild Hochladen...");
                 fileChooser.setInitialDirectory(
@@ -61,18 +63,26 @@ public class ProfileImgCell extends TableCell<Profile, String> {
                 if (file != null) {
                     try {
 
-                        Profile p = pList.get(getIndex());
+                        Position p = posList.get(getIndex());
 
-                        p.setWatermark(file.getAbsolutePath());
+                        p.setButtonImagePath(file.getAbsolutePath());
 
-                        pservice.edit(p);
 
-                        pList.removeAll(pList);
-                        pList.addAll(pservice.getAllProfiles());
+                        /* UPDATE TABLEVIEW */
+                        posList.remove(getIndex());
+                        posList.add(getIndex(),p);
+
+                        img.setImage(getImage(p.getButtonImagePath()));
+                        HBox hb = new HBox(img,cellImgView);
+                        hb.setSpacing(10);
+                        hb.setAlignment(Pos.CENTER);
+                        setGraphic(hb);
+
+                        pservice.editPosition(p);
 
 
                     } catch (ServiceException e) {
-                        LOGGER.error("ProfileImgCell->Error bei updating Img Cell ",e);
+                       LOGGER.error("PositionImgCell->Update position Image",e);
                     }
                 }
 
@@ -82,11 +92,10 @@ public class ProfileImgCell extends TableCell<Profile, String> {
 
             @Override
             public void handle(MouseEvent event) {
-
-                if(pList.get(getIndex()).getWatermark()==null)
+                if(posList.get(getIndex()).getButtonImagePath()==null)
                     GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    GUIImageHelper.popupImage(pList.get(getIndex()).getWatermark(),primaryStage);
+                    GUIImageHelper.popupImage(posList.get(getIndex()).getButtonImagePath(),primaryStage);
 
             }
 
@@ -98,7 +107,7 @@ public class ProfileImgCell extends TableCell<Profile, String> {
         if(path == null) {
             return new Image("file: "+System.getProperty("user.dir") + "/src/main/resources/images/noimage.png", true);
         }else
-            return new Image("file:"+path,true);
+            return new javafx.scene.image.Image("file:"+path,true);
 
 
     }

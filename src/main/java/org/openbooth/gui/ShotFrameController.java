@@ -4,7 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * Controller for the shotFrame.
@@ -26,7 +26,6 @@ import java.awt.image.BufferedImage;
  */
 @Controller
 @Scope("prototype")
-
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
     @FXML
@@ -47,6 +46,7 @@ public class ShotFrameController {
     public void initShotFrame(int cameraID,Stage primaryStage)  {
         this.frameID  = cameraID;
         this.primaryStage = primaryStage;
+        this.primaryStage.setResizable(true);
     }
 
     /*
@@ -59,20 +59,16 @@ public class ShotFrameController {
     @FXML
     public void refreshShot(String imgPath) {
 
-        LOGGER.debug("refreshing Shot with imagepath = {}",imgPath);
+        LOGGER.trace("refreshing Shot with imagepath = {}",imgPath);
         try {
             shotView.setImage(new Image(imgPath));
-        }catch (Exception e){
-            LOGGER.error("refreshShot(String) - Fehler - ",e);
+        } catch (NullPointerException | IllegalArgumentException e){
+            LOGGER.error("refreshShot(String imgPath) - ",e);
         }
     }
 
     public void refreshShot(BufferedImage img) {
-        try {
-            shotView.setImage(SwingFXUtils.toFXImage(img,null));
-        }catch (Exception e){
-            LOGGER.error("refreshShot(BufferedImage) - Fehler - ",e);
-        }
+        shotView.setImage(SwingFXUtils.toFXImage(img,null));
     }
 
     public void showCountdown(int countdown){
@@ -99,6 +95,7 @@ public class ShotFrameController {
         timeline.getKeyFrames().add(keyframe);
         return timeline;
     }
+
     public boolean isExpired(){
        return startTimeSec == 0;
     }
@@ -109,13 +106,39 @@ public class ShotFrameController {
 
     @FXML
     public void shotFrameClicked() {
-        primaryStage.setFullScreen(true);
-        Screen screen = Screen.getPrimary();
+
+        Screen screen = getScreenOfWindow();
         Rectangle2D bounds = screen.getVisualBounds();
 
         primaryStage.setX(bounds.getMinX());
         primaryStage.setY(bounds.getMinY());
         primaryStage.setWidth(bounds.getWidth());
         primaryStage.setHeight(bounds.getHeight());
+
+        primaryStage.setFullScreen(true);
+
+    }
+
+    private Screen getScreenOfWindow(){
+        double stageX = primaryStage.getX();
+        double stageY = primaryStage.getY();
+        double stageWidth = primaryStage.getWidth();
+        double stageHeight = primaryStage.getHeight();
+
+        List<Screen> intersectScreens = Screen.getScreensForRectangle(stageX, stageY, stageWidth, stageHeight);
+
+        Screen chosenScreen;
+
+        if(intersectScreens.isEmpty()){
+            chosenScreen = Screen.getPrimary();
+            LOGGER.debug("getScreenOfWindow - stage of ShotFrame outside of all screens, primary was selected as target screen. Resolution: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
+            .getBounds().getHeight());
+        } else {
+            chosenScreen = intersectScreens.get(0);
+            LOGGER.debug("getScreenOfWindow - resolution of selected screen: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
+                    .getBounds().getHeight());
+        }
+
+        return chosenScreen;
     }
 }

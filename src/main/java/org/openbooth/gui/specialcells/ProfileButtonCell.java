@@ -1,10 +1,9 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.entities.Background;
 import org.openbooth.entities.Profile;
-import org.openbooth.service.BackgroundService;
+import org.openbooth.service.ProfileService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,22 +19,21 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Created by macdnz on 16.12.16.
+ * Created by macdnz on 15.12.16.
  */
-public class CategoryButtonCell extends TableCell<Background.Category, Boolean> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
-
+public class ProfileButtonCell extends TableCell<Profile, Boolean> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileButtonCell.class);
 
 
     private final Button cellButton;
 
-    public CategoryButtonCell(ImageHandler imageHandler, ObservableList<Background.Category> categoryListOfProfile, ObservableList<Profile>  selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
-
+    public ProfileButtonCell(ImageHandler imageHandler,ObservableList<Profile> pList, ProfileService pservice, Stage primaryStage) {
 
         cellButton = new Button();
         cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
+
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
@@ -43,29 +41,24 @@ public class CategoryButtonCell extends TableCell<Background.Category, Boolean> 
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Dieser Hintergrund wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie dieser Background mit den zugehörigen Daten löschen wollen?");
-                alert.initOwner(primaryStage);
+                alert.setHeaderText("Dieses Profil wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie dieses Profil mit den zugehörigen Daten löschen wollen?");
+               alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");
                 alert.getButtonTypes().setAll(butJa,butNein);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Background.Category currentCategory = CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
+                    Profile currentProfile = ProfileButtonCell.this.getTableView().getItems().get(ProfileButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    categories.remove(currentCategory);
+                    pList.remove(currentProfile);
                     try {
-
-                        bservice.eraseCategory(currentCategory);
-                        bservice.deletePairProfileCategory(selectedProfile.get(0).getId(),currentCategory.getId());
-
-
+                        pservice.erase(currentProfile);
                     } catch (ServiceException e) {
-                        LOGGER.error("CategoryButtonCell->Kategory löschen Button->Kategorie konnte nicht von db gelöscht werden",e);
+                        e.printStackTrace();
                     }
-
 
 
                     setGraphic(null);

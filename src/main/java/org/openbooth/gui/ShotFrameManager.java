@@ -55,7 +55,9 @@ public class ShotFrameManager {
                     shotFrameController.initShotFrame(position.getId(),stage);
 
                     positonShotFrameMap.put(position,shotFrameController);
-                    stage.setScene(new Scene(root, 400, 400));
+                    stage.setWidth(400);
+                    stage.setHeight(400);
+                    stage.setScene(new Scene(root));
                 } catch (IOException e) {
                     LOGGER.error("shotFrame.fxml kann nicht geladen werden ",e);
                 }

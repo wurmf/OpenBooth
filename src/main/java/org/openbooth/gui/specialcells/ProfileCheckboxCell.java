@@ -1,4 +1,4 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.entities.Profile;
 import org.openbooth.service.ProfileService;

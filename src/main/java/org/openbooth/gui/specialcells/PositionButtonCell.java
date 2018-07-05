@@ -1,8 +1,10 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
+import org.openbooth.entities.Position;
 import org.openbooth.entities.Profile;
+import org.openbooth.gui.CameraPositionFrameController;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
@@ -19,21 +21,19 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * Created by macdnz on 15.12.16.
+ * Created by macdnz on 16.12.16.
  */
-public class ProfileButtonCell extends TableCell<Profile, Boolean> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProfileButtonCell.class);
+public class PositionButtonCell extends TableCell<Position, Boolean> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PositionButtonCell.class);
 
 
     private final Button cellButton;
 
-    public ProfileButtonCell(ImageHandler imageHandler,ObservableList<Profile> pList, ProfileService pservice, Stage primaryStage) {
-
+    public PositionButtonCell(ImageHandler imageHandler, ObservableList<Position> posList, ObservableList<Profile.PairCameraPosition> kamPosList, ObservableList<Profile> selectedProfilID, ProfileService pservice, Stage primaryStage, CameraPositionFrameController cameraPositionFrameController) {
         cellButton = new Button();
-        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
+        cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",50,50));
         cellButton.setPrefWidth(40);
         cellButton.setPrefHeight(40);
-
         cellButton.setOnAction(new EventHandler<ActionEvent>(){
 
             @Override
@@ -41,23 +41,31 @@ public class ProfileButtonCell extends TableCell<Profile, Boolean> {
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Dieses Profil wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie dieses Profil mit den zugehörigen Daten löschen wollen?");
-               alert.initOwner(primaryStage);
+                alert.setHeaderText("Diese Position wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie diese Position mit den zugehörigen Daten löschen wollen?");
+                alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");
                 alert.getButtonTypes().setAll(butJa,butNein);
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile currentProfile = ProfileButtonCell.this.getTableView().getItems().get(ProfileButtonCell.this.getIndex());
+                    Position currentPosition = PositionButtonCell.this.getTableView().getItems().get(PositionButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    pList.remove(currentProfile);
+                    posList.remove(currentPosition);
                     try {
-                        pservice.erase(currentProfile);
+                        pservice.erasePosition(currentPosition);
+
+                        // refreshing kamPos TableView
+                        kamPosList.clear();
+
+                        kamPosList.addAll(pservice.getAllPairCamerasWithPositionByProfile(selectedProfilID.get(0).getId()));
+
+                        cameraPositionFrameController.refreshTableKameraPosition(kamPosList,posList,selectedProfilID);
+
                     } catch (ServiceException e) {
-                        e.printStackTrace();
+                        LOGGER.error("PositionButtonCell->Löschen Button -> Position konnte nicht gelöscht werden.",e);
                     }
 
 
