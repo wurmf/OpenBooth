@@ -48,7 +48,7 @@ public class ShotFrameManager {
                 SpringFXMLLoader.FXMLWrapper<Object, ShotFrameController> shotFrameWrapper = springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
                 Parent root = (Parent) shotFrameWrapper.getLoadedObject();
                 ShotFrameController shotFrameController = shotFrameWrapper.getController();
-                shotFrameController.initShotFrame(position.getId(),stage);
+                shotFrameController.initShotFrame(stage);
 
                 positonShotFrameMap.put(position,shotFrameController);
                 stage.setWidth(400);

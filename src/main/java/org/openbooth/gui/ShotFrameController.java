@@ -7,7 +7,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -33,7 +32,6 @@ public class ShotFrameController {
     @FXML
     private Label countdownLabel;
 
-    private int frameID;
     private Stage primaryStage;
 
     private int startTimeSec = 0;
@@ -43,28 +41,9 @@ public class ShotFrameController {
         shotView.setFitHeight(screenHeight);
 
     }
-    public void initShotFrame(int cameraID,Stage primaryStage)  {
-        this.frameID  = cameraID;
+    void initShotFrame(Stage primaryStage)  {
         this.primaryStage = primaryStage;
         this.primaryStage.setResizable(true);
-    }
-
-    /*
-     Precondition: shootingID must be defined
-     Postcondition: the last image will be showed
-     */
-    /**
-     * Showing the last image taken.
-     */
-    @FXML
-    public void refreshShot(String imgPath) {
-
-        LOGGER.trace("refreshing Shot with imagepath = {}",imgPath);
-        try {
-            shotView.setImage(new Image(imgPath));
-        } catch (NullPointerException | IllegalArgumentException e){
-            LOGGER.error("refreshShot(String imgPath) - ",e);
-        }
     }
 
     public void refreshShot(BufferedImage img) {
@@ -98,10 +77,6 @@ public class ShotFrameController {
 
     public boolean isExpired(){
        return startTimeSec == 0;
-    }
-
-    public int getFrameID(){
-        return frameID;
     }
 
     @FXML
