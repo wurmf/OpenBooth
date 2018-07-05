@@ -6,8 +6,10 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -90,6 +92,19 @@ public class ShotFrameController {
         primaryStage.setWidth(bounds.getWidth());
         primaryStage.setHeight(bounds.getHeight());
 
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        Node child = root.getChildren().get(0);
+
+        ImageView iv;
+
+        if (child instanceof ImageView){
+            iv = (ImageView) child;
+        } else {
+            iv = (ImageView) root.getChildren().get(1);
+        }
+
+        iv.setFitHeight(bounds.getHeight());
+        iv.setFitWidth(bounds.getWidth());
         primaryStage.setFullScreen(true);
 
     }
