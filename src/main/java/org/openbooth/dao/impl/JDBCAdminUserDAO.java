@@ -39,7 +39,7 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
         }
     }
 
-    private static final String READ_ADMIN_QUERY = QueryBuilder.buildSelectAllColumns("adminusers", new String[]{"adminname"});
+    private static final String READ_ADMIN_QUERY = QueryBuilder.buildSelectAllColumns("adminusers", "adminname");
 
     @Override
     public AdminUser read(String adminName) throws PersistenceException{

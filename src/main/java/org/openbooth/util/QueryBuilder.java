@@ -14,7 +14,7 @@ public class QueryBuilder {
      * This can be used as an input to a prepared statement
      * The '?' for the input parameters are already set
      * @param tableName the name of the database table to query
-     * @param conditions the array of column names for the WHERE conditions
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
      * @return the query string
      */
     public static String buildSelectAllColumns(String tableName, String[] conditions){
@@ -43,7 +43,7 @@ public class QueryBuilder {
      * The '?' for the input parameters are already set
      * @param tableName the name of the database table
      * @param affectedColumns the array of column names which should be affected by the update statement
-     * @param conditions the array of column names for the WHERE conditions
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
      * @return the statement string
      */
     public static String buildUpdate(String tableName, String[] affectedColumns, String[] conditions){
@@ -130,7 +130,7 @@ public class QueryBuilder {
      * This statement can be used as is input to a prepared statement
      * The '?' for the input parameters are already set
      * @param tableName the name of the database table
-     * @param conditions the array of column names for the WHERE conditions
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
      * @return the statement string
      */
     public static String buildDelete(String tableName, String[] conditions){

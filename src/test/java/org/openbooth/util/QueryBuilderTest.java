@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class QueryBuilderTest {
 
+    private static final String[] NULL_ARRAY = null;
 
     @Test
     public void testValidSelectAllColumnsWithConditions(){
@@ -54,7 +55,7 @@ public class QueryBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullAffectedColumns(){
-        QueryBuilder.buildUpdate("test", null, new String[]{});
+        QueryBuilder.buildUpdate("test", NULL_ARRAY, new String[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -84,7 +85,7 @@ public class QueryBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInsertWithNullAffectedColumns(){
-        QueryBuilder.buildInsert("test", null);
+        QueryBuilder.buildInsert("test", NULL_ARRAY);
     }
 
     @Test(expected = IllegalArgumentException.class)

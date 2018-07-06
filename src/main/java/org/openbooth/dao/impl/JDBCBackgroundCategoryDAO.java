@@ -1,5 +1,6 @@
 package org.openbooth.dao.impl;
 
+import org.openbooth.util.QueryBuilder;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.openbooth.dao.BackgroundCategoryDAO;
@@ -30,7 +31,6 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
 
     @Autowired
     public JDBCBackgroundCategoryDAO(DBHandler handler) throws PersistenceException {
-        LOGGER.debug("Entering constructor");
         try {
             con = handler.getConnection();
         } catch (DatabaseException e) {
@@ -38,7 +38,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
         }
     }
 
-    private static final String CREATE_STATEMENT = "INSERT INTO " + TABLE_NAME + "(name) VALUES (?);";
+    private static final String CREATE_STATEMENT =
+            QueryBuilder.buildInsert(TABLE_NAME, NAME_COLUMN);
 
     @Override
     public Background.Category create(Background.Category backgroundCategory) throws PersistenceException {
@@ -63,7 +64,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
         }
     }
 
-    private static final String UPDATE_STATEMENT = "UPDATE " + TABLE_NAME + " SET name = ? WHERE " + ID_COLUMN + " = ?;";
+    private static final String UPDATE_STATEMENT =
+            QueryBuilder.buildUpdate(TABLE_NAME, NAME_COLUMN, ID_COLUMN);
 
     @Override
     public void update(Background.Category backgroundCategory) throws PersistenceException {
@@ -91,7 +93,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
         }
     }
 
-    private static final String READ_ONE_STATEMENT = "SELECT * FROM " + TABLE_NAME + " WHERE backgroundcategoryID = ?;";
+    private static final String READ_ONE_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, ID_COLUMN);
 
     @Override
     public Background.Category read(int id) throws PersistenceException {
@@ -117,25 +120,26 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
         }
     }
 
-    private static final String READ_ALL_STATEMENT = "SELECT * FROM " + TABLE_NAME + " WHERE " + DELETED_COLUMN + " = 'false';";
+    private static final String READ_ALL_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, DELETED_COLUMN);
 
     @Override
     public List<Background.Category> readAll() throws PersistenceException {
-        try (
-                PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT);
-                ResultSet rs = stmt.executeQuery()){
+        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT)){
+            stmt.setBoolean(1, false);
+            try(ResultSet rs = stmt.executeQuery()){
+                List<Background.Category> returnList = new ArrayList<>();
 
-            List<Background.Category> returnList = new ArrayList<>();
-
-            while (rs.next()) {
-                Background.Category backgroundcategory = new Background.Category(
-                        rs.getInt(ID_COLUMN),
-                        rs.getString(NAME_COLUMN),
-                        rs.getBoolean(DELETED_COLUMN));
-                returnList.add(backgroundcategory);
+                while (rs.next()) {
+                    Background.Category backgroundcategory = new Background.Category(
+                            rs.getInt(ID_COLUMN),
+                            rs.getString(NAME_COLUMN),
+                            rs.getBoolean(DELETED_COLUMN));
+                    returnList.add(backgroundcategory);
+                }
+                LOGGER.trace("Background categories have been read from database: {}", returnList);
+                return returnList;
             }
-            LOGGER.trace("Background categories have been read from database: {}", returnList);
-            return returnList;
         } catch (SQLException e) {
             throw new PersistenceException(e);
         }
@@ -171,9 +175,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
     }
 
     private static final String DELETE_STATEMENT =
-            "UPDATE " + TABLE_NAME +
-                    " SET " + DELETED_COLUMN + " = 'true' " +
-                    "WHERE " + ID_COLUMN + " = ? AND " + DELETED_COLUMN + " = 'false' ;";
+            QueryBuilder.buildUpdate(TABLE_NAME, DELETED_COLUMN, new String[]{ID_COLUMN, DELETED_COLUMN});
+
 
     @Override
     public void delete(Background.Category backgroundCategory) throws PersistenceException {
@@ -182,7 +185,9 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
 
 
         try (PreparedStatement stmt = con.prepareStatement(DELETE_STATEMENT)){
-            stmt.setInt(1,backgroundCategory.getId());
+            stmt.setBoolean(1,true);
+            stmt.setInt(2,backgroundCategory.getId());
+            stmt.setBoolean(3, false);
             int returnUpdateCount  = stmt.executeUpdate();
 
             // Check, if object has been updated and return suitable boolean value
@@ -202,7 +207,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
     }
 
 
-    private static final String CREATE_RELATION_STATEMENT = "INSERT INTO profile_backgroundcategories VALUES (?,?);";
+    private static final String CREATE_RELATION_STATEMENT =
+            QueryBuilder.buildInsert("profile_backgroundcategories", new String[]{"backgroundcategoryid", "name"});
 
     @Override
     public void createProfileCategoryRelation(int profileID, int categoryID) throws PersistenceException {
@@ -219,7 +225,8 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
         }
     }
 
-    private static final String DELETE_RELATION_STATEMENT = "DELETE FROM profile_backgroundcategories WHERE  profileid=? and backgroundcategoryid = ? ;";
+    private static final String DELETE_RELATION_STATEMENT =
+            QueryBuilder.buildDelete("profile_backgroundcategories", new String[]{"profileid","backgroundcategoryid"});
 
     @Override
     public void deleteProfileCategoryRelation(int profileID, int categoryID) throws PersistenceException {
