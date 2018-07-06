@@ -192,7 +192,7 @@ public class ProfileDAOTest extends TestEnvironment {
         assertTrue(pairCameraPositions.get(1).getCamera().equals(camera2));
         assertTrue(pairCameraPositions.get(1).getPosition().equals(position2));
         assertTrue(pairCameraPositions.get(2).isGreenScreenReady());
-        assertTrue(pairCameraPositions.get(2).getCamera().equals(cameraA));
+        assertTrue(pairCameraPositions.get(2).getCamera().equals(camera3));
         assertTrue(pairCameraPositions.get(2).getPosition().equals(positionA));
         assertTrue(pairLogoRelativeRectangles.size() == 3);
         assertTrue(pairLogoRelativeRectangles.get(0).getLogo().equals(logo1));

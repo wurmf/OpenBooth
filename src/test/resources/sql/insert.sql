@@ -21,6 +21,7 @@ INSERT INTO logos(label, path) VALUES ('Logo 2', '/images/logos/logo2.jpg');
 
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-1','THIS-IS-NO-MODEL',5,'abcdef');
 INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-2','THIS-IS-NO-MODEL-EITHER',1,'ghijklm');
+INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES ('DB-Test-Kamera-3','THIS-IS-NO-MODEL-WHATSOEVER',2,'ghijklm');
 
 INSERT INTO profile_camera_positions VALUES (1,1,1,1,false);
 INSERT INTO profile_camera_positions VALUES (2,1,2,2,false);

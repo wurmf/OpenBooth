@@ -1,5 +1,6 @@
 package org.openbooth.dao.impl;
 
+import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.dbhandler.impl.H2EmbeddedHandler;
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.service.ProfileService;
@@ -49,7 +50,7 @@ public class TestEnvironment {
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
 
-    protected Connection con;
+    DBHandler dbHandler= new H2EmbeddedHandler();
 
     @Mock protected H2EmbeddedHandler mockH2Handler;
     @Mock protected Connection mockConnection;
@@ -57,7 +58,7 @@ public class TestEnvironment {
     @Mock protected PreparedStatement mockPreparedStatement;
     @Mock protected ResultSet mockResultSet;
 
-    protected Camera camera1,camera2,cameraA,cameraB,cameraC,camera1000000;
+    protected Camera camera1,camera2,camera3,cameraA,cameraB,cameraC,camera1000000;
     protected Position position1,position2,positionA,positionB,positionC,position1000000;
     protected Logo logo1,logo2,logoA,logoB,logoC,logo1000000;
     protected RelativeRectangle relativeRectangleA,relativeRectangleB,relativeRectangleC,relativeRectangleD;
@@ -71,7 +72,7 @@ public class TestEnvironment {
 
     @Before public void setUp() throws Exception
     {
-        this.con = H2EmbeddedHandler.getInstance().getTestConnection();
+        Connection con = dbHandler.getTestConnection();
         /* Setup test mocks
         *  Please don't mess with these ones,
         *  if you don't understand completely what implications it has
@@ -100,26 +101,26 @@ public class TestEnvironment {
 
         /* Setup DAOs for all testing
          */
-        logoDAO = new JDBCLogoDAO(H2EmbeddedHandler.getInstance());
-        cameraDAO = new JDBCCameraDAO(H2EmbeddedHandler.getInstance());
-        positionDAO = new JDBCPositionDAO(H2EmbeddedHandler.getInstance());
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(H2EmbeddedHandler.getInstance());
-        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(H2EmbeddedHandler.getInstance());
-        profileDAO = new JDBCProfileDAO(H2EmbeddedHandler.getInstance());
-        imageDAO = new JDBCImageDAO(H2EmbeddedHandler.getInstance());
-        shootingDAO = new JDBCShootingDAO(H2EmbeddedHandler.getInstance());
-        adminUserDAO = new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance());
-        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(H2EmbeddedHandler.getInstance());
-        backgroundDAO = new JDBCBackgroundDAO(H2EmbeddedHandler.getInstance(), backgroundCategoryDAO);
+        logoDAO = new JDBCLogoDAO(dbHandler);
+        cameraDAO = new JDBCCameraDAO(dbHandler);
+        positionDAO = new JDBCPositionDAO(dbHandler);
+        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(dbHandler);
+        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(dbHandler);
+        profileDAO = new JDBCProfileDAO(dbHandler);
+        imageDAO = new JDBCImageDAO(dbHandler);
+        shootingDAO = new JDBCShootingDAO(dbHandler);
+        adminUserDAO = new JDBCAdminUserDAO(dbHandler);
+        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(dbHandler);
+        backgroundDAO = new JDBCBackgroundDAO(dbHandler, backgroundCategoryDAO);
 
         /*
         * Setup Services for all testing
          */
         profileService = new ProfileServiceImpl(
-                new JDBCProfileDAO(H2EmbeddedHandler.getInstance()),
-                new JDBCPositionDAO(H2EmbeddedHandler.getInstance()),
-                new JDBCLogoDAO(H2EmbeddedHandler.getInstance()),
-                new JDBCCameraDAO(H2EmbeddedHandler.getInstance()),
+                new JDBCProfileDAO(dbHandler),
+                new JDBCPositionDAO(dbHandler),
+                new JDBCLogoDAO(dbHandler),
+                new JDBCCameraDAO(dbHandler),
                 new ShootingServiceImpl(shootingDAO),
                 new CameraServiceImpl(cameraDAO),
                 new BackgroundServiceImpl(backgroundDAO,backgroundCategoryDAO)
@@ -152,6 +153,7 @@ public class TestEnvironment {
         logo1000000 = new Logo(1000000,"Logo 1000000", "/dev/null/logo1000000.jpg", false);
         camera1 = cameraDAO.read(1);
         camera2 = cameraDAO.read(2);
+        camera3 = cameraDAO.read(3);
         position1 = positionDAO.read(1);
         position2 = positionDAO.read(2);
         logo1 = logoDAO.read(1);
@@ -164,7 +166,7 @@ public class TestEnvironment {
         pairCameraPositions = new ArrayList<>();
         pairCameraPositionA = new Profile.PairCameraPosition(camera1, position1, true);
         pairCameraPositionB = new Profile.PairCameraPosition(camera2, position2, false);
-        pairCameraPositionC = new Profile.PairCameraPosition(cameraA, positionA, true);
+        pairCameraPositionC = new Profile.PairCameraPosition(camera3, positionA, true);
         pairCameraPosition1000000
                 = new Profile.PairCameraPosition(1000000,3,camera1,position1,false);
         pairCameraPositions.add(pairCameraPositionA);
