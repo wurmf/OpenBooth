@@ -2,9 +2,9 @@ package org.openbooth.gui;
 
 import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Profile;
-import org.openbooth.gui.specialCells.ProfileButtonCell;
-import org.openbooth.gui.specialCells.ProfileCheckboxCell;
-import org.openbooth.gui.specialCells.ProfileImgCell;
+import org.openbooth.gui.specialcells.ProfileButtonCell;
+import org.openbooth.gui.specialcells.ProfileCheckboxCell;
+import org.openbooth.gui.specialcells.ProfileImgCell;
 import org.openbooth.service.BackgroundService;
 import org.openbooth.service.CameraService;
 import org.openbooth.service.LogoWatermarkService;

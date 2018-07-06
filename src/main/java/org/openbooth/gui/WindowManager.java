@@ -59,8 +59,8 @@ public class WindowManager {
         this.springFXMLLoader=springFXMLLoader;
         this.shotFrameManager = shotFrameManager;
         this.loginRedirectorModel = loginRedirectorModel;
-        activeShootingAvailable=false;
-        fontSize =0;
+        this.activeShootingAvailable=false;
+        this.fontSize =0;
     }
 
     /**
@@ -73,7 +73,7 @@ public class WindowManager {
         initScenes();
 
         this.mainStage.setTitle("OpenBooth");
-        //TODO: Useless at this moment
+
         if(activeShootingAvailable){
             showAdminLogin(SHOW_CUSTOMERSCENE,END_APPLICATION);
         } else {

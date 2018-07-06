@@ -4,10 +4,10 @@ import org.openbooth.util.ImageHandler;
 import org.openbooth.entities.Logo;
 import org.openbooth.entities.Profile;
 import org.openbooth.entities.RelativeRectangle;
-import org.openbooth.gui.specialCells.AutoCompleteTextField;
-import org.openbooth.gui.specialCells.Double2String;
-import org.openbooth.gui.specialCells.LogoButtonCell;
-import org.openbooth.gui.specialCells.LogoImgCell;
+import org.openbooth.gui.specialcells.AutoCompleteTextField;
+import org.openbooth.gui.specialcells.Double2String;
+import org.openbooth.gui.specialcells.LogoButtonCell;
+import org.openbooth.gui.specialcells.LogoImgCell;
 import org.openbooth.service.BackgroundService;
 import org.openbooth.service.LogoWatermarkService;
 import org.openbooth.service.ProfileService;
@@ -212,7 +212,7 @@ public class LogoFrameController extends SettingFrameController {
                 return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getX());
             }
         });
-        colLogoX.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("xstart")));
+        colLogoX.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String()));
         colLogoX.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
                     @Override
@@ -249,7 +249,7 @@ public class LogoFrameController extends SettingFrameController {
                 return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getY());
             }
         });
-        colLogoY.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("ystart")));
+        colLogoY.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String()));
         colLogoY.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
                     @Override
@@ -285,7 +285,7 @@ public class LogoFrameController extends SettingFrameController {
                 return new ReadOnlyObjectWrapper<>(p.getValue().getRelativeRectangle().getWidth());
             }
         });
-        colLogoBreite.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("width")));
+        colLogoBreite.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String()));
         colLogoBreite.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
                     @Override
@@ -319,7 +319,7 @@ public class LogoFrameController extends SettingFrameController {
                 return new ReadOnlyObjectWrapper(p.getValue().getRelativeRectangle().getHeight());
             }
         });
-        colLogoHoehe.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String("height")));
+        colLogoHoehe.setCellFactory(TextFieldTableCell.forTableColumn(new Double2String()));
         colLogoHoehe.setOnEditCommit(
                 new EventHandler<TableColumn.CellEditEvent<Profile.PairLogoRelativeRectangle, Double>>() {
                     @Override

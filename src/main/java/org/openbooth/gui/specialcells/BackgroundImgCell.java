@@ -1,9 +1,9 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.entities.Position;
-import org.openbooth.service.ProfileService;
+import org.openbooth.entities.Background;
+import org.openbooth.service.BackgroundService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -23,19 +23,19 @@ import java.io.File;
 /**
  * Created by macdnz on 16.12.16.
  */
-public class PositionImgCell extends TableCell<Position, String> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(PositionImgCell.class);
+public class BackgroundImgCell extends TableCell<Background, String> {
+    final static Logger LOGGER = LoggerFactory.getLogger(BackgroundImgCell.class);
 
-    private  ObservableList<Position> posList;
-    private ProfileService pservice;
+    private  ObservableList<Background> backgroundList;
+    private BackgroundService bservice;
 
 
-    private final ImageView img = new ImageView();
-    private final ImageView cellImgView;
+    final ImageView img = new ImageView();
+    final ImageView cellImgView;
 
-    public PositionImgCell(ObservableList<Position> posList, ProfileService pservice, ImageHandler imageHandler,Stage primaryStage) {
-        this.posList = posList;
-        this.pservice = pservice;
+    public BackgroundImgCell(ObservableList<Background> backgroundList, BackgroundService bservice, ImageHandler imageHandler, Stage primaryStage) {
+        this.backgroundList = backgroundList;
+        this.bservice = bservice;
 
         img.setFitHeight(35);
         img.setFitWidth(35);
@@ -63,26 +63,26 @@ public class PositionImgCell extends TableCell<Position, String> {
                 if (file != null) {
                     try {
 
-                        Position p = posList.get(getIndex());
+                        Background p = backgroundList.get(getIndex());
 
-                        p.setButtonImagePath(file.getAbsolutePath());
+                        p.setPath(file.getAbsolutePath());
 
 
                         /* UPDATE TABLEVIEW */
-                        posList.remove(getIndex());
-                        posList.add(getIndex(),p);
+                        backgroundList.remove(getIndex());
+                        backgroundList.add(getIndex(),p);
 
-                        img.setImage(getImage(p.getButtonImagePath()));
+                        img.setImage(getImage(p.getPath()));
                         HBox hb = new HBox(img,cellImgView);
                         hb.setSpacing(10);
                         hb.setAlignment(Pos.CENTER);
                         setGraphic(hb);
 
-                        pservice.editPosition(p);
+                        bservice.edit(p);
 
 
                     } catch (ServiceException e) {
-                       LOGGER.error("PositionImgCell->Update position Image",e);
+                        LOGGER.error("background bild konnte nicht in db gespeichert werden",e);
                     }
                 }
 
@@ -92,10 +92,10 @@ public class PositionImgCell extends TableCell<Position, String> {
 
             @Override
             public void handle(MouseEvent event) {
-                if(posList.get(getIndex()).getButtonImagePath()==null)
+                if(backgroundList.get(getIndex()).getPath()==null)
                     GUIImageHelper.popupImage(System.getProperty("user.dir") + "/src/main/resources/images/noimage.png",primaryStage);
                 else
-                    GUIImageHelper.popupImage(posList.get(getIndex()).getButtonImagePath(),primaryStage);
+                    GUIImageHelper.popupImage(backgroundList.get(getIndex()).getPath(),primaryStage);
 
             }
 

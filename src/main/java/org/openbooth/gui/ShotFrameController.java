@@ -4,12 +4,12 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * Controller for the shotFrame.
@@ -26,7 +27,6 @@ import java.awt.image.BufferedImage;
  */
 @Controller
 @Scope("prototype")
-
 public class ShotFrameController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
     @FXML
@@ -34,7 +34,6 @@ public class ShotFrameController {
     @FXML
     private Label countdownLabel;
 
-    private int frameID;
     private Stage primaryStage;
 
     private int startTimeSec = 0;
@@ -44,35 +43,13 @@ public class ShotFrameController {
         shotView.setFitHeight(screenHeight);
 
     }
-    public void initShotFrame(int cameraID,Stage primaryStage)  {
-        this.frameID  = cameraID;
+    void initShotFrame(Stage primaryStage)  {
         this.primaryStage = primaryStage;
-    }
-
-    /*
-     Precondition: shootingID must be defined
-     Postcondition: the last image will be showed
-     */
-    /**
-     * Showing the last image taken.
-     */
-    @FXML
-    public void refreshShot(String imgPath) {
-
-        LOGGER.debug("refreshing Shot with imagepath = {}",imgPath);
-        try {
-            shotView.setImage(new Image(imgPath));
-        }catch (Exception e){
-            LOGGER.error("refreshShot(String) - Fehler - ",e);
-        }
+        this.primaryStage.setResizable(true);
     }
 
     public void refreshShot(BufferedImage img) {
-        try {
-            shotView.setImage(SwingFXUtils.toFXImage(img,null));
-        }catch (Exception e){
-            LOGGER.error("refreshShot(BufferedImage) - Fehler - ",e);
-        }
+        shotView.setImage(SwingFXUtils.toFXImage(img,null));
     }
 
     public void showCountdown(int countdown){
@@ -99,23 +76,61 @@ public class ShotFrameController {
         timeline.getKeyFrames().add(keyframe);
         return timeline;
     }
+
     public boolean isExpired(){
        return startTimeSec == 0;
     }
 
-    public int getFrameID(){
-        return frameID;
-    }
-
     @FXML
     public void shotFrameClicked() {
-        primaryStage.setFullScreen(true);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
 
-        primaryStage.setX(bounds.getMinX());
-        primaryStage.setY(bounds.getMinY());
-        primaryStage.setWidth(bounds.getWidth());
-        primaryStage.setHeight(bounds.getHeight());
+        Screen screen = getScreenOfWindow();
+        Rectangle2D visualBounds = screen.getVisualBounds();
+        Rectangle2D fullBounds = screen.getBounds();
+
+        primaryStage.setX(visualBounds.getMinX());
+        primaryStage.setY(visualBounds.getMinY());
+        primaryStage.setWidth(visualBounds.getWidth());
+        primaryStage.setHeight(visualBounds.getHeight());
+
+        StackPane root = (StackPane) primaryStage.getScene().getRoot();
+        Node child = root.getChildren().get(0);
+
+        ImageView iv;
+
+        if (child instanceof ImageView){
+            iv = (ImageView) child;
+        } else {
+            iv = (ImageView) root.getChildren().get(1);
+        }
+
+        iv.setFitHeight(fullBounds.getHeight());
+        iv.setFitWidth(fullBounds.getWidth());
+        primaryStage.setFullScreen(true);
+
+    }
+
+    private Screen getScreenOfWindow(){
+
+        double stageX = primaryStage.getX();
+        double stageY = primaryStage.getY();
+        double stageWidth = primaryStage.getWidth();
+        double stageHeight = primaryStage.getHeight();
+
+        List<Screen> intersectScreens = Screen.getScreensForRectangle(stageX, stageY, stageWidth, stageHeight);
+
+        Screen chosenScreen;
+
+        if(intersectScreens.isEmpty()){
+            chosenScreen = Screen.getPrimary();
+            LOGGER.debug("getScreenOfWindow - stage of ShotFrame outside of all screens, primary was selected as target screen. Resolution: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
+            .getBounds().getHeight());
+        } else {
+            chosenScreen = intersectScreens.get(0);
+            LOGGER.debug("getScreenOfWindow - resolution of selected screen: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
+                    .getBounds().getHeight());
+        }
+
+        return chosenScreen;
     }
 }

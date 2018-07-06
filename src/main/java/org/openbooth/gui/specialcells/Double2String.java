@@ -1,4 +1,4 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import javafx.util.StringConverter;
 
@@ -9,12 +9,11 @@ import javafx.util.StringConverter;
  * @since JavaFX 2.1
  */
 public class Double2String extends StringConverter<Double> {
-    private String title;
-    public Double2String(String title){
-        this.title = title;
-    }
+
+
     /** {@inheritDoc} */
-    @Override public Double fromString(String value) {
+    @Override
+    public Double fromString(String value) {
         // If the specified value is null or zero-length, return null
         if (value == null) {
             return null;
@@ -25,21 +24,18 @@ public class Double2String extends StringConverter<Double> {
         if (value.length() < 1) {
             return null;
         }
-        try{
-            return Double.valueOf(value);
-        }catch (Exception e){
 
-        }
-        return null;
+        return Double.valueOf(value);
     }
 
     /** {@inheritDoc} */
-    @Override public String toString(Double value) {
+    @Override
+    public String toString(Double value) {
         // If the specified value is null, return a zero-length String
         if (value == null) {
             return "";
         }
 
-        return (Double.toString(value.doubleValue()));
+        return (Double.toString(value));
     }
 }

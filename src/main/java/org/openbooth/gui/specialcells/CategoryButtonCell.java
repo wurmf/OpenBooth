@@ -1,9 +1,10 @@
-package org.openbooth.gui.specialCells;
+package org.openbooth.gui.specialcells;
 
 import org.openbooth.gui.GUIImageHelper;
 import org.openbooth.util.ImageHandler;
+import org.openbooth.entities.Background;
 import org.openbooth.entities.Profile;
-import org.openbooth.service.ProfileService;
+import org.openbooth.service.BackgroundService;
 import org.openbooth.service.exceptions.ServiceException;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,7 +13,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableCell;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +22,15 @@ import java.util.Optional;
 /**
  * Created by macdnz on 16.12.16.
  */
-public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle, Boolean> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogoButtonCell.class);
+public class CategoryButtonCell extends TableCell<Background.Category, Boolean> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryButtonCell.class);
+
 
 
     private final Button cellButton;
 
-    public LogoButtonCell(ImageHandler imageHandler, ObservableList<Profile.PairLogoRelativeRectangle> posList, ProfileService pservice, Stage primaryStage, ObservableList<Profile> profileID, ImageView preview, AutoCompleteTextField txLogoName) {
+    public CategoryButtonCell(ImageHandler imageHandler, ObservableList<Background.Category> categoryListOfProfile, ObservableList<Profile>  selectedProfile, ObservableList<Background.Category> categories, BackgroundService bservice, Stage primaryStage) {
+
 
         cellButton = new Button();
         cellButton.setBackground(GUIImageHelper.getButtonBackground(imageHandler,"/images/delete.png",40,40));
@@ -41,8 +43,8 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
                 // get Selected Item
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Dieses Logo wird mit den zugehörigen Daten endgültig gelöscht!");
-                alert.setContentText("Sind Sie sicher, dass Sie dieses Logo mit den zugehörigen Daten löschen wollen?");
+                alert.setHeaderText("Dieser Hintergrund wird mit den zugehörigen Daten endgültig gelöscht!");
+                alert.setContentText("Sind Sie sicher, dass Sie dieser Background mit den zugehörigen Daten löschen wollen?");
                 alert.initOwner(primaryStage);
                 ButtonType butJa = new ButtonType("Ja");
                 ButtonType butNein = new ButtonType("Abbrechen");
@@ -50,27 +52,20 @@ public class LogoButtonCell extends TableCell<Profile.PairLogoRelativeRectangle,
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == butJa){
-                    Profile.PairLogoRelativeRectangle currentPairLogo = LogoButtonCell.this.getTableView().getItems().get(LogoButtonCell.this.getIndex());
+                    Background.Category currentCategory = CategoryButtonCell.this.getTableView().getItems().get(CategoryButtonCell.this.getIndex());
 
                     //remove selected item from the table list
-                    posList.remove(currentPairLogo);
-                   try {
+                    categories.remove(currentCategory);
+                    try {
 
-                       //if Logo is used just by this pairlogo relation, then delete it from database
+                        bservice.eraseCategory(currentCategory);
+                        bservice.deletePairProfileCategory(selectedProfile.get(0).getId(),currentCategory.getId());
 
-                        if(pservice.getNumberOfUsing(currentPairLogo.getLogo().getId())==1) {
-                            pservice.eraseLogo(currentPairLogo.getLogo());
-                        }
-                        if(pservice.getNumberOfUsingByProfile(currentPairLogo.getLogo().getId(),profileID.get(0).getId())==1)
-                            txLogoName.getEntries().remove(currentPairLogo.getLogo().getLabel().toLowerCase()+" #"+currentPairLogo.getLogo().getId());
 
-                       pservice.erasePairLogoRelativeRectangle(currentPairLogo);
-
-                       if(posList.size()==0)
-                           preview.setImage(null);
                     } catch (ServiceException e) {
-                       LOGGER.error("LogoButtonCell->Löschen Button -> Logo konnte nicht gelöscht werden.",e);
+                        LOGGER.error("CategoryButtonCell->Kategory löschen Button->Kategorie konnte nicht von db gelöscht werden",e);
                     }
+
 
 
                     setGraphic(null);
