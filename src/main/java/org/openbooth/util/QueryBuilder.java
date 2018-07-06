@@ -30,6 +30,12 @@ public class QueryBuilder {
 
     }
 
+    public static String buildSelectAllColumns(String tableName, String condition){
+        return buildSelectAllColumns(tableName, new String[]{condition});
+    }
+
+
+
     /**
      * Generates a UPDATE tableName SET affectedColumns[0] = ?, affectedColumns[1] = ?...
      * WHERE conditions[0] = ? AND conditions[1] = ? ...  SQL statement string
@@ -62,6 +68,22 @@ public class QueryBuilder {
 
         return appendConditions(builder, conditions).toString();
     }
+
+    public static String buildUpdate(String tableName, String[] affectedColumns, String condition){
+        return buildUpdate(tableName, affectedColumns, new String[]{condition});
+    }
+
+    public static String buildUpdate(String tableName, String affectedColumn, String[] conditions) {
+        return buildUpdate(tableName, new String[]{affectedColumn}, conditions);
+    }
+
+    public static String buildUpdate(String tableName, String affectedColumn, String condition) {
+        return buildUpdate(tableName, new String[]{affectedColumn}, new String[]{condition});
+    }
+
+
+
+
 
     /**
      * Generates a INSERT INTO tableName (affectedColumns[0],affectedColumns[1]...) VALUES (?,?..) SQL statement string
@@ -99,6 +121,10 @@ public class QueryBuilder {
         return builder.toString();
     }
 
+    public static String buildInsert(String tableName, String affectedColumn){
+        return buildInsert(tableName, new String[]{affectedColumn});
+    }
+
     /**
      * Generates a DELETE FROM tableName WHERE condition[0] = ? AND condition[1] = ?... SQL statement string
      * This statement can be used as is input to a prepared statement
@@ -117,6 +143,10 @@ public class QueryBuilder {
         builder.append(tableName);
 
         return appendConditions(builder, conditions).toString();
+    }
+
+    public static String buildDelete(String tableName, String condition){
+        return buildDelete(tableName, new String[]{condition});
     }
 
     private static StringBuilder appendConditions(StringBuilder builder, String[] conditions){
