@@ -1,4 +1,4 @@
-package org.openbooth.util.dbhandler;
+package org.openbooth.util;
 
 import java.io.File;
 import java.io.FileReader;
