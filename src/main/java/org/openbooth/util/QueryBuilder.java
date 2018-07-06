@@ -9,7 +9,15 @@ public class QueryBuilder {
 
     private static final String TABLE_NAME_WARNING = "table name is null or empty";
 
-    public static String buildSelectAll(String tableName, String[] conditions){
+    /**
+     * Generates a SELECT * FROM tableName WHERE conditions[0] = ? AND conditions[1] = ? ... SQL query string
+     * This can be used as an input to a prepared statement
+     * The '?' for the input parameters are already set
+     * @param tableName the name of the database table to query
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
+     * @return the query string
+     */
+    public static String buildSelectAllColumns(String tableName, String[] conditions){
         if(tableName == null || tableName.isEmpty())
             throw new IllegalArgumentException(TABLE_NAME_WARNING);
 
@@ -22,6 +30,22 @@ public class QueryBuilder {
 
     }
 
+    public static String buildSelectAllColumns(String tableName, String condition){
+        return buildSelectAllColumns(tableName, new String[]{condition});
+    }
+
+
+
+    /**
+     * Generates a UPDATE tableName SET affectedColumns[0] = ?, affectedColumns[1] = ?...
+     * WHERE conditions[0] = ? AND conditions[1] = ? ...  SQL statement string
+     * This statement can be used as is input to a prepared statement
+     * The '?' for the input parameters are already set
+     * @param tableName the name of the database table
+     * @param affectedColumns the array of column names which should be affected by the update statement
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
+     * @return the statement string
+     */
     public static String buildUpdate(String tableName, String[] affectedColumns, String[] conditions){
         if(tableName == null || tableName.isEmpty())
             throw new IllegalArgumentException(TABLE_NAME_WARNING);
@@ -45,6 +69,30 @@ public class QueryBuilder {
         return appendConditions(builder, conditions).toString();
     }
 
+    public static String buildUpdate(String tableName, String[] affectedColumns, String condition){
+        return buildUpdate(tableName, affectedColumns, new String[]{condition});
+    }
+
+    public static String buildUpdate(String tableName, String affectedColumn, String[] conditions) {
+        return buildUpdate(tableName, new String[]{affectedColumn}, conditions);
+    }
+
+    public static String buildUpdate(String tableName, String affectedColumn, String condition) {
+        return buildUpdate(tableName, new String[]{affectedColumn}, new String[]{condition});
+    }
+
+
+
+
+
+    /**
+     * Generates a INSERT INTO tableName (affectedColumns[0],affectedColumns[1]...) VALUES (?,?..) SQL statement string
+     * This statement can be used as is input to a prepared statement
+     * The '?' for the input parameters are already set
+     * @param tableName the name of the database table
+     * @param affectedColumns the array of column names for which for values should be inserted
+     * @return the statement string
+     */
     public static String buildInsert(String tableName, String[] affectedColumns){
         if(tableName == null || tableName.isEmpty())
             throw new IllegalArgumentException(TABLE_NAME_WARNING);
@@ -71,6 +119,34 @@ public class QueryBuilder {
 
         builder.append(");");
         return builder.toString();
+    }
+
+    public static String buildInsert(String tableName, String affectedColumn){
+        return buildInsert(tableName, new String[]{affectedColumn});
+    }
+
+    /**
+     * Generates a DELETE FROM tableName WHERE condition[0] = ? AND condition[1] = ?... SQL statement string
+     * This statement can be used as is input to a prepared statement
+     * The '?' for the input parameters are already set
+     * @param tableName the name of the database table
+     * @param conditions the array of column names for the WHERE conditions, if null or empty no WHERE clause will be added
+     * @return the statement string
+     */
+    public static String buildDelete(String tableName, String[] conditions){
+        if(tableName == null || tableName.isEmpty())
+            throw new IllegalArgumentException(TABLE_NAME_WARNING);
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("DELETE FROM ");
+        builder.append(tableName);
+
+        return appendConditions(builder, conditions).toString();
+    }
+
+    public static String buildDelete(String tableName, String condition){
+        return buildDelete(tableName, new String[]{condition});
     }
 
     private static StringBuilder appendConditions(StringBuilder builder, String[] conditions){
