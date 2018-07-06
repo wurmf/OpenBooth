@@ -33,13 +33,6 @@ public class CameraTrigger {
 
     public void triggerShotIfCorrectKey(KeyEvent keyEvent) throws TriggerException {
 
-        // Check if used OS is windows
-        String os = System.getProperty("os.name");
-        if(os.startsWith("windows")){
-            LOGGER.error("Unable to trigger shot because your operating system is a version of windows");
-            return;
-        }
-
 
         int cameraIndex = KeyHandler.getIndexForKeyEvent(keyEvent);
         if(cameraIndex < 0){

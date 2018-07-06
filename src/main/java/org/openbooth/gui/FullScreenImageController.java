@@ -4,6 +4,7 @@ import org.openbooth.util.CameraTrigger;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.TempStorageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
+import org.openbooth.util.exceptions.OBPrinterException;
 import org.openbooth.util.exceptions.TriggerException;
 import org.openbooth.util.printer.ImagePrinter;
 import org.openbooth.service.FilterService;
@@ -36,7 +37,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -149,7 +149,7 @@ public class FullScreenImageController {
                     LOGGER.error("onPrintPressed - Index out of bounds or list empty.");
                     failure=true;
                 }
-            } catch (PrinterException e) {
+            } catch (OBPrinterException e) {
                 LOGGER.error("onPrintPressed - ", e);
                 failure=true;
             }

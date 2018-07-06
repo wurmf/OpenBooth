@@ -1,6 +1,7 @@
 package org.openbooth.util.printer;
 
 import org.openbooth.entities.Image;
+import org.openbooth.util.exceptions.OBPrinterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -26,36 +27,40 @@ public class ImagePrinter {
     /**
      * Prints the image defined in the path saved in the given Image-Entity.
      * @param image the Image-Entity that shall be printed.
-     * @throws PrinterException if an error occurs while printing.
+     * @throws OBPrinterException if an error occurs while printing.
      */
-    public void print(Image image) throws PrinterException {
+    public void print(Image image) throws OBPrinterException {
         if(image==null){
-            throw new PrinterException("Input of null instead of Image-object not allowed.");
+            throw new OBPrinterException("Input of null instead of Image-object not allowed.");
         }
         if(image.getImagepath()==null||image.getImagepath().isEmpty()){
-            throw new PrinterException("No imagepath defined in Image-object.");
+            throw new OBPrinterException("No imagepath defined in Image-object.");
         }
         try {
             File imageFile=new File(image.getImagepath());
             print(ImageIO.read(imageFile));
         } catch (IOException e) {
-            LOGGER.error("print - ",e);
-            throw new PrinterException("Unable to read file from given path");
+            throw new OBPrinterException("Unable to read file from given path",e);
         }
     }
 
     /**
      * Prints the given image object to a printer connected to the computer.
      * @param image the Image-object that shall be printed.
-     * @throws PrinterException if an error occurs while printing.
+     * @throws OBPrinterException if an error occurs while printing.
      */
-    public void print(BufferedImage image) throws PrinterException {
+    public void print(BufferedImage image) throws OBPrinterException {
         if(image==null){
-            throw new PrinterException("Null image not allowed.");
+            throw new OBPrinterException("Null image not allowed.");
         }
         PrinterJob job=PrinterJob.getPrinterJob();
         job.setPrintable(new PrintableImage(image));
-        job.print();
+        try {
+            job.print();
+        } catch (PrinterException e) {
+            throw new OBPrinterException(e);
+        }
+
         LOGGER.debug("print - printing was succesful");
     }
 
@@ -67,7 +72,7 @@ public class ImagePrinter {
 
         @Override
         public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
-            if(pageIndex==0&&this.image!=null) {
+            if( pageIndex==0 && this.image!=null ) {
                 Graphics2D g2d=(Graphics2D) graphics;
                 double pageWidth=pageFormat.getImageableWidth();
                 double pageHeight=pageFormat.getImageableHeight();
@@ -81,6 +86,8 @@ public class ImagePrinter {
                     transform.translate(-imageWidth/2,-imageHeight/2);
                     AffineTransformOp transformOp=new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
                     image=transformOp.filter(image, null);
+
+                    //Don't worry about IntelliJ, these lines are for interchanging width and height and are intentional.
                     double help=imageHeight;
                     imageHeight=imageWidth;
                     imageWidth=help;

@@ -48,7 +48,6 @@ public class ImageHandler {
     public BufferedImage openImage(String imagePath) throws ImageHandlingException {
 
         if (imagePath == null || imagePath.isEmpty()) {
-            LOGGER.error("openImage - imagePath is null or empty");
             throw new ImageHandlingException("imagePath is null or empty");
         }
 
@@ -57,15 +56,22 @@ public class ImageHandler {
         try {
             img = ImageIO.read(new File(imagePath));
         } catch (IOException | ArrayIndexOutOfBoundsException e) {
-            LOGGER.error("openImage - error loading given image {} ", imagePath, e);
             throw new ImageHandlingException(e);
         }
+
+        LOGGER.debug("openImage - image from {} loaded", imagePath);
         return img;
     }
 
+    /**
+     * Opens the image specified by imagePath as InputStream
+     *
+     * @param inputStream an InputStream that provides the image.
+     * @return the given image opened as BufferedImage
+     * @throws ImageHandlingException if an error occurs while reading the image.
+     */
     public BufferedImage openImage(InputStream inputStream) throws ImageHandlingException {
         if(inputStream == null){
-            LOGGER.error("openImage - inputStream is null");
             throw new ImageHandlingException("inputStream is null");
         }
 
@@ -74,9 +80,9 @@ public class ImageHandler {
         try{
             img = ImageIO.read(inputStream);
         }catch (IOException e) {
-            LOGGER.error("openImage - error loading given image ", e);
             throw new ImageHandlingException(e);
         }
+
         LOGGER.debug("openImage - image from input stream opened");
         return img;
     }
@@ -88,26 +94,23 @@ public class ImageHandler {
      * <p>
      * Supported file formats: jpg, bmp, png
      *
-     * @param image    th given image, must specify a valid image
+     * @param image    the given image, must specify a valid image
      * @param destPath the given destination path, must specify a valid image path including the filename and ending
      * @throws ImageHandlingException when an error during the image saving occurs
      */
     public void saveImage(BufferedImage image, String destPath) throws ImageHandlingException {
         if (destPath == null || destPath.isEmpty()) {
-            LOGGER.error("saveImage - destPath is null or empty");
             throw new ImageHandlingException("destPath is null or empty");
         }
 
         try {
             String formatName = destPath.substring(destPath.lastIndexOf('.') + 1);
             if (!supportedImageFormats.contains(formatName)) {
-                LOGGER.error("Image format {} not supported", formatName);
-                throw new ImageHandlingException("Image format not supported");
+                throw new ImageHandlingException("Image format "+ formatName +" not supported");
             }
             File newImage = new File(destPath);
             ImageIO.write(image, formatName, newImage);
         } catch (IOException | NullPointerException e) {
-            LOGGER.error("saveImage - error during saving image - ", e);
             throw new ImageHandlingException(e);
         }
 
@@ -125,11 +128,6 @@ public class ImageHandler {
      */
     public BufferedImage convertMatToBufferedImg(Mat srcMat) throws ImageHandlingException {
 
-        if (srcMat == null) {
-            LOGGER.error("convertMatToBufferedImg - given srcMat is null");
-            throw new ImageHandlingException("Given Mat is null");
-        }
-
         int bufferedImgType;
 
         if (srcMat.type() == CvType.CV_8UC3) {
@@ -137,8 +135,7 @@ public class ImageHandler {
         } else if (srcMat.type() == CvType.CV_8UC1) {
             bufferedImgType = BufferedImage.TYPE_BYTE_GRAY;
         } else {
-            LOGGER.error("convertMatToBufferedImg - color type must be CV_8UC3 or CV_8UCM but was {}", srcMat.type());
-            throw new ImageHandlingException("could not convert Mat to BufferedImage");
+            throw new ImageHandlingException("Image type was " + srcMat.type() + " but should be CV_8UC3=" + CvType.CV_8UC3 + " or CV_8UC1=" + CvType.CV_8UC1);
         }
 
         byte[] data = new byte[srcMat.rows() * srcMat.cols() * (int) (srcMat.elemSize())];
@@ -171,16 +168,9 @@ public class ImageHandler {
      */
     public Mat convertBufferedImgToMat(BufferedImage srcImg) throws ImageHandlingException{
 
-        if(srcImg == null){
-            LOGGER.error("convertBufferedImgToMat - given srcImg is null");
-            throw new ImageHandlingException("Given BufferedImage is null");
-        }
-
         if(srcImg.getType() != BufferedImage.TYPE_3BYTE_BGR){
-            LOGGER.error("convertBufferedImgToMat - color type should be TYPE_3BYTE_BGR but was {}", srcImg.getType());
-            throw new ImageHandlingException("could not convert BufferedImage to matrix");
+            throw new ImageHandlingException("Color type was " + srcImg.getType() + " but should be TYPE_3BYTE_BGR=" + BufferedImage.TYPE_3BYTE_BGR);
         }
-
 
         byte[] data = ((DataBufferByte) srcImg.getRaster().getDataBuffer()).getData();
 

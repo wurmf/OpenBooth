@@ -42,11 +42,11 @@ public class SpringFXMLLoader {
      *
      * @param inputStream the input stream of the FXML-File
      * @param loadType the class of the object to load
-     * @param <TLoad> the loaded object
+     * @param <T> the loaded object
      * @return the loaded object
      * @throws IOException if the resource could not be loaded
      */
-    public synchronized <TLoad> TLoad load(InputStream inputStream, Class<TLoad> loadType) throws IOException {
+    public synchronized <T> T load(InputStream inputStream, Class<T> loadType) throws IOException {
         LOGGER.trace("Loading object of type {} from fxml resource {}", loadType.getCanonicalName(), inputStream);
         return this.getFXMLLoader().load(inputStream);
     }
@@ -56,11 +56,11 @@ public class SpringFXMLLoader {
      *
      * @param pathToFXMLFile path to the FXML-File
      * @param loadType the class of the object to load
-     * @param <TLoad> the loaded object
+     * @param <T> the loaded object
      * @return the loaded object
      * @throws IOException if the resource could not be loaded
      */
-    public <TLoad> TLoad load(String pathToFXMLFile, Class<TLoad> loadType) throws IOException {
+    public <T> T load(String pathToFXMLFile, Class<T> loadType) throws IOException {
         return this.load(SpringFXMLLoader.class.getResourceAsStream(pathToFXMLFile), loadType);
     }
 
@@ -92,16 +92,16 @@ public class SpringFXMLLoader {
      * @param inputStream the input stream of the FXML-File
      * @param loadType the class of the object to load
      * @param controllerType the class of the declared controller of the loaded object
-     * @param <TLoad> the loaded object
-     * @param <TController> the controller of the loaded object
+     * @param <T1> the loaded object
+     * @param <T2> the controller of the loaded object
      * @return a wrapper object containing the loaded object and its declared controller
      * @see FXMLWrapper
      * @throws IOException if the resource could not be loaded
      */
-    public synchronized <TLoad, TController> FXMLWrapper<TLoad, TController> loadAndWrap(
+    public synchronized <T1, T2> FXMLWrapper<T1, T2> loadAndWrap(
             InputStream inputStream,
-            Class<TLoad> loadType,
-            Class<TController> controllerType) throws IOException {
+            Class<T1> loadType,
+            Class<T2> controllerType) throws IOException {
         FXMLLoader fxmlLoader = this.getFXMLLoader();
         LOGGER.trace("Loading and wrapping object of type {} with controller of type {} from fxml resource {}",
                 loadType.getCanonicalName(), controllerType.getCanonicalName(), inputStream);
@@ -124,16 +124,16 @@ public class SpringFXMLLoader {
      * @param pathToFXMLFile path to the FXML-File
      * @param loadType the class of the object to load
      * @param controllerType the class of the declared controller of the loaded object
-     * @param <TLoad> the loaded object
-     * @param <TController> the controller of the loaded object
+     * @param <T1> the loaded object
+     * @param <T2> the controller of the loaded object
      * @return a wrapper object containing the loaded object and its declared controller
      * @see FXMLWrapper
      * @throws IOException if the resource could not be loaded
      */
-    public synchronized <TLoad, TController> FXMLWrapper<TLoad, TController> loadAndWrap(
+    public synchronized <T1, T2> FXMLWrapper<T1, T2> loadAndWrap(
             String pathToFXMLFile,
-            Class<TLoad> loadType,
-            Class<TController> controllerType) throws IOException {
+            Class<T1> loadType,
+            Class<T2> controllerType) throws IOException {
         return this.loadAndWrap(SpringFXMLLoader.class.getResourceAsStream(pathToFXMLFile), loadType, controllerType);
     }
 
@@ -142,12 +142,12 @@ public class SpringFXMLLoader {
      *
      * @param inputStream the input stream of the FXML-File
      * @param controllerType the class of the declared controller of the loaded object
-     * @param <TController> the controller of the loaded object
+     * @param <T2> the controller of the loaded object
      * @return a wrapper object containing the loaded object and its declared controller
      * @see FXMLWrapper
      * @throws IOException if the resource could not be loaded
      */
-    public <TController> FXMLWrapper<Object, TController> loadAndWrap(InputStream inputStream, Class<TController> controllerType) throws IOException {
+    public <T2> FXMLWrapper<Object, T2> loadAndWrap(InputStream inputStream, Class<T2> controllerType) throws IOException {
         return this.loadAndWrap(inputStream, Object.class, controllerType);
     }
 
@@ -156,12 +156,12 @@ public class SpringFXMLLoader {
      *
      * @param pathToFXMLFile path to the FXML-File
      * @param controllerType the class of the declared controller of the loaded object
-     * @param <TController> the controller of the loaded object
+     * @param <T2> the controller of the loaded object
      * @return a wrapper object containing the loaded object and its declared controller
      * @see FXMLWrapper
      * @throws IOException if the resource could not be loaded
      */
-    public <TController> FXMLWrapper<Object, TController> loadAndWrap(String pathToFXMLFile, Class<TController> controllerType) throws IOException {
+    public <T2> FXMLWrapper<Object, T2> loadAndWrap(String pathToFXMLFile, Class<T2> controllerType) throws IOException {
         return this.loadAndWrap(pathToFXMLFile, Object.class, controllerType);
     }
 
@@ -192,23 +192,23 @@ public class SpringFXMLLoader {
     /**
      * A wrapper for loading FXML-files and wrapping the loaded object as well as the controller.
      *
-     * @param <TLoad> the loaded object
-     * @param <TController> the controller of the loaded object
+     * @param <T1> the loaded object
+     * @param <T2> the controller of the loaded object
      */
-    public class FXMLWrapper<TLoad, TController> {
+    public class FXMLWrapper<T1, T2> {
 
-         public TLoad getLoadedObject() {
+         public T1 getLoadedObject() {
             return loadedObject;
         }
 
-        public TController getController() {
+        public T2 getController() {
             return controller;
         }
 
-        private final TLoad loadedObject;
-        private final TController controller;
+        private final T1 loadedObject;
+        private final T2 controller;
 
-        private FXMLWrapper(TLoad loadedObject, TController controller) {
+        private FXMLWrapper(T1 loadedObject, T2 controller) {
             this.loadedObject = loadedObject;
             this.controller = controller;
         }

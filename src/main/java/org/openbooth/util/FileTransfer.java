@@ -33,31 +33,36 @@ public class FileTransfer{
      * @param replace boolean indicating, whether a file shall be overwritten if it already exists. True will overwrite, false will abort if the file already exists.
      * @throws IOException if an error occurs while writing or reading the files.
      */
-    public void transfer(String sourceName, String destinationName, boolean replace) throws IOException{
+    public void transfer(String sourceName, String destinationName, boolean replace) throws IOException {
         if(sourceName==null || sourceName.isEmpty() || destinationName==null || destinationName.isEmpty()){
             throw new IOException("At least one of the paths is empty or null!");
         }
-        File destinationFile=new File(destinationName);
-        if(!replace && destinationFile.exists()){
+
+        InputStream sourceStream;
+
+
+        File destinationFile = new File(destinationName);
+        if (!replace && destinationFile.exists()) {
             return;
         }
-        if(!destinationFile.getParentFile().exists()){
+        if (!destinationFile.getParentFile().exists()) {
             Files.createDirectories(Paths.get(destinationFile.getParentFile().getCanonicalPath()));
         }
-        InputStream sourceStream = this.getClass().getResourceAsStream(sourceName);
-        if(sourceStream==null){
-            throw new FileNotFoundException("File at path "+sourceName+" not found!");
-        }
-        FileOutputStream fos=new FileOutputStream(destinationFile);
-        OutputStream destStream = new BufferedOutputStream(fos);
-        byte[] buffer = new byte[1024*8];
-        int length;
-        while((length=sourceStream.read(buffer))>=0){
-            destStream.write(buffer,0,length);
+
+        sourceStream = this.getClass().getResourceAsStream(sourceName);
+
+        if (sourceStream == null) {
+            throw new FileNotFoundException("File at path " + sourceName + " not found!");
         }
 
-        sourceStream.close();
-        destStream.close();
-        fos.close();
+        try (FileOutputStream fos = new FileOutputStream(destinationFile); BufferedOutputStream destStream = new BufferedOutputStream(fos);){
+
+            byte[] buffer = new byte[1024 * 8];
+            int length;
+            while ((length = sourceStream.read(buffer)) >= 0) {
+                destStream.write(buffer, 0, length);
+            }
+
+        }
     }
 }

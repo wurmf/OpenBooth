@@ -36,8 +36,7 @@ public class TempStorageHandler {
             for(File f : fileList){
                 boolean deleted = f.delete();
                 if(!deleted){
-                    LOGGER.error("initializeTempStorage - could not delete file {}", f.getPath());
-                    throw new StorageHandlingException("could not delete file in existing temporary storage");
+                    throw new StorageHandlingException("could not delete file at " + f.getPath());
                 }
             }
 
