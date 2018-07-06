@@ -125,14 +125,10 @@ public class CameraHandlerImpl implements CameraHandler
                 cameraGphotoList.get(i).ref();
 
                 newCamera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
-                Camera storedCamera = cameraService.cameraExists(newCamera);
-                if(storedCamera == null)
-                {
-                    storedCamera = cameraService.createCamera(newCamera);
-                }
+                Camera storedCamera = cameraService.loadCameraAndStoreIfNotExists(newCamera);
                 cameraService.setCameraActive(storedCamera.getId());
                 cameraList.add(storedCamera);
-                LOGGER.info("getCameras - simcam {} detected", storedCamera);
+                LOGGER.info("getCameras - camera {} detected", storedCamera);
 
             }
 
@@ -188,7 +184,7 @@ public class CameraHandlerImpl implements CameraHandler
             return;
         }
         /*
-        int index=cameraList.indexOf(simcam);
+        int index=cameraList.indexOf(camera);
         cameraList.remove(index);
         CameraUtils.closeQuietly(cameraGphotoList.get(index));
         cameraGphotoList.remove(index);

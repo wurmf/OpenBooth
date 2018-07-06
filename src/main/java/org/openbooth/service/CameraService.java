@@ -14,7 +14,7 @@ public interface CameraService {
 
     List<Camera> getActiveCameras() throws ServiceException;
 
-    Camera cameraExists(Camera camera) throws ServiceException;
+    Camera loadCameraAndStoreIfNotExists(Camera camera) throws ServiceException;
 
     void setCameraActive(int cameraID) throws ServiceException;
 
@@ -24,5 +24,5 @@ public interface CameraService {
 
     List<Camera> getAllCameras() throws ServiceException;
 
-    Camera editCamera(Camera camera) throws ServiceException;
+    void editCamera(Camera camera) throws ServiceException;
 }
