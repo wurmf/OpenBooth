@@ -36,7 +36,6 @@ import static org.mockito.Mockito.when;
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TestEnvironment {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TestEnvironment.class);
     protected LogoDAO logoDAO,mockLogoDAO;
     protected CameraDAO cameraDAO,mockCameraDAO;
     protected PositionDAO positionDAO,mockPositionDAO;
@@ -126,15 +125,6 @@ public class TestEnvironment {
                 new BackgroundServiceImpl(backgroundDAO,backgroundCategoryDAO)
                 );
 
-        /*
-        try {
-            con.setAutoCommit(false);
-            LOGGER.debug("Turn off AutoCommit before beginning testing");
-        }
-        catch (SQLException e) {
-            throw new PersistenceException("Error! AutoCommit couldn't be deactivated:" + e);
-        }
-        */
 
         //Run delete.sql, insert.sql
         String deletePath=this.getClass().getResource("/sql/delete.sql").getPath();
@@ -224,17 +214,7 @@ public class TestEnvironment {
     }
 
     @After public void tearDown() throws Exception {
-        // Good tests clean up their environment and reset to initial condition
-        // Therefore a database session rollback is performed
-        /*
-        try {
-            con.rollback();
-            LOGGER.debug("Rollback after finished testing");
-        }
-        catch (SQLException e) {
-            throw new PersistenceException("Error! Rollback couldn't be performed:" + e);
-        }
-        */
+
     }
 }
 

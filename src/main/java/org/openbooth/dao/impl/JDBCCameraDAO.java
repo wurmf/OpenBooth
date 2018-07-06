@@ -1,6 +1,7 @@
 package org.openbooth.dao.impl;
 
 
+import org.openbooth.util.QueryBuilder;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.openbooth.dao.CameraDAO;
@@ -21,28 +22,34 @@ public class JDBCCameraDAO implements CameraDAO{
     private Connection con;
     static final Logger LOGGER = LoggerFactory.getLogger(JDBCCameraDAO.class);
 
+    private static final String TABLE_NAME = "cameras";
+    private static final String ID_COLUMN = "cameraID";
+    private static final String LABEL_COLUMN = "label";
+    private static final String MODEL_COLUMN = "modelName";
+    private static final String PORT_NUMBER_COLUMN = "portNumber";
+    private static final String SERIAL_NUMBER_COLUMN = "serialNumber";
+    private static final String IS_ACTIVE_COLUMN = "isActive";
 
     @Autowired
     public JDBCCameraDAO(DBHandler dbHandler) throws PersistenceException {
         try {
             con = dbHandler.getConnection();
         } catch (DatabaseException e) {
-            LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
     }
 
+
+    private static final String CREATE_STATEMENT =
+            QueryBuilder.buildInsert(TABLE_NAME, new String[]{LABEL_COLUMN,MODEL_COLUMN,PORT_NUMBER_COLUMN,SERIAL_NUMBER_COLUMN});
+
     @Override
     public Camera create(Camera camera) throws PersistenceException {
-        LOGGER.debug("Entering create method with parameters {}"+camera);
+        if(camera == null)
+            throw new IllegalArgumentException("camera is null");
 
-        PreparedStatement stmt = null;
-        String query = "INSERT INTO cameras(label,modelName,portNumber,serialNumber) VALUES (?,?,?,?) ; ";
+        try (PreparedStatement stmt = con.prepareStatement(CREATE_STATEMENT, Statement.RETURN_GENERATED_KEYS)){
 
-
-        Integer id = -1;
-        try {
-            stmt = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
             stmt.setString(1,camera.getLable());
             stmt.setString(2,camera.getModel());
@@ -52,313 +59,200 @@ public class JDBCCameraDAO implements CameraDAO{
 
             stmt.executeUpdate();
 
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()){
-                id=rs.getInt(1);
+            try(ResultSet rs = stmt.getGeneratedKeys()) {
+               rs.next() ;
+               Camera storedCamera = new Camera(
+                       rs.getInt(1),
+                       camera.getLable(),
+                       camera.getPort(),
+                       camera.getModel(),
+                       camera.getSerialnumber()
+               );
+               LOGGER.trace("Camera {} successfully stored in database", storedCamera);
+               return storedCamera;
             }
-
-        } catch (SQLException e ) {
-            LOGGER.error("create", e);
-            throw new PersistenceException("Create failed: "+e.getMessage());
-        } catch(NullPointerException e){
-            LOGGER.error("create", e);
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.debug("Closing create failed: " + e);
-                }
-            }
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
         }
-        camera.setId(id);
-        return camera;
     }
+
+    private static final String DELETE_STATEMENT =
+            QueryBuilder.buildDelete(TABLE_NAME,ID_COLUMN);
 
     @Override
     public void delete(int cameraID) throws PersistenceException {
-        String sql = "DELETE FROM CAMERAS WHERE  CAMERAID=?";
-        PreparedStatement stmt = null;
-        try
-        {
-            stmt= con.prepareStatement(sql);
+
+        try(PreparedStatement stmt = con.prepareStatement(DELETE_STATEMENT)) {
             stmt.setInt(1,cameraID);
             stmt.execute();
-        }
-        catch (SQLException e)
-        {
-            LOGGER.error("delete", e);
-            throw new PersistenceException(e.getMessage());
-        }
-        catch(NullPointerException e){
-            LOGGER.error("delete", e);
-            throw new IllegalArgumentException();
-        }
-        finally
-        {
-            if (stmt != null)
-            {
-                try
-                {
-                    stmt.close();
-                }
-                catch (SQLException e)
-                {
-                    LOGGER.error("Closing delete failed: " + e);
-                }
-            }
+            LOGGER.trace("Camera with id {} successfully deleted from database", cameraID);
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
         }
     }
+
+    private static final String READ_ONE_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, ID_COLUMN);
 
     @Override
     public Camera read(int id) throws PersistenceException {
-        LOGGER.debug("Entering read method with parameter id=" + id);
 
-        ResultSet rs;
-        String sqlString;
-        PreparedStatement stmt = null;
-
-        sqlString = "SELECT * FROM cameras WHERE cameraID = ?;";
-
-        try {
-            stmt = this.con.prepareStatement(sqlString);
+        try (PreparedStatement stmt = con.prepareStatement(READ_ONE_STATEMENT)){
             stmt.setInt(1,id);
-            rs = stmt.executeQuery();
-            if(rs.next())
-            {
-                Camera camera = new Camera(rs.getInt("cameraID"),
-                rs.getString("label"),
-                rs.getString("portNumber"),
-                rs.getString("modelName"),
-                rs.getString("serialNumber"));
-                LOGGER.debug("Read has been successfully. " + camera);
-                return camera;
+            try (ResultSet rs = stmt.executeQuery()){
+             rs.next();
+             Camera camera = readCameraFromResultSet(rs);
+            LOGGER.trace("Camera {} has been read successfully.", camera);
+            return camera;
+
             }
-            else
-            {
-                LOGGER.error("Read nothing, since it doesn't exist in persistence data store(return null)");
-                return null;
-            }
-        }
-        catch (SQLException e)
-        {
-            LOGGER.error("read", e);
-            throw new PersistenceException("Error! Read in persistence layer has failed.:" + e);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-            }
-            catch (SQLException e) {
-                LOGGER.error("read", e);
-                throw new PersistenceException("Error! Closing resource at end of read method call has failed.:" + e);}
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
         }
     }
+
+    private static final String READ_ALL_ACTIVE_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, IS_ACTIVE_COLUMN);
 
     @Override
     public List<Camera> readActive() throws PersistenceException {
-        List<Camera> cameraList = new ArrayList<>();
-        PreparedStatement stmt = null;
-        String query = "select * from cameras where ISACTIVE = TRUE ;";
 
-        try {
-            stmt = con.prepareStatement(query);
+        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_ACTIVE_STATEMENT)){
+            stmt.setBoolean(1, true);
 
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Camera c = new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
-                cameraList.add(c);
+            try(ResultSet rs = stmt.executeQuery()) {
+                List<Camera> cameraList = new ArrayList<>();
+                while (rs.next()) {
+                    Camera c = readCameraFromResultSet(rs);
+                    cameraList.add(c);
+                }
+                LOGGER.trace("All active cameras read from database: {}", cameraList);
+                return cameraList;
             }
 
         } catch (SQLException e ) {
-            LOGGER.error("readActive", e);
-            throw new PersistenceException(e.getMessage());
-        } catch(NullPointerException e){
-            LOGGER.error("readActive", e);
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.debug("Closing readActive failed: " + e);
-                }
-            }
+            throw new PersistenceException(e);
         }
-        return cameraList;
     }
+
+    private static final String READ_ALL_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, new String[]{});
 
     @Override
     public List<Camera> getAll() throws PersistenceException {
-        List<Camera> cameraList = new ArrayList<>();
-        PreparedStatement stmt = null;
-        String query = "select * from cameras";
 
-        try {
-            stmt = con.prepareStatement(query);
+        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT);
+             ResultSet rs = stmt.executeQuery()) {
 
-            ResultSet rs = stmt.executeQuery();
-
+            List<Camera> cameraList = new ArrayList<>();
             while (rs.next()) {
-                Camera c = new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
+                Camera c = readCameraFromResultSet(rs);
                 cameraList.add(c);
             }
-
-        } catch (SQLException e ) {
-            LOGGER.error("getAll", e);
-            throw new PersistenceException(e.getMessage());
-        } catch(NullPointerException e){
-            LOGGER.error("getAll", e);
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.error("Closing readActive failed: " + e);
-                }
-            }
+            LOGGER.trace("All cameras read successfully from database: {}", cameraList);
+            return cameraList;
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
         }
-        return cameraList;
     }
+
+
 
     @Override
     public void setActive(int cameraID) throws PersistenceException {
-        PreparedStatement stmt=null;
-        try {
-            String prepered="update cameras set isactive=true where cameraid= ?";
-            stmt = con.prepareStatement(prepered);
-
-            stmt.setInt(1,cameraID);
-            stmt.execute();
-
-        } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e);
-            throw new PersistenceException(e.getMessage());
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.error("setActive", e);
-                }
-            }
-        }
+        setActivationStatus(cameraID, true);
+        LOGGER.trace("Camera with id {} successfully activated in database", cameraID);
     }
 
     @Override
     public void setInactive(int cameraID) throws PersistenceException {
-        PreparedStatement stmt=null;
-        try {
-            String prepered="update cameras set isactive=false where cameraid= ?";
-            stmt = con.prepareStatement(prepered);
+        setActivationStatus(cameraID, false);
+        LOGGER.trace("Camera with id {} successfully deactivated in database", cameraID);
+    }
 
-            stmt.setInt(1,cameraID);
+    private static final String SET_ACTIVATION_STATEMENT =
+            QueryBuilder.buildUpdate(TABLE_NAME, IS_ACTIVE_COLUMN, ID_COLUMN);
+
+    private void setActivationStatus(int cameraID, boolean isActivated) throws PersistenceException {
+        try (PreparedStatement stmt = con.prepareStatement(SET_ACTIVATION_STATEMENT)){
+            stmt.setBoolean(1, isActivated);
+            stmt.setInt(2, cameraID);
             stmt.execute();
-
         } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e);
-            throw new PersistenceException(e.getMessage());
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.error("setInactive", e);
-                }
-            }
+            throw new PersistenceException(e);
         }
     }
+
+
+
+    private static final String SET_ALL_INACTIVE_STATEMENT =
+            QueryBuilder.buildUpdate(TABLE_NAME, IS_ACTIVE_COLUMN, new String[]{});
 
     @Override
     public void setAllInactive() throws PersistenceException {
-        PreparedStatement stmt=null;
-        try {
-            String prepered="update cameras set isactive=false";
-            stmt = con.prepareStatement(prepered);
 
+        try (PreparedStatement stmt = con.prepareStatement(SET_ALL_INACTIVE_STATEMENT)){
             stmt.execute();
-
+            LOGGER.trace("All cameras successfully deactivated in database");
         } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e);
             throw new PersistenceException(e.getMessage());
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.error("setAllInactive", e);
-                }
-            }
         }
     }
 
+    private static final String READ_CAMERA_WITH_MODEL_STATEMENT =
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, MODEL_COLUMN);
+
     @Override
-    public Camera exists(Camera camera) throws PersistenceException {
-        PreparedStatement stmt = null;
-        String query = "select * from cameras where MODELNAME = ? ;";
-        Camera ret=null;
-        try {
-            stmt = con.prepareStatement(query);
-            stmt.setString(1,camera.getModel());
-            ResultSet rs = stmt.executeQuery();
+    public Camera getCameraIfExists(Camera camera) throws PersistenceException {
 
-            if (rs.next())
-            {
-                ret=new Camera(rs.getInt("CAMERAID"),rs.getString("LABEL"),rs.getString("PORTNUMBER"),rs.getString("MODELNAME"),rs.getString("SERIALNUMBER"));
-            }
-
-        } catch (SQLException e ) {
-            LOGGER.error("exists", e);
-            throw new PersistenceException(e.getMessage());
-        } catch(NullPointerException e){
-            LOGGER.error("exists", e);
-            throw new IllegalArgumentException();
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.debug("exists - " , e);
+        try (PreparedStatement stmt = con.prepareStatement(READ_CAMERA_WITH_MODEL_STATEMENT)) {
+            stmt.setString(1, camera.getModel());
+            try (ResultSet rs = stmt.executeQuery()) {
+                if(rs.next()){
+                    Camera storedCamera = readCameraFromResultSet(rs);
+                    LOGGER.trace("getCameraIfExists - Read camera {} from database", storedCamera);
+                    return storedCamera;
+                } else {
+                    LOGGER.trace("getCameraIfExists - No camera with model {} found in idatabase", camera.getModel());
+                    return null;
                 }
             }
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
         }
-        return ret;
     }
 
+    private static final String UPDATE_STATEMENT =
+            QueryBuilder.buildUpdate(TABLE_NAME, new String[]{LABEL_COLUMN, PORT_NUMBER_COLUMN, MODEL_COLUMN, SERIAL_NUMBER_COLUMN}, ID_COLUMN);
+
     @Override
-    public Camera editCamera(Camera camera) throws PersistenceException
+    public void editCamera(Camera camera) throws PersistenceException
     {
-        PreparedStatement stmt=null;
-        try {
-            String prepered="update cameras set LABEL=?, PORTNUMBER=?, MODELNAME=?, SERIALNUMBER=? where cameraid= ?";
-            stmt = con.prepareStatement(prepered);
+        try (PreparedStatement stmt = con.prepareStatement(UPDATE_STATEMENT)){
             stmt.setString(1,camera.getLable());
             stmt.setString(2,camera.getPort());
             stmt.setString(3,camera.getModel());
             stmt.setString(4,camera.getSerialnumber());
             stmt.setInt(5,camera.getId());
-            stmt.execute();
-
-        } catch (SQLException e) {
-            LOGGER.error("CameraDAO", e);
-            throw new PersistenceException(e);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    LOGGER.error("editCamera",e);
-                }
+            int updateCount = stmt.executeUpdate();
+            if(updateCount == 1){
+                LOGGER.trace("Camera {} successfully updated in database", camera);
+            }else if(updateCount == 0){
+                throw new PersistenceException("No camera was updated because no camera with the given id was found in the database");
+            }else{
+                throw new PersistenceException("Consistency in database is violated, more than one row has been updated");
             }
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
         }
-        return read(camera.getId());
+    }
+
+    private Camera readCameraFromResultSet(ResultSet rs) throws SQLException{
+        return new Camera(rs.getInt(ID_COLUMN),
+                rs.getString(LABEL_COLUMN),
+                rs.getString(PORT_NUMBER_COLUMN),
+                rs.getString(MODEL_COLUMN),
+                rs.getString(SERIAL_NUMBER_COLUMN));
+
     }
 }
