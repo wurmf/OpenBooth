@@ -8,26 +8,26 @@ public class QueryBuilderTest {
 
 
     @Test
-    public void testValidSelectAllWithConditions(){
+    public void testValidSelectAllColumnsWithConditions(){
         String expectedQuery = "SELECT * FROM test WHERE testcolumn1 = ? AND testcolumn2 = ?;";
         String[] conditions = {"testcolumn1", "testcolumn2"};
-        assertEquals(expectedQuery, QueryBuilder.buildSelectAll("test", conditions));
+        assertEquals(expectedQuery, QueryBuilder.buildSelectAllColumns("test", conditions));
     }
 
     @Test
-    public void testValidSelectAllWithoutConditions(){
+    public void testValidSelectAllColumnsWithoutConditions(){
         String expectedQuery = "SELECT * FROM test;";
-        assertEquals(expectedQuery, QueryBuilder.buildSelectAll("test", new String[]{}));
+        assertEquals(expectedQuery, QueryBuilder.buildSelectAllColumns("test", new String[]{}));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSelectAllWithEmptyTableName(){
-        QueryBuilder.buildSelectAll("", new String[]{});
+    public void testSelectAllColumnsWithEmptyTableName(){
+        QueryBuilder.buildSelectAllColumns("", new String[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSelectAllWithNullTableName(){
-        QueryBuilder.buildSelectAll(null, new String[]{});
+    public void testSelectAllColumnsWithNullTableName(){
+        QueryBuilder.buildSelectAllColumns(null, new String[]{});
     }
 
 

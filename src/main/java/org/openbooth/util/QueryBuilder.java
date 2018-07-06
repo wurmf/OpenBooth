@@ -9,7 +9,7 @@ public class QueryBuilder {
 
     private static final String TABLE_NAME_WARNING = "table name is null or empty";
 
-    public static String buildSelectAll(String tableName, String[] conditions){
+    public static String buildSelectAllColumns(String tableName, String[] conditions){
         if(tableName == null || tableName.isEmpty())
             throw new IllegalArgumentException(TABLE_NAME_WARNING);
 
