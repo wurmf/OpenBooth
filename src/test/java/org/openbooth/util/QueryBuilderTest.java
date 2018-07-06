@@ -97,4 +97,28 @@ public class QueryBuilderTest {
         QueryBuilder.buildInsert(null, new String[]{});
     }
 
+
+    @Test
+    public void testValidDeleteWithConditions(){
+        String expectedQuery = "DELETE FROM test WHERE testcolumn1 = ? AND testcolumn2 = ?;";
+        String[] conditions = {"testcolumn1", "testcolumn2"};
+        assertEquals(expectedQuery, QueryBuilder.buildDelete("test", conditions));
+    }
+
+    @Test
+    public void testValidDeleteColumnsWithoutConditions(){
+        String expectedQuery = "DELETE FROM test;";
+        assertEquals(expectedQuery, QueryBuilder.buildDelete("test", new String[]{}));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteWithEmptyTableName(){
+        QueryBuilder.buildDelete("", new String[]{});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteWithNullTableName(){
+        QueryBuilder.buildDelete(null, new String[]{});
+    }
+
 }
