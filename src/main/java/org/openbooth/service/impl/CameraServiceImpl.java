@@ -63,15 +63,16 @@ public class CameraServiceImpl implements CameraService {
     }
 
     @Override
-    public Camera cameraExists(Camera camera) throws ServiceException
+    public Camera loadCameraAndStoreIfNotExists(Camera camera) throws ServiceException
     {
-        try
-        {
-            return cameraDAO.exists(camera);
+        try {
+            Camera storedCamera = cameraDAO.getCameraIfExists(camera);
+
+            if(storedCamera == null) storedCamera = cameraDAO.create(camera);
+
+            return storedCamera;
         }
-        catch (PersistenceException ex)
-        {
-            LOGGER.error("cameraExists - Failure at searching given simcam");
+        catch (PersistenceException ex) {
             throw new ServiceException(ex);
         }
     }
@@ -129,10 +130,10 @@ public class CameraServiceImpl implements CameraService {
     }
 
     @Override
-    public Camera editCamera(Camera camera) throws ServiceException {
+    public void editCamera(Camera camera) throws ServiceException {
         try
         {
-            return cameraDAO.editCamera(camera);
+            cameraDAO.editCamera(camera);
         }
         catch (PersistenceException ex)
         {

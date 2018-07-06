@@ -1,5 +1,6 @@
 package org.openbooth.dao.impl;
 
+import org.openbooth.util.QueryBuilder;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.openbooth.dao.BackgroundCategoryDAO;
@@ -46,7 +47,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String CREATE_STATEMENT =
-            "INSERT INTO "+TABLE_NAME+" ("+NAME_COLUMN+","+PATH_COLUMN+") VALUES (?,?);";
+            QueryBuilder.buildInsert(TABLE_NAME, new String[]{NAME_COLUMN,PATH_COLUMN});
 
     @Override
     public Background create(Background background) throws PersistenceException {
@@ -75,7 +76,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String SET_CATEGORY_STATEMENT =
-            "UPDATE "+TABLE_NAME+" SET "+CATEGORY_COLUMN+" = ? WHERE "+ID_COLUMN+" = ?;";
+            QueryBuilder.buildUpdate(TABLE_NAME, CATEGORY_COLUMN, ID_COLUMN);
 
     private void setCategoryForBackground(Background background, Background.Category category) throws PersistenceException{
         try(PreparedStatement pstmt = con.prepareStatement(SET_CATEGORY_STATEMENT)){
@@ -96,9 +97,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String UPDATE_STATEMENT =
-            "UPDATE "+TABLE_NAME+
-                    " SET " +NAME_COLUMN+" = ?, "+PATH_COLUMN+" = ? " +
-                    "WHERE "+ID_COLUMN+" = ?;";
+            QueryBuilder.buildUpdate(TABLE_NAME, new String[]{NAME_COLUMN,PATH_COLUMN}, ID_COLUMN);
 
     @Override
     public void update(Background background) throws PersistenceException {
@@ -126,7 +125,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String READ_ONE_STATEMENT =
-            "SELECT * FROM "+TABLE_NAME+" WHERE "+ID_COLUMN+" = ?;";
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, ID_COLUMN);
 
     @Override
     public Background read(int id) throws PersistenceException {
@@ -154,29 +153,30 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String READ_ALL_STATEMENT =
-            "SELECT * FROM "+TABLE_NAME+" WHERE "+DELETED_COLUMN+" ='false';";
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, DELETED_COLUMN);
 
     @Override
     public List<Background> readAll() throws PersistenceException {
 
-        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT);
-             ResultSet rs = stmt.executeQuery()){
+        try (PreparedStatement stmt = con.prepareStatement(READ_ALL_STATEMENT)){
+            stmt.setBoolean(1, false);
+             try(ResultSet rs = stmt.executeQuery()) {
 
-            List<Background> returnList = new ArrayList<>();
+                 List<Background> returnList = new ArrayList<>();
 
-            while (rs.next()) {
-                Background background = new Background(
-                        rs.getInt(ID_COLUMN),
-                        rs.getString(NAME_COLUMN),
-                        rs.getString(PATH_COLUMN),
-                        backgroundCategoryDAO.read(rs.getInt(CATEGORY_COLUMN)),
-                        rs.getBoolean(DELETED_COLUMN)
-                );
-                returnList.add(background);
-            }
-            LOGGER.trace("All backgrounds have been read from database: {}", returnList);
-
-            return returnList;
+                 while (rs.next()) {
+                     Background background = new Background(
+                             rs.getInt(ID_COLUMN),
+                             rs.getString(NAME_COLUMN),
+                             rs.getString(PATH_COLUMN),
+                             backgroundCategoryDAO.read(rs.getInt(CATEGORY_COLUMN)),
+                             rs.getBoolean(DELETED_COLUMN)
+                     );
+                     returnList.add(background);
+                 }
+                 LOGGER.trace("All backgrounds have been read from database: {}", returnList);
+                 return returnList;
+             }
         } catch (SQLException e) {
             throw new PersistenceException(e);
         }
@@ -184,7 +184,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
 
 
     private static final String READ_ALL_WITH_CATEGORY_STATEMENT =
-            "SELECT * FROM "+TABLE_NAME+" WHERE "+CATEGORY_COLUMN+" = ? AND "+DELETED_COLUMN+" ='false';";
+            QueryBuilder.buildSelectAllColumns(TABLE_NAME, new String[]{CATEGORY_COLUMN, DELETED_COLUMN});
 
     @Override
     public List<Background> readAllWithCategory(Background.Category category) throws PersistenceException {
@@ -192,6 +192,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
 
         try(PreparedStatement stmt = con.prepareStatement(READ_ALL_WITH_CATEGORY_STATEMENT)) {
             stmt.setInt(1, category.getId());
+            stmt.setBoolean(2, false);
             try(ResultSet rs = stmt.executeQuery()) {
                 List<Background> returnList = new ArrayList<>();
 
@@ -215,7 +216,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
     }
 
     private static final String DELETE_STATEMENT =
-            "UPDATE "+TABLE_NAME+" SET "+DELETED_COLUMN+" = 'true' WHERE "+ID_COLUMN+" = ? AND "+DELETED_COLUMN+" = 'false';";
+            QueryBuilder.buildUpdate(TABLE_NAME, DELETED_COLUMN, new String[]{ID_COLUMN, DELETED_COLUMN});
 
     @Override
     public void delete(Background background) throws PersistenceException {
@@ -223,7 +224,9 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
         if (background==null) throw new IllegalArgumentException("background is null");
 
         try (PreparedStatement stmt = con.prepareStatement(DELETE_STATEMENT)){
-            stmt.setInt(1,background.getId());
+            stmt.setBoolean(1, true);
+            stmt.setInt(2,background.getId());
+            stmt.setBoolean(3, false);
             int returnUpdateCount  = stmt.executeUpdate();
 
             // Check, if row has been deleted and return suitable boolean value

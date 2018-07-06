@@ -1,5 +1,6 @@
 package org.openbooth.dao.impl;
 
+import org.openbooth.util.QueryBuilder;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.openbooth.dao.AdminUserDAO;
 import org.openbooth.dao.exceptions.PersistenceException;
@@ -38,7 +39,7 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
         }
     }
 
-    private static final String READ_ADMIN_QUERY = "SELECT * FROM adminusers WHERE adminname=?";
+    private static final String READ_ADMIN_QUERY = QueryBuilder.buildSelectAllColumns("adminusers", "adminname");
 
     @Override
     public AdminUser read(String adminName) throws PersistenceException{

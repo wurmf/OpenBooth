@@ -6,28 +6,29 @@ import static org.junit.Assert.assertEquals;
 
 public class QueryBuilderTest {
 
+    private static final String[] NULL_ARRAY = null;
 
     @Test
-    public void testValidSelectAllWithConditions(){
+    public void testValidSelectAllColumnsWithConditions(){
         String expectedQuery = "SELECT * FROM test WHERE testcolumn1 = ? AND testcolumn2 = ?;";
         String[] conditions = {"testcolumn1", "testcolumn2"};
-        assertEquals(expectedQuery, QueryBuilder.buildSelectAll("test", conditions));
+        assertEquals(expectedQuery, QueryBuilder.buildSelectAllColumns("test", conditions));
     }
 
     @Test
-    public void testValidSelectAllWithoutConditions(){
+    public void testValidSelectAllColumnsWithoutConditions(){
         String expectedQuery = "SELECT * FROM test;";
-        assertEquals(expectedQuery, QueryBuilder.buildSelectAll("test", new String[]{}));
+        assertEquals(expectedQuery, QueryBuilder.buildSelectAllColumns("test", new String[]{}));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSelectAllWithEmptyTableName(){
-        QueryBuilder.buildSelectAll("", new String[]{});
+    public void testSelectAllColumnsWithEmptyTableName(){
+        QueryBuilder.buildSelectAllColumns("", new String[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSelectAllWithNullTableName(){
-        QueryBuilder.buildSelectAll(null, new String[]{});
+    public void testSelectAllColumnsWithNullTableName(){
+        QueryBuilder.buildSelectAllColumns(null, new String[]{});
     }
 
 
@@ -54,7 +55,7 @@ public class QueryBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testNullAffectedColumns(){
-        QueryBuilder.buildUpdate("test", null, new String[]{});
+        QueryBuilder.buildUpdate("test", NULL_ARRAY, new String[]{});
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -84,7 +85,7 @@ public class QueryBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testInsertWithNullAffectedColumns(){
-        QueryBuilder.buildInsert("test", null);
+        QueryBuilder.buildInsert("test", NULL_ARRAY);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -95,6 +96,30 @@ public class QueryBuilderTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInsertWithNullTableName(){
         QueryBuilder.buildInsert(null, new String[]{});
+    }
+
+
+    @Test
+    public void testValidDeleteWithConditions(){
+        String expectedQuery = "DELETE FROM test WHERE testcolumn1 = ? AND testcolumn2 = ?;";
+        String[] conditions = {"testcolumn1", "testcolumn2"};
+        assertEquals(expectedQuery, QueryBuilder.buildDelete("test", conditions));
+    }
+
+    @Test
+    public void testValidDeleteColumnsWithoutConditions(){
+        String expectedQuery = "DELETE FROM test;";
+        assertEquals(expectedQuery, QueryBuilder.buildDelete("test", new String[]{}));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteWithEmptyTableName(){
+        QueryBuilder.buildDelete("", new String[]{});
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteWithNullTableName(){
+        QueryBuilder.buildDelete(null, new String[]{});
     }
 
 }
