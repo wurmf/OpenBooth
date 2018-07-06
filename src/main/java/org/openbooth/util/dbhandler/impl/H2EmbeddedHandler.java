@@ -5,11 +5,9 @@ import org.openbooth.util.dbhandler.prep.DataPrepper;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.h2.tools.RunScript;
 import org.h2.tools.Server;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
 import java.sql.*;
 
 /**
