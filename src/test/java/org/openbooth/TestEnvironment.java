@@ -1,14 +1,11 @@
-package org.openbooth.dao.impl;
+package org.openbooth;
 
-import org.openbooth.util.dbhandler.DBHandler;
-import org.openbooth.util.dbhandler.impl.H2EmbeddedHandler;
-import org.openbooth.dao.exceptions.PersistenceException;
+import org.openbooth.dao.impl.*;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.impl.BackgroundServiceImpl;
 import org.openbooth.entities.*;
 import org.openbooth.service.impl.ProfileServiceImpl;
 import org.openbooth.service.impl.ShootingServiceImpl;
-import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -17,10 +14,13 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openbooth.dao.*;
 import org.openbooth.service.impl.CameraServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.openbooth.util.dbhandler.DBHandler;
+import org.openbooth.util.dbhandler.impl.H2EmbeddedHandler;
+import org.openbooth.util.dbhandler.prep.DataPrepper;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
 
-import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +34,14 @@ import static org.mockito.Mockito.when;
  * provides setup (Database connections and mocks) for all DAO tests
  */
 
+@ComponentScan("org.openbooth")
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
 public class TestEnvironment {
+
+
+    private static ApplicationContext applicationContext = null;
+
     protected LogoDAO logoDAO,mockLogoDAO;
     protected CameraDAO cameraDAO,mockCameraDAO;
     protected PositionDAO positionDAO,mockPositionDAO;
@@ -49,8 +54,6 @@ public class TestEnvironment {
     protected BackgroundDAO backgroundDAO, mockBackgroundDAO;
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
-
-    DBHandler dbHandler= new H2EmbeddedHandler();
 
     @Mock protected H2EmbeddedHandler mockH2Handler;
     @Mock protected Connection mockConnection;
@@ -70,9 +73,15 @@ public class TestEnvironment {
     protected Profile profileA,profileB,profileC,profile1,profile2;
     protected Background.Category backgroundCategory1,backgroundCategory2,backgroundCategory3,backgroundCategory4;
 
+    protected ApplicationContext getApplicationContext(){
+        if(applicationContext == null) applicationContext = new AnnotationConfigApplicationContext(TestEnvironment.class);
+        return applicationContext;
+    }
+
     @Before public void setUp() throws Exception
     {
-        Connection con = dbHandler.getTestConnection();
+        DBHandler dbHandler = getApplicationContext().getBean(DBHandler.class);
+        Connection con = dbHandler.getConnection();
         /* Setup test mocks
         *  Please don't mess with these ones,
         *  if you don't understand completely what implications it has
@@ -111,7 +120,6 @@ public class TestEnvironment {
         shootingDAO = new JDBCShootingDAO(dbHandler);
         adminUserDAO = new JDBCAdminUserDAO(dbHandler);
         backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(dbHandler);
-        backgroundDAO = new JDBCBackgroundDAO(dbHandler, backgroundCategoryDAO);
 
         /*
         * Setup Services for all testing
@@ -128,12 +136,8 @@ public class TestEnvironment {
 
 
         //Run delete.sql, insert.sql
-        String deletePath=this.getClass().getResource("/sql/delete.sql").getPath();
-        String insertPath=this.getClass().getResource("/sql/insert.sql").getPath();
-
-        RunScript.execute(con, new FileReader(deletePath));
-
-        RunScript.execute(con, new FileReader(insertPath));
+        DataPrepper.deleteTestData(con);
+        DataPrepper.insertTestData(con);
 
 
         /*

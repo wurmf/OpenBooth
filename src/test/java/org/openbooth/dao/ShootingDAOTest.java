@@ -3,7 +3,7 @@ import org.openbooth.entities.Shooting;
 import org.junit.After;
 import org.junit.Before;
 
-import org.openbooth.dao.impl.TestEnvironment;
+import org.openbooth.TestEnvironment;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;

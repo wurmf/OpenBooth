@@ -2,7 +2,7 @@ package org.openbooth.dao;
 
 import org.junit.Test;
 import org.openbooth.dao.exceptions.PersistenceException;
-import org.openbooth.dao.impl.TestEnvironment;
+import org.openbooth.TestEnvironment;
 import org.openbooth.entities.Background;
 
 import java.sql.SQLException;
@@ -15,10 +15,13 @@ import static org.mockito.Mockito.when;
 
 public class BackgroundDAOTest extends TestEnvironment {
 
+    private BackgroundDAO backgroundDAO = getApplicationContext().getBean(BackgroundDAO.class);
+
     private Background testBackground;
     private Background background1;
     private Background background2;
     private Background background3;
+
 
     @Override
     public void setUp() throws Exception {

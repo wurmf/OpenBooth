@@ -1,7 +1,7 @@
 package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
-import org.openbooth.dao.impl.TestEnvironment;
+import org.openbooth.TestEnvironment;
 import org.openbooth.entities.Background;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 public class BackgroundCategoryDAOTest extends TestEnvironment {
 
     private Background.Category backgroundCategoryA,backgroundCategoryB, backgroundCategoryC;
+
+    private BackgroundCategoryDAO backgroundCategoryDAO = getApplicationContext().getBean(BackgroundCategoryDAO.class);
 
     @Before
     public void setUp() throws Exception {

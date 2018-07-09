@@ -2,7 +2,7 @@
     package org.openbooth.dao;
 
     import org.openbooth.dao.exceptions.PersistenceException;
-    import org.openbooth.dao.impl.TestEnvironment;
+    import org.openbooth.TestEnvironment;
     import org.openbooth.entities.AdminUser;
     import org.junit.Test;
 

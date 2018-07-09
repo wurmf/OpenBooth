@@ -1,6 +1,6 @@
 package org.openbooth.service;
 
-import org.openbooth.dao.impl.TestEnvironment;
+import org.openbooth.TestEnvironment;
 import org.openbooth.entities.Profile;
 import org.openbooth.entities.RelativeRectangle;
 import org.openbooth.service.exceptions.ServiceException;

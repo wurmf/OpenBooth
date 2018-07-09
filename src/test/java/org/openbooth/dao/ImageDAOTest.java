@@ -1,6 +1,6 @@
 package org.openbooth.dao;
 
-import org.openbooth.dao.impl.TestEnvironment;
+import org.openbooth.TestEnvironment;
 import org.openbooth.entities.Image;
 import org.openbooth.entities.Shooting;
 import org.junit.After;

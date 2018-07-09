@@ -1,6 +1,6 @@
 package org.openbooth.service;
 
-import org.openbooth.util.dbhandler.impl.H2EmbeddedHandler;
+import org.openbooth.TestEnvironment;
 import org.openbooth.util.exceptions.DatabaseException;
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.dao.impl.JDBCAdminUserDAO;
@@ -19,17 +19,10 @@ import static junit.framework.TestCase.assertTrue;
 /**
  * Test for implementations of the AdminUserService-Interface
  */
-public class AdminUserServiceTest {
+public class AdminUserServiceTest extends TestEnvironment {
     static final Logger LOGGER = LoggerFactory.getLogger(AdminUserServiceTest.class);
 
-    @Autowired
-    protected AdminUserService adminUserService;
-
-    @Before
-    public void setUp() throws DatabaseException, PersistenceException {
-        H2EmbeddedHandler.getInstance().getTestConnection();
-        adminUserService = new AdminUserServiceImpl(new JDBCAdminUserDAO(H2EmbeddedHandler.getInstance()));
-    }
+    private AdminUserService adminUserService = getApplicationContext().getBean(AdminUserService.class);
 
     /**
      * Checks the return calue of an existing entry.
