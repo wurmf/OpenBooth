@@ -78,7 +78,7 @@ public class CameraHandlerImpl implements CameraHandler
 
     @PostConstruct
     @Override
-    public List<Camera> getCameras() throws CameraException, ServiceException
+    public List<Camera> getCameras() throws CameraException
     {
         if(isInitialized)
         {
@@ -97,7 +97,7 @@ public class CameraHandlerImpl implements CameraHandler
         }
         catch (ServiceException e)
         {
-            LOGGER.debug("getCameras - could not set cameras inactive", e);
+            LOGGER.error("getCameras - could not set cameras inactive", e);
         }
         cameraGphotoList=new ArrayList<>();
         cameraModelList=new ArrayList<>();
@@ -132,6 +132,8 @@ public class CameraHandlerImpl implements CameraHandler
 
             }
 
+        } catch (ServiceException e){
+            LOGGER.error("Error during camera init", e);
         }
         finally
         {

@@ -192,10 +192,11 @@ public class JDBCCameraDAO implements CameraDAO{
     public void setAllInactive() throws PersistenceException {
 
         try (PreparedStatement stmt = con.prepareStatement(SET_ALL_INACTIVE_STATEMENT)){
+            stmt.setBoolean(1,false);
             stmt.execute();
             LOGGER.trace("All cameras successfully deactivated in database");
         } catch (SQLException e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
@@ -218,7 +219,7 @@ public class JDBCCameraDAO implements CameraDAO{
                 }
             }
         } catch (SQLException e) {
-            throw new PersistenceException(e.getMessage());
+            throw new PersistenceException(e);
         }
     }
 
