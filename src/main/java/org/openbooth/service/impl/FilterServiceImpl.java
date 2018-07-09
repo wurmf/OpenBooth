@@ -254,7 +254,7 @@ public class FilterServiceImpl implements FilterService {
         LOGGER.debug("Entering filterThreshZero->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
-        Mat destination = source.clone();
+        Mat destination = new Mat(source.rows(),source.cols(),source.type());
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
         BufferedImage image;
@@ -280,7 +280,7 @@ public class FilterServiceImpl implements FilterService {
         LOGGER.debug("Entering filterThreshBinaryInvert->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
-        Mat destination = source.clone();
+        Mat destination = new Mat(source.rows(),source.cols(),source.type());
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
         BufferedImage image;
