@@ -54,7 +54,7 @@ public class FilterServiceImpl implements FilterService {
 
     @Override
     public Map<String,BufferedImage> getAllFilteredImages(String imgPath) throws ServiceException {
-        LOGGER.debug("Entering getAllFilteredImages->imgPath->"+imgPath);
+        LOGGER.debug("Entering getAllFilteredImages->imgPath->{}",imgPath);
 
         Map<String,BufferedImage> filteredImgPaths = new HashMap<>();
         filteredImgPaths.put("original", SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null));
@@ -65,7 +65,7 @@ public class FilterServiceImpl implements FilterService {
     }
     @Override
     public String resize(String imgPath,int width,int height) {
-        LOGGER.debug("Entering resize->imgPath->"+imgPath);
+        LOGGER.debug("Entering resize->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,  Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Mat resizeimage = new Mat();
@@ -108,7 +108,7 @@ public class FilterServiceImpl implements FilterService {
                 break;
             default:
                 try {
-                    filteredImage = imageHandler.openImage(imgPath); //SwingFXUtils.fromFXImage(new Image("file:"+imgPath),null);
+                    filteredImage = imageHandler.openImage(imgPath);
                 } catch (ImageHandlingException e) {
                     throw new ServiceException(e);
                 }
@@ -123,8 +123,8 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterGaussian(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterGaussian->imgPath->"+imgPath);
+    private BufferedImage filterGaussian(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterGaussian->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
@@ -150,8 +150,8 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterGrayScale(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterGrayScale->imgPath->"+imgPath);
+    private BufferedImage filterGrayScale(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterGrayScale->imgPath->{}",imgPath);
 
 
         Mat mat = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
@@ -179,8 +179,8 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterColorSpace(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterColorSpace->imgPath->"+imgPath);
+    private BufferedImage filterColorSpace(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterColorSpace->imgPath->{}",imgPath);
 
         Mat mat = Imgcodecs.imread(imgPath, Imgcodecs.CV_LOAD_IMAGE_COLOR);
         Mat mat1 = new Mat(mat.rows(), mat.cols(), CvType.CV_8UC3);
@@ -206,27 +206,27 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterSobel(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterSobel->imgPath->"+imgPath);
+    private BufferedImage filterSobel(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterSobel->imgPath->{}",imgPath);
         int kernelSize = 3;
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
 
         Mat destination = new Mat(source.rows(),source.cols(),source.type());
-        Mat kernel = new Mat(kernelSize,kernelSize, CvType.CV_32F){
-            {
-                put(0,0,-1);
-                put(0,1,0);
-                put(0,2,1);
+        Mat kernel = new Mat(kernelSize,kernelSize, CvType.CV_32F);
 
-                put(1,0,-2);
-                put(1,1,0);
-                put(1,2,2);
+        kernel.put(0,0,-1);
+        kernel.put(0,1,0);
+        kernel.put(0,2,1);
 
-                put(2,0,-1);
-                put(2,1,0);
-                put(2,2,1);
-            }
-        };
+        kernel.put(1,0,-2);
+        kernel.put(1,1,0);
+        kernel.put(1,2,2);
+
+        kernel.put(2,0,-1);
+        kernel.put(2,1,0);
+        kernel.put(2,2,1);
+
+
 
         Imgproc.filter2D(source, destination, -1, kernel);
         source.release();
@@ -250,11 +250,11 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterThreshZero(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterThreshZero->imgPath->"+imgPath);
+    private BufferedImage filterThreshZero(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterThreshZero->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
-        Mat destination = source;
+        Mat destination = source.clone();
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_TOZERO);
 
         BufferedImage image;
@@ -263,6 +263,7 @@ public class FilterServiceImpl implements FilterService {
         } catch (ImageHandlingException e) {
             throw new ServiceException(e);
         }
+        source.release();
         destination.release();
 
         return image;
@@ -275,11 +276,11 @@ public class FilterServiceImpl implements FilterService {
      * @return BufferedImage filtered image
      * @throws ServiceException if an error occurs then it throws a ServiceException
      */
-    public BufferedImage filterThreshBinaryInvert(String imgPath) throws ServiceException{
-        LOGGER.debug("Entering filterThreshBinaryInvert->imgPath->"+imgPath);
+    private BufferedImage filterThreshBinaryInvert(String imgPath) throws ServiceException{
+        LOGGER.debug("Entering filterThreshBinaryInvert->imgPath->{}",imgPath);
 
         Mat source = Imgcodecs.imread(imgPath,Imgcodecs.CV_LOAD_IMAGE_COLOR);
-        Mat destination = source;
+        Mat destination = source.clone();
         Imgproc.threshold(source,destination,127,255,Imgproc.THRESH_BINARY_INV);
 
         BufferedImage image;
@@ -288,24 +289,8 @@ public class FilterServiceImpl implements FilterService {
         } catch (ImageHandlingException e) {
             throw new ServiceException(e);
         }
+        source.release();
         destination.release();
         return image;
     }
-
-    /**
-     * checks if storage directory of active shooting exists. If it doesnt exist, then
-     * it will create a storage directory.
-     *
-     * @throws ServiceException if an error occurs then it throws a ServiceException
-     */
-  /*  public void checkStorageDir() throws ServiceException {
-        if(new File(activeShooting.getStorageDir()).isDirectory())
-            storageDir = activeShooting.getStorageDir()+"/";
-        else
-            throw new ServiceException("checkStorageDir-> StorageDir ist nicht vorhanden!"+activeShooting.getStorageDir());
-
-    }*/
-
-
-
 }
