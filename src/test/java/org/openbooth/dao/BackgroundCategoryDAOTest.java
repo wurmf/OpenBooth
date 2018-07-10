@@ -1,7 +1,6 @@
 package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
-import org.openbooth.TestEnvironment;
 import org.openbooth.dao.impl.JDBCBackgroundCategoryDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Background;
@@ -52,13 +51,13 @@ public class BackgroundCategoryDAOTest extends JDBCTestEnvironment {
 
     @Test(expected = IllegalArgumentException.class)
     public void testmock_create_withNullArguments_Fail() throws PersistenceException{
-        mockbackgroundCategoryDAO.create(null);
+        mockBackgroundCategoryDAO.create(null);
     }
 
     @Test(expected = PersistenceException.class)
     public void testmock_create_withPersistenceTroubles_Fail() throws PersistenceException, SQLException{
         when(mockConnection.prepareStatement(anyString(),anyInt())).thenThrow(SQLException.class);
-        mockbackgroundCategoryDAO.create(this.backgroundCategoryA);
+        mockBackgroundCategoryDAO.create(this.backgroundCategoryA);
     }
 
     @Test
@@ -79,13 +78,13 @@ public class BackgroundCategoryDAOTest extends JDBCTestEnvironment {
 
     @Test(expected = IllegalArgumentException.class)
     public void testmock_update_withNullArguments_Fail() throws PersistenceException{
-        mockbackgroundCategoryDAO.update(null);
+        mockBackgroundCategoryDAO.update(null);
     }
 
     @Test(expected = PersistenceException.class)
     public void testmock_update_withPersistenceTroubles_Fail() throws PersistenceException, SQLException{
         when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockbackgroundCategoryDAO.update(backgroundCategoryA);
+        mockBackgroundCategoryDAO.update(backgroundCategoryA);
     }
 
 

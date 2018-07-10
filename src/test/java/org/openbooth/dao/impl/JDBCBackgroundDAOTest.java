@@ -21,7 +21,8 @@ public class JDBCBackgroundDAOTest extends JDBCTestEnvironment{
     @Before
     public void setUp() throws Exception{
         super.setUp();
-        mockBackgroundDAO = new JDBCBackgroundDAO(mockDBHandler, mockbackgroundCategoryDAO);
+
+        mockBackgroundDAO = new JDBCBackgroundDAO(mockDBHandler, new JDBCBackgroundCategoryDAO(mockDBHandler));
     }
 
     @Test(expected = PersistenceException.class)

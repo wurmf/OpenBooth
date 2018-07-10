@@ -70,8 +70,8 @@ public class DataPrepper {
     }
 
     public static void deleteTestData(Connection connection) throws DatabaseException{
-        try (InputStream insertStream = DataPrepper.class.getResourceAsStream("/sql/delete.sql");
-             InputStreamReader insertISR = new InputStreamReader(insertStream);
+        try (InputStream deleteStream = DataPrepper.class.getResourceAsStream("/sql/delete.sql");
+             InputStreamReader insertISR = new InputStreamReader(deleteStream);
              ResultSet rs = RunScript.execute(connection, insertISR))
         {
             LOGGER.debug("delete.sql successfully run");

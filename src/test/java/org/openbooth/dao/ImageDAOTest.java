@@ -1,6 +1,7 @@
 package org.openbooth.dao;
 
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCImageDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Image;
 import org.openbooth.entities.Shooting;
@@ -21,8 +22,12 @@ public class ImageDAOTest extends JDBCTestEnvironment {
     private Image img = new Image(99,"/images/validImage.jpg",2,new Date());
     private int id = 1;
 
+    private ImageDAO mockImageDAO;
+
     @Before public void setUp() throws Exception {
         super.setUp();
+
+        mockImageDAO = new JDBCImageDAO(mockDBHandler);
     }
 
     @After public void tearDown() throws Exception {

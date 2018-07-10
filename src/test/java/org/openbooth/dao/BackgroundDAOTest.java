@@ -7,6 +7,7 @@ import org.openbooth.entities.Background;
 import org.openbooth.util.TestDataProvider;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,19 +15,17 @@ import static org.junit.Assert.assertTrue;
 public class BackgroundDAOTest extends TestEnvironment {
 
     private BackgroundDAO backgroundDAO = getApplicationContext().getBean(BackgroundDAO.class);
-    private TestDataProvider dataProvider = getApplicationContext().getBean(TestDataProvider.class);
+    private TestDataProvider testDataProvider;
 
-    private Background testBackground;
-    List<Background> backgrounds;
 
+    List<Background> storedBackgrounds;
+    Background testBackground;
 
     @Override
-    public void setUp() throws Exception{
-        super.setUp();
-
-        backgrounds = dataProvider.getStoredBackgrounds();
-        testBackground = backgrounds.get(0);
-
+    protected void prepareTestData() {
+        testDataProvider = getApplicationContext().getBean(TestDataProvider.class);
+        storedBackgrounds = testDataProvider.getStoredBackgrounds();
+        testBackground = testDataProvider.getNewBackground();
     }
 
     @Test
@@ -45,21 +44,21 @@ public class BackgroundDAOTest extends TestEnvironment {
 
     @Test(expected = PersistenceException.class)
     public void testCreateWithNotExistingCategory() throws PersistenceException{
-        Background.Category notExistingCategory = new Background.Category(-1, "test", false);
+        Background.Category notExistingCategory = testDataProvider.getNewCategory();
         testBackground.setCategory(notExistingCategory);
         backgroundDAO.create(testBackground);
     }
 
 
     @Test
-    public void testValidCreateUpdateAndRead() throws PersistenceException{
-        testBackground.setId(backgroundDAO.create(testBackground).getId());
-        testBackground.setName("New Name");
-        testBackground.setPath("New Path");
-        testBackground.setCategory(backgroundCategory2);
-        backgroundDAO.update(testBackground);
-        Background storedBackground = backgroundDAO.read(testBackground.getId());
-        assertEquals(testBackground, storedBackground);
+    public void testValidUpdateAndRead() throws PersistenceException{
+        Background storedBackground = storedBackgrounds.get(0);
+        storedBackground.setName("New Name");
+        storedBackground.setPath("New Path");
+        storedBackground.setCategory(testDataProvider.getStoredBackgroundCategories().get(0));
+        backgroundDAO.update(storedBackground);
+        Background updatedBackground = backgroundDAO.read(storedBackground.getId());
+        assertEquals(storedBackground, updatedBackground);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,14 +82,11 @@ public class BackgroundDAOTest extends TestEnvironment {
     }
 
     @Test
-    public void testValidCreateAndReadAll() throws PersistenceException{
-
-        for(Background background : backgrounds){
-            background.setId(backgroundDAO.create(background).getId());
-        }
+    public void testValidReadAll() throws PersistenceException{
 
         List<Background> backgroundList = backgroundDAO.readAll();
-        assertTrue(backgroundList.containsAll(backgrounds));
+        assertTrue(backgroundList.containsAll(storedBackgrounds));
+        assertTrue(storedBackgrounds.containsAll(backgroundList));
     }
 
 
@@ -102,20 +98,14 @@ public class BackgroundDAOTest extends TestEnvironment {
     @Test
     public void testValidReadAllWithCategory() throws PersistenceException{
 
-        for(Background background : backgrounds){
-            background.setId(backgroundDAO.create(background).getId());
-        }
-
-        Background.Category category = backgrounds.get(0).getCategory();
-
-        //TODO: backgrounds with existing categories?
+        Background.Category category = storedBackgrounds.get(0).getCategory();
 
 
-        //backgrounds = backgrounds.stream().filter(ba)
+        storedBackgrounds = storedBackgrounds.stream().filter(b -> b.getCategory().equals(category)).collect(Collectors.toList());
 
-        List<Background> backgroundList = backgroundDAO.readAllWithCategory(backgroundCategory1);
+        List<Background> readBackgrounds = backgroundDAO.readAllWithCategory(category);
 
-        //assertTrue(backgroundList.containsAll());
+        assertTrue(readBackgrounds.containsAll(storedBackgrounds));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -131,13 +121,11 @@ public class BackgroundDAOTest extends TestEnvironment {
 
 
     @Test
-    public void testValidCreateDeleteAndRead() throws PersistenceException {
-        testBackground.setId(backgroundDAO.create(testBackground).getId());
-        Background storedBackground = backgroundDAO.read(testBackground.getId());
-        assertEquals(testBackground,storedBackground);
-        backgroundDAO.delete(testBackground);
+    public void testValidDeleteAndRead() throws PersistenceException {
+        Background storedBackground = storedBackgrounds.get(0);
+        backgroundDAO.delete(storedBackground);
         List<Background> backgroundList = backgroundDAO.readAll();
-        assertTrue(!backgroundList.contains(testBackground));
+        assertTrue(!backgroundList.contains(storedBackground));
     }
 
     @Test(expected = IllegalArgumentException.class)

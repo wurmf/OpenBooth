@@ -21,6 +21,7 @@
      */
     public class AdminUserDAOTest extends TestEnvironment {
 
+
         /**
          * Check if nonexistent-user-read returns null
          */

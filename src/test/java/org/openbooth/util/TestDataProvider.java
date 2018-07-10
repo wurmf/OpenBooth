@@ -4,6 +4,7 @@ import org.openbooth.dao.impl.*;
 import org.openbooth.entities.*;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.exceptions.DatabaseException;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
+@Scope("prototype")
 public class TestDataProvider {
 
     private List<Background> backgrounds;
@@ -47,18 +49,20 @@ public class TestDataProvider {
     }
 
     private void insertData(Connection connection) throws DatabaseException{
+        //This order must be kept to ensure referential consistency
         try {
             insertCameras(connection);
             insertPositions(connection);
-            insertPairCameraPositions(connection);
             insertLogos(connection);
-            insertPairLogoRelativeRectangles(connection);
             insertBackgroundCategories(connection);
             insertBackgrounds(connection);
             insertProfiles(connection);
             insertProfileBackgroundCategoryRelations(connection);
+            insertPairCameraPositions(connection);
+            insertPairLogoRelativeRectangles(connection);
             insertShootings(connection);
             insertImages(connection);
+            connection.commit();
         } catch (SQLException e) {
             throw new DatabaseException("Test data could not be inserted into database", e);
         }
@@ -413,5 +417,12 @@ public class TestDataProvider {
     public List<Shooting> getStoredShootings(){return shootings;}
     public List<Image> getStoredImages(){return images;}
 
+    public Background getNewBackground(){
+        return new Background(-1, "NewTestBackground", "no/valid/path", backgroundCategories.get(0), false);
+    }
+
+    public Background.Category getNewCategory(){
+        return new Background.Category(-1, "NewTestCategory", false);
+    }
 
 }

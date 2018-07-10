@@ -1,6 +1,9 @@
 package org.openbooth.dao.impl;
 
+import org.junit.Ignore;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.openbooth.TestEnvironment;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.exceptions.DatabaseException;
@@ -11,7 +14,9 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
-public abstract class JDBCTestEnvironment extends TestEnvironment {
+@RunWith(MockitoJUnitRunner.class)
+@Ignore
+public class JDBCTestEnvironment extends TestEnvironment {
 
     @Mock protected DBHandler mockDBHandler;
     @Mock protected Connection mockConnection;
@@ -32,6 +37,7 @@ public abstract class JDBCTestEnvironment extends TestEnvironment {
     }
 
     public void setUp() throws Exception{
+        super.setUp();
         setUpDBMocks();
     }
 }

@@ -1,20 +1,20 @@
 package org.openbooth;
 
+import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.dao.impl.*;
 import org.openbooth.service.ProfileService;
+import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.service.impl.BackgroundServiceImpl;
 import org.openbooth.entities.*;
 import org.openbooth.service.impl.ProfileServiceImpl;
 import org.openbooth.service.impl.ShootingServiceImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.openbooth.dao.*;
 import org.openbooth.service.impl.CameraServiceImpl;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.dbhandler.prep.DataPrepper;
+import org.openbooth.util.exceptions.DatabaseException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,26 +30,25 @@ import java.util.List;
  */
 
 @ComponentScan("org.openbooth")
-@Ignore
-@RunWith(MockitoJUnitRunner.class)
 public class TestEnvironment {
 
 
     private static ApplicationContext applicationContext = null;
 
-    protected LogoDAO logoDAO,mockLogoDAO;
-    protected CameraDAO cameraDAO,mockCameraDAO;
-    protected PositionDAO positionDAO,mockPositionDAO;
-    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO,mockPairLogoRelativeRectangleDAO;
-    protected PairCameraPositionDAO pairCameraPositionDAO,mockPairCameraPositionDAO;
-    protected ProfileDAO profileDAO,mockProfileDAO;
-    protected ImageDAO imageDAO,mockImageDAO;
-    protected ShootingDAO shootingDAO,mockShootingDAO;
-    protected BackgroundCategoryDAO backgroundCategoryDAO,mockbackgroundCategoryDAO;
-    protected BackgroundDAO backgroundDAO, mockBackgroundDAO;
+    protected LogoDAO logoDAO;
+    protected CameraDAO cameraDAO;
+    protected PositionDAO positionDAO;
+    protected PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
+    protected PairCameraPositionDAO pairCameraPositionDAO;
+    protected ProfileDAO profileDAO;
+    protected ImageDAO imageDAO;
+    protected ShootingDAO shootingDAO;
+    protected BackgroundCategoryDAO backgroundCategoryDAO;
+    protected BackgroundDAO backgroundDAO;
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
 
+    protected Connection con;
 
 
     protected Camera camera1,camera2,camera3,cameraA,cameraB,cameraC,camera1000000;
@@ -69,49 +68,9 @@ public class TestEnvironment {
         return applicationContext;
     }
 
-
-
-    @Before public void setUp() throws Exception
-    {
-        DBHandler dbHandler = getApplicationContext().getBean(DBHandler.class);
-        Connection con = dbHandler.getConnection();
-
-
-        /* Setup DAOs for all testing
-         */
-        logoDAO = applicationContext.getBean(LogoDAO.class);
-        cameraDAO = applicationContext.getBean(CameraDAO.class);
-        positionDAO = applicationContext.getBean(PositionDAO.class);
-        pairLogoRelativeRectangleDAO = applicationContext.getBean(PairLogoRelativeRectangleDAO.class);
-        pairCameraPositionDAO = applicationContext.getBean(PairCameraPositionDAO.class);
-        profileDAO = applicationContext.getBean(ProfileDAO.class);
-        imageDAO = applicationContext.getBean(ImageDAO.class);
-        shootingDAO = applicationContext.getBean(ShootingDAO.class);
-        adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
-        backgroundCategoryDAO = applicationContext.getBean(BackgroundCategoryDAO.class);
-
-        /*
-        * Setup Services for all testing
-         */
-        profileService = new ProfileServiceImpl(
-                new JDBCProfileDAO(dbHandler),
-                new JDBCPositionDAO(dbHandler),
-                new JDBCLogoDAO(dbHandler),
-                new JDBCCameraDAO(dbHandler),
-                new ShootingServiceImpl(shootingDAO),
-                new CameraServiceImpl(cameraDAO),
-                new BackgroundServiceImpl(backgroundDAO,backgroundCategoryDAO)
-                );
-
-
-        //Run delete.sql, insert.sql
-        DataPrepper.deleteTestData(con);
+    protected void prepareTestData() throws DatabaseException, PersistenceException, ServiceException {
         DataPrepper.insertTestData(con);
 
-
-        /*
-        * Setup Test objects for all testing
-         */
         cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
         cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42");
         cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999");
@@ -186,10 +145,53 @@ public class TestEnvironment {
                 true,
                 "/dev/null/watermarkC.jpg",
                 false);
+
     }
 
-    @After public void tearDown() throws Exception {
 
+    @Before public void setUp() throws Exception {
+        DBHandler dbHandler = getApplicationContext().getBean(DBHandler.class);
+        con = dbHandler.getConnection();
+
+
+        /* Setup DAOs for all testing
+         */
+        logoDAO = applicationContext.getBean(LogoDAO.class);
+        cameraDAO = applicationContext.getBean(CameraDAO.class);
+        positionDAO = applicationContext.getBean(PositionDAO.class);
+        pairLogoRelativeRectangleDAO = applicationContext.getBean(PairLogoRelativeRectangleDAO.class);
+        pairCameraPositionDAO = applicationContext.getBean(PairCameraPositionDAO.class);
+        profileDAO = applicationContext.getBean(ProfileDAO.class);
+        imageDAO = applicationContext.getBean(ImageDAO.class);
+        shootingDAO = applicationContext.getBean(ShootingDAO.class);
+        adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
+        backgroundCategoryDAO = applicationContext.getBean(BackgroundCategoryDAO.class);
+
+        /*
+         * Setup Services for all testing
+         */
+        profileService = new ProfileServiceImpl(
+                new JDBCProfileDAO(dbHandler),
+                new JDBCPositionDAO(dbHandler),
+                new JDBCLogoDAO(dbHandler),
+                new JDBCCameraDAO(dbHandler),
+                new ShootingServiceImpl(shootingDAO),
+                new CameraServiceImpl(cameraDAO),
+                new BackgroundServiceImpl(backgroundDAO, backgroundCategoryDAO)
+        );
+
+
+
+        //Run delete.sql, insert.sql
+        DataPrepper.deleteTestData(con);
+
+        prepareTestData();
+
+    }
+
+
+    @After public void tearDown() throws Exception {
+        DataPrepper.deleteTestData(con);
     }
 }
 

@@ -2,6 +2,7 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCPairLogoRelativeRectangleDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Profile;
 import org.junit.After;
@@ -28,6 +29,8 @@ public class PairLogoRelativeRectangleDAOTest extends JDBCTestEnvironment {
 
     private int id;
 
+    private PairLogoRelativeRectangleDAO mockPairLogoRelativeRectangleDAO;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -37,6 +40,8 @@ public class PairLogoRelativeRectangleDAOTest extends JDBCTestEnvironment {
         pairLogoRelativeRectangleC.setProfileId(2);
         logoDAO.create(logoA);
         id = 1;
+
+        mockPairLogoRelativeRectangleDAO = new JDBCPairLogoRelativeRectangleDAO(mockDBHandler);
     }
 
     @After

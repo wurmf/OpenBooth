@@ -1,4 +1,5 @@
 package org.openbooth.dao;
+import org.openbooth.dao.impl.JDBCShootingDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Shooting;
 import org.junit.After;
@@ -17,10 +18,13 @@ import static org.mockito.Mockito.when;
 public class ShootingDAOTest extends JDBCTestEnvironment {
 
 
+    private ShootingDAO mockShootingDAO;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        mockShootingDAO = new JDBCShootingDAO(mockDBHandler);
+
     }
 
     @After

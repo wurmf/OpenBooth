@@ -2,6 +2,7 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCPairCameraPositionDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Profile;
 import org.junit.After;
@@ -27,9 +28,13 @@ public class PairCameraPositionDAOTest extends JDBCTestEnvironment {
 
     private int id;
 
+    private PairCameraPositionDAO mockPairCameraPositionDAO;
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
+
+        mockPairCameraPositionDAO = new JDBCPairCameraPositionDAO(mockDBHandler);
 
         pairCameraPositionA.setProfileId(3);
         pairCameraPositionB.setProfileId(3);
