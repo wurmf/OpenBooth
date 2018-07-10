@@ -22,6 +22,12 @@ public class JDBCPositionDAO implements PositionDAO{
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCPositionDAO.class);
     private Connection con;
 
+    public static final String TABLE_NAME = "positions";
+    public static final String ID_COLUMN = "positionID";
+    public static final String NAME_COLUMN = "name";
+    public static final String IMAGE_PATH_COLUMN = "buttonImagePath";
+    public static final String IS_DELETED_COLUMN = "isDeleted";
+
     @Autowired
     public JDBCPositionDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");

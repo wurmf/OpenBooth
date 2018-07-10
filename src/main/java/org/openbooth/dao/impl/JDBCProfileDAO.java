@@ -31,6 +31,21 @@ public class JDBCProfileDAO implements ProfileDAO {
     private PairLogoRelativeRectangleDAO pairLogoRelativeRectangleDAO;
     private BackgroundCategoryDAO backgroundCategoryDAO;
 
+    public static final String TABLE_NAME = "profiles";
+    public static final String ID_COLUMN = "profileID";
+    public static final String NAME_COLUMN = "name";
+    public static final String IS_MOBIL_COLUMN = "isMobilEnabled";
+    public static final String PRINT_ENABLED_COLUMN = "isPrintEnabled";
+    public static final String GREEN_SCREEN_ENABLED_COLUMN = "isGreenscreenEnabled";
+    public static final String FILTER_ENABLED_COLUMN = "isFilterEnabled";
+    public static final String WATERMARK_COLUMN = "watermark";
+    public static final String IS_DELETED_COLUMN = "isDeleted";
+
+
+    public static final String PROFILE_CATEGORY_RELATION_TABLE_NAME = "profile_backgroundcategories";
+    public static final String PROFILE_ID_COLUMN = "profileId";
+    public static final String CATEGORY_ID_COLUMN = "backgroundcategoryID";
+
     @Autowired
     public JDBCProfileDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");
@@ -40,8 +55,8 @@ public class JDBCProfileDAO implements ProfileDAO {
             LOGGER.error("Constructor - ",e);
             throw new PersistenceException(e);
         }
-        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(handler);
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(handler);
+        pairCameraPositionDAO = new JDBCPairCameraPositionDAO(handler);
+        pairLogoRelativeRectangleDAO = new JDBCPairLogoRelativeRectangleDAO(handler);
         backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(handler);
     }
 

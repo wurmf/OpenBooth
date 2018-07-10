@@ -2,6 +2,7 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Profile;
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 /**
  * PairLogoRelativeRectangleDAO Tester
  */
-public class PairLogoRelativeRectangleDAOTest extends TestEnvironment {
+public class PairLogoRelativeRectangleDAOTest extends JDBCTestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(PairLogoRelativeRectangleDAOTest.class);
 
     private int id;

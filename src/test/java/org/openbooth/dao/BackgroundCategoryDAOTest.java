@@ -2,6 +2,8 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCBackgroundCategoryDAO;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Background;
 import org.junit.After;
 import org.junit.Before;
@@ -19,11 +21,12 @@ import static org.mockito.Mockito.when;
 /**
  * BackgroundCategoryDAO Tester
  */
-public class BackgroundCategoryDAOTest extends TestEnvironment {
+public class BackgroundCategoryDAOTest extends JDBCTestEnvironment {
 
     private Background.Category backgroundCategoryA,backgroundCategoryB, backgroundCategoryC;
 
     private BackgroundCategoryDAO backgroundCategoryDAO = getApplicationContext().getBean(BackgroundCategoryDAO.class);
+    private BackgroundCategoryDAO mockBackgroundCategoryDAO;
 
     @Before
     public void setUp() throws Exception {
@@ -33,6 +36,7 @@ public class BackgroundCategoryDAOTest extends TestEnvironment {
         backgroundCategoryB = new Background.Category("Firmung");
         backgroundCategoryC = new Background.Category(10,"Verlobung",false);
 
+        mockBackgroundCategoryDAO = new JDBCBackgroundCategoryDAO(mockDBHandler);
     }
 
     @After

@@ -42,7 +42,7 @@ public class Shooting {
         this.storageDir = storageDir;
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return isActive;
     }
 

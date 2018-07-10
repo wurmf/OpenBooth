@@ -26,6 +26,12 @@ import java.util.List;
 public class JDBCImageDAO implements ImageDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCImageDAO.class);
 
+    public static final String TABLE_NAME = "images";
+    public static final String SHOOTING_ID_COLUMN = "shootingID";
+    public static final String ID_COLUMN = "imageID";
+    public static final String IMAGE_PATH_COLUMN = "imagepath";
+    public static final String TIME_COLUMN = "time";
+
     private Connection con;
 
     @Autowired

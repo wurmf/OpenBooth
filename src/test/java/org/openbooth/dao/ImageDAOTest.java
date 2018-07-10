@@ -1,6 +1,7 @@
 package org.openbooth.dao;
 
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Image;
 import org.openbooth.entities.Shooting;
 import org.junit.After;
@@ -16,7 +17,7 @@ import static org.mockito.Mockito.when;
 /**
  * Tests possible cases for ImageDAO
  */
-public class ImageDAOTest extends TestEnvironment {
+public class ImageDAOTest extends JDBCTestEnvironment {
     private Image img = new Image(99,"/images/validImage.jpg",2,new Date());
     private int id = 1;
 

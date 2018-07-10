@@ -23,6 +23,13 @@ public class JDBCLogoDAO implements LogoDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCLogoDAO.class);
     private Connection con;
 
+    public static final String TABLE_NAME = "logos";
+    public static final String LABEL_COLUMN = "label";
+    public static final String ID_COLUMN = "logoID";
+    public static final String PATH_COLUMN = "path";
+    public static final String IS_DELETED_COLUMN = "isDeleted";
+
+
     @Autowired
     public JDBCLogoDAO(DBHandler handler) throws PersistenceException {
         LOGGER.debug("Entering constructor");

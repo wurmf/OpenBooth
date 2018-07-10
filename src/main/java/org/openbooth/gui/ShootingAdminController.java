@@ -145,7 +145,7 @@ public class ShootingAdminController {
      */
     private void setButtons() throws ServiceException{
         Shooting activeShooting=shootingService.searchIsActive();
-        if (activeShooting!=null&&activeShooting.getActive()) {
+        if (activeShooting!=null&&activeShooting.isActive()) {
             startButton.setVisible(false);
             stopButton.setVisible(true);
             storage.setVisible(false);
@@ -225,7 +225,7 @@ public class ShootingAdminController {
     @FXML
     public void onDemolitionPressed() {
         try {
-            if (shootingService.searchIsActive().getActive()) {
+            if (shootingService.searchIsActive().isActive()) {
                 Profile profile = profileChoiceBox.getSelectionModel().getSelectedItem();
                 if(shootingService.searchIsActive().getProfileid()==profile.getId()) {
                     Shooting shooting = new Shooting(shootingService.searchIsActive().getId(), profile.getId(), "",bgPath, true);

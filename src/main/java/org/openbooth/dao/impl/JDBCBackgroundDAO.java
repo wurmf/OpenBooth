@@ -24,12 +24,12 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCBackgroundDAO.class);
 
-    private static final String TABLE_NAME = "backgrounds";
-    private static final String NAME_COLUMN = "name";
-    private static final String ID_COLUMN = "backgroundID";
-    private static final String PATH_COLUMN = "path";
-    private static final String DELETED_COLUMN = "isDeleted";
-    private static final String CATEGORY_COLUMN = "backgroundcategoryID";
+    public static final String TABLE_NAME = "backgrounds";
+    public static final String NAME_COLUMN = "name";
+    public static final String ID_COLUMN = "backgroundID";
+    public static final String PATH_COLUMN = "path";
+    public static final String DELETED_COLUMN = "isDeleted";
+    public static final String CATEGORY_COLUMN = "backgroundcategoryID";
 
     private static final String CONSISTENCY_ERROR_MESSAGE = "The consistency of the database is broken! Multiple rows have been affected.";
 

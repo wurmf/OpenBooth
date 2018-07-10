@@ -1,9 +1,8 @@
 package org.openbooth.dao;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Shooting;
 import org.junit.After;
 import org.junit.Before;
-
-import org.openbooth.TestEnvironment;
 
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
@@ -15,7 +14,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test Shooting dao
  */
-public class ShootingDAOTest extends TestEnvironment {
+public class ShootingDAOTest extends JDBCTestEnvironment {
 
 
 
@@ -45,12 +44,12 @@ public class ShootingDAOTest extends TestEnvironment {
         assertTrue(shooting3.getId() == 3);
         assertTrue(shooting3.getProfileid() == 1);
         assertTrue(shooting3.getStorageDir().equals("home/foto/shooting3"));
-        assertTrue(!shooting3.getActive());
+        assertTrue(!shooting3.isActive());
         Shooting s1 = shootingDAO.create(shooting3);
         assertTrue(shooting3.getId() == 3);
         assertTrue(shooting3.getProfileid() == 1);
         assertTrue(shooting3.getStorageDir().equals("home/foto/shooting3"));
-        assertTrue(!shooting3.getActive());
+        assertTrue(!shooting3.isActive());
         Shooting s2 = shootingDAO.create(shooting3);
 
     }
@@ -60,7 +59,7 @@ public class ShootingDAOTest extends TestEnvironment {
 
         Shooting createdShooting = shootingDAO.create(shooting1);
         assertTrue(createdShooting.getId() >= 0);
-        assertTrue(createdShooting.getActive());
+        assertTrue(createdShooting.isActive());
         assertTrue(createdShooting.getStorageDir().equals("home/foto/shooting1"));
         assertTrue(createdShooting.getProfileid() == 1);
     }
@@ -75,7 +74,7 @@ public class ShootingDAOTest extends TestEnvironment {
         assertTrue(shooting.getId() >=0);
         assertTrue(shooting.getStorageDir().equals("home/foto/shooting2"));
         assertTrue(shooting.getProfileid() == 2);
-        assertTrue(!shooting.getActive());
+        assertTrue(!shooting.isActive());
 
     }
 
@@ -83,14 +82,14 @@ public class ShootingDAOTest extends TestEnvironment {
     /*@Test
     public void findactiveShooting() throws Throwable {
 
-        if(shootingDAO.searchIsActive().getActive()){
+        if(shootingDAO.searchIsActive().isActive()){
             shootingDAO.endShooting();
         }
         shootingDAO.create(shooting1);
         Shooting shooting = shootingDAO.searchIsActive();
         //Check if read function returns the saved image.
         assertTrue(shooting.getId() > 0);
-        assertTrue(shooting.getActive());
+        assertTrue(shooting.isActive());
         assertTrue(shooting.getProfileid() == 1);
         assertTrue(shooting.getStorageDir().equals("home/foto/shooting1"));
     }*/
@@ -98,10 +97,10 @@ public class ShootingDAOTest extends TestEnvironment {
     @Test
     public void endShootingwithValideArguments() throws Throwable {
         shootingDAO.create(shooting1);
-        assertTrue(shootingDAO.searchIsActive().getActive());
+        assertTrue(shootingDAO.searchIsActive().isActive());
 
         shootingDAO.endShooting();
-        assertTrue(!shootingDAO.searchIsActive().getActive());
+        assertTrue(!shootingDAO.searchIsActive().isActive());
     }
 
     @Test(expected = AssertionError.class)
@@ -109,19 +108,19 @@ public class ShootingDAOTest extends TestEnvironment {
 
         shootingDAO.endShooting();
         shootingDAO.create(shooting4);
-        assertTrue(shootingDAO.searchIsActive().getActive());
+        assertTrue(shootingDAO.searchIsActive().isActive());
 
         shootingDAO.endShooting();
-        assertTrue(!shootingDAO.searchIsActive().getActive());
+        assertTrue(!shootingDAO.searchIsActive().isActive());
     }
 /*
     public void newProfileValideArguments()  throws Throwable {
 
-        if (!shootingDAO.searchIsActive().getActive()){
+        if (!shootingDAO.searchIsActive().isActive()){
             shootingDAO.create(shooting1);
         }
         Shooting s = shootingDAO.searchIsActive();
-        assertTrue(s.getActive());
+        assertTrue(s.isActive());
         assertTrue(shootingDAO.searchIsActive().getProfileid()==s.getProfileid());
         s.setBgPictureFolder(null);
         s.setProfileid(3);

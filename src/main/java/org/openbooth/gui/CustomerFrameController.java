@@ -101,7 +101,7 @@ public class CustomerFrameController {
             windowmanager.showAdminLogin(WindowManager.SHOW_SHOOTINGSCENE, WindowManager.SHOW_CUSTOMERSCENE);
             rightbutton.setVisible(true);
             if (!allpicturesview.isVisible()) {
-                if (shootingservice.searchIsActive().getActive()) {
+                if (shootingservice.searchIsActive().isActive()) {
                     profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
                 }
                 List<Profile.PairCameraPosition> pairList = profileservice.getAllPairCameraPositionOfProfile();
@@ -149,7 +149,7 @@ public class CustomerFrameController {
      */
     public void switchToFilter() {
         try {
-            if(shootingservice.searchIsActive().getActive()){
+            if(shootingservice.searchIsActive().isActive()){
                 if(profile!=null) {
                     if ( profile.getId() != shootingservice.searchIsActive().getProfileid()) {
                         profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
@@ -218,7 +218,7 @@ public class CustomerFrameController {
     private void createButtons(){
        try {
 
-            if (shootingservice.searchIsActive().getActive()) {
+            if (shootingservice.searchIsActive().isActive()) {
                 profile = profileservice.get(shootingservice.searchIsActive().getProfileid());
             }
             List<Profile.PairCameraPosition> pairList = profile.getPairCameraPositions();

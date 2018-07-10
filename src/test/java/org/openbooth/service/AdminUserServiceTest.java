@@ -1,17 +1,11 @@
 package org.openbooth.service;
 
 import org.openbooth.TestEnvironment;
-import org.openbooth.util.exceptions.DatabaseException;
-import org.openbooth.dao.exceptions.PersistenceException;
-import org.openbooth.dao.impl.JDBCAdminUserDAO;
 import org.openbooth.service.exceptions.ServiceException;
-import org.openbooth.service.impl.AdminUserServiceImpl;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertTrue;

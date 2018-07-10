@@ -10,12 +10,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.openbooth.dao.*;
 import org.openbooth.service.impl.CameraServiceImpl;
 import org.openbooth.util.dbhandler.DBHandler;
-import org.openbooth.util.dbhandler.impl.H2EmbeddedHandler;
 import org.openbooth.util.dbhandler.prep.DataPrepper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -25,9 +23,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 /**
  * Test Environment
@@ -55,11 +50,7 @@ public class TestEnvironment {
     protected ProfileService profileService;
     protected AdminUserDAO adminUserDAO;
 
-    @Mock protected H2EmbeddedHandler mockH2Handler;
-    @Mock protected Connection mockConnection;
-    @Mock protected Statement mockStatement;
-    @Mock protected PreparedStatement mockPreparedStatement;
-    @Mock protected ResultSet mockResultSet;
+
 
     protected Camera camera1,camera2,camera3,cameraA,cameraB,cameraC,camera1000000;
     protected Position position1,position2,positionA,positionB,positionC,position1000000;
@@ -78,48 +69,26 @@ public class TestEnvironment {
         return applicationContext;
     }
 
+
+
     @Before public void setUp() throws Exception
     {
         DBHandler dbHandler = getApplicationContext().getBean(DBHandler.class);
         Connection con = dbHandler.getConnection();
-        /* Setup test mocks
-        *  Please don't mess with these ones,
-        *  if you don't understand completely what implications it has
-        */
-        when(mockH2Handler.getConnection()).thenReturn(mockConnection);
-        when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
-        when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
-        when(mockStatement.executeUpdate(anyString())).thenReturn(1);
-        when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
-        when(mockConnection.prepareStatement(anyString(),anyInt())).thenReturn(mockPreparedStatement);
-        when(mockConnection.createStatement()).thenReturn(mockStatement);
-        when(mockPreparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);
-        when(mockResultSet.next()).thenReturn(Boolean.TRUE,Boolean.FALSE);
-
-        mockLogoDAO = new JDBCLogoDAO(mockH2Handler);
-        mockCameraDAO = new JDBCCameraDAO(mockH2Handler);
-        mockPositionDAO = new JDBCPositionDAO(mockH2Handler);
-        mockPairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(mockH2Handler);
-        mockPairCameraPositionDAO = new JDCBPairCameraPositionDAO(mockH2Handler);
-        mockProfileDAO = new JDBCProfileDAO(mockH2Handler);
-        mockImageDAO = new JDBCImageDAO(mockH2Handler);
-        mockShootingDAO = new JDBCShootingDAO(mockH2Handler);
-        mockbackgroundCategoryDAO = new JDBCBackgroundCategoryDAO(mockH2Handler);
-        mockBackgroundDAO = new JDBCBackgroundDAO(mockH2Handler, mockbackgroundCategoryDAO);
 
 
         /* Setup DAOs for all testing
          */
-        logoDAO = new JDBCLogoDAO(dbHandler);
-        cameraDAO = new JDBCCameraDAO(dbHandler);
-        positionDAO = new JDBCPositionDAO(dbHandler);
-        pairLogoRelativeRectangleDAO = new JDCBPairLogoRelativeRectangleDAO(dbHandler);
-        pairCameraPositionDAO = new JDCBPairCameraPositionDAO(dbHandler);
-        profileDAO = new JDBCProfileDAO(dbHandler);
-        imageDAO = new JDBCImageDAO(dbHandler);
-        shootingDAO = new JDBCShootingDAO(dbHandler);
-        adminUserDAO = new JDBCAdminUserDAO(dbHandler);
-        backgroundCategoryDAO = new JDBCBackgroundCategoryDAO(dbHandler);
+        logoDAO = applicationContext.getBean(LogoDAO.class);
+        cameraDAO = applicationContext.getBean(CameraDAO.class);
+        positionDAO = applicationContext.getBean(PositionDAO.class);
+        pairLogoRelativeRectangleDAO = applicationContext.getBean(PairLogoRelativeRectangleDAO.class);
+        pairCameraPositionDAO = applicationContext.getBean(PairCameraPositionDAO.class);
+        profileDAO = applicationContext.getBean(ProfileDAO.class);
+        imageDAO = applicationContext.getBean(ImageDAO.class);
+        shootingDAO = applicationContext.getBean(ShootingDAO.class);
+        adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
+        backgroundCategoryDAO = applicationContext.getBean(BackgroundCategoryDAO.class);
 
         /*
         * Setup Services for all testing

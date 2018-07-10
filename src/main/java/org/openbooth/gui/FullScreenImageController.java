@@ -413,7 +413,7 @@ public class FullScreenImageController {
         FileInputStream fips=null;
         try {
 
-            if (shootingService.searchIsActive().getActive()) {
+            if (shootingService.searchIsActive().isActive()) {
                 activ = shootingService.searchIsActive().getId();
                 this.imageList = imageService.getAllImages(activ);
             }

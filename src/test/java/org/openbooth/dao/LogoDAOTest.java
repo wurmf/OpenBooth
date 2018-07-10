@@ -2,6 +2,8 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCLogoDAO;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Logo;
 import org.junit.After;
 import org.junit.Before;
@@ -24,11 +26,16 @@ import static org.mockito.Mockito.when;
 /**
  * LogoDAO Tester
  */
-public class LogoDAOTest extends TestEnvironment {
-    private static final Logger LOGGER = LoggerFactory.getLogger(LogoDAOTest.class);
+public class LogoDAOTest extends JDBCTestEnvironment {
+    private LogoDAO logoDAO;
+    private LogoDAO mockLogoDAO;
 
     @Before public void setUp() throws Exception {
         super.setUp();
+        logoDAO = getApplicationContext().getBean(LogoDAO.class);
+
+
+        mockLogoDAO = new JDBCLogoDAO(mockDBHandler);
     }
 
     @After public void tearDown() throws Exception {

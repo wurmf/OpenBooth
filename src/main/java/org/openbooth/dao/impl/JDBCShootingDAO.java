@@ -29,6 +29,12 @@ public class JDBCShootingDAO implements ShootingDAO {
     private List<Background> currentBackgrounds;
     private static final Logger LOGGER = LoggerFactory.getLogger(ShootingDAO.class);
 
+    public static final String TABLE_NAME = "shootings";
+    public static final String PROFILE_ID_COLUMN = "profileID";
+    public static final String ID_COLUMN = "shootingID";
+    public static final String FOLDER_PATH_COLUMN = "folderpath";
+    public static final String BACKGROUND_FOLDER_PATH_COLUMN = "bgpicturefolder";
+    public static final String IS_ACTIVE_COLUMN = "isActive";
 
     @Autowired
     public JDBCShootingDAO(DBHandler dbHandler) throws PersistenceException {
@@ -58,7 +64,7 @@ public class JDBCShootingDAO implements ShootingDAO {
             stmt.setInt(1,shooting.getProfileid());
             stmt.setString(2,shooting.getStorageDir());
             stmt.setString(3,shooting.getBgPictureFolder());
-            stmt.setBoolean(4,shooting.getActive());
+            stmt.setBoolean(4,shooting.isActive());
             stmt.executeUpdate();
             ResultSet rs = stmt.getGeneratedKeys();
             if (rs.next()){

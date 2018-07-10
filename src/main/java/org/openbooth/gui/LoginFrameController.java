@@ -67,7 +67,7 @@ public class LoginFrameController {
             if(correctLogin){
                 if(firstLogin){
                     Shooting activeShooting = shootingService.searchIsActive();
-                    if(activeShooting.getActive()){
+                    if(activeShooting.isActive()){
                         windowManager.showScene(WindowManager.SHOW_RECOVERYSCENE);
                     } else{
                         windowManager.initMiniController();

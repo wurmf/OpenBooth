@@ -4,32 +4,29 @@ import org.junit.Test;
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
 import org.openbooth.entities.Background;
+import org.openbooth.util.TestDataProvider;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.when;
 
 public class BackgroundDAOTest extends TestEnvironment {
 
     private BackgroundDAO backgroundDAO = getApplicationContext().getBean(BackgroundDAO.class);
+    private TestDataProvider dataProvider = getApplicationContext().getBean(TestDataProvider.class);
 
     private Background testBackground;
-    private Background background1;
-    private Background background2;
-    private Background background3;
+    List<Background> backgrounds;
 
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() throws Exception{
         super.setUp();
-        testBackground = new Background("Testbackground", "/no/valid/path", backgroundCategory1);
-        background1 = new Background("test1", "testpath", backgroundCategory1);
-        background2 = new Background("test2", "testpath", backgroundCategory2);
-        background3 = new Background("test3", "testpath", backgroundCategory3);
+
+        backgrounds = dataProvider.getStoredBackgrounds();
+        testBackground = backgrounds.get(0);
+
     }
 
     @Test
@@ -44,11 +41,7 @@ public class BackgroundDAOTest extends TestEnvironment {
         backgroundDAO.create(null);
     }
 
-    @Test(expected = PersistenceException.class)
-    public void testCreateWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.create(testBackground);
-    }
+
 
     @Test(expected = PersistenceException.class)
     public void testCreateWithNotExistingCategory() throws PersistenceException{
@@ -74,11 +67,7 @@ public class BackgroundDAOTest extends TestEnvironment {
         backgroundDAO.update(null);
     }
 
-    @Test(expected = PersistenceException.class)
-    public void testUpdateWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.update(testBackground);
-    }
+
 
     @Test(expected = PersistenceException.class)
     public void testUpdateWithNotExistingBackground() throws PersistenceException{
@@ -95,58 +84,43 @@ public class BackgroundDAOTest extends TestEnvironment {
 
     @Test
     public void testValidCreateAndReadAll() throws PersistenceException{
-        background1.setId(backgroundDAO.create(background1).getId());
-        background2.setId(backgroundDAO.create(background2).getId());
-        background3.setId(backgroundDAO.create(background3).getId());
 
+        for(Background background : backgrounds){
+            background.setId(backgroundDAO.create(background).getId());
+        }
 
         List<Background> backgroundList = backgroundDAO.readAll();
-
-        assertTrue(backgroundList.contains(background1));
-        assertTrue(backgroundList.contains(background2));
-        assertTrue(backgroundList.contains(background3));
+        assertTrue(backgroundList.containsAll(backgrounds));
     }
 
-
-    @Test(expected = PersistenceException.class)
-    public void testReadAllWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.readAll();
-    }
 
     @Test(expected = PersistenceException.class)
     public void testReadWithNonExistingBackground() throws PersistenceException{
         backgroundDAO.read(-1);
     }
 
-    @Test(expected = PersistenceException.class)
-    public void testReadWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.read(-1);
-    }
-
     @Test
     public void testValidReadAllWithCategory() throws PersistenceException{
-        testBackground.setId(backgroundDAO.create(testBackground).getId());
-        background1.setId(backgroundDAO.create(background1).getId());
-        background2.setId(backgroundDAO.create(background2).getId());
-        background3.setId(backgroundDAO.create(background3).getId());
+
+        for(Background background : backgrounds){
+            background.setId(backgroundDAO.create(background).getId());
+        }
+
+        Background.Category category = backgrounds.get(0).getCategory();
+
+        //TODO: backgrounds with existing categories?
+
+
+        //backgrounds = backgrounds.stream().filter(ba)
 
         List<Background> backgroundList = backgroundDAO.readAllWithCategory(backgroundCategory1);
 
-        assertTrue(backgroundList.contains(background1));
-        assertTrue(backgroundList.contains(testBackground));
+        //assertTrue(backgroundList.containsAll());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testReadAllWithCategoryWithNull() throws PersistenceException{
         backgroundDAO.readAllWithCategory(null);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testReadAllWithCategoryWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.readAllWithCategory(backgroundCategory1);
     }
 
     @Test
@@ -171,11 +145,6 @@ public class BackgroundDAOTest extends TestEnvironment {
         backgroundDAO.delete(null);
     }
 
-    @Test(expected = PersistenceException.class)
-    public void testDeleteWithSQLException() throws SQLException, PersistenceException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundDAO.delete(testBackground);
-    }
 
     @Test(expected = PersistenceException.class)
     public void testDeleteWithNotExistingBackground() throws PersistenceException{

@@ -22,13 +22,13 @@ public class JDBCCameraDAO implements CameraDAO{
     private Connection con;
     static final Logger LOGGER = LoggerFactory.getLogger(JDBCCameraDAO.class);
 
-    private static final String TABLE_NAME = "cameras";
-    private static final String ID_COLUMN = "cameraID";
-    private static final String LABEL_COLUMN = "label";
-    private static final String MODEL_COLUMN = "modelName";
-    private static final String PORT_NUMBER_COLUMN = "portNumber";
-    private static final String SERIAL_NUMBER_COLUMN = "serialNumber";
-    private static final String IS_ACTIVE_COLUMN = "isActive";
+    public static final String TABLE_NAME = "cameras";
+    public static final String ID_COLUMN = "cameraID";
+    public static final String LABEL_COLUMN = "label";
+    public static final String MODEL_COLUMN = "modelName";
+    public static final String PORT_NUMBER_COLUMN = "portNumber";
+    public static final String SERIAL_NUMBER_COLUMN = "serialNumber";
+    public static final String IS_ACTIVE_COLUMN = "isActive";
 
     @Autowired
     public JDBCCameraDAO(DBHandler dbHandler) throws PersistenceException {

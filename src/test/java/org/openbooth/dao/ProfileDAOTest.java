@@ -5,6 +5,7 @@ import org.openbooth.TestEnvironment;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Profile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 /**
  * ProfileDAO Tester
  */
-public class ProfileDAOTest extends TestEnvironment {
+public class ProfileDAOTest extends JDBCTestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileDAOTest.class);
 
     @Before

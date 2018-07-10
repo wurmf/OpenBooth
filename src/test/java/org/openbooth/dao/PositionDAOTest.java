@@ -2,6 +2,7 @@ package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
 import org.openbooth.TestEnvironment;
+import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Position;
 import org.junit.After;
 import org.junit.Before;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.when;
 /**
  * PositionDAO Tester
  */
-public class PositionDAOTest extends TestEnvironment {
+public class PositionDAOTest extends JDBCTestEnvironment {
     private static final Logger LOGGER = LoggerFactory.getLogger(PositionDAOTest.class);
 
     @Before

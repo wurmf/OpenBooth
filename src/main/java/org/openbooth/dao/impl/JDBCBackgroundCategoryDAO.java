@@ -24,10 +24,10 @@ public class JDBCBackgroundCategoryDAO implements BackgroundCategoryDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCBackgroundCategoryDAO.class);
     private Connection con;
 
-    private static final String TABLE_NAME = "backgroundcategories";
-    private static final String ID_COLUMN = "backgroundcategoryID";
-    private static final String NAME_COLUMN = "name";
-    private static final String DELETED_COLUMN = "isDeleted";
+    public static final String TABLE_NAME = "backgroundcategories";
+    public static final String ID_COLUMN = "backgroundcategoryID";
+    public static final String NAME_COLUMN = "name";
+    public static final String DELETED_COLUMN = "isDeleted";
 
     @Autowired
     public JDBCBackgroundCategoryDAO(DBHandler handler) throws PersistenceException {
