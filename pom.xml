@@ -16,29 +16,29 @@
         <maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
         <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
         <maven-shade-plugin.version>2.4.3</maven-shade-plugin.version>
-        <!-- compile -->
+
+        <!-- dependency versions -->
+
+        <!-- runtime dependency injection -->
         <spring.version>4.3.4.RELEASE</spring.version>
+
+        <!-- logging -->
         <slf4j.version>1.7.21</slf4j.version>
-        <!-- runtime -->
+        <logback.version>1.1.7</logback.version>
+
+        <!-- image processing and camera handling -->
+        <jna.version>4.2.2</jna.version>
+        <opencv.version>3.2.0-1</opencv.version>
+
+        <!-- database -->
         <h2.version>1.4.193</h2.version>
-        <log4j.version>2.7</log4j.version>
-        <!-- test -->
+
+        <!-- testing -->
         <junit.version>4.12</junit.version>
         <mockito-all.version>2.0.2-beta</mockito-all.version>
-        <logback.version>1.1.7</logback.version>
     </properties>
-    <repositories>
-        <repository>
-            <id>javaopencvbook</id>
-            <url>https://raw.github.com/JavaOpenCVBook/code/maven2/</url>
-        </repository>
-        <repository>
-            <id>ffmpeg</id>
-            <url>https://mvnrepository.com/artifact/net.bramp.ffmpeg/ffmpeg</url>
-        </repository>
-    </repositories>
     <dependencies>
-        <!-- compile -->
+        <!-- runtime dependency injection -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -49,51 +49,51 @@
                     <groupId>commons-logging</groupId>
                 </exclusion>
             </exclusions>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openpnp</groupId>
-            <artifactId>opencv</artifactId>
-            <version>3.2.0-1</version>
-        </dependency>
-        <!-- runtime and testing -->
+
+        <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>net.java.dev.jna</groupId>
-            <artifactId>jna</artifactId>
-            <version>4.2.2</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
             <version>${slf4j.version}</version>
+            <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>org.javaopencvbook</groupId>
-            <artifactId>opencvjar</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>${h2.version}</version>
-        </dependency>
-        <!-- runtime -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>${logback.version}</version>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- image processing and camera handling -->
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-            <scope>runtime</scope>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>${opencv.version}</version>
+            <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- database -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
@@ -108,6 +108,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
