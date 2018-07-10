@@ -18,8 +18,8 @@ public class BackgroundDAOTest extends TestEnvironment {
     private TestDataProvider testDataProvider;
 
 
-    List<Background> storedBackgrounds;
-    Background testBackground;
+    private List<Background> storedBackgrounds;
+    private Background testBackground;
 
     @Override
     protected void prepareTestData() {
