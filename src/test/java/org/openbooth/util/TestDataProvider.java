@@ -1,6 +1,6 @@
 package org.openbooth.util;
 
-import org.openbooth.TestSetUpException;
+import org.openbooth.util.exceptions.TestSetUpException;
 import org.openbooth.dao.impl.*;
 import org.openbooth.entities.*;
 import org.openbooth.util.dbhandler.DBHandler;

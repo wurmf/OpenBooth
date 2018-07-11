@@ -1,4 +1,4 @@
-package org.openbooth;
+package org.openbooth.util.exceptions;
 
 public class TestSetUpException extends Exception{
     public TestSetUpException(String message){
