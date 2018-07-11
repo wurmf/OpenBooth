@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.openbooth.dao.*;
 import org.openbooth.service.impl.CameraServiceImpl;
+import org.openbooth.util.TestDataProvider;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.dbhandler.prep.DataPrepper;
 import org.openbooth.util.exceptions.DatabaseException;
@@ -70,6 +71,10 @@ public class TestEnvironment {
             applicationContext.refresh();
         }
         return applicationContext;
+    }
+
+    protected TestDataProvider getNewTestDataProvider(){
+        return applicationContext.getBean(TestDataProvider.class);
     }
 
     protected void prepareTestData() throws DatabaseException, PersistenceException, ServiceException {

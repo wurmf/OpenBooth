@@ -268,6 +268,11 @@ public class TestDataProvider {
         backgroundCategories.add(new Background.Category(4, "Hochzeiten", false));
     }
 
+    public Background.Category getNewCategory(){
+        return new Background.Category(-1, "NewTestCategory", false);
+    }
+
+
     private void insertBackgroundCategories(Connection connection) throws SQLException{
         String insertStatement =
                 QueryBuilder.buildInsert(JDBCBackgroundCategoryDAO.TABLE_NAME,
@@ -291,6 +296,10 @@ public class TestDataProvider {
         backgrounds.add(new Background(1, "TestBackground1", "/no/valid/path", backgroundCategories.get(0), false));
         backgrounds.add(new Background(2, "TestBackground2", "/no/valid/path", backgroundCategories.get(0), false));
         backgrounds.add(new Background(3, "TestBackground3", "/no/valid/path", backgroundCategories.get(1), false));
+    }
+
+    public Background getNewBackground(){
+        return new Background(4, "NewTestBackground", "no/valid/path", backgroundCategories.get(0), false);
     }
 
     private void insertBackgrounds(Connection connection) throws SQLException{
@@ -458,12 +467,7 @@ public class TestDataProvider {
     public List<Shooting> getStoredShootings(){return shootings;}
     public List<Image> getStoredImages(){return images;}
 
-    public Background getNewBackground(){
-        return new Background(-1, "NewTestBackground", "no/valid/path", backgroundCategories.get(0), false);
-    }
 
-    public Background.Category getNewCategory(){
-        return new Background.Category(-1, "NewTestCategory", false);
-    }
+
 
 }

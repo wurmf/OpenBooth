@@ -5,8 +5,6 @@
     import org.openbooth.TestEnvironment;
     import org.openbooth.entities.AdminUser;
     import org.junit.Test;
-    import org.openbooth.util.TestDataProvider;
-    import org.springframework.context.ApplicationContext;
 
     import static org.junit.Assert.assertEquals;
     import static org.junit.Assert.assertNotNull;
@@ -18,13 +16,11 @@
     public class AdminUserDAOTest extends TestEnvironment {
 
         private AdminUser storedAdminUser;
-        private AdminUserDAO adminUserDAO;
+        private AdminUserDAO adminUserDAO = getApplicationContext().getBean(AdminUserDAO.class);
 
         @Override
         protected void prepareTestData() {
-            ApplicationContext applicationContext = getApplicationContext();
-            storedAdminUser = applicationContext.getBean(TestDataProvider.class).getStoredAdminUsers().get(0);
-            adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
+            storedAdminUser = getNewTestDataProvider().getStoredAdminUsers().get(0);
         }
 
         /**
