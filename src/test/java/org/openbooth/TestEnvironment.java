@@ -28,12 +28,11 @@ import java.util.List;
  * Test Environment
  * provides setup (Database connections and mocks) for all DAO tests
  */
-
 @ComponentScan("org.openbooth")
 public class TestEnvironment {
 
 
-    private static ApplicationContext applicationContext = null;
+    private static AnnotationConfigApplicationContext applicationContext = null;
 
     protected LogoDAO logoDAO;
     protected CameraDAO cameraDAO;
@@ -64,7 +63,12 @@ public class TestEnvironment {
     protected Background.Category backgroundCategory1,backgroundCategory2,backgroundCategory3,backgroundCategory4;
 
     protected ApplicationContext getApplicationContext(){
-        if(applicationContext == null) applicationContext = new AnnotationConfigApplicationContext(TestEnvironment.class);
+        if(applicationContext == null) {
+            applicationContext = new AnnotationConfigApplicationContext();
+            applicationContext.getEnvironment().setActiveProfiles("simulated_camera");
+            applicationContext.register(TestEnvironment.class);
+            applicationContext.refresh();
+        }
         return applicationContext;
     }
 
