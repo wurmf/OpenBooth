@@ -37,7 +37,6 @@ public class TestH2EmbeddedHandler extends H2EmbeddedHandler {
     @Override
     protected void onFirstStartup(Connection connection) throws DatabaseException{
         DataPrepper.createTables(connection);
-        DataPrepper.initDatabase(connection);
     }
 
 

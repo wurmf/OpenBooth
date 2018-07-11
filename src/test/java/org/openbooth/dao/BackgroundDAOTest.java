@@ -23,7 +23,7 @@ public class BackgroundDAOTest extends TestEnvironment {
 
     @Override
     protected void prepareTestData() {
-        testDataProvider = getApplicationContext().getBean(TestDataProvider.class);
+        testDataProvider = getNewTestDataProvider();
         storedBackgrounds = testDataProvider.getStoredBackgrounds();
         testBackground = testDataProvider.getNewBackground();
     }

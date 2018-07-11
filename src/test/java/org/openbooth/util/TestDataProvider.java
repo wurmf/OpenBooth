@@ -1,5 +1,6 @@
 package org.openbooth.util;
 
+import org.openbooth.util.exceptions.TestSetUpException;
 import org.openbooth.dao.impl.*;
 import org.openbooth.entities.*;
 import org.openbooth.util.dbhandler.DBHandler;
@@ -7,6 +8,9 @@ import org.openbooth.util.exceptions.DatabaseException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -19,6 +23,7 @@ import java.util.List;
 @Scope("prototype")
 public class TestDataProvider {
 
+    private List<AdminUser> adminUsers;
     private List<Background> backgrounds;
     private List<Background.Category> backgroundCategories;
     private List<Camera> cameras;
@@ -30,12 +35,17 @@ public class TestDataProvider {
     private List<Shooting> shootings;
     private List<Image> images;
 
-    public TestDataProvider(DBHandler dbHandler) throws DatabaseException{
+    public TestDataProvider(DBHandler dbHandler) throws TestSetUpException{
         generateData();
-        insertData(dbHandler.getConnection());
+        try {
+            insertData(dbHandler.getConnection());
+        } catch (DatabaseException e) {
+            throw new TestSetUpException(e);
+        }
     }
 
-    private void generateData(){
+    private void generateData() throws TestSetUpException{
+        generateAdminUsersAndPasswords();
         generateCameras();
         generatePositions();
         generatePairCameraPositions();
@@ -48,9 +58,10 @@ public class TestDataProvider {
         generateImages();
     }
 
-    private void insertData(Connection connection) throws DatabaseException{
-        //This order must be kept to ensure referential consistency
+    private void insertData(Connection connection) throws TestSetUpException {
+        //This order must be kept to ensure referential integrity
         try {
+            insertAdminUsersAndPasswords(connection);
             insertCameras(connection);
             insertPositions(connection);
             insertLogos(connection);
@@ -64,10 +75,39 @@ public class TestDataProvider {
             insertImages(connection);
             connection.commit();
         } catch (SQLException e) {
-            throw new DatabaseException("Test data could not be inserted into database", e);
+            throw new TestSetUpException("Test data could not be inserted into database", e);
         }
     }
 
+
+    private void generateAdminUsersAndPasswords() throws TestSetUpException{
+        adminUsers = new ArrayList<>();
+        try {
+            String password = "martin";
+            MessageDigest md=MessageDigest.getInstance("SHA-256");
+            md.update(password.getBytes("UTF-8"));
+            byte[] passwordBytes = md.digest();
+            adminUsers.add(new AdminUser("martin", passwordBytes));
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            throw new TestSetUpException("test admin user could not be inserted", e);
+        }
+    }
+
+    private void insertAdminUsersAndPasswords(Connection connection) throws SQLException{
+        String insertStatement =
+                QueryBuilder.buildInsert(JDBCAdminUserDAO.TABLE_NAME,
+                        new String[]{
+                                JDBCAdminUserDAO.NAME_COLUMN,
+                                JDBCAdminUserDAO.PW_HASH_COLUMN
+                        });
+        try(PreparedStatement stmt = connection.prepareStatement(insertStatement)){
+            for(AdminUser adminUser : adminUsers){
+                stmt.setString(1, adminUser.getAdminName());
+                stmt.setBytes(2, adminUser.getPassword());
+                stmt.execute();
+            }
+        }
+    }
 
 
     private void generateCameras(){
@@ -228,6 +268,11 @@ public class TestDataProvider {
         backgroundCategories.add(new Background.Category(4, "Hochzeiten", false));
     }
 
+    public Background.Category getNewCategory(){
+        return new Background.Category(-1, "NewTestCategory", false);
+    }
+
+
     private void insertBackgroundCategories(Connection connection) throws SQLException{
         String insertStatement =
                 QueryBuilder.buildInsert(JDBCBackgroundCategoryDAO.TABLE_NAME,
@@ -251,6 +296,10 @@ public class TestDataProvider {
         backgrounds.add(new Background(1, "TestBackground1", "/no/valid/path", backgroundCategories.get(0), false));
         backgrounds.add(new Background(2, "TestBackground2", "/no/valid/path", backgroundCategories.get(0), false));
         backgrounds.add(new Background(3, "TestBackground3", "/no/valid/path", backgroundCategories.get(1), false));
+    }
+
+    public Background getNewBackground(){
+        return new Background(4, "NewTestBackground", "no/valid/path", backgroundCategories.get(0), false);
     }
 
     private void insertBackgrounds(Connection connection) throws SQLException{
@@ -404,6 +453,7 @@ public class TestDataProvider {
 
 
 
+    public List<AdminUser> getStoredAdminUsers(){return adminUsers;}
     public List<Background> getStoredBackgrounds(){
         return backgrounds;
     }
@@ -417,12 +467,7 @@ public class TestDataProvider {
     public List<Shooting> getStoredShootings(){return shootings;}
     public List<Image> getStoredImages(){return images;}
 
-    public Background getNewBackground(){
-        return new Background(-1, "NewTestBackground", "no/valid/path", backgroundCategories.get(0), false);
-    }
 
-    public Background.Category getNewCategory(){
-        return new Background.Category(-1, "NewTestCategory", false);
-    }
+
 
 }

@@ -1,5 +1,8 @@
 package org.openbooth.entities;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 /**
  * Representation of an admin-user with username and password.
  */
@@ -26,5 +29,22 @@ public class AdminUser {
 
     public void setPassword(byte[] password) {
         this.password = password;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AdminUser adminUser = (AdminUser) o;
+        return Objects.equals(adminName, adminUser.adminName) &&
+                Arrays.equals(password, adminUser.password);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash(adminName);
+        result = 31 * result + Arrays.hashCode(password);
+        return result;
     }
 }

@@ -24,12 +24,13 @@ public class JDBCTestEnvironment extends TestEnvironment {
     @Mock protected PreparedStatement mockPreparedStatement;
     @Mock protected ResultSet mockResultSet;
 
-    protected void setUpDBMocks() throws DatabaseException, SQLException {
+    private void setUpDBMocks() throws DatabaseException, SQLException {
         when(mockDBHandler.getConnection()).thenReturn(mockConnection);
         when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
         when(mockStatement.executeQuery(anyString())).thenReturn(mockResultSet);
         when(mockStatement.executeUpdate(anyString())).thenReturn(1);
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+        //noinspection MagicConstant
         when(mockConnection.prepareStatement(anyString(),anyInt())).thenReturn(mockPreparedStatement);
         when(mockConnection.createStatement()).thenReturn(mockStatement);
         when(mockPreparedStatement.getGeneratedKeys()).thenReturn(mockResultSet);

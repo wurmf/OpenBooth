@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.openbooth.dao.*;
 import org.openbooth.service.impl.CameraServiceImpl;
+import org.openbooth.util.TestDataProvider;
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.util.dbhandler.prep.DataPrepper;
 import org.openbooth.util.exceptions.DatabaseException;
@@ -34,6 +35,8 @@ public class TestEnvironment {
 
     private static AnnotationConfigApplicationContext applicationContext = null;
 
+    private Connection con;
+
     protected LogoDAO logoDAO;
     protected CameraDAO cameraDAO;
     protected PositionDAO positionDAO;
@@ -42,12 +45,10 @@ public class TestEnvironment {
     protected ProfileDAO profileDAO;
     protected ImageDAO imageDAO;
     protected ShootingDAO shootingDAO;
-    protected BackgroundCategoryDAO backgroundCategoryDAO;
-    protected BackgroundDAO backgroundDAO;
+    private BackgroundCategoryDAO backgroundCategoryDAO;
     protected ProfileService profileService;
-    protected AdminUserDAO adminUserDAO;
 
-    protected Connection con;
+
 
 
     protected Camera camera1,camera2,camera3,cameraA,cameraB,cameraC,camera1000000;
@@ -70,6 +71,10 @@ public class TestEnvironment {
             applicationContext.refresh();
         }
         return applicationContext;
+    }
+
+    protected TestDataProvider getNewTestDataProvider(){
+        return applicationContext.getBean(TestDataProvider.class);
     }
 
     protected void prepareTestData() throws DatabaseException, PersistenceException, ServiceException {
@@ -168,8 +173,8 @@ public class TestEnvironment {
         profileDAO = applicationContext.getBean(ProfileDAO.class);
         imageDAO = applicationContext.getBean(ImageDAO.class);
         shootingDAO = applicationContext.getBean(ShootingDAO.class);
-        adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
         backgroundCategoryDAO = applicationContext.getBean(BackgroundCategoryDAO.class);
+        BackgroundDAO backgroundDAO = applicationContext.getBean(BackgroundDAO.class);
 
         /*
          * Setup Services for all testing

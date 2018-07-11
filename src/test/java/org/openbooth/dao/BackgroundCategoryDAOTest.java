@@ -1,19 +1,18 @@
 package org.openbooth.dao;
 
 import org.openbooth.dao.exceptions.PersistenceException;
-import org.openbooth.dao.impl.JDBCBackgroundCategoryDAO;
 import org.openbooth.dao.impl.JDBCTestEnvironment;
 import org.openbooth.entities.Background;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.openbooth.service.exceptions.ServiceException;
+import org.openbooth.util.TestDataProvider;
+import org.openbooth.util.exceptions.DatabaseException;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -22,139 +21,112 @@ import static org.mockito.Mockito.when;
  */
 public class BackgroundCategoryDAOTest extends JDBCTestEnvironment {
 
-    private Background.Category backgroundCategoryA,backgroundCategoryB, backgroundCategoryC;
-
     private BackgroundCategoryDAO backgroundCategoryDAO = getApplicationContext().getBean(BackgroundCategoryDAO.class);
-    private BackgroundCategoryDAO mockBackgroundCategoryDAO;
 
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
+    private TestDataProvider testDataProvider;
 
-        backgroundCategoryA = new Background.Category("Taufe");
-        backgroundCategoryB = new Background.Category("Firmung");
-        backgroundCategoryC = new Background.Category(10,"Verlobung",false);
+    private List<Background.Category> storedCategories;
+    private Background.Category storedCategory;
+    private Background.Category newCategory;
 
-        mockBackgroundCategoryDAO = new JDBCBackgroundCategoryDAO(mockDBHandler);
+    @Override
+    protected void prepareTestData() {
+        testDataProvider = getNewTestDataProvider();
+        storedCategories = testDataProvider.getStoredBackgroundCategories();
+        storedCategory = storedCategories.get(0);
+        newCategory = testDataProvider.getNewCategory();
     }
 
-    @After
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
 
     /**
-     *
-     * TESTING method: Background.Category create(Background.Category backgroundCategory
-     * throws PersistenceException;
+     * TESTING method: Background.Category create(Background.Category backgroundCategory)
      */
 
     @Test(expected = IllegalArgumentException.class)
-    public void testmock_create_withNullArguments_Fail() throws PersistenceException{
-        mockBackgroundCategoryDAO.create(null);
-    }
-
-    @Test(expected = PersistenceException.class)
-    public void testmock_create_withPersistenceTroubles_Fail() throws PersistenceException, SQLException{
-        when(mockConnection.prepareStatement(anyString(),anyInt())).thenThrow(SQLException.class);
-        mockBackgroundCategoryDAO.create(this.backgroundCategoryA);
+    public void testCreateWithNull() throws PersistenceException{
+        backgroundCategoryDAO.create(null);
     }
 
     @Test
-    public void test_create_withValidInputArguments() throws PersistenceException {
-        Background.Category returnValue = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryA.setId(returnValue.getId());
-        Background.Category persistedCategory = backgroundCategoryDAO.read(returnValue.getId());
-
-        assertTrue(returnValue.getId()>=1);
-        assertEquals(backgroundCategoryA, persistedCategory);
+    public void testValidCreateAndRead() throws PersistenceException {
+        newCategory.setId(backgroundCategoryDAO.create(newCategory).getId());
+        assertEquals(newCategory, backgroundCategoryDAO.read(newCategory.getId()));
     }
+
 
     /**
-     *
-     * TESTING method: boolean update(Background.Category backgroundCategory)
-     * throws PersistenceException;
+     * TESTING method: void update(Background.Category backgroundCategory)
      */
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testmock_update_withNullArguments_Fail() throws PersistenceException{
-        mockBackgroundCategoryDAO.update(null);
-    }
 
-    @Test(expected = PersistenceException.class)
-    public void testmock_update_withPersistenceTroubles_Fail() throws PersistenceException, SQLException{
-        when(mockConnection.prepareStatement(anyString())).thenThrow(SQLException.class);
-        mockBackgroundCategoryDAO.update(backgroundCategoryA);
+    @Test(expected = IllegalArgumentException.class)
+    public void testUpdateWithNull() throws PersistenceException{
+        backgroundCategoryDAO.update(null);
     }
 
 
     @Test
-    public void test_update_withValidInputParameter()throws PersistenceException{
-        backgroundCategoryA = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryA.setName("Taufe +");
-        backgroundCategoryDAO.update(backgroundCategoryA);
-        Background.Category updatedCategory = backgroundCategoryDAO.read(backgroundCategoryA.getId());
-        assertEquals(backgroundCategoryA, updatedCategory);
+    public void testValidUpdate()throws PersistenceException{
+        storedCategory.setName("NewName");
+        backgroundCategoryDAO.update(storedCategory);
+        assertEquals(storedCategory, backgroundCategoryDAO.read(storedCategory.getId()));
     }
 
     @Test(expected = PersistenceException.class)
-    public void test_update_WithNotExisting()throws PersistenceException{
-        backgroundCategoryA = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryA.setId(backgroundCategoryA.getId() + 1);
-        positionA.setName("Taufe +");
-        backgroundCategoryDAO.update(backgroundCategoryA);
+    public void testUpdateWithNotExistingCategory()throws PersistenceException{
+        backgroundCategoryDAO.update(testDataProvider.getNewCategory());
 
     }
 
     /**
-     *
      * TESTING method: Background.Category read(int id)
-     * throws PersistenceException;
      */
 
     @Test
-    public void test_read_withValidInt() throws PersistenceException{
-        backgroundCategoryA = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryB = backgroundCategoryDAO.create(backgroundCategoryB);
-        backgroundCategoryC = backgroundCategoryDAO.create(backgroundCategoryC);
-        Background.Category returnValue = backgroundCategoryDAO.read(backgroundCategoryA.getId());
-        Background.Category returnValue2 = backgroundCategoryDAO.read(backgroundCategoryB.getId());
-        Background.Category returnValue3 = backgroundCategoryDAO.read(backgroundCategoryC.getId());
-        assertEquals(backgroundCategoryA, returnValue);
-        assertEquals(backgroundCategoryB, returnValue2);
-        assertEquals(backgroundCategoryC, returnValue3);
+    public void testValidRead() throws PersistenceException{
+        assertEquals(storedCategory, backgroundCategoryDAO.read(storedCategory.getId()));
     }
 
     @Test(expected = PersistenceException.class)
-    public void test_read_NotExisting() throws PersistenceException{
-        backgroundCategoryA = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryDAO.read(backgroundCategoryA.getId() + 1);
+    public void testReadWithNotExistingCategory() throws PersistenceException{
+        backgroundCategoryDAO.read(testDataProvider.getNewCategory().getId());
     }
 
+
     /**
-     *
-     * TESTING method: boolean delete(Background.Category backgroundCategory)
-     * throws PersistenceException;
+     * TESTING method: List<Background.Category> readAll()
      */
 
     @Test
-    public void test_readAll_withNonEmptyReturnList() throws PersistenceException{
-        backgroundCategoryA = backgroundCategoryDAO.create(backgroundCategoryA);
-        backgroundCategoryB = backgroundCategoryDAO.create(backgroundCategoryB);
-        backgroundCategoryC = backgroundCategoryDAO.create(backgroundCategoryC);
-        List<Background.Category> returnList = backgroundCategoryDAO.readAll();
-        assertTrue(returnList.contains(backgroundCategoryA)
-                && returnList.contains(backgroundCategoryB)
-                && returnList.contains(backgroundCategoryC));
+    public void testValidReadAll() throws PersistenceException{
+        List<Background.Category> readCategories = backgroundCategoryDAO.readAll();
+        assertTrue(readCategories.containsAll(storedCategories));
+        assertTrue(storedCategories.containsAll(readCategories));
+
     }
 
     @Test
-    public void test_readAll_withEmptyReturnList() throws PersistenceException{
-        backgroundCategoryDAO.delete(backgroundCategoryDAO.read(1));
-        backgroundCategoryDAO.delete(backgroundCategoryDAO.read(2));
-        backgroundCategoryDAO.delete(backgroundCategoryDAO.read(3));
-        backgroundCategoryDAO.delete(backgroundCategoryDAO.read(4));
+    public void testValidDeleteAndReadAll() throws PersistenceException{
+       for(Background.Category category : storedCategories){
+           backgroundCategoryDAO.delete(category);
+       }
         assertTrue(backgroundCategoryDAO.readAll().isEmpty());
     }
+
+    /**
+     * TESTING method: void delete(Background.Category backgroundCategory)
+     */
+
+    @Test
+    public void testValidDelete() throws PersistenceException{
+        backgroundCategoryDAO.delete(storedCategory);
+        assertTrue(!backgroundCategoryDAO.readAll().contains(storedCategory));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDeleteWithNull() throws PersistenceException{
+        backgroundCategoryDAO.delete(null);
+    }
+
 
 }
