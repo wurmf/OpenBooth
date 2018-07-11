@@ -48,6 +48,7 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
     @Override
     public AdminUser read(String adminName) throws PersistenceException{
         if(adminName == null) throw new IllegalArgumentException("adminName is null");
+
         try (PreparedStatement stmt = con.prepareStatement(READ_ADMIN_QUERY)){
             stmt.setString(1,adminName);
             try (ResultSet rs = stmt.executeQuery()) {
