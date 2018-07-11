@@ -23,6 +23,10 @@ import java.sql.SQLException;
 public class JDBCAdminUserDAO implements AdminUserDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCAdminUserDAO.class);
 
+    public static final String TABLE_NAME = "adminusers";
+    public static final String NAME_COLUMN = "adminname";
+    public static final String PW_HASH_COLUMN = "password";
+
     private Connection con;
 
     /**
@@ -39,16 +43,17 @@ public class JDBCAdminUserDAO implements AdminUserDAO {
         }
     }
 
-    private static final String READ_ADMIN_QUERY = QueryBuilder.buildSelectAllColumns("adminusers", "adminname");
+    private static final String READ_ADMIN_QUERY = QueryBuilder.buildSelectAllColumns(TABLE_NAME, NAME_COLUMN);
 
     @Override
     public AdminUser read(String adminName) throws PersistenceException{
+        if(adminName == null) throw new IllegalArgumentException("adminName is null");
         try (PreparedStatement stmt = con.prepareStatement(READ_ADMIN_QUERY)){
             stmt.setString(1,adminName);
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    String newAdminName = rs.getString("adminname");
-                    byte[] password = rs.getBytes("password");
+                    String newAdminName = rs.getString(NAME_COLUMN);
+                    byte[] password = rs.getBytes(PW_HASH_COLUMN);
                     LOGGER.trace("Read user {} from database", adminName);
                     return new AdminUser(newAdminName, password);
                 } else {

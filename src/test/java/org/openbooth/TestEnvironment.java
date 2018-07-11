@@ -34,6 +34,8 @@ public class TestEnvironment {
 
     private static AnnotationConfigApplicationContext applicationContext = null;
 
+    private Connection con;
+
     protected LogoDAO logoDAO;
     protected CameraDAO cameraDAO;
     protected PositionDAO positionDAO;
@@ -42,15 +44,12 @@ public class TestEnvironment {
     protected ProfileDAO profileDAO;
     protected ImageDAO imageDAO;
     protected ShootingDAO shootingDAO;
-    protected BackgroundCategoryDAO backgroundCategoryDAO;
-    protected BackgroundDAO backgroundDAO;
+    private BackgroundCategoryDAO backgroundCategoryDAO;
     protected ProfileService profileService;
-    protected AdminUserDAO adminUserDAO;
-
-    protected Connection con;
 
 
-    protected Camera camera1,camera2,camera3,cameraA,cameraB,cameraC,camera1000000;
+
+
     protected Position position1,position2,positionA,positionB,positionC,position1000000;
     protected Logo logo1,logo2,logoA,logoB,logoC,logo1000000;
     protected RelativeRectangle relativeRectangleA,relativeRectangleB,relativeRectangleC,relativeRectangleD;
@@ -75,11 +74,9 @@ public class TestEnvironment {
     protected void prepareTestData() throws DatabaseException, PersistenceException, ServiceException {
         DataPrepper.insertTestData(con);
 
-        cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
-        cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42");
-        cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999");
-        camera1000000 = new Camera(1000000,"Camera 1000000", "ZZZZZZZ", "OneMillion OM" , "XYZ" );
-        positionA = new Position("Position A","/dev/null/positionA.jpg");
+        Camera camera1,camera2,camera3;
+
+       positionA = new Position("Position A","/dev/null/positionA.jpg");
         positionB = new Position("Position B", "/dev/null/positionB.jpg");
         positionC = new Position("Position C", "/dev/null/positionC.jpg");
         position1000000 = new Position(1000000,"Position 1000000", "/dev/null/position1000000.jpg", false);
@@ -168,8 +165,8 @@ public class TestEnvironment {
         profileDAO = applicationContext.getBean(ProfileDAO.class);
         imageDAO = applicationContext.getBean(ImageDAO.class);
         shootingDAO = applicationContext.getBean(ShootingDAO.class);
-        adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
         backgroundCategoryDAO = applicationContext.getBean(BackgroundCategoryDAO.class);
+        BackgroundDAO backgroundDAO = applicationContext.getBean(BackgroundDAO.class);
 
         /*
          * Setup Services for all testing

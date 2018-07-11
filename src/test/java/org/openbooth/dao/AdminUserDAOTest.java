@@ -5,13 +5,9 @@
     import org.openbooth.TestEnvironment;
     import org.openbooth.entities.AdminUser;
     import org.junit.Test;
+    import org.openbooth.util.TestDataProvider;
+    import org.springframework.context.ApplicationContext;
 
-    import java.io.UnsupportedEncodingException;
-    import java.security.MessageDigest;
-    import java.security.NoSuchAlgorithmException;
-    import java.util.Arrays;
-
-    import static junit.framework.TestCase.assertTrue;
     import static org.junit.Assert.assertEquals;
     import static org.junit.Assert.assertNotNull;
     import static org.junit.Assert.assertNull;
@@ -21,6 +17,15 @@
      */
     public class AdminUserDAOTest extends TestEnvironment {
 
+        private AdminUser storedAdminUser;
+        private AdminUserDAO adminUserDAO;
+
+        @Override
+        protected void prepareTestData() {
+            ApplicationContext applicationContext = getApplicationContext();
+            storedAdminUser = applicationContext.getBean(TestDataProvider.class).getStoredAdminUsers().get(0);
+            adminUserDAO = applicationContext.getBean(AdminUserDAO.class);
+        }
 
         /**
          * Check if nonexistent-user-read returns null
@@ -31,9 +36,9 @@
         }
 
         /**
-         * Checks if read(null) returns null and not an exception
+         * Checks if read(null) throws an IllegalArgumentException
          */
-        @Test
+        @Test(expected = IllegalArgumentException.class)
         public void readNullUser() throws PersistenceException{
 
             assertNull(adminUserDAO.read(null));
@@ -52,17 +57,11 @@
          * Checks if existing user is returned and same values are returned as are put in the database
          */
         @Test
-        public void readExistingUser() throws NoSuchAlgorithmException, UnsupportedEncodingException, PersistenceException{
-            String nameToLookFor="admin";
-            String correspondingPassword="martin";
+        public void readExistingUser() throws PersistenceException{
 
-            MessageDigest md=MessageDigest.getInstance("SHA-256");
-            md.update(correspondingPassword.getBytes("UTF-8"));
-            byte[] correspondingPasswordBytes=md.digest();
-            AdminUser user=adminUserDAO.read(nameToLookFor);
-            assertNotNull(user);
-            assertEquals(nameToLookFor, user.getAdminName());
-            assertTrue(Arrays.equals(correspondingPasswordBytes, user.getPassword()));
+            AdminUser userFromDatabase = adminUserDAO.read(storedAdminUser.getAdminName());
+            assertNotNull(userFromDatabase);
+            assertEquals(storedAdminUser, userFromDatabase);
 
         }
     }
