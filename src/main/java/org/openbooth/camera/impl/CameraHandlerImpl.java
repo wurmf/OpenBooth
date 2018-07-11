@@ -124,7 +124,7 @@ public class CameraHandlerImpl implements CameraHandler
                 cameraGphotoList.get(i).initialize();
                 cameraGphotoList.get(i).ref();
 
-                newCamera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i);
+                newCamera = new Camera(-1, "Kamera " + i, cameraPortList.get(i), cameraModelList.get(i), "Seriennummer: "+i,false);
                 Camera storedCamera = cameraService.loadCameraAndStoreIfNotExists(newCamera);
                 cameraService.setCameraActive(storedCamera.getId());
                 cameraList.add(storedCamera);

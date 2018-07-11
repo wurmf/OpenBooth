@@ -58,7 +58,7 @@ public class ImageProcessorImplTest {
         imageHandler = new ImageHandler(new OpenCVLoader());
 
         position = new Position("testposition");
-        camera = new Camera(1, "testcamera", "testport", "testmodel", "testserialnumber");
+        camera = new Camera(1, "testcamera", "testport", "testmodel", "testserialnumber", false);
 
         pairCameraPosition= new Profile.PairCameraPosition(camera, position, false);
         when(mockProfileService.getCameraOfPositionOfProfile(position)).thenReturn(camera);

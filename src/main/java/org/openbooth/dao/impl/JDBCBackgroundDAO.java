@@ -54,7 +54,7 @@ public class JDBCBackgroundDAO implements BackgroundDAO{
         if(background == null) throw new IllegalArgumentException("Background is null");
 
 
-        try (PreparedStatement stmt = con.prepareStatement(CREATE_STATEMENT)){
+        try (PreparedStatement stmt = con.prepareStatement(CREATE_STATEMENT, Statement.RETURN_GENERATED_KEYS)){
             stmt.setString(1,background.getName());
             stmt.setString(2,background.getPath());
 

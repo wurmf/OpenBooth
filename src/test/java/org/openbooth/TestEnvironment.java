@@ -80,10 +80,10 @@ public class TestEnvironment {
     protected void prepareTestData() throws DatabaseException, PersistenceException, ServiceException {
         DataPrepper.insertTestData(con);
 
-        cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456");
-        cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42");
-        cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999");
-        camera1000000 = new Camera(1000000,"Camera 1000000", "ZZZZZZZ", "OneMillion OM" , "XYZ" );
+        cameraA = new Camera(Integer.MIN_VALUE,"Apple iPhone 8","USBC","8","SN123456",false);
+        cameraB = new Camera(Integer.MIN_VALUE,"Camera B", "B", "Bronica B", "42",false);
+        cameraC = new Camera(Integer.MIN_VALUE,"Camera C", "C", "Canon C", "999",false);
+        camera1000000 = new Camera(1000000,"Camera 1000000", "ZZZZZZZ", "OneMillion OM" , "XYZ",false );
         positionA = new Position("Position A","/dev/null/positionA.jpg");
         positionB = new Position("Position B", "/dev/null/positionB.jpg");
         positionC = new Position("Position C", "/dev/null/positionC.jpg");

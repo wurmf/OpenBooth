@@ -34,7 +34,7 @@ public class SimCameraHandler implements CameraHandler {
     public SimCameraHandler(ApplicationContext applicationContext, CameraService cameraService) throws ServiceException{
         this.applicationContext = applicationContext;
 
-        Camera newCamera = new Camera(-1, "SIMULATED_CAMERA", "SIMULATED_PORT", "SIMULATED_MODEL", "SIMULATED_SERIALNUMBER");
+        Camera newCamera = new Camera(-1, "SIMULATED_CAMERA", "SIMULATED_PORT", "SIMULATED_MODEL", "SIMULATED_SERIALNUMBER", false);
         Camera storedCamera = cameraService.loadCameraAndStoreIfNotExists(newCamera); //Check if the simulated camera is already stored in the persistence layer
 
 

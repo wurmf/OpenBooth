@@ -112,10 +112,14 @@ public class TestDataProvider {
 
     private void generateCameras(){
         cameras = new ArrayList<>();
-        cameras.add(new Camera(1,"TestCamera1", "TestPort1","TestModel1", "TestSerialnumber1"));
-        cameras.add(new Camera(2,"TestCamera2", "TestPort2","TestModel2", "TestSerialnumber2"));
-        cameras.add(new Camera(3,"TestCamera3", "TestPort3","TestModel3", "TestSerialnumber3"));
-        cameras.add(new Camera(4,"TestCamera4", "TestPort4","TestModel4", "TestSerialnumber4"));
+        cameras.add(new Camera(1,"TestCamera1", "TestPort1","TestModel1", "TestSerialnumber1", false));
+        cameras.add(new Camera(2,"TestCamera2", "TestPort2","TestModel2", "TestSerialnumber2", false));
+        cameras.add(new Camera(3,"TestCamera3", "TestPort3","TestModel3", "TestSerialnumber3", true));
+        cameras.add(new Camera(4,"TestCamera4", "TestPort4","TestModel4", "TestSerialnumber4", true));
+    }
+
+    public Camera getNewCamera(){
+        return new Camera(5, "NewTestCamera", "NewTestPort", "NewTestModel", "NewTestSerialnumber", false);
     }
 
     private void insertCameras(Connection conn) throws SQLException{
@@ -125,7 +129,9 @@ public class TestDataProvider {
                                 JDBCCameraDAO.LABEL_COLUMN,
                                 JDBCCameraDAO.PORT_NUMBER_COLUMN,
                                 JDBCCameraDAO.MODEL_COLUMN,
-                                JDBCCameraDAO.SERIAL_NUMBER_COLUMN});
+                                JDBCCameraDAO.SERIAL_NUMBER_COLUMN,
+                                JDBCCameraDAO.IS_ACTIVE_COLUMN
+                        });
 
         try(PreparedStatement stmt = conn.prepareStatement(insertStatement)){
             for(Camera camera : cameras){
@@ -133,6 +139,7 @@ public class TestDataProvider {
                 stmt.setString(2, camera.getPort());
                 stmt.setString(3, camera.getModel());
                 stmt.setString(4, camera.getSerialnumber());
+                stmt.setBoolean(5, camera.isActive());
                 stmt.execute();
             }
         }
@@ -271,7 +278,6 @@ public class TestDataProvider {
     public Background.Category getNewCategory(){
         return new Background.Category(-1, "NewTestCategory", false);
     }
-
 
     private void insertBackgroundCategories(Connection connection) throws SQLException{
         String insertStatement =

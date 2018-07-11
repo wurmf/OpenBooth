@@ -41,12 +41,12 @@ public class JDBCCameraDAO implements CameraDAO{
 
 
     private static final String CREATE_STATEMENT =
-            QueryBuilder.buildInsert(TABLE_NAME, new String[]{LABEL_COLUMN,MODEL_COLUMN,PORT_NUMBER_COLUMN,SERIAL_NUMBER_COLUMN});
+            QueryBuilder.buildInsert(TABLE_NAME, new String[]{LABEL_COLUMN,MODEL_COLUMN,PORT_NUMBER_COLUMN,SERIAL_NUMBER_COLUMN,IS_ACTIVE_COLUMN});
 
     @Override
     public Camera create(Camera camera) throws PersistenceException {
         if(camera == null)
-            throw new IllegalArgumentException("camera is null");
+            throw new IllegalArgumentException("camera is null.");
 
         try (PreparedStatement stmt = con.prepareStatement(CREATE_STATEMENT, Statement.RETURN_GENERATED_KEYS)){
 
@@ -56,6 +56,7 @@ public class JDBCCameraDAO implements CameraDAO{
 
             stmt.setString (3,camera.getPort());
             stmt.setString (4,camera.getSerialnumber());
+            stmt.setBoolean(5, camera.isActive());
 
             stmt.executeUpdate();
 
@@ -66,7 +67,8 @@ public class JDBCCameraDAO implements CameraDAO{
                        camera.getLable(),
                        camera.getPort(),
                        camera.getModel(),
-                       camera.getSerialnumber()
+                       camera.getSerialnumber(),
+                       camera.isActive()
                );
                LOGGER.trace("Camera {} successfully stored in database", storedCamera);
                return storedCamera;
@@ -157,7 +159,6 @@ public class JDBCCameraDAO implements CameraDAO{
     }
 
 
-
     @Override
     public void setActive(int cameraID) throws PersistenceException {
         setActivationStatus(cameraID, true);
@@ -173,7 +174,7 @@ public class JDBCCameraDAO implements CameraDAO{
     private static final String SET_ACTIVATION_STATEMENT =
             QueryBuilder.buildUpdate(TABLE_NAME, IS_ACTIVE_COLUMN, ID_COLUMN);
 
-    private void setActivationStatus(int cameraID, boolean isActivated) throws PersistenceException {
+    void setActivationStatus(int cameraID, boolean isActivated) throws PersistenceException {
         try (PreparedStatement stmt = con.prepareStatement(SET_ACTIVATION_STATEMENT)){
             stmt.setBoolean(1, isActivated);
             stmt.setInt(2, cameraID);
@@ -205,6 +206,7 @@ public class JDBCCameraDAO implements CameraDAO{
 
     @Override
     public Camera getCameraIfExists(Camera camera) throws PersistenceException {
+        if(camera == null) throw new IllegalArgumentException("camera is null");
 
         try (PreparedStatement stmt = con.prepareStatement(READ_CAMERA_WITH_MODEL_STATEMENT)) {
             stmt.setString(1, camera.getModel());
@@ -229,6 +231,8 @@ public class JDBCCameraDAO implements CameraDAO{
     @Override
     public void editCamera(Camera camera) throws PersistenceException
     {
+        if(camera == null) throw new IllegalArgumentException("camera is null");
+
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_STATEMENT)){
             stmt.setString(1,camera.getLable());
             stmt.setString(2,camera.getPort());
@@ -253,7 +257,9 @@ public class JDBCCameraDAO implements CameraDAO{
                 rs.getString(LABEL_COLUMN),
                 rs.getString(PORT_NUMBER_COLUMN),
                 rs.getString(MODEL_COLUMN),
-                rs.getString(SERIAL_NUMBER_COLUMN));
+                rs.getString(SERIAL_NUMBER_COLUMN),
+                rs.getBoolean(IS_ACTIVE_COLUMN)
+                );
 
     }
 }

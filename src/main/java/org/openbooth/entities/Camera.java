@@ -1,7 +1,9 @@
 package org.openbooth.entities;
 
+import java.util.Objects;
+
 /**
- * Entitiy class for simcam-entries in the database.
+ * Entity class for camera entries in the database.
  */
 public class Camera {
     private int id;
@@ -9,13 +11,16 @@ public class Camera {
     private String port;
     private String model;
     private String serialnumber;
+    private boolean isActive;
 
-    public Camera(int id, String lable, String port, String model, String serialnumber) {
+
+    public Camera(int id, String lable, String port, String model, String serialnumber, boolean isActive) {
         this.id = id;
         this.lable = lable;
         this.port = port;
         this.model = model;
         this.serialnumber = serialnumber;
+        this.isActive = isActive;
     }
 
 
@@ -59,6 +64,14 @@ public class Camera {
         this.serialnumber = serialnumber;
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
     @Override
     public String toString() {
         return "Camera{" +
@@ -71,12 +84,21 @@ public class Camera {
     }
 
     @Override
-    public boolean equals(Object object){
-        //TODO: Change equals compare only id?
-        return object instanceof Camera
-                && ((Camera) object).getId() == this.getId()
-                && ((Camera) object).getPort() == this.getPort()
-                && ((Camera) object).getModel() == this.getModel()
-                && ((Camera) object).getSerialnumber() == this.getSerialnumber();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Camera camera = (Camera) o;
+        return id == camera.id &&
+                isActive == camera.isActive &&
+                Objects.equals(lable, camera.lable) &&
+                Objects.equals(port, camera.port) &&
+                Objects.equals(model, camera.model) &&
+                Objects.equals(serialnumber, camera.serialnumber);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, lable, port, model, serialnumber, isActive);
     }
 }

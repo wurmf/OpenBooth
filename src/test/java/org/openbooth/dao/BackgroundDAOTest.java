@@ -121,7 +121,7 @@ public class BackgroundDAOTest extends TestEnvironment {
 
 
     @Test
-    public void testValidDeleteAndRead() throws PersistenceException {
+    public void testValidDeleteAndReadAll() throws PersistenceException {
         Background storedBackground = storedBackgrounds.get(0);
         backgroundDAO.delete(storedBackground);
         List<Background> backgroundList = backgroundDAO.readAll();
