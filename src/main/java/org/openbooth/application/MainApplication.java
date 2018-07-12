@@ -1,11 +1,18 @@
 package org.openbooth.application;
 
 import javafx.application.Application;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.openbooth.gui.ShotFrameController;
+import org.openbooth.operating.OperationsManager;
+import org.openbooth.util.SpringFXMLLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+
+import java.io.IOException;
 
 
 /**
@@ -24,10 +31,17 @@ public class MainApplication extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         LOGGER.info("Starting Application");
 
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
+
+        SpringFXMLLoader springFXMLLoader = applicationContext.getBean(SpringFXMLLoader.class);
+        SpringFXMLLoader.FXMLWrapper wrapper = springFXMLLoader.loadAndWrap("/fxml/shotFrame.fxml", ShotFrameController.class);
+        Parent parent = (Parent) wrapper.getLoadedObject();
+        primaryStage.setScene(new Scene(parent));
+        primaryStage.show();
+        applicationContext.getBean(OperationsManager.class).startExecution();
     }
 
     @Override
