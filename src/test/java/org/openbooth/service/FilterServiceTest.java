@@ -32,7 +32,6 @@ public class FilterServiceTest{
 
     private FilterService filterService;
     private ImageHandler imageHandler;
-    private ShootingService mockShootingService = mock(ShootingService.class);
 
 
     @Rule
@@ -44,7 +43,7 @@ public class FilterServiceTest{
     private String destImgPath;
 
     @Before
-    public void setUp() throws  ServiceException, ImageHandlingException, StorageHandlingException{
+    public void setUp() throws ImageHandlingException, StorageHandlingException{
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
         TempStorageHandler tempStorageHandler = new TempStorageHandler();

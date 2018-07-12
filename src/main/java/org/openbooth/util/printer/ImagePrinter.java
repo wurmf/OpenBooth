@@ -1,6 +1,5 @@
 package org.openbooth.util.printer;
 
-import org.openbooth.entities.Image;
 import org.openbooth.util.exceptions.OBPrinterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,18 +25,15 @@ public class ImagePrinter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImagePrinter.class);
     /**
      * Prints the image defined in the path saved in the given Image-Entity.
-     * @param image the Image-Entity that shall be printed.
+     * @param imagePath the image path that shall be printed
      * @throws OBPrinterException if an error occurs while printing.
      */
-    public void print(Image image) throws OBPrinterException {
-        if(image==null){
-            throw new OBPrinterException("Input of null instead of Image-object not allowed.");
-        }
-        if(image.getImagepath()==null||image.getImagepath().isEmpty()){
-            throw new OBPrinterException("No imagepath defined in Image-object.");
+    public void print(String imagePath) throws OBPrinterException {
+        if(imagePath==null || imagePath.isEmpty()){
+            throw new IllegalArgumentException("image path null or empty");
         }
         try {
-            File imageFile=new File(image.getImagepath());
+            File imageFile=new File(imagePath);
             print(ImageIO.read(imageFile));
         } catch (IOException e) {
             throw new OBPrinterException("Unable to read file from given path",e);

@@ -3,7 +3,6 @@ package org.openbooth.service.impl;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.entities.Background;
 import org.openbooth.service.GreenscreenService;
 import org.openbooth.service.exceptions.ServiceException;
 import org.opencv.core.CvType;
@@ -33,7 +32,7 @@ public class GreenscreenServiceImpl implements GreenscreenService {
 
     private ImageHandler imageHandler;
 
-    private Map<ImageSize, Map<Background, Mat>> imageSizeCachedBackgroundsMap = new HashMap<>();
+    private Map<ImageSize, Map<String, Mat>> imageSizeCachedBackgroundsMap = new HashMap<>();
 
 
     @Autowired
@@ -43,11 +42,11 @@ public class GreenscreenServiceImpl implements GreenscreenService {
     }
 
     @Override
-    public BufferedImage applyGreenscreen(BufferedImage srcImg, Background background) throws ServiceException {
+    public BufferedImage applyGreenscreen(BufferedImage srcImg, String background) throws ServiceException {
         LOGGER.debug("Entering applyGreenscreen method");
 
         if(srcImg == null || background == null){
-            LOGGER.error("applyGreenscreen - given image or given background is null, image: {} background: {}", srcImg, background);
+            LOGGER.error("applyGreenscreen - given image or given background path is null, image: {} background: {}", srcImg, background);
             throw new ServiceException("Given image or background is null");
         }
 
@@ -139,10 +138,10 @@ public class GreenscreenServiceImpl implements GreenscreenService {
         return tolerances;
     }
 
-    private Mat getCachedBackground(BufferedImage srcImg, Background background) throws ServiceException{
+    private Mat getCachedBackground(BufferedImage srcImg, String background) throws ServiceException{
         ImageSize imageSize = new ImageSize(srcImg.getWidth(), srcImg.getHeight());
 
-        Map<Background, Mat> cachedBackgrounds;
+        Map<String, Mat> cachedBackgrounds;
 
         //check if cached backgrounds exist for this image size
         if(imageSizeCachedBackgroundsMap.containsKey(imageSize)){
@@ -163,7 +162,7 @@ public class GreenscreenServiceImpl implements GreenscreenService {
 
             //Open backgroundimage
             try {
-                backgroundImg = imageHandler.openImage(background.getPath());
+                backgroundImg = imageHandler.openImage(background);
             } catch (ImageHandlingException e) {
                 LOGGER.error("applyGreenscreen - could not open background image", e);
                 throw new ServiceException("Could not open background image");
