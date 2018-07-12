@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Screen;
-import org.openbooth.util.CameraTrigger;
+import org.openbooth.camera.CameraTrigger;
 import org.openbooth.util.exceptions.TriggerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

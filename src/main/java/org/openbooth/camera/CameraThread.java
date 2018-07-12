@@ -7,7 +7,7 @@ import org.openbooth.gui.ShotFrameController;
 import org.openbooth.service.ImageService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
-import org.openbooth.service.imageprocessing.ImageProcessor;
+import org.openbooth.imageprocessing.ImageProcessor;
 import org.openbooth.util.TempStorageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

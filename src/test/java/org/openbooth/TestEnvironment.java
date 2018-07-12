@@ -29,7 +29,7 @@ import java.util.List;
  * Test Environment
  * provides setup (Database connections and mocks) for all DAO tests
  */
-@ComponentScan("org.openbooth")
+@ComponentScan({"org.openbooth.dao","org.openbooth.util","org.openbooth.service"})
 public class TestEnvironment {
 
 

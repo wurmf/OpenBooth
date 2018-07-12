@@ -3,7 +3,7 @@ package org.openbooth.gui;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
-import org.openbooth.service.imageprocessing.ImageProcessingManager;
+import org.openbooth.imageprocessing.ImageProcessingManager;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,4 +1,4 @@
-package org.openbooth.util;
+package org.openbooth.camera;
 
 import javafx.scene.input.KeyEvent;
 import org.openbooth.camera.CameraHandler;
@@ -8,6 +8,7 @@ import org.openbooth.entities.Profile;
 import org.openbooth.gui.CustomerFrameController;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.exceptions.ServiceException;
+import org.openbooth.util.KeyHandler;
 import org.openbooth.util.exceptions.TriggerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

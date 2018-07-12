@@ -5,7 +5,7 @@ import org.openbooth.entities.Shooting;
 import org.openbooth.service.ProfileService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;
-import org.openbooth.service.imageprocessing.ImageProcessingManager;
+import org.openbooth.imageprocessing.ImageProcessingManager;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

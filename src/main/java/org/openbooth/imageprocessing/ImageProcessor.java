@@ -1,4 +1,4 @@
-package org.openbooth.service.imageprocessing;
+package org.openbooth.imageprocessing;
 
 import org.openbooth.entities.Image;
 import org.openbooth.entities.Position;

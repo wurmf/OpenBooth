@@ -1,4 +1,4 @@
-package org.openbooth.service.imageprocessing;
+package org.openbooth.imageprocessing;
 
 import org.openbooth.entities.Profile;
 import org.openbooth.service.exceptions.ServiceException;

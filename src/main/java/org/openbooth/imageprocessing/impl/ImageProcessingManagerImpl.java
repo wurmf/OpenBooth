@@ -1,4 +1,4 @@
-package org.openbooth.service.imageprocessing.impl;
+package org.openbooth.imageprocessing.impl;
 
 import org.openbooth.camera.CameraThread;
 import org.openbooth.entities.Camera;
@@ -7,8 +7,8 @@ import org.openbooth.entities.Profile;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.service.*;
 import org.openbooth.service.exceptions.ServiceException;
-import org.openbooth.service.imageprocessing.ImageProcessingManager;
-import org.openbooth.service.imageprocessing.ImageProcessor;
+import org.openbooth.imageprocessing.ImageProcessingManager;
+import org.openbooth.imageprocessing.ImageProcessor;
 import org.openbooth.gui.ShotFrameManager;
 import org.openbooth.camera.CameraHandler;
 import org.slf4j.Logger;

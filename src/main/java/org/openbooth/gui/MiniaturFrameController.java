@@ -1,6 +1,6 @@
 package org.openbooth.gui;
 
-import org.openbooth.util.CameraTrigger;
+import org.openbooth.camera.CameraTrigger;
 import org.openbooth.service.ImageService;
 import org.openbooth.service.ShootingService;
 import org.openbooth.service.exceptions.ServiceException;

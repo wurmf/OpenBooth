@@ -2,7 +2,7 @@ package org.openbooth.application;
 
 import org.openbooth.util.dbhandler.DBHandler;
 import org.openbooth.camera.CameraHandler;
-import org.openbooth.service.imageprocessing.ImageProcessingManager;
+import org.openbooth.imageprocessing.ImageProcessingManager;
 import org.openbooth.gui.WindowManager;
 import javafx.application.Application;
 import javafx.stage.Stage;

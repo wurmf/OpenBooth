@@ -1,10 +1,10 @@
-package org.openbooth.service.imageprocessing.impl;
+package org.openbooth.imageprocessing.impl;
 
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.service.*;
-import org.openbooth.service.imageprocessing.ImageProcessor;
+import org.openbooth.imageprocessing.ImageProcessor;
 import org.openbooth.gui.RefreshManager;
 import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.entities.*;

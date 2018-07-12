@@ -1,6 +1,6 @@
 package org.openbooth.gui;
 
-import org.openbooth.util.CameraTrigger;
+import org.openbooth.camera.CameraTrigger;
 import org.openbooth.entities.Profile;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.ProfileService;

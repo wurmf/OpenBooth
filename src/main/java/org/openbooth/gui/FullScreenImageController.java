@@ -1,6 +1,6 @@
 package org.openbooth.gui;
 
-import org.openbooth.util.CameraTrigger;
+import org.openbooth.camera.CameraTrigger;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.TempStorageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
