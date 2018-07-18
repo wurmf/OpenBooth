@@ -3,7 +3,7 @@ package org.openbooth.operating.camera;
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.camera.exceptions.CameraException;
 import org.openbooth.operating.operations.Operation;
-import org.openbooth.operating.exceptions.OperationExecutionException;
+import org.openbooth.operating.exception.OperationExecutionException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 

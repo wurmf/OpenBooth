@@ -5,7 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.openbooth.gui.ShotFrameController;
-import org.openbooth.operating.OperationsManager;
+import org.openbooth.operating.Operator;
+import org.openbooth.operating.OperatorRunner;
 import org.openbooth.util.SpringFXMLLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +42,13 @@ public class MainApplication extends Application {
         Parent parent = (Parent) wrapper.getLoadedObject();
         primaryStage.setScene(new Scene(parent));
         primaryStage.show();
-        applicationContext.getBean(OperationsManager.class).startExecution();
+        applicationContext.getBean(OperatorRunner.class).startOperating();
     }
 
     @Override
     public void stop() throws Exception {
         LOGGER.info("Stopping Application");
-
+        applicationContext.getBean(Operator.class).stopOperating();
 
         if ( applicationContext.isRunning() ) {
             this.applicationContext.close();

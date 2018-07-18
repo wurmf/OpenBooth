@@ -1,6 +1,6 @@
 package org.openbooth.operating.operations;
 
-import org.openbooth.operating.exceptions.OperationExecutionException;
+import org.openbooth.operating.exception.OperationExecutionException;
 
 import java.awt.image.BufferedImage;
 

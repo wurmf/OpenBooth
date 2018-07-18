@@ -1,4 +1,4 @@
-package org.openbooth.operating.exceptions;
+package org.openbooth.operating.exception;
 
 public class OperationExecutionException extends Exception {
 
