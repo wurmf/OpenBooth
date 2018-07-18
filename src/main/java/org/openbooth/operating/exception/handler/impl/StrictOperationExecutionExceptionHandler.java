@@ -15,7 +15,7 @@ public class StrictOperationExecutionExceptionHandler implements OperationExecut
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StrictOperationExecutionExceptionHandler.class);
 
-    private static final int TOLERATED_EXCEPTION_COUNT = 5;
+    private static final int TOLERATED_EXCEPTION_COUNT = 0;
 
     private final Map<Class,Integer> exceptionCounter = new HashMap<>();
 

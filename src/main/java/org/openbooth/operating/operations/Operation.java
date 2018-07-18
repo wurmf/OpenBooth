@@ -3,13 +3,15 @@ package org.openbooth.operating.operations;
 import org.openbooth.operating.exception.OperationExecutionException;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * This interface is used for any operation dealing with images,
- * it might produce a new image when executed or perform any other operation using the image
+ * the images in the list might replaced by new images when executed
+ * or any other operation using the images is performed
  */
 public interface Operation {
 
-    BufferedImage execute(BufferedImage image) throws OperationExecutionException;
+    void execute(List<BufferedImage> images) throws OperationExecutionException;
 
 }

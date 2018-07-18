@@ -6,6 +6,7 @@ import org.openbooth.operating.exception.OperationExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 public class ShowPreviewOperation implements Operation {
 
@@ -17,9 +18,7 @@ public class ShowPreviewOperation implements Operation {
     }
 
     @Override
-    public BufferedImage execute(BufferedImage image) {
-        if(image == null) throw new IllegalArgumentException("image is null");
-        shotFrameController.refreshShot(image);
-        return image;
+    public void execute(List<BufferedImage> images) {
+        shotFrameController.refreshShot(images.get(0));
     }
 }

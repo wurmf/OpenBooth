@@ -8,6 +8,8 @@ import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Optional;
 
 public class MakePreviewOperation implements Operation {
 
@@ -22,10 +24,10 @@ public class MakePreviewOperation implements Operation {
     }
 
     @Override
-    public BufferedImage execute(BufferedImage image) throws OperationExecutionException{
+    public void execute(List<BufferedImage> images) throws OperationExecutionException{
         try{
             cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath);
-            return imageHandler.openImage(tempStoragePath);
+            images.add(imageHandler.openImage(tempStoragePath));
         } catch (ImageHandlingException | CameraException e) {
             throw new OperationExecutionException(e);
         }

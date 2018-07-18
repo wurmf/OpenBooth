@@ -8,6 +8,7 @@ import org.openbooth.operating.exception.handler.OperationExecutionExceptionHand
 
 import java.awt.image.BufferedImage;
 import java.util.List;
+import java.util.Optional;
 
 abstract class AbstractOperationPipeline implements OperationPipeline {
 
@@ -16,16 +17,13 @@ abstract class AbstractOperationPipeline implements OperationPipeline {
 
 
     @Override
-    public BufferedImage executeOperations(BufferedImage image) throws StopExecutionException {
-        BufferedImage currentImage = image;
+    public void executeOperations(List<BufferedImage> images) throws StopExecutionException {
         try {
             for(OperationFactory operationFactory: operationFactories){
-                currentImage = operationFactory.getOperation().execute(currentImage);
+                operationFactory.getOperation().execute(images);
             }
-            return currentImage;
         } catch (OperationExecutionException e) {
             exceptionHandler.handleOperationExecutionException(e);
         }
-        return image;
     }
 }

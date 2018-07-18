@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class PreviewAndShotOperator implements Operator {
@@ -23,7 +25,6 @@ public class PreviewAndShotOperator implements Operator {
 
     private boolean triggered = false;
     private volatile boolean isOperating = false;
-    private BufferedImage currentImage = null;
 
     @Autowired
     public PreviewAndShotOperator(PreviewOperationPipeline previewOperationPipeline, ShotOperationPipeline shotOperationPipeline){
@@ -47,11 +48,12 @@ public class PreviewAndShotOperator implements Operator {
         isOperating = true;
         try {
             while(isOperating){
+                List<BufferedImage> currentImages = new ArrayList<>();
                 if(triggered){
-                    currentImage = shotOperationsPipeline.executeOperations(currentImage);
+                    shotOperationsPipeline.executeOperations(currentImages);
                     triggered = false;
                 }else {
-                    currentImage = previewOperationPipeline.executeOperations(currentImage);
+                    previewOperationPipeline.executeOperations(currentImages);
                 }
             }
         } catch (StopExecutionException e) {

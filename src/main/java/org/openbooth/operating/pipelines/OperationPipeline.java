@@ -3,9 +3,11 @@ package org.openbooth.operating.pipelines;
 import org.openbooth.operating.exception.StopExecutionException;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.Optional;
 
 public interface OperationPipeline {
 
-    BufferedImage executeOperations(BufferedImage image) throws StopExecutionException;
+    void executeOperations(List<BufferedImage> images) throws StopExecutionException;
 
 }
