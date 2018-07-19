@@ -3,12 +3,12 @@ package org.openbooth.operating.camera;
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.operating.operations.Operation;
 import org.openbooth.operating.OperationFactory;
+import org.openbooth.storage.StorageHandler;
+import org.openbooth.storage.exception.StorageHandlingException;
 import org.openbooth.util.ImageHandler;
-import org.openbooth.util.TempStorageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
 
 @Component
 public class MakePreviewOperationFactory implements OperationFactory {
@@ -18,10 +18,10 @@ public class MakePreviewOperationFactory implements OperationFactory {
     private String tempStoragePath;
 
     @Autowired
-    public MakePreviewOperationFactory(CameraHandler cameraHandler, ImageHandler imageHandler, TempStorageHandler tempStorageHandler){
+    public MakePreviewOperationFactory(CameraHandler cameraHandler, ImageHandler imageHandler, StorageHandler storageHandler) throws StorageHandlingException {
         this.cameraHandler = cameraHandler;
         this.imageHandler = imageHandler;
-        tempStoragePath = new File(tempStorageHandler.getTempStoragePath() + "/preview_image.jpg").getAbsolutePath();
+        tempStoragePath = storageHandler.getNewTemporaryFolderPath() + "/preview_image.jpg";
     }
 
     @Override

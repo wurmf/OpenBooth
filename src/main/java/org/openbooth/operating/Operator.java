@@ -7,8 +7,6 @@ package org.openbooth.operating;
  */
 public interface Operator extends Runnable{
 
-    int EXECUTIONS_PER_SECOND = 24;
-
     void trigger();
 
     /***

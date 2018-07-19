@@ -1,19 +1,18 @@
 package org.openbooth.operating.pipelines.impl;
 
 import org.openbooth.operating.OperationFactory;
-import org.openbooth.operating.exception.OperationExecutionException;
+import org.openbooth.operating.exception.OperationException;
 import org.openbooth.operating.exception.StopExecutionException;
 import org.openbooth.operating.pipelines.OperationPipeline;
-import org.openbooth.operating.exception.handler.OperationExecutionExceptionHandler;
+import org.openbooth.operating.exception.handler.OperationExceptionHandler;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Optional;
 
 abstract class AbstractOperationPipeline implements OperationPipeline {
 
     List<OperationFactory> operationFactories;
-    OperationExecutionExceptionHandler exceptionHandler;
+    OperationExceptionHandler exceptionHandler;
 
 
     @Override
@@ -22,8 +21,8 @@ abstract class AbstractOperationPipeline implements OperationPipeline {
             for(OperationFactory operationFactory: operationFactories){
                 operationFactory.getOperation().execute(images);
             }
-        } catch (OperationExecutionException e) {
-            exceptionHandler.handleOperationExecutionException(e);
+        } catch (OperationException e) {
+            exceptionHandler.handleOperationException(e);
         }
     }
 }

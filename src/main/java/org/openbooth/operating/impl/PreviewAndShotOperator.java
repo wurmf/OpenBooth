@@ -5,6 +5,8 @@ import org.openbooth.operating.exception.StopExecutionException;
 import org.openbooth.operating.pipelines.OperationPipeline;
 import org.openbooth.operating.pipelines.impl.PreviewOperationPipeline;
 import org.openbooth.operating.pipelines.impl.ShotOperationPipeline;
+import org.openbooth.storage.KeyValueStore;
+import org.openbooth.storage.exception.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class PreviewAndShotOperator implements Operator {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(PreviewAndShotOperator.class);
 
+    KeyValueStore keyValueStore;
+
     private OperationPipeline previewOperationPipeline;
     private OperationPipeline shotOperationsPipeline;
 
@@ -34,13 +38,13 @@ public class PreviewAndShotOperator implements Operator {
     private Duration durationBetweenExecutions;
 
     @Autowired
-    public PreviewAndShotOperator(PreviewOperationPipeline previewOperationPipeline, ShotOperationPipeline shotOperationPipeline){
+    public PreviewAndShotOperator(KeyValueStore keyValueStore, PreviewOperationPipeline previewOperationPipeline, ShotOperationPipeline shotOperationPipeline){
+        this.keyValueStore = keyValueStore;
         this.previewOperationPipeline = previewOperationPipeline;
         this.shotOperationsPipeline = shotOperationPipeline;
 
         nextPipeline = previewOperationPipeline;
-        timeOfLastExecution = LocalTime.now();
-        durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(EXECUTIONS_PER_SECOND);
+
     }
 
 
@@ -71,8 +75,17 @@ public class PreviewAndShotOperator implements Operator {
 
     @Override
     public void run() {
-        isOperating = true;
         try {
+            int exeutionsPerSecond = keyValueStore.getInt("executions_per_second");
+            timeOfLastExecution = LocalTime.now();
+            durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(exeutionsPerSecond);
+        } catch (PersistenceException e) {
+            LOGGER.error("Error during operator initialization", e);
+            return;
+        }
+
+        try {
+            isOperating = true;
             while(isOperating){
                 List<BufferedImage> currentImages = new ArrayList<>();
                 currentPipeline = nextPipeline;

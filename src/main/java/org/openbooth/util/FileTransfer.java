@@ -1,8 +1,5 @@
 package org.openbooth.util;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,8 +7,6 @@ import java.nio.file.Paths;
 /**
  * Used to transfer files out of an executing JAR-File to a destination in the computers filesystem.
  */
-@Component
-@Scope("prototype")
 public class FileTransfer{
 
     /**
@@ -21,7 +16,7 @@ public class FileTransfer{
      * @param destinationName the path of the destination as absolute path.
      * @throws IOException if an error occurs while writing or reading the files.
      */
-    public void transfer(String sourceName, String destinationName) throws IOException{
+    public static void transfer(String sourceName, String destinationName) throws IOException{
         transfer(sourceName, destinationName, true);
     }
 
@@ -33,7 +28,7 @@ public class FileTransfer{
      * @param replace boolean indicating, whether a file shall be overwritten if it already exists. True will overwrite, false will abort if the file already exists.
      * @throws IOException if an error occurs while writing or reading the files.
      */
-    public void transfer(String sourceName, String destinationName, boolean replace) throws IOException {
+    public static void transfer(String sourceName, String destinationName, boolean replace) throws IOException {
         if(sourceName==null || sourceName.isEmpty() || destinationName==null || destinationName.isEmpty()){
             throw new IOException("At least one of the paths is empty or null!");
         }
@@ -49,13 +44,13 @@ public class FileTransfer{
             Files.createDirectories(Paths.get(destinationFile.getParentFile().getCanonicalPath()));
         }
 
-        sourceStream = this.getClass().getResourceAsStream(sourceName);
+        sourceStream = FileTransfer.class.getResourceAsStream(sourceName);
 
         if (sourceStream == null) {
             throw new FileNotFoundException("File at path " + sourceName + " not found!");
         }
 
-        try (FileOutputStream fos = new FileOutputStream(destinationFile); BufferedOutputStream destStream = new BufferedOutputStream(fos);){
+        try (FileOutputStream fos = new FileOutputStream(destinationFile); BufferedOutputStream destStream = new BufferedOutputStream(fos)){
 
             byte[] buffer = new byte[1024 * 8];
             int length;

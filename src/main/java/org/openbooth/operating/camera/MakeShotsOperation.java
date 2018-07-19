@@ -2,7 +2,7 @@ package org.openbooth.operating.camera;
 
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.camera.exceptions.CameraException;
-import org.openbooth.operating.exception.OperationExecutionException;
+import org.openbooth.operating.exception.OperationException;
 import org.openbooth.operating.operations.Operation;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
@@ -25,13 +25,13 @@ public class MakeShotsOperation implements Operation {
     }
 
     @Override
-    public void execute(List<BufferedImage> images) throws OperationExecutionException{
+    public void execute(List<BufferedImage> images) throws OperationException {
         for(int i = 0; i < numberOfShots; i++){
             try {
                 String currentImagePath = cameraHandler.captureAndTransferImageFromCamera(storagePath);
                 images.add(imageHandler.openImage(currentImagePath));
             } catch (CameraException | ImageHandlingException e) {
-                throw new OperationExecutionException(e);
+                throw new OperationException(e);
             }
         }
     }

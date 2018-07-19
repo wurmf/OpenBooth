@@ -1,5 +1,6 @@
 package org.openbooth.operating;
 
+import org.openbooth.operating.exception.OperationException;
 import org.openbooth.operating.operations.Operation;
 
 /**
@@ -7,5 +8,5 @@ import org.openbooth.operating.operations.Operation;
  */
 public interface OperationFactory {
 
-    Operation getOperation();
+    Operation getOperation() throws OperationException;
 }

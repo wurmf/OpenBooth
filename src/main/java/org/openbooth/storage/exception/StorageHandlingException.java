@@ -1,4 +1,4 @@
-package org.openbooth.util.exceptions;
+package org.openbooth.storage.exception;
 
 /**
  *  Exceptionclass that is thrown if an error occurs while handling storages in any way.

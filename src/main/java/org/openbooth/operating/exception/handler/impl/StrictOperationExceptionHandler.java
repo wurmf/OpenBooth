@@ -1,8 +1,8 @@
 package org.openbooth.operating.exception.handler.impl;
 
-import org.openbooth.operating.exception.OperationExecutionException;
+import org.openbooth.operating.exception.OperationException;
 import org.openbooth.operating.exception.StopExecutionException;
-import org.openbooth.operating.exception.handler.OperationExecutionExceptionHandler;
+import org.openbooth.operating.exception.handler.OperationExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,16 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class StrictOperationExecutionExceptionHandler implements OperationExecutionExceptionHandler {
+public class StrictOperationExceptionHandler implements OperationExceptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StrictOperationExecutionExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrictOperationExceptionHandler.class);
 
     private static final int TOLERATED_EXCEPTION_COUNT = 0;
 
     private final Map<Class,Integer> exceptionCounter = new HashMap<>();
 
     @Override
-    public void handleOperationExecutionException(OperationExecutionException e) throws StopExecutionException {
+    public void handleOperationException(OperationException e) throws StopExecutionException {
 
         if(getCausingExceptionCount(e) > TOLERATED_EXCEPTION_COUNT){
             showFatalErrorMessageToUser();
@@ -32,7 +32,7 @@ public class StrictOperationExecutionExceptionHandler implements OperationExecut
         }
     }
 
-    private int getCausingExceptionCount(OperationExecutionException e){
+    private int getCausingExceptionCount(OperationException e){
         Class causingExceptionClass = e.getCause() == null ? e.getClass() : e.getCause().getClass();
         if(!exceptionCounter.containsKey(causingExceptionClass)){
             exceptionCounter.put(causingExceptionClass, 1);

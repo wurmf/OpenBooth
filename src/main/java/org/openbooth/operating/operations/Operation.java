@@ -1,6 +1,6 @@
 package org.openbooth.operating.operations;
 
-import org.openbooth.operating.exception.OperationExecutionException;
+import org.openbooth.operating.exception.OperationException;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface Operation {
 
-    void execute(List<BufferedImage> images) throws OperationExecutionException;
+    void execute(List<BufferedImage> images) throws OperationException;
 
 }

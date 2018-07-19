@@ -1,7 +1,7 @@
 package org.openbooth.operating.pipelines.impl;
 
 import org.openbooth.operating.camera.MakePreviewOperationFactory;
-import org.openbooth.operating.exception.handler.impl.StrictOperationExecutionExceptionHandler;
+import org.openbooth.operating.exception.handler.impl.StrictOperationExceptionHandler;
 import org.openbooth.operating.gui.ShowPreviewOperationFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -20,7 +20,7 @@ public class PreviewOperationPipeline extends AbstractOperationPipeline {
         operationFactories.add(applicationContext.getBean(ShowPreviewOperationFactory.class));
 
 
-        exceptionHandler = applicationContext.getBean(StrictOperationExecutionExceptionHandler.class);
+        exceptionHandler = applicationContext.getBean(StrictOperationExceptionHandler.class);
     }
 
 
