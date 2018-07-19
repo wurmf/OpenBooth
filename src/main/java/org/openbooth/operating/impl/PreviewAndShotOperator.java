@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,24 +25,47 @@ public class PreviewAndShotOperator implements Operator {
     private OperationPipeline previewOperationPipeline;
     private OperationPipeline shotOperationsPipeline;
 
+    private OperationPipeline currentPipeline;
+    private OperationPipeline nextPipeline;
 
-    private boolean triggered = false;
-    private volatile boolean isOperating = false;
+
+    private boolean isOperating = false;
+    private LocalTime timeOfLastExecution;
+    private Duration durationBetweenExecutions;
 
     @Autowired
     public PreviewAndShotOperator(PreviewOperationPipeline previewOperationPipeline, ShotOperationPipeline shotOperationPipeline){
         this.previewOperationPipeline = previewOperationPipeline;
         this.shotOperationsPipeline = shotOperationPipeline;
+
+        nextPipeline = previewOperationPipeline;
+        timeOfLastExecution = LocalTime.now();
+        durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(EXECUTIONS_PER_SECOND);
     }
 
 
     @Override
-    public void trigger() {
-        triggered = true;
+    public synchronized void trigger() {
+        nextPipeline = shotOperationsPipeline;
+    }
+
+    private synchronized void setPreviewPipelineAsNextPipeline(){
+        if(currentPipeline == previewOperationPipeline && nextPipeline == previewOperationPipeline){
+            Duration timeSinceLastExecution = Duration.between(timeOfLastExecution, LocalTime.now());
+            if(timeSinceLastExecution.compareTo(durationBetweenExecutions) < 0){
+                try {
+                    Thread.sleep(durationBetweenExecutions.minus(timeSinceLastExecution).toMillis());
+                } catch (InterruptedException e) {
+                    LOGGER.error("Exception during waiting for next execution of pipeline",e);
+                }
+            }
+        }
+
+        nextPipeline = previewOperationPipeline;
     }
 
     @Override
-    public void stopOperating(){
+    public synchronized void stopOperating(){
         isOperating = false;
     }
 
@@ -49,16 +75,14 @@ public class PreviewAndShotOperator implements Operator {
         try {
             while(isOperating){
                 List<BufferedImage> currentImages = new ArrayList<>();
-                if(triggered){
-                    shotOperationsPipeline.executeOperations(currentImages);
-                    triggered = false;
-                }else {
-                    previewOperationPipeline.executeOperations(currentImages);
-                }
+                currentPipeline = nextPipeline;
+                setPreviewPipelineAsNextPipeline();
+                currentPipeline.executeOperations(currentImages);
+                timeOfLastExecution = LocalTime.now();
             }
+            LOGGER.info("Operation execution stopped.");
         } catch (StopExecutionException e) {
             LOGGER.error("Operation execution terminated!");
         }
-        LOGGER.info("Operation execution stopped.");
     }
 }

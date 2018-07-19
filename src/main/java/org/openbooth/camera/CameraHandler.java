@@ -8,11 +8,12 @@ import org.openbooth.camera.exceptions.CameraException;
 public interface CameraHandler {
 
     /**
-     * Triggers a shot and transfers it the image to specified path
-     * @param imagePath the specified path
+     * Triggers a shot and transfers it the image to specified location
+     * @param storagePath the specified location
      * @throws CameraException if an error during capture occurs
+     * @return the full name of the transferred image
      */
-    void captureAndTransferImageFromCamera(String imagePath) throws CameraException;
+    String captureAndTransferImageFromCamera(String storagePath) throws CameraException;
 
     /**
      * Makes a preview image and stores it at the specified path
