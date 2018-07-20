@@ -3,6 +3,7 @@ package org.openbooth.operating.pipelines.impl;
 import org.openbooth.operating.camera.MakeShotsOperationFactory;
 import org.openbooth.operating.exception.handler.impl.StrictOperationExceptionHandler;
 import org.openbooth.operating.gui.ShowShotOperationFactory;
+import org.openbooth.operating.storage.SaveImagesToShootingFolderOperationFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ public class ShotOperationPipeline extends AbstractOperationPipeline {
         operationFactories = new ArrayList<>();
         operationFactories.add(applicationContext.getBean(MakeShotsOperationFactory.class));
         operationFactories.add(applicationContext.getBean(ShowShotOperationFactory.class));
+        operationFactories.add(applicationContext.getBean(SaveImagesToShootingFolderOperationFactory.class));
 
         exceptionHandler = applicationContext.getBean(StrictOperationExceptionHandler.class);
 

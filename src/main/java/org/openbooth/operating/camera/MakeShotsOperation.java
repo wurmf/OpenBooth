@@ -16,19 +16,21 @@ public class MakeShotsOperation implements Operation {
     private ImageHandler imageHandler;
     private int numberOfShots;
     private String storagePath;
+    private String imageName;
 
-    MakeShotsOperation(CameraHandler cameraHandler, ImageHandler imageHandler, int numberOfShots, String storagePath){
+    MakeShotsOperation(CameraHandler cameraHandler, ImageHandler imageHandler, int numberOfShots, String storagePath, String imageName){
         this.cameraHandler = cameraHandler;
         this.imageHandler = imageHandler;
         this.numberOfShots = numberOfShots;
         this.storagePath = storagePath;
+        this.imageName = imageName;
     }
 
     @Override
     public void execute(List<BufferedImage> images) throws OperationException {
         for(int i = 0; i < numberOfShots; i++){
             try {
-                String currentImagePath = cameraHandler.captureAndTransferImageFromCamera(storagePath);
+                String currentImagePath = cameraHandler.captureAndTransferImageFromCamera(storagePath, imageName);
                 images.add(imageHandler.openImage(currentImagePath));
             } catch (CameraException | ImageHandlingException e) {
                 throw new OperationException(e);

@@ -14,18 +14,20 @@ public class MakePreviewOperation implements Operation {
 
     private CameraHandler cameraHandler;
     private String tempStoragePath;
+    private String imageName;
     private ImageHandler imageHandler;
 
-    MakePreviewOperation(CameraHandler cameraHandler, ImageHandler imageHandler, String tempStoragePath){
+    MakePreviewOperation(CameraHandler cameraHandler, ImageHandler imageHandler, String tempStoragePath, String imageName){
         this.cameraHandler = cameraHandler;
         this.imageHandler = imageHandler;
         this.tempStoragePath = tempStoragePath;
+        this.imageName = imageName;
     }
 
     @Override
     public void execute(List<BufferedImage> images) throws OperationException {
         try{
-            String imagePath = cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath);
+            String imagePath = cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath, imageName);
             images.add(imageHandler.openImage(imagePath));
         } catch (ImageHandlingException | CameraException e) {
             throw new OperationException(e);

@@ -28,8 +28,6 @@ public class ImageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageHandler.class);
 
-    private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
-
     /**
      * Instantiates an ImageHandler using the given OpenCVLoader to load the OpenCV library
      * @param openCVLoader the given OpenCVLoader
@@ -105,12 +103,14 @@ public class ImageHandler {
 
         try {
             String formatName = destPath.substring(destPath.lastIndexOf('.') + 1);
-            if (!supportedImageFormats.contains(formatName)) {
-                throw new ImageHandlingException("Image format "+ formatName +" not supported");
-            }
             File newImage = new File(destPath);
-            ImageIO.write(image, formatName, newImage);
-        } catch (IOException | NullPointerException e) {
+            if(!newImage.getParentFile().exists()){
+                throw new ImageHandlingException("The directory " + newImage.getParentFile().getAbsolutePath() + " does not exist!");
+            }
+            if(!ImageIO.write(image, formatName, newImage)){
+                throw new ImageHandlingException("Image format " + formatName + " not supported");
+            }
+        } catch (IOException e) {
             throw new ImageHandlingException(e);
         }
 

@@ -1,11 +1,34 @@
 package org.openbooth.util;
 
+import org.openbooth.storage.KeyValueStore;
+import org.openbooth.storage.exception.PersistenceException;
+import org.openbooth.util.exceptions.ImageNameHandlingException;
+import org.springframework.stereotype.Component;
+
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
+@Component
 public class ImageNameHandler {
 
-    private static String shootingName = "NotImplemented";
-    private static int currentImageID = 0;
+    private KeyValueStore keyValueStore;
 
-    public static String getNewImageName() {
-        return shootingName + "_" + currentImageID;
+    public ImageNameHandler(KeyValueStore keyValueStore){
+        this.keyValueStore = keyValueStore;
+    }
+
+
+    public String getNewImageName() throws ImageNameHandlingException {
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            return keyValueStore.getString("image_prefix") + "_" + now.format(formatter);
+        } catch (PersistenceException e) {
+            throw new ImageNameHandlingException(e);
+        }catch (DateTimeException e){
+            throw new ImageNameHandlingException("Error during parsing date formatting string", e);
+        }
     }
 }

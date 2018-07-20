@@ -26,6 +26,6 @@ public class MakePreviewOperationFactory implements OperationFactory {
 
     @Override
     public Operation getOperation() {
-        return new MakePreviewOperation(cameraHandler, imageHandler, tempStoragePath);
+        return new MakePreviewOperation(cameraHandler, imageHandler, tempStoragePath, "preview_image");
     }
 }
