@@ -31,7 +31,7 @@ public class SaveImagesToShootingFolderOperationFactory implements OperationFact
     public Operation getOperation() throws OperationException{
         try {
             String storagePath = keyValueStore.getString("image_storage_path");
-            return new SaveImagesOperation(imageHandler, imageNameHandler, storagePath, "png");
+            return new SaveImagesOperation(imageHandler, imageNameHandler, storagePath, "jpg");
         } catch (PersistenceException e) {
             throw new OperationException(e);
         }
