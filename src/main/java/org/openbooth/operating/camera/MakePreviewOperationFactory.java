@@ -21,7 +21,7 @@ public class MakePreviewOperationFactory implements OperationFactory {
     public MakePreviewOperationFactory(CameraHandler cameraHandler, ImageHandler imageHandler, StorageHandler storageHandler) throws StorageHandlingException {
         this.cameraHandler = cameraHandler;
         this.imageHandler = imageHandler;
-        tempStoragePath = storageHandler.getNewTemporaryFolderPath() + "/preview_image.jpg";
+        tempStoragePath = storageHandler.getNewTemporaryFolderPath();
     }
 
     @Override

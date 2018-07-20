@@ -25,8 +25,8 @@ public class MakePreviewOperation implements Operation {
     @Override
     public void execute(List<BufferedImage> images) throws OperationException {
         try{
-            cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath);
-            images.add(imageHandler.openImage(tempStoragePath));
+            String imagePath = cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath);
+            images.add(imageHandler.openImage(imagePath));
         } catch (ImageHandlingException | CameraException e) {
             throw new OperationException(e);
         }

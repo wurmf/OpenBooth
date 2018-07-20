@@ -26,9 +26,11 @@ public class SimCameraHandler implements CameraHandler {
     }
 
     @Override
-    public void captureAndTransferPreviewFromCamera(String imagePath) throws CameraException {
+    public String captureAndTransferPreviewFromCamera(String storagePath) throws CameraException {
         try {
+            String imagePath = storagePath + "/" + "preview_image.png";
             FileTransfer.transfer(SIM_PREVIEW_IMAGE_PATH, imagePath);
+            return imagePath;
         } catch (IOException e) {
             throw new CameraException(e);
         }
