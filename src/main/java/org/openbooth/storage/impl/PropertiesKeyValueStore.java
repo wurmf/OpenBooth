@@ -4,7 +4,9 @@ import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.PersistenceException;
 import org.openbooth.storage.exception.StorageHandlingException;
+import org.openbooth.util.FileHandler;
 import org.openbooth.util.FileTransfer;
+import org.openbooth.util.exceptions.FileHandlingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,32 +29,45 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
 
     @Autowired
-    private PropertiesKeyValueStore(StorageHandler storageHandler) throws PersistenceException{
+    private PropertiesKeyValueStore(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException{
         try {
             configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
 
-            createConfigFileIfItDoesNotExists(storageHandler);
+            createConfigFileIfItDoesNotExists(storageHandler, fileHandler);
 
-            Properties defaultProperties = new Properties();
-            loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
-
-
-            storageProperties = new Properties(defaultProperties);
+            storageProperties = new Properties();
             loadProperties(storageProperties, configFilePath);
         } catch (StorageHandlingException e) {
             throw new PersistenceException(e);
         }
     }
 
-    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler) throws PersistenceException {
+    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException {
         try{
             if(!storageHandler.checkIfFileExistsInFolder(CONFIG_FOLDER_NAME, CONFIG_FILE_NAME)) {
-                String configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
                 FileTransfer.transfer(RESOURCES_CONFIG_FILE_PATH, configFilePath);
+                restoreDefaultProperties(fileHandler);
             }
-        } catch (IOException | StorageHandlingException e) {
+        } catch (IOException e) {
             throw new PersistenceException(e);
         }
+
+    }
+
+    public void restoreDefaultProperties(FileHandler fileHandler) throws PersistenceException{
+        Properties defaultProperties = new Properties();
+        loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
+
+
+        String defaultImageStoragePath = System.getProperty("user.home") + "/openbooth_images";
+        try {
+            fileHandler.createFolderIfItDoesNotExist(defaultImageStoragePath);
+        } catch (FileHandlingException e) {
+            throw new PersistenceException("error during creating default image storage folder",e);
+        }
+        defaultProperties.setProperty("image_storage_path", defaultImageStoragePath);
+
+        persistProperties(defaultProperties, configFilePath);
 
     }
 
@@ -74,9 +89,9 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
-    private void persistProperties() throws PersistenceException{
-        try (Writer writer = new FileWriter(configFilePath)){
-            storageProperties.store(writer,null);
+    private void persistProperties(Properties properties, String path) throws PersistenceException{
+        try (Writer writer = new FileWriter(path)){
+            properties.store(writer,null);
         } catch (IOException e) {
             throw new PersistenceException(e);
         }
@@ -86,20 +101,20 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     @Override
     public void put(String key, String value) throws PersistenceException{
         storageProperties.setProperty(key,value);
-        persistProperties();
+        persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
 
     @Override
     public void put(String key, int value) throws PersistenceException{
         storageProperties.setProperty(key, Integer.toString(value));
-        persistProperties();
+        persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
 
     public void put (String key, double value) throws PersistenceException{
         storageProperties.setProperty(key, Double.toString(value));
-        persistProperties();
+        persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
 
