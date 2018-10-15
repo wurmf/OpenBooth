@@ -48,7 +48,7 @@ public class StorageHandlerImpl implements StorageHandler {
             return folderFile.getAbsolutePath();
         }
 
-        throw new StorageHandlingException("File "+ folderFile.getAbsolutePath() +" exists but is it not a directory.");
+        throw new StorageHandlingException("File "+ folderFile.getAbsolutePath() +" exists but it is not a directory.");
     }
 
     @Override
