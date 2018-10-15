@@ -6,6 +6,7 @@ import java.util.List;
 public class EmptyImageProcessor implements ImageProcessor {
 
     @Override
-    public void process(List<BufferedImage> images) {
+    public BufferedImage process(BufferedImage image) {
+        return image;
     }
 }

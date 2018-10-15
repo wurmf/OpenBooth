@@ -7,11 +7,10 @@ import java.util.List;
 
 /**
  * This interface is used for any operation dealing with images,
- * the images in the list might replaced by new images when executed
- * or any other operation using the images is performed
+ * the given image is processed and the resulting image is returned.
  */
 public interface ImageProcessor {
 
-    void process(List<BufferedImage> images) throws ProcessingException;
+    BufferedImage process(BufferedImage image) throws ProcessingException;
 
 }

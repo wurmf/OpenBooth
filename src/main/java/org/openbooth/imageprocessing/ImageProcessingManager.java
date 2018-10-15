@@ -23,18 +23,18 @@ public class ImageProcessingManager extends Thread {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(ImageProcessingManager.class);
 
-    KeyValueStore keyValueStore;
+    private KeyValueStore keyValueStore;
 
-    private ImageProcessorPipeline previewPipeline;
-    private ImageProcessorPipeline shotPipeline;
+    private PreviewPipeline previewPipeline;
+    private ShotPipeline shotPipeline;
 
-    private ImageProcessorPipeline currentPipeline;
-    private ImageProcessorPipeline nextPipeline;
 
 
     private boolean isOperating = false;
     private LocalTime timeOfLastExecution;
     private Duration durationBetweenExecutions;
+
+    private boolean triggered = false;
 
     @Autowired
     public ImageProcessingManager(KeyValueStore keyValueStore, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
@@ -42,28 +42,26 @@ public class ImageProcessingManager extends Thread {
         this.previewPipeline = previewPipeline;
         this.shotPipeline = shotPipeline;
 
-        nextPipeline = previewPipeline;
-
     }
 
 
     public synchronized void trigger() {
-        nextPipeline = shotPipeline;
+        triggered = true;
     }
 
-    private synchronized void setPreviewPipelineAsNextPipeline(){
-        if(currentPipeline == previewPipeline && nextPipeline == previewPipeline){
-            Duration timeSinceLastExecution = Duration.between(timeOfLastExecution, LocalTime.now());
-            if(timeSinceLastExecution.compareTo(durationBetweenExecutions) < 0){
-                try {
-                    Thread.sleep(durationBetweenExecutions.minus(timeSinceLastExecution).toMillis());
-                } catch (InterruptedException e) {
-                    LOGGER.error("Exception during waiting for next execution of pipeline",e);
-                }
+    private void executePreviewPipeline() throws StopExecutionException{
+
+        Duration timeSinceLastExecution = Duration.between(timeOfLastExecution, LocalTime.now());
+        if(timeSinceLastExecution.compareTo(durationBetweenExecutions) < 0){
+            try {
+                Thread.sleep(durationBetweenExecutions.minus(timeSinceLastExecution).toMillis());
+            } catch (InterruptedException e) {
+                LOGGER.error("Exception during waiting for next execution of pipeline",e);
             }
         }
 
-        nextPipeline = previewPipeline;
+        previewPipeline.execute();
+        timeOfLastExecution = LocalTime.now();
     }
 
     public synchronized void stopOperating(){
@@ -73,9 +71,9 @@ public class ImageProcessingManager extends Thread {
     @Override
     public void run() {
         try {
-            int exeutionsPerSecond = keyValueStore.getInt("executions_per_second");
+            int executionsPerSecond = keyValueStore.getInt("executions_per_second");
             timeOfLastExecution = LocalTime.now();
-            durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(exeutionsPerSecond);
+            durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(executionsPerSecond);
         } catch (PersistenceException e) {
             LOGGER.error("Error during operator initialization", e);
             return;
@@ -84,15 +82,17 @@ public class ImageProcessingManager extends Thread {
         try {
             isOperating = true;
             while(isOperating){
-                List<BufferedImage> currentImages = new ArrayList<>();
-                currentPipeline = nextPipeline;
-                setPreviewPipelineAsNextPipeline();
-                currentPipeline.startProcessing(currentImages);
-                timeOfLastExecution = LocalTime.now();
+                if(triggered) {
+                    shotPipeline.execute();
+                    triggered = false;
+                } else {
+                    executePreviewPipeline();
+                }
+
             }
-            LOGGER.info("ImageProcessor execution stopped.");
+            LOGGER.info("Image processing stopped.");
         } catch (StopExecutionException e) {
-            LOGGER.error("ImageProcessor execution terminated!");
+            LOGGER.error("Image processing terminated!");
         }
     }
 }

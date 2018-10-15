@@ -1,16 +1,15 @@
-package org.openbooth.imageprocessing.processors.camera;
+package org.openbooth.imageprocessing.producer.camera;
 
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.camera.exceptions.CameraException;
-import org.openbooth.imageprocessing.processors.ImageProcessor;
 import org.openbooth.imageprocessing.exception.ProcessingException;
+import org.openbooth.imageprocessing.producer.ImageProducer;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
-public class MakePreviewProcessor implements ImageProcessor {
+public class MakePreviewProcessor implements ImageProducer {
 
     private CameraHandler cameraHandler;
     private String tempStoragePath;
@@ -25,10 +24,10 @@ public class MakePreviewProcessor implements ImageProcessor {
     }
 
     @Override
-    public void process(List<BufferedImage> images) throws ProcessingException {
+    public BufferedImage produce() throws ProcessingException {
         try{
             String imagePath = cameraHandler.captureAndTransferPreviewFromCamera(tempStoragePath, imageName);
-            images.add(imageHandler.openImage(imagePath));
+            return imageHandler.openImage(imagePath);
         } catch (ImageHandlingException | CameraException e) {
             throw new ProcessingException(e);
         }

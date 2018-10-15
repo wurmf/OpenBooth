@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface ImageProcessorPipeline {
 
-    void startProcessing(List<BufferedImage> images) throws StopExecutionException;
+    void execute() throws StopExecutionException;
 
 }

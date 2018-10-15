@@ -1,12 +1,13 @@
-package org.openbooth.imageprocessing.processors.gui;
+package org.openbooth.imageprocessing.consumer.gui;
 
 import org.openbooth.gui.ShotFrameController;
+import org.openbooth.imageprocessing.consumer.ImageConsumer;
 import org.openbooth.imageprocessing.processors.ImageProcessor;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-public class ShowPreviewProcessor implements ImageProcessor {
+public class ShowPreviewProcessor implements ImageConsumer {
 
     private ShotFrameController shotFrameController;
 
@@ -16,7 +17,7 @@ public class ShowPreviewProcessor implements ImageProcessor {
     }
 
     @Override
-    public void process(List<BufferedImage> images) {
-        shotFrameController.refreshShot(images.get(0));
+    public void consume(BufferedImage image) {
+        shotFrameController.refreshShot(image);
     }
 }

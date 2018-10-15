@@ -1,8 +1,10 @@
-package org.openbooth.imageprocessing.processors.camera;
+package org.openbooth.imageprocessing.producer.camera;
 
 import org.openbooth.camera.CameraHandler;
 import org.openbooth.imageprocessing.processors.ImageProcessor;
 import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
+import org.openbooth.imageprocessing.producer.ImageProducer;
+import org.openbooth.imageprocessing.producer.ImageProducerFactory;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.StorageHandlingException;
 import org.openbooth.util.ImageHandler;
@@ -11,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class MakePreviewProcFac implements ImageProcessorFactory {
+public class MakePreviewProcFac implements ImageProducerFactory {
 
     private CameraHandler cameraHandler;
     private ImageHandler imageHandler;
@@ -25,7 +27,7 @@ public class MakePreviewProcFac implements ImageProcessorFactory {
     }
 
     @Override
-    public ImageProcessor getProcessor() {
+    public ImageProducer getProducer() {
         return new MakePreviewProcessor(cameraHandler, imageHandler, tempStoragePath, "preview_image");
     }
 }

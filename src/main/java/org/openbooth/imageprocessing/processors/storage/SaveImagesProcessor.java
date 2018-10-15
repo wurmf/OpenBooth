@@ -25,14 +25,16 @@ public class SaveImagesProcessor implements ImageProcessor {
     }
 
     @Override
-    public void process(List<BufferedImage> images) throws ProcessingException {
-        for(BufferedImage image : images){
-            try {
-                String imagePath = destinationFolderPath + "/" + imageNameHandler.getNewImageName() + "." + fileExtension;
-                imageHandler.saveImage(image, imagePath);
-            } catch (ImageHandlingException | ImageNameHandlingException e) {
-                throw new ProcessingException(e);
-            }
+    public BufferedImage process(BufferedImage image) throws ProcessingException {
+
+        try {
+            String imagePath = destinationFolderPath + "/" + imageNameHandler.getNewImageName() + "." + fileExtension;
+            imageHandler.saveImage(image, imagePath);
+        } catch (ImageHandlingException | ImageNameHandlingException e) {
+            throw new ProcessingException(e);
         }
+
+        return image;
+
     }
 }
