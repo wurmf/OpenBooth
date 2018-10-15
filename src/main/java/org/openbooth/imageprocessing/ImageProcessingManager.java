@@ -1,7 +1,6 @@
 package org.openbooth.imageprocessing;
 
 import org.openbooth.imageprocessing.exception.StopExecutionException;
-import org.openbooth.imageprocessing.pipelines.ImageProcessorPipeline;
 import org.openbooth.imageprocessing.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
@@ -11,12 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.awt.image.BufferedImage;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class ImageProcessingManager extends Thread {

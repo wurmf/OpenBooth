@@ -3,10 +3,8 @@ package org.openbooth.imageprocessing.consumer.gui;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.consumer.ImageConsumer;
 import org.openbooth.imageprocessing.exception.ProcessingException;
-import org.openbooth.imageprocessing.processors.ImageProcessor;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 public class ShowShotProcessor implements ImageConsumer {
 

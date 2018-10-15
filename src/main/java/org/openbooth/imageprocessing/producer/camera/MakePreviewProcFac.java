@@ -1,8 +1,6 @@
 package org.openbooth.imageprocessing.producer.camera;
 
 import org.openbooth.camera.CameraHandler;
-import org.openbooth.imageprocessing.processors.ImageProcessor;
-import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
 import org.openbooth.imageprocessing.producer.ImageProducer;
 import org.openbooth.imageprocessing.producer.ImageProducerFactory;
 import org.openbooth.storage.StorageHandler;

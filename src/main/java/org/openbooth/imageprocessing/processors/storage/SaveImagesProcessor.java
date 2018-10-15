@@ -8,7 +8,6 @@ import org.openbooth.util.exceptions.ImageHandlingException;
 import org.openbooth.util.exceptions.ImageNameHandlingException;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 public class SaveImagesProcessor implements ImageProcessor {
 

@@ -3,7 +3,6 @@ package org.openbooth.imageprocessing.processors;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 /**
  * This interface is used for any operation dealing with images,
