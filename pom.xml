@@ -37,6 +37,15 @@
         <junit.version>4.12</junit.version>
         <mockito-all.version>2.0.2-beta</mockito-all.version>
     </properties>
+
+    <!-- use to include GitHub repositories as dependencies (e.g. lycheeupload) -->
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- runtime dependency injection -->
         <dependency>
@@ -93,6 +102,14 @@
             <version>${h2.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- image upload -->
+        <dependency>
+            <groupId>com.github.schrer</groupId>
+            <artifactId>lycheeupload</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+
 
         <!-- testing -->
         <dependency>
