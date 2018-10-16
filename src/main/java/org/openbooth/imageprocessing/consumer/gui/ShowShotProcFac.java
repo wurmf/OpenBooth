@@ -23,7 +23,7 @@ public class ShowShotProcFac implements ImageConsumerFactory {
     @Override
     public ImageConsumer getConsumer() throws ProcessingException {
         try {
-            int showShotTime = keyValueStore.getInt("show_shot_time");
+            int showShotTime = keyValueStore.getInt(KeyValueStore.SHOW_SHOT_TIME);
             return new ShowShotProcessor(shotFrameController, showShotTime);
         } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);

@@ -31,7 +31,7 @@ public class SaveImagesToShootingFolderProcFac implements ImageProcessorFactory 
     @Override
     public ImageProcessor getProcessor() throws ProcessingException {
         try {
-            String storagePath = keyValueStore.getString("image_storage_path");
+            String storagePath = keyValueStore.getString(KeyValueStore.IMAGE_FOLDER);
             return new SaveImagesProcessor(imageHandler, imageNameHandler, storagePath, "jpg");
         } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);

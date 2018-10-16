@@ -68,7 +68,7 @@ public class ImageProcessingManager extends Thread {
     @Override
     public void run() {
         try {
-            int executionsPerSecond = keyValueStore.getInt("executions_per_second");
+            int executionsPerSecond = keyValueStore.getInt(KeyValueStore.MAX_PREVIEW_REFRESH);
             timeOfLastExecution = LocalTime.now();
             durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(executionsPerSecond);
         } catch (KeyValueStoreException e) {
