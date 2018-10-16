@@ -59,7 +59,7 @@ public class ImageHandler {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("openImage - image from {} loaded", imagePath);
+        LOGGER.trace("openImage - image from {} loaded", imagePath);
         return img;
     }
 
@@ -83,7 +83,7 @@ public class ImageHandler {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("openImage - image from input stream opened");
+        LOGGER.trace("openImage - image from input stream opened");
         return img;
     }
 
@@ -118,7 +118,7 @@ public class ImageHandler {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("Image saved to {}", destPath);
+        LOGGER.trace("Image saved to {}", destPath);
     }
 
     /**

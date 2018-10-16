@@ -4,7 +4,8 @@ import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
-import org.openbooth.storage.exception.PersistenceException;
+import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.exception.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ public class ImageProcessingManager extends Thread {
             int executionsPerSecond = keyValueStore.getInt("executions_per_second");
             timeOfLastExecution = LocalTime.now();
             durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(executionsPerSecond);
-        } catch (PersistenceException e) {
+        } catch (KeyValueStoreException e) {
             LOGGER.error("Error during operator initialization", e);
             return;
         }

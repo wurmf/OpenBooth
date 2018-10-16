@@ -4,7 +4,8 @@ import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.processors.ImageProcessor;
 import org.openbooth.storage.KeyValueStore;
-import org.openbooth.storage.exception.PersistenceException;
+import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.ImageNameHandler;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class SaveImagesToShootingFolderProcFac implements ImageProcessorFactory 
         try {
             String storagePath = keyValueStore.getString("image_storage_path");
             return new SaveImagesProcessor(imageHandler, imageNameHandler, storagePath, "jpg");
-        } catch (PersistenceException e) {
+        } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);
         }
     }
