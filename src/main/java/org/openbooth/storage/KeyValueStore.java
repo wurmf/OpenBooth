@@ -72,9 +72,9 @@ public interface KeyValueStore {
 
     /**
      * Restores the default values for all values in the key-value store.
-     * @throws PersistenceException If either the data store for the default values could not be accessed or
+     * @throws StorageException If either the data store for the default values could not be accessed or
      * one of the default values could not be restored
      */
-    void restoreDefaultProperties();
+    void restoreDefaultProperties() throws StorageException;
 
 }
