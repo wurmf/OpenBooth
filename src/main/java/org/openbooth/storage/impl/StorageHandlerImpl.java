@@ -1,7 +1,7 @@
 package org.openbooth.storage.impl;
 
 import org.openbooth.storage.StorageHandler;
-import org.openbooth.storage.exception.StorageHandlingException;
+import org.openbooth.storage.exception.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -24,12 +24,12 @@ public class StorageHandlerImpl implements StorageHandler {
 
     private int folderCount = 0;
 
-    public StorageHandlerImpl() throws StorageHandlingException{
+    public StorageHandlerImpl() throws StorageException{
         initializeStorage();
     }
 
     @Override
-    public String getNewTemporaryFolderPath() throws StorageHandlingException{
+    public String getNewTemporaryFolderPath() throws StorageException {
         File newTempStorageFolder = new File(TEMP_STORAGE_PATH + "/tmp" + folderCount);
         createNewFolder(newTempStorageFolder);
         folderCount++;
@@ -38,7 +38,7 @@ public class StorageHandlerImpl implements StorageHandler {
 
 
     @Override
-    public String getPathForFolder(String folderName) throws StorageHandlingException{
+    public String getPathForFolder(String folderName) throws StorageException{
         File folderFile = new File(STORAGE_PATH + "/" + folderName);
         if(folderFile.exists() && folderFile.isDirectory()){
             return folderFile.getAbsolutePath();
@@ -50,7 +50,7 @@ public class StorageHandlerImpl implements StorageHandler {
             return folderFile.getAbsolutePath();
         }
 
-        throw new StorageHandlingException("File "+ folderFile.getAbsolutePath() +" exists but it is not a directory.");
+        throw new StorageException("File "+ folderFile.getAbsolutePath() +" exists but it is not a directory.");
     }
 
     @Override
@@ -59,7 +59,7 @@ public class StorageHandlerImpl implements StorageHandler {
         return file.exists();
     }
 
-    private void initializeStorage() throws StorageHandlingException{
+    private void initializeStorage() throws StorageException{
         File tempStorageFile = new File(TEMP_STORAGE_PATH);
 
         if(tempStorageFile.exists()){
@@ -67,19 +67,19 @@ public class StorageHandlerImpl implements StorageHandler {
         }
 
         if(!tempStorageFile.mkdirs()){
-            throw new StorageHandlingException("could not create storage");
+            throw new StorageException("could not create storage");
         }
 
         LOGGER.debug("Storage initialized");
     }
 
-    private void deleteFilesRecursively(File file) throws StorageHandlingException{
+    private void deleteFilesRecursively(File file) throws StorageException{
         if(file.isFile()){
             deleteFileOrThrowException(file);
         }else {
             File[] fileList = file.listFiles();
             if(fileList == null){
-                throw new StorageHandlingException("fileList is null");
+                throw new StorageException("fileList is null");
             }
             for(File f : fileList){
                 deleteFilesRecursively(f);
@@ -88,13 +88,13 @@ public class StorageHandlerImpl implements StorageHandler {
         }
     }
 
-    private void deleteFileOrThrowException(File file) throws StorageHandlingException{
-        if(!file.delete()) throw new StorageHandlingException("could not delete file at " + file.getAbsolutePath());
+    private void deleteFileOrThrowException(File file) throws StorageException{
+        if(!file.delete()) throw new StorageException("could not delete file at " + file.getAbsolutePath());
     }
 
 
-    private void createNewFolder(File folderFile) throws StorageHandlingException{
-        if(!folderFile.mkdir()) throw new StorageHandlingException("could not create folder: " + folderFile.getAbsolutePath());
+    private void createNewFolder(File folderFile) throws StorageException{
+        if(!folderFile.mkdir()) throw new StorageException("could not create folder: " + folderFile.getAbsolutePath());
     }
 
 }

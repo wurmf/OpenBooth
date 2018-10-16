@@ -3,7 +3,6 @@ package org.openbooth.storage.impl;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.StorageException;
-import org.openbooth.storage.exception.StorageHandlingException;
 import org.openbooth.util.FileTransfer;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.openbooth.util.validation.ConfigValidator;
@@ -34,7 +33,6 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
     @Autowired
     private PropertiesKeyValueStore(StorageHandler storageHandler, ConfigValidator configValidator) throws StorageException {
-        try {
             this.configValidator = configValidator;
 
             configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
@@ -44,10 +42,6 @@ public class PropertiesKeyValueStore implements KeyValueStore {
             storageProperties = new Properties();
             loadProperties(storageProperties, configFilePath);
 
-
-        } catch (StorageHandlingException e) {
-            throw new StorageException(e);
-        }
     }
 
     @PostConstruct
