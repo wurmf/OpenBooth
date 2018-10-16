@@ -61,4 +61,11 @@ public interface KeyValueStore {
      * or the value could not be converted to a double, a PersistenceException is thrown
      */
     double getDouble(String key) throws PersistenceException;
+
+    /**
+     * Restores the default values for all values in the key-value store.
+     * @throws PersistenceException If either the data store for the default values could not be accessed or
+     * one of the default values could not be restored
+     */
+    void restoreDefaultProperties() throws PersistenceException;
 }

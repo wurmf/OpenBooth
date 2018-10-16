@@ -27,13 +27,16 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     private String configFilePath;
     private Properties storageProperties;
 
+    private FileHandler fileHandler;
+
 
     @Autowired
     private PropertiesKeyValueStore(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException{
+        this.fileHandler = fileHandler;
         try {
             configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
 
-            createConfigFileIfItDoesNotExists(storageHandler, fileHandler);
+            createConfigFileIfItDoesNotExists(storageHandler);
 
             storageProperties = new Properties();
             loadProperties(storageProperties, configFilePath);
@@ -42,11 +45,11 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
-    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException {
+    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler) throws PersistenceException {
         try{
             if(!storageHandler.checkIfFileExistsInFolder(CONFIG_FOLDER_NAME, CONFIG_FILE_NAME)) {
                 FileTransfer.transfer(RESOURCES_CONFIG_FILE_PATH, configFilePath);
-                restoreDefaultProperties(fileHandler);
+                restoreDefaultProperties();
             }
         } catch (IOException e) {
             throw new PersistenceException(e);
@@ -54,7 +57,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
     }
 
-    public void restoreDefaultProperties(FileHandler fileHandler) throws PersistenceException{
+    public void restoreDefaultProperties() throws PersistenceException{
         Properties defaultProperties = new Properties();
         loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
 
