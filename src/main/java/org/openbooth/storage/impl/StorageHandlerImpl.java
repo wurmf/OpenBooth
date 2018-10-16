@@ -9,7 +9,9 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 
 /**
- * Used to create the temporary directory only once
+ * This class provides the functionality described by the StorageHandler interface by creating folders in the
+ * .openbooth folder in the user home directory.
+ * Temporary folders are created inside the .tmp directory inside the .openbooth folder
  */
 @Component
 public class StorageHandlerImpl implements StorageHandler {

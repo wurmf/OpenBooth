@@ -2,6 +2,11 @@ package org.openbooth.storage;
 
 import org.openbooth.storage.exception.StorageHandlingException;
 
+/**
+ * A class implementing this interface provides methods for managing folders and files in the openooth home directory
+ * as well as methods for creating temporary folders inside the openbooth home directory.
+ *
+ */
 public interface StorageHandler {
 
     /**
