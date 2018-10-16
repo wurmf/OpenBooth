@@ -4,7 +4,7 @@ import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.PersistenceException;
 import org.openbooth.storage.exception.StorageHandlingException;
-import org.openbooth.util.FileHandler;
+import org.openbooth.util.FileHelper;
 import org.openbooth.util.FileTransfer;
 import org.openbooth.util.exceptions.FileHandlingException;
 import org.slf4j.Logger;
@@ -29,11 +29,11 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
 
     @Autowired
-    private PropertiesKeyValueStore(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException{
+    private PropertiesKeyValueStore(StorageHandler storageHandler, FileHelper fileHelper) throws PersistenceException{
         try {
             configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
 
-            createConfigFileIfItDoesNotExists(storageHandler, fileHandler);
+            createConfigFileIfItDoesNotExists(storageHandler, fileHelper);
 
             storageProperties = new Properties();
             loadProperties(storageProperties, configFilePath);
@@ -42,11 +42,11 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
-    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler, FileHandler fileHandler) throws PersistenceException {
+    private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler, FileHelper fileHelper) throws PersistenceException {
         try{
             if(!storageHandler.checkIfFileExistsInFolder(CONFIG_FOLDER_NAME, CONFIG_FILE_NAME)) {
                 FileTransfer.transfer(RESOURCES_CONFIG_FILE_PATH, configFilePath);
-                restoreDefaultProperties(fileHandler);
+                restoreDefaultProperties(fileHelper);
             }
         } catch (IOException e) {
             throw new PersistenceException(e);
@@ -54,14 +54,14 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
     }
 
-    public void restoreDefaultProperties(FileHandler fileHandler) throws PersistenceException{
+    public void restoreDefaultProperties(FileHelper fileHelper) throws PersistenceException{
         Properties defaultProperties = new Properties();
         loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
 
 
         String defaultImageStoragePath = System.getProperty("user.home") + "/openbooth_images";
         try {
-            fileHandler.createFolderIfItDoesNotExist(defaultImageStoragePath);
+            fileHelper.createFolderIfItDoesNotExist(defaultImageStoragePath);
         } catch (FileHandlingException e) {
             throw new PersistenceException("error during creating default image storage folder",e);
         }

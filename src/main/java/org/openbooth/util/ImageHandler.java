@@ -46,8 +46,10 @@ public class ImageHandler {
     public BufferedImage openImage(String imagePath) throws ImageHandlingException {
 
         if (imagePath == null || imagePath.isEmpty()) {
-            throw new ImageHandlingException("imagePath is null or empty");
+            throw new IllegalArgumentException("imagePath is null or empty");
         }
+
+        imagePath = PathHelper.expandPath(imagePath);
 
         BufferedImage img;
 
@@ -98,8 +100,10 @@ public class ImageHandler {
      */
     public void saveImage(BufferedImage image, String destPath) throws ImageHandlingException {
         if (destPath == null || destPath.isEmpty()) {
-            throw new ImageHandlingException("destPath is null or empty");
+            throw new IllegalArgumentException("destPath is null or empty");
         }
+
+        destPath = PathHelper.expandPath(destPath);
 
         try {
             String formatName = destPath.substring(destPath.lastIndexOf('.') + 1);
