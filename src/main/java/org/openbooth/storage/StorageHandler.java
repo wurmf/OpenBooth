@@ -31,4 +31,10 @@ public interface StorageHandler {
      * @return true if the file exists, false otherwise
      */
     boolean checkIfFileExistsInFolder(String folderName, String fileName);
+
+    /**
+     * Deletes all temporary folders
+     * @throws StorageException If an error occurs
+     */
+    void clearTemporaryStorage() throws StorageException;
 }

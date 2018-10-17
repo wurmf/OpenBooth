@@ -5,7 +5,6 @@ import org.openbooth.imageprocessing.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
-import org.openbooth.storage.exception.StorageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,9 @@ public class ImageProcessingManager extends Thread {
     private ShotPipeline shotPipeline;
 
 
+    private boolean shouldStop = false;
+    private boolean isProcessing = true;
 
-    private boolean isOperating = false;
     private LocalTime timeOfLastExecution;
     private Duration durationBetweenExecutions;
 
@@ -61,9 +61,11 @@ public class ImageProcessingManager extends Thread {
         timeOfLastExecution = LocalTime.now();
     }
 
-    public synchronized void stopOperating(){
-        isOperating = false;
+    public synchronized void stopProcessing(){
+        shouldStop = true;
     }
+
+    public boolean isProcessing(){return isProcessing;}
 
     @Override
     public void run() {
@@ -77,8 +79,7 @@ public class ImageProcessingManager extends Thread {
         }
 
         try {
-            isOperating = true;
-            while(isOperating){
+            while(!shouldStop){
                 if(triggered) {
                     shotPipeline.execute();
                     triggered = false;
@@ -88,6 +89,7 @@ public class ImageProcessingManager extends Thread {
 
             }
             LOGGER.info("Image processing stopped.");
+            isProcessing = false;
         } catch (StopExecutionException e) {
             LOGGER.error("Image processing terminated!");
         }

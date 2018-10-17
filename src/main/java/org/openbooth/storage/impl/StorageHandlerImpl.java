@@ -59,12 +59,20 @@ public class StorageHandlerImpl implements StorageHandler {
         return file.exists();
     }
 
-    private void initializeStorage() throws StorageException{
+    @Override
+    public void clearTemporaryStorage() throws StorageException{
         File tempStorageFile = new File(TEMP_STORAGE_PATH);
 
         if(tempStorageFile.exists()){
             deleteFilesRecursively(tempStorageFile);
         }
+        LOGGER.debug("Temporary storage cleared");
+    }
+
+    private void initializeStorage() throws StorageException{
+        clearTemporaryStorage();
+
+        File tempStorageFile = new File(TEMP_STORAGE_PATH);
 
         if(!tempStorageFile.mkdirs()){
             throw new StorageException("could not create storage");

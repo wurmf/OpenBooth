@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.ImageProcessingManager;
+import org.openbooth.storage.StorageHandler;
 import org.openbooth.util.SpringFXMLLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,15 @@ public class MainApplication extends Application {
     @Override
     public void stop() throws Exception {
         LOGGER.info("Stopping Application");
-        applicationContext.getBean(ImageProcessingManager.class).stopOperating();
+        ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
+        imageProcessingManager.stopProcessing();
+
+        LOGGER.debug("Waiting for image processing to stop");
+        while(imageProcessingManager.isProcessing()){
+            Thread.sleep(500);
+        }
+
+        applicationContext.getBean(StorageHandler.class).clearTemporaryStorage();
 
         if ( applicationContext.isRunning() ) {
             this.applicationContext.close();
