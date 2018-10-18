@@ -16,6 +16,9 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.Properties;
 
+/**
+ * THIS CLASS IS NOT THREAD SAFE FOR CONCURRENT WRITE OPERATIONS!
+ */
 @Component
 public class PropertiesKeyValueStore implements KeyValueStore {
 
@@ -25,9 +28,12 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     private static final String RESOURCES_DEFAULT_CONFIG_FILE_PATH = "/config/defaults.properties";
 
     private String configFilePath;
-    private Properties storageProperties;
+    private Properties readStorageProperties;
+    private Properties writeStorageProperties;
 
     private ConfigValidator configValidator;
+
+    private boolean autoCommitEnabled = true;
 
 
     @Autowired
@@ -38,8 +44,16 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
             createConfigFileIfItDoesNotExists(storageHandler);
 
-            storageProperties = new Properties();
-            loadProperties(storageProperties, configFilePath);
+            /*
+            redStorageProperties and writeStorageProperties must be different objects
+            to make sure that validation is done before reading the new values
+            and to enable rollbacks and transactions
+             */
+
+            readStorageProperties = new Properties();
+            loadProperties(readStorageProperties, configFilePath);
+            writeStorageProperties = new Properties();
+            loadProperties(writeStorageProperties, configFilePath);
 
     }
 
@@ -60,15 +74,6 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
     }
 
-    @Override
-    public void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException {
-        Properties defaultProperties = new Properties();
-        loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
-
-        persistProperties(defaultProperties, configFilePath);
-        LOGGER.debug("restored default config to  " + configFilePath);
-
-    }
 
     private void loadProperties(Properties properties, String path) throws StorageException {
         try(Reader reader = new FileReader(new File(path))){
@@ -88,38 +93,48 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
-    private void persistProperties(Properties properties, String path) throws StorageException, ValidationException, KeyValueStoreException {
+    @Override
+    public void commit() throws StorageException, ValidationException, KeyValueStoreException {
         configValidator.validate(this);
-        try (Writer writer = new FileWriter(path)){
-            properties.store(writer,null);
+        try (Writer writer = new FileWriter(configFilePath)){
+            writeStorageProperties.store(writer,null);
+            readStorageProperties = writeStorageProperties;
+            writeStorageProperties = new Properties();
+            loadProperties(writeStorageProperties, configFilePath);
         } catch (IOException e) {
             throw new StorageException(e);
         }
+
+    }
+
+    @Override
+    public void rollBack(){
+        writeStorageProperties = readStorageProperties;
     }
 
 
     @Override
     public void put(String key, String value) throws StorageException, ValidationException, KeyValueStoreException {
-        storageProperties.setProperty(key,value);
-        persistProperties(storageProperties, configFilePath);
-        LOGGER.trace("Key {} with value {} persisted.", key, value);
+        writeStorageProperties.setProperty(key,value);
+        if(autoCommitEnabled) commit();
+        LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     @Override
     public void put(String key, int value) throws StorageException, ValidationException, KeyValueStoreException {
-        storageProperties.setProperty(key, Integer.toString(value));
-        persistProperties(storageProperties, configFilePath);
-        LOGGER.trace("Key {} with value {} persisted.", key, value);
+        writeStorageProperties.setProperty(key, Integer.toString(value));
+        if(autoCommitEnabled) commit();
+        LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     public void put (String key, double value) throws StorageException, ValidationException, KeyValueStoreException {
-        storageProperties.setProperty(key, Double.toString(value));
-        persistProperties(storageProperties, configFilePath);
-        LOGGER.trace("Key {} with value {} persisted.", key, value);
+        writeStorageProperties.setProperty(key, Double.toString(value));
+        if(autoCommitEnabled) commit();
+        LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     private String getValue(String key) throws KeyValueStoreException{
-        String value = storageProperties.getProperty(key);
+        String value = readStorageProperties.getProperty(key);
         if (value == null) throw new KeyValueStoreException("No value for key \"" + key + "\" could be found.");
         return value;
     }
@@ -149,6 +164,34 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         } catch (NumberFormatException e) {
             throw new KeyValueStoreException("Error when retrieving double property.", e);
         }
+    }
+
+    @Override
+    public void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException {
+        Properties defaultProperties = new Properties();
+        loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
+
+        writeStorageProperties = defaultProperties;
+
+        if(autoCommitEnabled) commit();
+        LOGGER.debug("restored default config to  " + configFilePath);
+
+    }
+
+    @Override
+    public void setAutoCommit(boolean setAutoCommitEnabled) throws StorageException{
+        if(setAutoCommitEnabled == autoCommitEnabled) return;
+
+        if(!setAutoCommitEnabled && autoCommitEnabled){
+            writeStorageProperties = new Properties();
+            loadProperties(writeStorageProperties, configFilePath);
+        }
+
+        if(setAutoCommitEnabled && !autoCommitEnabled){
+            readStorageProperties = writeStorageProperties;
+        }
+
+        autoCommitEnabled = setAutoCommitEnabled;
     }
 
 

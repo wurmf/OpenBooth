@@ -51,8 +51,7 @@ public interface KeyValueStore {
      * Retrieves the value for the given key
      * @param key the given key
      * @return the stored value for the given key,
-     * if no value is stored, the default value will be returned.
-     * @throws KeyValueStoreException If no default value is found
+     * @throws KeyValueStoreException If no value for the given key was found
      */
     String getString(String key) throws KeyValueStoreException;
 
@@ -60,9 +59,7 @@ public interface KeyValueStore {
      * Retrieves the int value for the given key
      * @param key the given key
      * @return the stored int value for the given key,
-     * if no value is stored, the default value will be returned.
-     * @throws KeyValueStoreException If no default value is found
-     * or the value could not be converted to an integer
+     * @throws KeyValueStoreException If the value could not be converted to an integer or no value for the given key was found
      */
     int getInt(String key) throws KeyValueStoreException;
 
@@ -70,7 +67,6 @@ public interface KeyValueStore {
      * Retrieves the double value for the given key
      * @param key the given key
      * @return the stored double value for the given key,
-     * if no value is stored, the default value will be returned.
      * @throws KeyValueStoreException If no default value is found
      * or the value could not be converted to a double
      */
@@ -84,5 +80,25 @@ public interface KeyValueStore {
      * @throws KeyValueStoreException If a to-be-validated value could not be found
      */
     void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException;
+
+    /**
+     * Validates and writes out all changes made to the key-value store since last commit.
+     * @throws StorageException If the data store could not be accessed
+     * @throws ValidationException If any of the given values is invalid or a folder referenced by a default value could not be created
+     * @throws KeyValueStoreException If a to-be-validated value could not be found
+     */
+    void commit() throws StorageException, ValidationException, KeyValueStoreException;
+
+    /**
+     * Undoes all uncommited changes made since the last commit
+     */
+    void rollBack();
+
+    /**
+     * Change if a commit should be made after every change to the key-value store
+     * @param autoCommit Enable or disable auto commit
+     * @throws StorageException If the data store could not be accessed
+     */
+    void setAutoCommit(boolean autoCommit) throws StorageException;
 
 }
