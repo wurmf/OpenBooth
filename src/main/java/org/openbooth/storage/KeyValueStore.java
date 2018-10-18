@@ -80,7 +80,9 @@ public interface KeyValueStore {
      * Restores the default values for all values in the key-value store.
      * @throws StorageException If either the data store for the default values could not be accessed or
      * one of the default values could not be restored
+     * @throws ValidationException If one of the default values is invalid or a folder referenced by a default value could no tbe created
+     * @throws KeyValueStoreException If a to-be-validated value could not be found
      */
-    void restoreDefaultProperties() throws StorageException;
+    void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException;
 
 }

@@ -22,7 +22,6 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesKeyValueStore.class);
     private static final String CONFIG_FOLDER_NAME = "config";
     private static final String CONFIG_FILE_NAME = "config.properties";
-    private static final String RESOURCES_CONFIG_FILE_PATH = "/config/config.properties";
     private static final String RESOURCES_DEFAULT_CONFIG_FILE_PATH = "/config/defaults.properties";
 
     private String configFilePath;
@@ -53,8 +52,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         try{
             if(!storageHandler.checkIfFileExistsInFolder(CONFIG_FOLDER_NAME, CONFIG_FILE_NAME)) {
                 LOGGER.debug("config file does not exist, trying to create new config file at " + configFilePath);
-                FileTransfer.transfer(RESOURCES_CONFIG_FILE_PATH, configFilePath);
-                restoreDefaultProperties();
+                FileTransfer.transfer(RESOURCES_DEFAULT_CONFIG_FILE_PATH, configFilePath);
             }
         } catch (IOException e) {
             throw new StorageException(e);
@@ -62,7 +60,8 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
     }
 
-    public void restoreDefaultProperties() throws StorageException {
+    @Override
+    public void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException {
         Properties defaultProperties = new Properties();
         loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
 
@@ -89,7 +88,8 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
-    private void persistProperties(Properties properties, String path) throws StorageException {
+    private void persistProperties(Properties properties, String path) throws StorageException, ValidationException, KeyValueStoreException {
+        configValidator.validate(this);
         try (Writer writer = new FileWriter(path)){
             properties.store(writer,null);
         } catch (IOException e) {
@@ -101,7 +101,6 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     @Override
     public void put(String key, String value) throws StorageException, ValidationException, KeyValueStoreException {
         storageProperties.setProperty(key,value);
-        configValidator.validate(this);
         persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
@@ -109,14 +108,12 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     @Override
     public void put(String key, int value) throws StorageException, ValidationException, KeyValueStoreException {
         storageProperties.setProperty(key, Integer.toString(value));
-        configValidator.validate(this);
         persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
 
     public void put (String key, double value) throws StorageException, ValidationException, KeyValueStoreException {
         storageProperties.setProperty(key, Double.toString(value));
-        configValidator.validate(this);
         persistProperties(storageProperties, configFilePath);
         LOGGER.trace("Key {} with value {} persisted.", key, value);
     }
