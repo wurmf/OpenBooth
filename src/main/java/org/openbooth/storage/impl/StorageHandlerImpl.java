@@ -16,15 +16,18 @@ import java.io.File;
 @Component
 public class StorageHandlerImpl implements StorageHandler {
 
-    private static final String STORAGE_PATH = System.getProperty("user.home") + "/.openbooth";
-    private static final String TEMP_STORAGE_PATH = STORAGE_PATH + "/.tmp";
+    private static final String DEFAULT_STORAGE_PATH = System.getProperty("user.home") + "/.openbooth";
+    private static final String TEMP_STORAGE_PATH = DEFAULT_STORAGE_PATH + "/.tmp";
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageHandlerImpl.class);
 
     private int folderCount = 0;
 
+    protected String storagePath;
+
     public StorageHandlerImpl() throws StorageException{
+        storagePath = DEFAULT_STORAGE_PATH;
         initializeStorage();
     }
 
@@ -39,7 +42,7 @@ public class StorageHandlerImpl implements StorageHandler {
 
     @Override
     public String getPathForFolder(String folderName) throws StorageException{
-        File folderFile = new File(STORAGE_PATH + "/" + folderName);
+        File folderFile = new File(DEFAULT_STORAGE_PATH + "/" + folderName);
         if(folderFile.exists() && folderFile.isDirectory()){
             return folderFile.getAbsolutePath();
         }
@@ -55,7 +58,7 @@ public class StorageHandlerImpl implements StorageHandler {
 
     @Override
     public boolean checkIfFileExistsInFolder(String folderName, String fileName) {
-        File file = new File(STORAGE_PATH + "/" + folderName + "/" + fileName);
+        File file = new File(DEFAULT_STORAGE_PATH + "/" + folderName + "/" + fileName);
         return file.exists();
     }
 
@@ -69,7 +72,7 @@ public class StorageHandlerImpl implements StorageHandler {
         LOGGER.debug("Temporary storage cleared");
     }
 
-    private void initializeStorage() throws StorageException{
+    protected void initializeStorage() throws StorageException{
         clearTemporaryStorage();
 
         File tempStorageFile = new File(TEMP_STORAGE_PATH);
