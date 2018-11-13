@@ -52,6 +52,10 @@ public class ShotFrameController {
         useTimer();
     }
 
+    public boolean isCountDownFinished(){
+        return counter <= 0;
+    }
+
     private void useTimer(){
         int delay = 1000;
         int period = 1000;
