@@ -26,4 +26,11 @@ public interface CameraHandler {
      * @return the full path of the stored preview image
      */
     String captureAndTransferPreviewFromCamera(String storagePath, String imageName) throws CameraException;
+
+
+    /**
+     * Checks if there is one and only one camera attached.
+     * @throws CameraException if zero or more than one cameras are found
+     */
+    void initialize() throws CameraException;
 }
