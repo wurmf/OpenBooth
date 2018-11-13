@@ -1,6 +1,6 @@
 package org.openbooth.imageprocessing.pipelines.impl;
 
-import org.openbooth.imageprocessing.preactions.impl.ShowPreactionProcFac;
+import org.openbooth.imageprocessing.actions.impl.ShowCountdownAcFac;
 import org.openbooth.imageprocessing.producer.camera.MakeShotsProcFac;
 import org.openbooth.imageprocessing.exception.handler.impl.StrictProcessingExceptionHandler;
 import org.openbooth.imageprocessing.consumer.gui.ShowShotProcFac;
@@ -19,8 +19,8 @@ public class ShotPipeline extends AbstractPipeline {
         processorFactories = new ArrayList<>();
         processorFactories.add(applicationContext.getBean(SaveImagesToShootingFolderProcFac.class));
 
-        preactionsFacList = new ArrayList<>();
-        preactionsFacList.add(applicationContext.getBean(ShowPreactionProcFac.class));
+        preActionsFactories = new ArrayList<>();
+        preActionsFactories.add(applicationContext.getBean(ShowCountdownAcFac.class));
 
         producerFactory = applicationContext.getBean(MakeShotsProcFac.class);
         consumerFactory = applicationContext.getBean(ShowShotProcFac.class);

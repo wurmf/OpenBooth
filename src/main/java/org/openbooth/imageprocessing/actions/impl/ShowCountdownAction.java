@@ -1,13 +1,14 @@
-package org.openbooth.imageprocessing.preactions.impl;
+package org.openbooth.imageprocessing.actions.impl;
 
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.exception.ProcessingException;
-import org.openbooth.imageprocessing.preactions.Preactions;
+import org.openbooth.imageprocessing.actions.Action;
 
-public class ShowPreactionProcessor implements Preactions {
-    ShotFrameController shotFrameController;
-    Integer counter;
-    public ShowPreactionProcessor(ShotFrameController shotFrameController, int counter) {
+public class ShowCountdownAction implements Action {
+    private ShotFrameController shotFrameController;
+    private int counter;
+
+    ShowCountdownAction(ShotFrameController shotFrameController, int counter) {
         this.counter = counter;
         this.shotFrameController = shotFrameController;
     }
@@ -16,7 +17,7 @@ public class ShowPreactionProcessor implements Preactions {
     public void execute() throws ProcessingException {
         shotFrameController.startTimer(counter);
         try {
-            Thread.sleep(counter*1000);
+            Thread.sleep(counter * 1000L);
         } catch (InterruptedException e) {
             throw new ProcessingException(e);
         }

@@ -20,11 +20,11 @@ public class ShotFrameController {
     @FXML
     private ImageView shotView;
 
-    private static ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-    private static int counter;
+    private int counter;
 
-    private static Timer timer;
+    private Timer timer;
 
     public ShotFrameController(ApplicationContext applicationContext){
         this.applicationContext = applicationContext;
@@ -66,7 +66,7 @@ public class ShotFrameController {
         }, delay, period);
 
     }
-    private static final String setText() {
+    private String setText() {
         String text = "";
 
         if(counter ==-1) {
@@ -76,7 +76,7 @@ public class ShotFrameController {
         if (counter>0){
             text = ""+counter;
         }else if (counter ==0){
-            text = "chees";
+            text = "Cheese!";
         }
 
         return text;
