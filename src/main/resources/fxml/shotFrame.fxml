@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane fx:id="pane" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.ShotFrameController" style="-fx-background-color: #000000;">
+<StackPane fx:id="pane" style="-fx-background-color: #000000;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.openbooth.gui.ShotFrameController">
     <children>
 
         <ImageView fx:id="shotView" onMouseClicked="#shotFrameClicked" preserveRatio="true">
