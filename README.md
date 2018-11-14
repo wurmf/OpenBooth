@@ -1,6 +1,6 @@
 <p align="left">
-  <img src="https://github.com/wurmf/OpenBooth/blob/dev/assets/openbooth_logo.png" width="6%"/>
-  <img src="https://github.com/wurmf/OpenBooth/blob/dev/assets/OpenBooth_text.png" width="21%"/>
+  <img src="https://github.com/wurmf/OpenBooth/blob/master/assets/openbooth_logo.png" width="6%"/>
+  <img src="https://github.com/wurmf/OpenBooth/blob/master/assets/OpenBooth_text.png" width="21%"/>
 </p>
 
 OpenBooth is an Austrian based project started as an assignment at the Technical University Vienna and is developed further in association with Otelo Wien. The Aim of this project is to create a solution for a photobooth that is intuitive to use and creates high quality images.
