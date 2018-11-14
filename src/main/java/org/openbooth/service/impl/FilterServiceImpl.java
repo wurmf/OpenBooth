@@ -1,7 +1,7 @@
 package org.openbooth.service.impl;
 
 import org.openbooth.storage.StorageHandler;
-import org.openbooth.storage.exception.StorageHandlingException;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.util.exceptions.ImageHandlingException;
@@ -39,7 +39,7 @@ public class FilterServiceImpl implements FilterService {
     private String storageDir;
 
     @Autowired
-    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, StorageHandler storageHandler) throws StorageHandlingException {
+    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, StorageHandler storageHandler) throws StorageException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
         openCVLoader.loadLibrary();

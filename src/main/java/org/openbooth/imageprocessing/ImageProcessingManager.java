@@ -4,7 +4,7 @@ import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
-import org.openbooth.storage.exception.PersistenceException;
+import org.openbooth.storage.exception.KeyValueStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,9 @@ public class ImageProcessingManager extends Thread {
     private ShotPipeline shotPipeline;
 
 
+    private boolean shouldStop = false;
+    private boolean isProcessing = true;
 
-    private boolean isOperating = false;
     private LocalTime timeOfLastExecution;
     private Duration durationBetweenExecutions;
 
@@ -60,24 +61,25 @@ public class ImageProcessingManager extends Thread {
         timeOfLastExecution = LocalTime.now();
     }
 
-    public synchronized void stopOperating(){
-        isOperating = false;
+    public synchronized void stopProcessing(){
+        shouldStop = true;
     }
+
+    public boolean isProcessing(){return isProcessing;}
 
     @Override
     public void run() {
         try {
-            int executionsPerSecond = keyValueStore.getInt("executions_per_second");
+            int executionsPerSecond = keyValueStore.getInt(KeyValueStore.MAX_PREVIEW_REFRESH);
             timeOfLastExecution = LocalTime.now();
             durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(executionsPerSecond);
-        } catch (PersistenceException e) {
+        } catch (KeyValueStoreException e) {
             LOGGER.error("Error during operator initialization", e);
             return;
         }
 
         try {
-            isOperating = true;
-            while(isOperating){
+            while(!shouldStop){
                 if(triggered) {
                     shotPipeline.execute();
                     triggered = false;
@@ -87,6 +89,7 @@ public class ImageProcessingManager extends Thread {
 
             }
             LOGGER.info("Image processing stopped.");
+            isProcessing = false;
         } catch (StopExecutionException e) {
             LOGGER.error("Image processing terminated!");
         }

@@ -16,6 +16,9 @@ public class PreviewPipeline extends AbstractPipeline {
     @Autowired
     public PreviewPipeline(ApplicationContext applicationContext){
         processorFactories = new ArrayList<>();
+
+        preActionsFactories = new ArrayList<>();
+
         producerFactory = applicationContext.getBean(MakePreviewProcFac.class);
         consumerFactory = applicationContext.getBean(ShowPreviewProcFac.class);
 

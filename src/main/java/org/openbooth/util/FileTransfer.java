@@ -30,8 +30,10 @@ public class FileTransfer{
      */
     public static void transfer(String sourceName, String destinationName, boolean replace) throws IOException {
         if(sourceName==null || sourceName.isEmpty() || destinationName==null || destinationName.isEmpty()){
-            throw new IOException("At least one of the paths is empty or null!");
+            throw new IllegalArgumentException("At least one of the paths is empty or null!");
         }
+
+        destinationName = PathHelper.expandPath(destinationName);
 
         InputStream sourceStream;
 

@@ -1,11 +1,11 @@
 package org.openbooth.service;
 
 import org.openbooth.storage.StorageHandler;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
 import org.openbooth.storage.impl.StorageHandlerImpl;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.storage.exception.StorageHandlingException;
 import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.service.impl.FilterServiceImpl;
 import org.junit.Before;
@@ -43,7 +43,7 @@ public class FilterServiceTest{
     private String destImgPath;
 
     @Before
-    public void setUp() throws ImageHandlingException, StorageHandlingException{
+    public void setUp() throws ImageHandlingException, StorageException {
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
         StorageHandler storageHandler = new StorageHandlerImpl();
