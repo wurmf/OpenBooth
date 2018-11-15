@@ -24,7 +24,7 @@ public class ShowCountdownAcFac implements ActionFactory {
     }
 
     @Override
-    public Action getCounter() throws ProcessingException {
+    public Action getAction() throws ProcessingException {
         try {
             int counter = keyValueStore.getInt(KeyValueStore.COUNTER_PER_SHOT);
             return new ShowCountdownAction(shotFrameController, previewPipeline, counter);

@@ -26,7 +26,7 @@ abstract class AbstractPipeline implements ImageProcessorPipeline {
         try {
 
             for(ActionFactory actionFactory: preActionsFactories){
-                actionFactory.getCounter().execute();
+                actionFactory.getAction().execute();
             }
 
             BufferedImage image = producerFactory.getProducer().produce();
