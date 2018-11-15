@@ -127,8 +127,16 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
-    public void put (String key, double value) throws StorageException, ValidationException, KeyValueStoreException {
+    @Override
+    public void put(String key, double value) throws StorageException, ValidationException, KeyValueStoreException {
         writeStorageProperties.setProperty(key, Double.toString(value));
+        if(autoCommitEnabled) commit();
+        LOGGER.trace("Key {} with value {} stored.", key, value);
+    }
+
+    @Override
+    public void put(String key, boolean value) throws StorageException, ValidationException, KeyValueStoreException {
+        writeStorageProperties.setProperty(key, Boolean.toString(value));
         if(autoCommitEnabled) commit();
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
@@ -139,6 +147,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         return value;
     }
 
+    @Override
     public String getString(String key) throws KeyValueStoreException{
         String value = getValue(key);
         LOGGER.trace("Key {} with value {} retrieved.", key, value);
@@ -146,6 +155,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     }
 
 
+    @Override
     public int getInt(String key) throws KeyValueStoreException{
         try {
             int value = Integer.parseInt(getValue(key));
@@ -156,6 +166,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         }
     }
 
+    @Override
     public double getDouble(String key) throws KeyValueStoreException{
         try {
             double value = Double.parseDouble(getValue(key));
@@ -164,6 +175,17 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         } catch (NumberFormatException e) {
             throw new KeyValueStoreException("Error when retrieving double property.", e);
         }
+    }
+
+    @Override
+    public boolean getBoolean(String key) throws KeyValueStoreException{
+        String valueString = getValue(key);
+        if(!valueString.equalsIgnoreCase("true") && !valueString.equalsIgnoreCase("false")){
+            throw new KeyValueStoreException("Error when retrieving boolean property '" + key + "': Should be either 'true' or 'false' but was '" + valueString + "'");
+        }
+        boolean value = Boolean.parseBoolean(valueString);
+        LOGGER.trace("Key {} with value {} retrieved.", key, value);
+        return value;
     }
 
     @Override

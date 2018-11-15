@@ -39,7 +39,17 @@ public interface KeyValueStore {
      * @throws ValidationException if the values of the key-value store are not valid after the operation
      * @throws KeyValueStoreException if a to-be-validated value could not be found
      */
-    void put (String key, double value) throws StorageException, ValidationException, KeyValueStoreException;
+    void put(String key, double value) throws StorageException, ValidationException, KeyValueStoreException;
+
+    /**
+     * Stores the given key with the given value
+     * @param key the given key
+     * @param value the given value
+     * @throws StorageException the data store could not be accessed
+     * @throws ValidationException if the values of the key-value store are not valid after the operation
+     * @throws KeyValueStoreException if a to-be-validated value could not be found
+     */
+    void put(String key, boolean value) throws StorageException, ValidationException, KeyValueStoreException;
 
     /**
      * Retrieves the value for the given key
@@ -61,10 +71,19 @@ public interface KeyValueStore {
      * Retrieves the double value for the given key
      * @param key the given key
      * @return the stored double value for the given key,
-     * @throws KeyValueStoreException If no default value is found
+     * @throws KeyValueStoreException If no value for the given key is found
      * or the value could not be converted to a double
      */
     double getDouble(String key) throws KeyValueStoreException;
+
+    /**
+     * Retrieves the boolean value for the given key
+     * @param key the given key
+     * @return the stored boolean value for the given key,
+     * @throws KeyValueStoreException If no value for the given key is found
+     * or the value could not be converted to a boolean
+     */
+    boolean getBoolean(String key) throws KeyValueStoreException;
 
     /**
      * Restores the default values for all values in the key-value store.

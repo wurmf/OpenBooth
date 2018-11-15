@@ -1,5 +1,6 @@
 package org.openbooth.config.validation;
 
+import org.openbooth.config.keys.BooleanKey;
 import org.openbooth.config.keys.IntegerKey;
 import org.openbooth.config.keys.StringKey;
 import org.openbooth.storage.KeyValueStore;
@@ -39,6 +40,7 @@ public class ConfigValidator {
     public void validate(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException {
         validateFolders(keyValueStore);
         validateNumbers(keyValueStore);
+        validateBooleans(keyValueStore);
         LOGGER.trace("Configs successfully validated");
     }
 
@@ -58,6 +60,12 @@ public class ConfigValidator {
 
         for(IntegerKey integerKey : IntegerKey.values()){
             if(keyValueStore.getInt(integerKey.key) <= integerKey.infimum) throw new ValidationException(integerKey.validationErrorMessage);
+        }
+    }
+
+    private void validateBooleans(KeyValueStore keyValueStore) throws KeyValueStoreException{
+        for(BooleanKey booleanKey : BooleanKey.values()){
+            keyValueStore.getBoolean(booleanKey.key);
         }
     }
 
