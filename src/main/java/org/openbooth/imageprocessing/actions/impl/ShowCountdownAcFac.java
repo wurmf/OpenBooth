@@ -1,5 +1,6 @@
 package org.openbooth.imageprocessing.actions.impl;
 
+import org.openbooth.config.keys.IntegerKey;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.actions.Action;
@@ -26,7 +27,7 @@ public class ShowCountdownAcFac implements ActionFactory {
     @Override
     public Action getAction() throws ProcessingException {
         try {
-            int counter = keyValueStore.getInt(KeyValueStore.SHOT_COUNTDOWN);
+            int counter = keyValueStore.getInt(IntegerKey.SHOT_COUNTDOWN.key);
             return new ShowCountdownAction(shotFrameController, previewPipeline, counter);
         } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);

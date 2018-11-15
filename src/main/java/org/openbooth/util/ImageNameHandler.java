@@ -1,8 +1,8 @@
 package org.openbooth.util;
 
+import org.openbooth.config.keys.StringKey;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
-import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.exceptions.ImageNameHandlingException;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +24,7 @@ public class ImageNameHandler {
         try {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-            return keyValueStore.getString(KeyValueStore.IMG_PREFIX) + "_" + now.format(formatter);
+            return keyValueStore.getString(StringKey.IMG_PREFIX.key) + "_" + now.format(formatter);
         } catch (KeyValueStoreException e) {
             throw new ImageNameHandlingException(e);
         }catch (DateTimeException e){

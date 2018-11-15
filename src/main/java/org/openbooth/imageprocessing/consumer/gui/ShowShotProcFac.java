@@ -1,12 +1,12 @@
 package org.openbooth.imageprocessing.consumer.gui;
 
+import org.openbooth.config.keys.IntegerKey;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.consumer.ImageConsumer;
 import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
-import org.openbooth.storage.exception.StorageException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,7 +23,7 @@ public class ShowShotProcFac implements ImageConsumerFactory {
     @Override
     public ImageConsumer getConsumer() throws ProcessingException {
         try {
-            int showShotTime = keyValueStore.getInt(KeyValueStore.SHOW_SHOT_TIME);
+            int showShotTime = keyValueStore.getInt(IntegerKey.SHOW_SHOT_TIME.key);
             return new ShowShotProcessor(shotFrameController, showShotTime);
         } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);

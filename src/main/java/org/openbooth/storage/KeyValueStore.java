@@ -2,7 +2,7 @@ package org.openbooth.storage;
 
 import org.openbooth.storage.exception.StorageException;
 import org.openbooth.storage.exception.KeyValueStoreException;
-import org.openbooth.util.validation.ValidationException;
+import org.openbooth.config.validation.ValidationException;
 
 
 /**
@@ -11,12 +11,6 @@ import org.openbooth.util.validation.ValidationException;
  */
 public interface KeyValueStore {
 
-    String MAX_PREVIEW_REFRESH = "max_previews_per_second";
-    String NUM_BURST_SHOTS = "burst_number_of_shots";
-    String SHOW_SHOT_TIME = "show_shot_time";
-    String IMG_PREFIX = "image_prefix";
-    String IMAGE_FOLDER = "image_storage_path";
-    String SHOT_COUNTDOWN = "counter_per_shot";
     /**
      * Stores the given key with the given value
      * @param key the given key

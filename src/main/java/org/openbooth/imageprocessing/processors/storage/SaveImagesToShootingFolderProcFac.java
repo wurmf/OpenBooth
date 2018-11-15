@@ -1,5 +1,6 @@
 package org.openbooth.imageprocessing.processors.storage;
 
+import org.openbooth.config.keys.StringKey;
 import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.processors.ImageProcessor;
@@ -31,7 +32,7 @@ public class SaveImagesToShootingFolderProcFac implements ImageProcessorFactory 
     @Override
     public ImageProcessor getProcessor() throws ProcessingException {
         try {
-            String storagePath = keyValueStore.getString(KeyValueStore.IMAGE_FOLDER);
+            String storagePath = keyValueStore.getString(StringKey.IMAGE_FOLDER.key);
             String imagePath = storagePath + "/" + imageNameHandler.getNewImageName() + ".jpg";
             return new SaveImagesProcessor(imageHandler, imagePath);
         } catch (KeyValueStoreException | ImageNameHandlingException e) {
