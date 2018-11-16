@@ -1,5 +1,8 @@
-package org.openbooth.util.validation;
+package org.openbooth.config.validation;
 
+import org.openbooth.config.keys.BooleanKey;
+import org.openbooth.config.keys.IntegerKey;
+import org.openbooth.config.keys.StringKey;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.openbooth.util.FileHelper;
@@ -9,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,11 +40,12 @@ public class ConfigValidator {
     public void validate(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException {
         validateFolders(keyValueStore);
         validateNumbers(keyValueStore);
+        validateBooleans(keyValueStore);
         LOGGER.trace("Configs successfully validated");
     }
 
     private void validateFolders(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException{
-        List<String> folderKeys = Arrays.asList(KeyValueStore.IMAGE_FOLDER);
+        List<String> folderKeys = Collections.singletonList(StringKey.IMAGE_FOLDER.key);
         for(String key : folderKeys){
             try {
                 String folderPath = keyValueStore.getString(key);
@@ -54,9 +58,15 @@ public class ConfigValidator {
 
     private void validateNumbers(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException{
 
-        if(keyValueStore.getInt(KeyValueStore.MAX_PREVIEW_REFRESH) <= 0) throw new ValidationException("Having 0 previews per second is not valid, as there will be no live preview, please change the value of '" + KeyValueStore.MAX_PREVIEW_REFRESH + "' in the config file");
-        if(keyValueStore.getInt(KeyValueStore.NUM_BURST_SHOTS) <= 1) throw new ValidationException("1 or less shots in burst mode does not make sense, please change the value of '" + KeyValueStore.NUM_BURST_SHOTS + "' in the config file");
-        if(keyValueStore.getInt(KeyValueStore.SHOW_SHOT_TIME) < 0) throw new ValidationException("It does not make sense to show the shot less than 0 milliseconds, please change the value of '" + KeyValueStore.SHOW_SHOT_TIME + "' in the config file");
+        for(IntegerKey integerKey : IntegerKey.values()){
+            if(keyValueStore.getInt(integerKey.key) <= integerKey.infimum) throw new ValidationException(integerKey.validationErrorMessage);
+        }
+    }
+
+    private void validateBooleans(KeyValueStore keyValueStore) throws KeyValueStoreException{
+        for(BooleanKey booleanKey : BooleanKey.values()){
+            keyValueStore.getBoolean(booleanKey.key);
+        }
     }
 
 }

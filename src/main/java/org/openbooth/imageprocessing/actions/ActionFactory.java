@@ -4,5 +4,5 @@ import org.openbooth.imageprocessing.exception.ProcessingException;
 
 public interface ActionFactory {
 
-    Action getCounter() throws ProcessingException;
+    Action getAction() throws ProcessingException;
 }

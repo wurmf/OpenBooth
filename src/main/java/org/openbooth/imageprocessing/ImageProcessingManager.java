@@ -1,8 +1,9 @@
 package org.openbooth.imageprocessing;
 
+import org.openbooth.config.keys.IntegerKey;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
-import org.openbooth.imageprocessing.pipelines.impl.PreviewPipeline;
-import org.openbooth.imageprocessing.pipelines.impl.ShotPipeline;
+import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
+import org.openbooth.imageprocessing.execution.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.slf4j.Logger;
@@ -57,7 +58,7 @@ public class ImageProcessingManager extends Thread {
             }
         }
 
-        previewPipeline.execute();
+        previewPipeline.run();
         timeOfLastExecution = LocalTime.now();
     }
 
@@ -70,7 +71,7 @@ public class ImageProcessingManager extends Thread {
     @Override
     public void run() {
         try {
-            int executionsPerSecond = keyValueStore.getInt(KeyValueStore.MAX_PREVIEW_REFRESH);
+            int executionsPerSecond = keyValueStore.getInt(IntegerKey.MAX_PREVIEW_REFRESH.key);
             timeOfLastExecution = LocalTime.now();
             durationBetweenExecutions = Duration.of(1, ChronoUnit.SECONDS).dividedBy(executionsPerSecond);
         } catch (KeyValueStoreException e) {
@@ -81,7 +82,7 @@ public class ImageProcessingManager extends Thread {
         try {
             while(!shouldStop){
                 if(triggered) {
-                    shotPipeline.execute();
+                    shotPipeline.run();
                     triggered = false;
                 } else {
                     executePreviewPipeline();

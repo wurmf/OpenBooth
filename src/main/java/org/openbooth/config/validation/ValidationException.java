@@ -1,4 +1,4 @@
-package org.openbooth.util.validation;
+package org.openbooth.config.validation;
 
 public class ValidationException extends Exception{
 
