@@ -5,7 +5,7 @@ package org.openbooth.config.key;
  */
 public enum ConfigBooleanKeys {
 
-    TIMED_SHOT_ACTIVATED ("timed_shot_activated");
+     FILTER_ENABLED("filter_enabled");
 
     public final String key;
 
