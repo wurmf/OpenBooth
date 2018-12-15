@@ -1,6 +1,6 @@
 package org.openbooth.imageprocessing.consumer.gui;
 
-import org.openbooth.config.keys.IntegerKey;
+import org.openbooth.config.key.ConfigIntegerKeys;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.consumer.ImageConsumer;
 import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
@@ -23,7 +23,7 @@ public class ShowShotProcFac implements ImageConsumerFactory {
     @Override
     public ImageConsumer getConsumer() throws ProcessingException {
         try {
-            int showShotTime = keyValueStore.getInt(IntegerKey.SHOW_SHOT_TIME.key);
+            int showShotTime = keyValueStore.getInt(ConfigIntegerKeys.SHOW_SHOT_TIME.key);
             return new ShowShotProcessor(shotFrameController, showShotTime);
         } catch (KeyValueStoreException e) {
             throw new ProcessingException(e);

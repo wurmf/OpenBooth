@@ -1,8 +1,8 @@
 package org.openbooth.config.validation;
 
-import org.openbooth.config.keys.BooleanKey;
-import org.openbooth.config.keys.IntegerKey;
-import org.openbooth.config.keys.StringKey;
+import org.openbooth.config.key.ConfigBooleanKeys;
+import org.openbooth.config.key.ConfigIntegerKeys;
+import org.openbooth.config.key.ConfigStringKeys;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.openbooth.util.FileHelper;
@@ -45,26 +45,26 @@ public class ConfigValidator {
     }
 
     private void validateFolders(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException{
-        List<String> folderKeys = Collections.singletonList(StringKey.IMAGE_FOLDER.key);
+        List<String> folderKeys = Collections.singletonList(ConfigStringKeys.IMAGE_FOLDER.key);
         for(String key : folderKeys){
             try {
                 String folderPath = keyValueStore.getString(key);
                 fileHelper.createFolderIfItDoesNotExist(folderPath);
             } catch (FileHandlingException e) {
-                throw new ValidationException("error while trying to create folder for key '" + key + "' from config file", e);
+                throw new ValidationException("error while trying to create folder for key '" + key + "' from configuration", e);
             }
         }
     }
 
     private void validateNumbers(KeyValueStore keyValueStore) throws ValidationException, KeyValueStoreException{
 
-        for(IntegerKey integerKey : IntegerKey.values()){
+        for(ConfigIntegerKeys integerKey : ConfigIntegerKeys.values()){
             if(keyValueStore.getInt(integerKey.key) <= integerKey.infimum) throw new ValidationException(integerKey.validationErrorMessage);
         }
     }
 
     private void validateBooleans(KeyValueStore keyValueStore) throws KeyValueStoreException{
-        for(BooleanKey booleanKey : BooleanKey.values()){
+        for(ConfigBooleanKeys booleanKey : ConfigBooleanKeys.values()){
             keyValueStore.getBoolean(booleanKey.key);
         }
     }
