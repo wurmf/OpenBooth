@@ -2,6 +2,9 @@ package org.openbooth.service;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * This class is responsible for passing non-persistent information
+ */
 @Component
 public class InformationDistributor {
 
