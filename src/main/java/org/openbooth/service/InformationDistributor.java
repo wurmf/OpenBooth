@@ -3,12 +3,12 @@ package org.openbooth.service;
 import org.springframework.stereotype.Component;
 
 /**
- * This class is responsible for passing non-persistent information
+ * This class is responsible for storing non-persistent information
  */
 @Component
 public class InformationDistributor {
 
-    private boolean timedShotEnabled = true;
+    private boolean timedShotEnabled = false;
 
     public boolean isTimedShotEnabled() {
         return timedShotEnabled;

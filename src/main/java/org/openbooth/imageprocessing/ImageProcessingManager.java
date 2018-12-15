@@ -6,6 +6,7 @@ import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.execution.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.trigger.TriggerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,14 @@ public class ImageProcessingManager extends Thread {
     private static final Logger LOGGER  = LoggerFactory.getLogger(ImageProcessingManager.class);
 
     private KeyValueStore keyValueStore;
+    private TriggerManager triggerManager;
 
     private PreviewPipeline previewPipeline;
     private ShotPipeline shotPipeline;
 
 
     private boolean shouldStop = false;
-    private boolean isProcessing = true;
+    private boolean isProcessing = false;
 
     private LocalTime timeOfLastExecution;
     private Duration durationBetweenExecutions;
@@ -35,8 +37,9 @@ public class ImageProcessingManager extends Thread {
     private boolean triggered = false;
 
     @Autowired
-    public ImageProcessingManager(KeyValueStore keyValueStore, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
+    public ImageProcessingManager(KeyValueStore keyValueStore, TriggerManager triggerManager, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
         this.keyValueStore = keyValueStore;
+        this.triggerManager = triggerManager;
         this.previewPipeline = previewPipeline;
         this.shotPipeline = shotPipeline;
 
@@ -70,6 +73,7 @@ public class ImageProcessingManager extends Thread {
 
     @Override
     public void run() {
+        isProcessing = true;
         try {
             int executionsPerSecond = keyValueStore.getInt(ConfigIntegerKeys.MAX_PREVIEW_REFRESH.key);
             timeOfLastExecution = LocalTime.now();
@@ -78,6 +82,8 @@ public class ImageProcessingManager extends Thread {
             LOGGER.error("Error during operator initialization", e);
             return;
         }
+
+        triggerManager.setImageProcessingManager(this);
 
         try {
             while(!shouldStop){
