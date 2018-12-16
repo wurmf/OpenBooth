@@ -65,7 +65,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     private void createConfigFileIfItDoesNotExists(StorageHandler storageHandler) throws StorageException {
         try{
             if(!storageHandler.checkIfFileExistsInFolder(CONFIG_FOLDER_NAME, CONFIG_FILE_NAME)) {
-                LOGGER.debug("config file does not exist, trying to create new config file at " + configFilePath);
+                LOGGER.debug("config file does not exist, trying to create new config file at {}", configFilePath);
                 FileTransfer.transfer(RESOURCES_DEFAULT_CONFIG_FILE_PATH, configFilePath);
             }
         } catch (IOException e) {
@@ -196,7 +196,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
         writeStorageProperties = defaultProperties;
 
         if(autoCommitEnabled) commit();
-        LOGGER.debug("restored default config to  " + configFilePath);
+        LOGGER.debug("restored default config to  {}", configFilePath);
 
     }
 

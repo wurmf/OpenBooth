@@ -5,6 +5,8 @@ package org.openbooth.util;
  */
 class PathHelper {
 
+    private PathHelper(){}
+
     /**
      * Returns the given path with a starting "~" substituted with the user.home system property
      * @param path the given path

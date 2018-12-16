@@ -7,9 +7,12 @@ import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ShowShotProcFac implements ImageConsumerFactory {
 
     private ShotFrameController shotFrameController;

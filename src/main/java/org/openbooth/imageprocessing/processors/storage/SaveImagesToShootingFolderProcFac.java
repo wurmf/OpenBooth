@@ -9,9 +9,12 @@ import org.openbooth.storage.exception.KeyValueStoreException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.ImageNameHandler;
 import org.openbooth.util.exceptions.ImageNameHandlingException;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class SaveImagesToShootingFolderProcFac implements ImageProcessorFactory {
 
     private KeyValueStore keyValueStore;

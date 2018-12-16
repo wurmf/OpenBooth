@@ -2,25 +2,27 @@ package org.openbooth.imageprocessing.execution.pipelines.impl;
 
 import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
-import org.openbooth.imageprocessing.exception.handler.ProcessingExceptionHandler;
-import org.openbooth.imageprocessing.execution.executables.Executor;
+import org.openbooth.imageprocessing.execution.executables.Executable;
+import org.openbooth.imageprocessing.execution.executor.Executor;
 import org.openbooth.imageprocessing.execution.executables.impl.ImageProcessingExecutable;
-import org.openbooth.imageprocessing.execution.executables.impl.StandardExecutor;
 import org.openbooth.imageprocessing.execution.pipelines.Pipeline;
 import org.openbooth.imageprocessing.producer.ImageProducerFactory;
 import org.openbooth.imageprocessing.producer.camera.MakePreviewProcFac;
-import org.openbooth.imageprocessing.exception.handler.impl.StrictProcessingExceptionHandler;
 import org.openbooth.imageprocessing.consumer.gui.ShowPreviewProcFac;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class PreviewPipeline implements Pipeline {
 
-    private Executor executor;
+    private List<Executable> pipeline;
 
     @Autowired
     public PreviewPipeline(ApplicationContext applicationContext){
@@ -28,14 +30,14 @@ public class PreviewPipeline implements Pipeline {
 
         ImageProcessingExecutable imageProcessingExecutable = createImageProcessing(applicationContext);
 
-        ProcessingExceptionHandler exceptionHandler = applicationContext.getBean(StrictProcessingExceptionHandler.class);
 
-        executor = new StandardExecutor(Collections.singletonList(imageProcessingExecutable), exceptionHandler);
+        pipeline = Collections.singletonList(imageProcessingExecutable);
+
     }
 
     @Override
-    public void run() throws StopExecutionException {
-        executor.execute();
+    public void runWith(Executor executor) throws StopExecutionException {
+        executor.execute(pipeline);
     }
 
     private ImageProcessingExecutable createImageProcessing(ApplicationContext applicationContext){

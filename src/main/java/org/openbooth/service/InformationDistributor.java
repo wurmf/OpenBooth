@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class InformationDistributor {
 
-    private boolean timedShotEnabled = false;
+    private boolean timedShotEnabled = true;
 
-    public boolean isTimedShotEnabled() {
+    public synchronized boolean isTimedShotEnabled() {
         return timedShotEnabled;
     }
 

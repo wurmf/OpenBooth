@@ -9,6 +9,8 @@ import java.nio.file.Paths;
  */
 public class FileTransfer{
 
+    private FileTransfer(){}
+
     /**
      * Will copy the given specified file to the specified destination and will overwrite an existing file by default.
      * The source-filename must be the files position inside the JAR-file (e.g. "/sql/create.sql"), the destination must be an absolute path to the executing computers filesystem.
