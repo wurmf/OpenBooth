@@ -47,6 +47,7 @@ public class ImageProcessingManager extends Thread {
     }
 
 
+
     public synchronized void trigger() {
         triggered = true;
     }
