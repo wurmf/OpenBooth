@@ -14,12 +14,10 @@ import static org.junit.Assert.assertTrue;
  * Testclass for the class FileTransfer
  */
 public class FileTransferTest {
-    private FileTransfer ft;
     private final String realSourcePath;
     private final String alternativeSourcePath;
     private String realDestPath;
     public FileTransferTest(){
-        this.ft=new FileTransfer();
         this.realSourcePath="/images/test_logo_img.jpg";
         this.alternativeSourcePath="/images/test_imageprocessor_img.jpg";
     }
@@ -32,13 +30,13 @@ public class FileTransferTest {
         this.realDestPath = testFolder.getRoot().getPath() + "test_img_for_FileTransferTest.jpg";
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testNullSource() throws IOException{
-        ft.transfer(null,realDestPath);
+        FileTransfer.transfer(null,realDestPath);
     }
-    @Test(expected = IOException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testNullDest() throws IOException{
-        ft.transfer(realDestPath, null);
+        FileTransfer.transfer(realDestPath, null);
     }
     @Test
     public void testActualCopy() throws IOException{
@@ -46,7 +44,7 @@ public class FileTransferTest {
         if(file.exists()){
             file.delete();
         }
-        ft.transfer(realSourcePath, realDestPath);
+        FileTransfer.transfer(realSourcePath, realDestPath);
         assertTrue(file.exists());
         if(file.exists()){
             file.delete();
@@ -55,20 +53,20 @@ public class FileTransferTest {
     @Test
     public void testOverwriteTrue() throws IOException{
         File file= new File(realDestPath);
-        ft.transfer(realSourcePath, realDestPath);
+        FileTransfer.transfer(realSourcePath, realDestPath);
         assertFalse(!file.exists());
         //TODO: load file
-        ft.transfer(alternativeSourcePath, realDestPath);
+        FileTransfer.transfer(alternativeSourcePath, realDestPath);
         //TODO: load new file, compare
     }
 
     @Test
     public void testOverwriteFalse() throws IOException{
         File file= new File(realDestPath);
-        ft.transfer(realSourcePath, realDestPath);
+        FileTransfer.transfer(realSourcePath, realDestPath);
         assertFalse(!file.exists());
         //TODO: load file
-        ft.transfer(alternativeSourcePath, realDestPath, false);
+        FileTransfer.transfer(alternativeSourcePath, realDestPath, false);
         //TODO: load new file, compare
     }
 }
