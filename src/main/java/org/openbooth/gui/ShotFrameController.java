@@ -1,136 +1,77 @@
 package org.openbooth.gui;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.util.Duration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
-/**
- * Controller for the shotFrame.
- *
- */
 @Controller
-@Scope("prototype")
 public class ShotFrameController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ShotFrameController.class);
-    @FXML
-    private ImageView shotView;
     @FXML
     private Label countdownLabel;
-
-    private Stage primaryStage;
-
-    private int startTimeSec = 0;
     @FXML
-    private void initialize(){
-        double screenHeight = Screen.getPrimary().getBounds().getHeight();
-        shotView.setFitHeight(screenHeight);
+    private ImageView shotView;
 
-    }
-    void initShotFrame(Stage primaryStage)  {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setResizable(true);
-    }
+    private int counter;
+
+    private Timer timer;
+
 
     public void refreshShot(BufferedImage img) {
         shotView.setImage(SwingFXUtils.toFXImage(img,null));
     }
 
-    public void showCountdown(int countdown){
-        createCounter(countdown).play();
+
+    public void startTimer(int counter){
+        this.counter = counter;
+
+        Platform.runLater(()
+                -> countdownLabel.setText(""));
+        Platform.runLater(()
+                -> countdownLabel.setVisible(true));
+        timer = new Timer();
+
+        useTimer();
     }
 
-    private Timeline createCounter(int countdown){
-        Timeline timeline = new Timeline();
-        startTimeSec = countdown;
-        KeyFrame keyframe = new KeyFrame(Duration.seconds(1), (ActionEvent event) -> {
-                startTimeSec--;
-                if (startTimeSec==0) {
-                    timeline.stop();
-                    countdownLabel.setVisible(false);
-                }else{
-                    countdownLabel.setText(String.valueOf(startTimeSec));
-                    countdownLabel.setVisible(true);
-                }
-
-        });
-
-
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(keyframe);
-        return timeline;
+    public boolean isCountDownFinished(){
+        return counter <= 0;
     }
 
-    public boolean isExpired(){
-       return startTimeSec == 0;
+    private void useTimer(){
+        int delay = 1000;
+        int period = 1000;
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+
+            public void run() {
+                Platform.runLater(()
+                        -> countdownLabel.setText(setText()));
+            }
+
+        }, delay, period);
+
     }
+    private String setText() {
+        String text = "";
 
-    @FXML
-    public void shotFrameClicked() {
-
-        Screen screen = getScreenOfWindow();
-        Rectangle2D visualBounds = screen.getVisualBounds();
-        Rectangle2D fullBounds = screen.getBounds();
-
-        primaryStage.setX(visualBounds.getMinX());
-        primaryStage.setY(visualBounds.getMinY());
-        primaryStage.setWidth(visualBounds.getWidth());
-        primaryStage.setHeight(visualBounds.getHeight());
-
-        StackPane root = (StackPane) primaryStage.getScene().getRoot();
-        Node child = root.getChildren().get(0);
-
-        ImageView iv;
-
-        if (child instanceof ImageView){
-            iv = (ImageView) child;
-        } else {
-            iv = (ImageView) root.getChildren().get(1);
+        if(counter ==-1) {
+            timer.cancel();
+        }
+        counter--;
+        if (counter>0){
+            text = ""+counter;
+        }else if (counter ==0){
+            text = "Cheese!";
         }
 
-        iv.setFitHeight(fullBounds.getHeight());
-        iv.setFitWidth(fullBounds.getWidth());
-        primaryStage.setFullScreen(true);
-
+        return text;
     }
 
-    private Screen getScreenOfWindow(){
-
-        double stageX = primaryStage.getX();
-        double stageY = primaryStage.getY();
-        double stageWidth = primaryStage.getWidth();
-        double stageHeight = primaryStage.getHeight();
-
-        List<Screen> intersectScreens = Screen.getScreensForRectangle(stageX, stageY, stageWidth, stageHeight);
-
-        Screen chosenScreen;
-
-        if(intersectScreens.isEmpty()){
-            chosenScreen = Screen.getPrimary();
-            LOGGER.debug("getScreenOfWindow - stage of ShotFrame outside of all screens, primary was selected as target screen. Resolution: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
-            .getBounds().getHeight());
-        } else {
-            chosenScreen = intersectScreens.get(0);
-            LOGGER.debug("getScreenOfWindow - resolution of selected screen: {} x {}", chosenScreen.getBounds().getWidth(), chosenScreen
-                    .getBounds().getHeight());
-        }
-
-        return chosenScreen;
-    }
 }

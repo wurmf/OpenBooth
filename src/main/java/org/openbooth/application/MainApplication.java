@@ -1,17 +1,17 @@
 package org.openbooth.application;
 
-import org.openbooth.util.dbhandler.DBHandler;
-import org.openbooth.camera.CameraHandler;
-import org.openbooth.imageprocessing.ImageProcessingManager;
-import org.openbooth.gui.WindowManager;
 import javafx.application.Application;
 import javafx.stage.Stage;
+import org.openbooth.gui.GUIManager;
+import org.openbooth.imageprocessing.ImageProcessingManager;
+import org.openbooth.storage.StorageHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.io.IOException;
+
 
 /**
  * The starting point of the sample application.
@@ -33,24 +33,24 @@ public class MainApplication extends Application {
         LOGGER.info("Starting Application");
 
         applicationContext = new AnnotationConfigApplicationContext(MainApplication.class);
-        WindowManager windowManager = applicationContext.getBean(WindowManager.class);
-        windowManager.start(primaryStage);
+
+        applicationContext.getBean(GUIManager.class).setUpGUI(primaryStage);
+
+        applicationContext.getBean(ImageProcessingManager.class).start();
     }
 
     @Override
     public void stop() throws Exception {
         LOGGER.info("Stopping Application");
-
         ImageProcessingManager imageProcessingManager = applicationContext.getBean(ImageProcessingManager.class);
-        imageProcessingManager.stopImageProcessing();
+        imageProcessingManager.stopProcessing();
 
-        CameraHandler cameraHandler = applicationContext.getBean(CameraHandler.class);
-        cameraHandler.closeCameras();
-
-        DBHandler dbHandler = applicationContext.getBean(DBHandler.class);
-        if(dbHandler!=null) {
-            dbHandler.closeConnection();
+        LOGGER.debug("Waiting for image processing to stop");
+        while(imageProcessingManager.isProcessing()){
+            Thread.sleep(500);
         }
+
+        applicationContext.getBean(StorageHandler.class).clearTemporaryStorage();
 
         if ( applicationContext.isRunning() ) {
             this.applicationContext.close();

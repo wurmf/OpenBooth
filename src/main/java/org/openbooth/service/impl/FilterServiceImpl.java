@@ -1,8 +1,9 @@
 package org.openbooth.service.impl;
 
+import org.openbooth.storage.StorageHandler;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
-import org.openbooth.util.TempStorageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 import org.openbooth.service.FilterService;
 import org.openbooth.service.exceptions.ServiceException;
@@ -16,7 +17,6 @@ import org.opencv.imgproc.Imgproc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@Scope("prototype")
 public class FilterServiceImpl implements FilterService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterServiceImpl.class);
 
@@ -38,12 +37,12 @@ public class FilterServiceImpl implements FilterService {
     private String storageDir;
 
     @Autowired
-    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, TempStorageHandler tempStorageHandler) {
+    public FilterServiceImpl(OpenCVLoader openCVLoader, ImageHandler imageHandler, StorageHandler storageHandler) throws StorageException {
         filterList = Arrays.asList("original","gaussian","grayscale","colorspace","sobel","threshzero","threshbinaryinvert");
 
         openCVLoader.loadLibrary();
 
-        storageDir = tempStorageHandler.getTempStoragePath();
+        storageDir = storageHandler.getNewTemporaryFolderPath();
 
         this.imageHandler = imageHandler;
     }

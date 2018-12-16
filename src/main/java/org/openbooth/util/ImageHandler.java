@@ -5,6 +5,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -14,21 +15,17 @@ import java.awt.image.DataBufferByte;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class provides methods for opening and saving buffered images
  * and converting buffered images to mat and back
  */
 
-@Scope("prototype")
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Component
 public class ImageHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageHandler.class);
-
-    private final List<String> supportedImageFormats = Arrays.asList("jpg", "jpeg", "bmp", "png");
 
     /**
      * Instantiates an ImageHandler using the given OpenCVLoader to load the OpenCV library
@@ -48,8 +45,10 @@ public class ImageHandler {
     public BufferedImage openImage(String imagePath) throws ImageHandlingException {
 
         if (imagePath == null || imagePath.isEmpty()) {
-            throw new ImageHandlingException("imagePath is null or empty");
+            throw new IllegalArgumentException("imagePath is null or empty");
         }
+
+        imagePath = PathHelper.expandPath(imagePath);
 
         BufferedImage img;
 
@@ -59,7 +58,7 @@ public class ImageHandler {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("openImage - image from {} loaded", imagePath);
+        LOGGER.trace("openImage - image from {} loaded", imagePath);
         return img;
     }
 
@@ -83,7 +82,7 @@ public class ImageHandler {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("openImage - image from input stream opened");
+        LOGGER.trace("openImage - image from input stream opened");
         return img;
     }
 
@@ -100,21 +99,25 @@ public class ImageHandler {
      */
     public void saveImage(BufferedImage image, String destPath) throws ImageHandlingException {
         if (destPath == null || destPath.isEmpty()) {
-            throw new ImageHandlingException("destPath is null or empty");
+            throw new IllegalArgumentException("destPath is null or empty");
         }
+
+        destPath = PathHelper.expandPath(destPath);
 
         try {
             String formatName = destPath.substring(destPath.lastIndexOf('.') + 1);
-            if (!supportedImageFormats.contains(formatName)) {
-                throw new ImageHandlingException("Image format "+ formatName +" not supported");
-            }
             File newImage = new File(destPath);
-            ImageIO.write(image, formatName, newImage);
-        } catch (IOException | NullPointerException e) {
+            if(!newImage.getParentFile().exists()){
+                throw new ImageHandlingException("The directory " + newImage.getParentFile().getAbsolutePath() + " does not exist!");
+            }
+            if(!ImageIO.write(image, formatName, newImage)){
+                throw new ImageHandlingException("Image format " + formatName + " not supported");
+            }
+        } catch (IOException e) {
             throw new ImageHandlingException(e);
         }
 
-        LOGGER.debug("Image saved to {}", destPath);
+        LOGGER.trace("Image saved to {}", destPath);
     }
 
     /**

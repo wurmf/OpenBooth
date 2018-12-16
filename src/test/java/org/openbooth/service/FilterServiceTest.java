@@ -1,10 +1,11 @@
 package org.openbooth.service;
 
+import org.openbooth.storage.StorageHandler;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.OpenCVLoader;
-import org.openbooth.util.TempStorageHandler;
+import org.openbooth.storage.impl.StorageHandlerImpl;
 import org.openbooth.util.exceptions.ImageHandlingException;
-import org.openbooth.util.exceptions.StorageHandlingException;
 import org.openbooth.service.exceptions.ServiceException;
 import org.openbooth.service.impl.FilterServiceImpl;
 import org.junit.Before;
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 /**
  * Tests possible cases for FilterService
@@ -32,7 +32,6 @@ public class FilterServiceTest{
 
     private FilterService filterService;
     private ImageHandler imageHandler;
-    private ShootingService mockShootingService = mock(ShootingService.class);
 
 
     @Rule
@@ -44,10 +43,10 @@ public class FilterServiceTest{
     private String destImgPath;
 
     @Before
-    public void setUp() throws  ServiceException, ImageHandlingException, StorageHandlingException{
+    public void setUp() throws ImageHandlingException, StorageException {
         OpenCVLoader openCVLoader = new OpenCVLoader();
         imageHandler = new ImageHandler(openCVLoader);
-        TempStorageHandler tempStorageHandler = new TempStorageHandler();
+        StorageHandler storageHandler = new StorageHandlerImpl();
 
         srcImgPath = this.getClass().getResource("/images/test_logo_img.jpg").getPath();
         destImgPath = testFolder.getRoot().getPath() + "/test_logo_result.jpg";
@@ -57,7 +56,7 @@ public class FilterServiceTest{
         //when(mockShootingService.searchIsActive()).thenReturn(new Shooting(1,1,destImgPath,"",true));
        // when(mockShootingService.searchIsActive().getStorageDir()).thenReturn(destImgPath);
 
-        filterService = new FilterServiceImpl(openCVLoader, imageHandler, tempStorageHandler);
+        filterService = new FilterServiceImpl(openCVLoader, imageHandler, storageHandler);
     }
 
     @Test

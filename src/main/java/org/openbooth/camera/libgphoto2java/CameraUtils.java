@@ -18,7 +18,6 @@
  */
 package org.openbooth.camera.libgphoto2java;
 
-import org.openbooth.camera.exeptions.CameraException;
 import org.openbooth.camera.libgphoto2java.jna.GPhoto2Native;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +58,8 @@ public class CameraUtils {
             {
                 constantName = "unknown error";
             }
-            throw new CameraException(methodName + " failed with " + constantName + " #" + result + ": " + GPhoto2Native.INSTANCE.gp_result_as_string(result), result);
+            //TODO:CHANGE THIS EXCEPTION
+            //throw new CameraException(methodName + " failed with " + constantName + " #" + result + ": " + GPhoto2Native.INSTANCE.gp_result_as_string(result), result);
         }
         return result;
     }
