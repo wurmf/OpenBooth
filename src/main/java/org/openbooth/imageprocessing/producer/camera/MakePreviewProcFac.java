@@ -7,10 +7,13 @@ import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.ImageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MakePreviewProcFac implements ImageProducerFactory {
 
     private CameraHandler cameraHandler;

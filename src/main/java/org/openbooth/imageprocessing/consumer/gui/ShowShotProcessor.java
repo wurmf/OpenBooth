@@ -23,6 +23,7 @@ public class ShowShotProcessor implements ImageConsumer {
         try {
             Thread.sleep(showTime);
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new ProcessingException(e);
         }
 

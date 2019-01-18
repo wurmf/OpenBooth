@@ -1,6 +1,11 @@
-package org.openbooth.config.keys;
+package org.openbooth.config.key;
 
-public enum IntegerKey {
+
+/**
+ * This enumeration contains all keys, which represent integer values in the configuration store.
+ * In addition to the key, the enumeration also stores boundaries which can be validated and the corresponding error messages
+ */
+public enum ConfigIntegerKeys {
 
     MAX_PREVIEW_REFRESH("max_previews_per_second", 0, "Having 0 or less previews per second is not valid, as there will be no live preview."),
     NUM_BURST_SHOTS("burst_number_of_shots", 1, "1 or less shots in burst mode does not make sense."),
@@ -11,10 +16,10 @@ public enum IntegerKey {
     public final int infimum;
     public final String validationErrorMessage;
 
-    IntegerKey(String key, int infimum, String validationErrorMessage) {
+    ConfigIntegerKeys(String key, int infimum, String validationErrorMessage) {
         this.key = key;
         this.infimum = infimum;
-        this.validationErrorMessage = validationErrorMessage + " Please change the value of '" + key + "' in the config file";
+        this.validationErrorMessage = validationErrorMessage + " Please change the value of '" + key + "' in the configuration";
     }
 
 }

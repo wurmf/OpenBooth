@@ -1,24 +1,22 @@
-package org.openbooth.imageprocessing.execution.executables.impl;
+package org.openbooth.imageprocessing.execution.executor.impl;
 
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.exception.handler.ProcessingExceptionHandler;
 import org.openbooth.imageprocessing.execution.executables.Executable;
-import org.openbooth.imageprocessing.execution.executables.Executor;
+import org.openbooth.imageprocessing.execution.executor.Executor;
 
 import java.util.List;
 
 public class StandardExecutor implements Executor {
 
     private ProcessingExceptionHandler exceptionHandler;
-    private List<Executable> executables;
 
-    public StandardExecutor(List<Executable> executables, ProcessingExceptionHandler exceptionHandler){
+    public StandardExecutor(ProcessingExceptionHandler exceptionHandler){
         this.exceptionHandler = exceptionHandler;
-        this.executables = executables;
     }
 
-    public void execute() throws StopExecutionException {
+    public void execute(List<Executable> executables) throws StopExecutionException {
         try {
             for(Executable executable : executables){
                 executable.execute();

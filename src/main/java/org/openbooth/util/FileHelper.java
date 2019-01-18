@@ -27,7 +27,7 @@ public class FileHelper {
         if(folderFile.exists() && !folderFile.isDirectory()) throw new FileHandlingException("The given path is a file and not a folder");
         if(!folderFile.exists()){
             if(!folderFile.mkdirs()) throw new FileHandlingException("could not create folder: " + folderFile.getAbsolutePath());
-            LOGGER.debug("Created new folder: " + folderPath);
+            LOGGER.debug("Created new folder: {}", folderPath);
         }
     }
 

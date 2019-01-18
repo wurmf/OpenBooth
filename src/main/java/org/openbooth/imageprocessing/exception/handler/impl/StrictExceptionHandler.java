@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class StrictProcessingExceptionHandler implements ProcessingExceptionHandler {
+public class StrictExceptionHandler implements ProcessingExceptionHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StrictProcessingExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(StrictExceptionHandler.class);
 
     private static final int TOLERATED_EXCEPTION_COUNT = 0;
 
@@ -42,9 +42,9 @@ public class StrictProcessingExceptionHandler implements ProcessingExceptionHand
         }
     }
 
-    private void showFatalErrorMessageToUser(){}
+    private void showFatalErrorMessageToUser(){throw new UnsupportedOperationException();}
 
     private void showErrorMessageToUser(){
-
+        throw new UnsupportedOperationException();
     }
 }

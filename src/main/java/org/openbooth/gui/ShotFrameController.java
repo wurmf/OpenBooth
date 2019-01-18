@@ -5,8 +5,6 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import org.openbooth.imageprocessing.ImageProcessingManager;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
@@ -20,25 +18,15 @@ public class ShotFrameController {
     @FXML
     private ImageView shotView;
 
-    private ApplicationContext applicationContext;
-
     private int counter;
 
     private Timer timer;
 
-    public ShotFrameController(ApplicationContext applicationContext){
-        this.applicationContext = applicationContext;
-    }
 
     public void refreshShot(BufferedImage img) {
         shotView.setImage(SwingFXUtils.toFXImage(img,null));
     }
 
-    @FXML
-    private void shotFrameClicked(){
-
-        applicationContext.getBean(ImageProcessingManager.class).trigger();
-    }
 
     public void startTimer(int counter){
         this.counter = counter;
