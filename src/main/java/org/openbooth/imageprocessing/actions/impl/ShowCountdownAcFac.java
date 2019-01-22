@@ -1,6 +1,7 @@
 package org.openbooth.imageprocessing.actions.impl;
 
 import org.openbooth.config.key.ConfigIntegerKeys;
+import org.openbooth.context.ShotType;
 import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.actions.Action;
@@ -9,7 +10,7 @@ import org.openbooth.imageprocessing.exception.handler.impl.IgnoringExceptionHan
 import org.openbooth.imageprocessing.execution.executor.Executor;
 import org.openbooth.imageprocessing.execution.executor.impl.TimeLimitedExecutor;
 import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
-import org.openbooth.service.InformationDistributor;
+import org.openbooth.context.ContextInformation;
 import org.openbooth.storage.KeyValueStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -22,15 +23,15 @@ public class ShowCountdownAcFac implements ActionFactory {
     private ShotFrameController shotFrameController;
 
     private KeyValueStore keyValueStore;
-    private InformationDistributor informationDistributor;
+    private ContextInformation contextInformation;
 
     private PreviewPipeline previewPipeline;
     private IgnoringExceptionHandler ignoringExceptionHandler;
 
-    public ShowCountdownAcFac(ShotFrameController shotFrameController, KeyValueStore keyValueStore, PreviewPipeline previewPipeline, InformationDistributor informationDistributor, IgnoringExceptionHandler ignoringExceptionHandler) {
+    public ShowCountdownAcFac(ShotFrameController shotFrameController, KeyValueStore keyValueStore, PreviewPipeline previewPipeline, ContextInformation contextInformation, IgnoringExceptionHandler ignoringExceptionHandler) {
         this.shotFrameController = shotFrameController;
         this.keyValueStore = keyValueStore;
-        this.informationDistributor = informationDistributor;
+        this.contextInformation = contextInformation;
         this.previewPipeline = previewPipeline;
         this.ignoringExceptionHandler = ignoringExceptionHandler;
     }
@@ -38,7 +39,7 @@ public class ShowCountdownAcFac implements ActionFactory {
     @Override
     public Action getAction() throws ProcessingException {
         try {
-            if(!informationDistributor.isTimedShotEnabled()) return new EmptyAction();
+            if(contextInformation.getShotType() != ShotType.TIMED) return new EmptyAction();
 
 
             int counter = keyValueStore.getInt(ConfigIntegerKeys.SHOT_COUNTDOWN.key);
