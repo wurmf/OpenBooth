@@ -1,4 +1,4 @@
-package org.openbooth.storage;
+package org.openbooth;
 
 import org.openbooth.storage.exception.StorageException;
 import org.openbooth.storage.impl.StorageHandlerImpl;
@@ -21,6 +21,8 @@ public class TestStorageHandler extends StorageHandlerImpl {
     public String getStoragePath(){
         return storagePath;
     }
+
+    public String getTemporaryStoragePath() {return temporaryStoragePath; }
 
 
 

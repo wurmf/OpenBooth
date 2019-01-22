@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 /**
  * This class provides the functionality described by the StorageHandler interface by creating folders in the
@@ -17,7 +18,7 @@ import java.io.File;
 public class StorageHandlerImpl implements StorageHandler {
 
     private static final String DEFAULT_STORAGE_PATH = System.getProperty("user.home") + "/.openbooth";
-    private static final String TEMP_STORAGE_PATH = DEFAULT_STORAGE_PATH + "/.tmp";
+    private static final String TEMP_STORAGE_RELATIVE_PATH =  "/.tmp";
 
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageHandlerImpl.class);
@@ -25,6 +26,7 @@ public class StorageHandlerImpl implements StorageHandler {
     private int folderCount = 0;
 
     protected String storagePath;
+    protected String temporaryStoragePath;
 
     public StorageHandlerImpl() throws StorageException{
         storagePath = DEFAULT_STORAGE_PATH;
@@ -33,7 +35,7 @@ public class StorageHandlerImpl implements StorageHandler {
 
     @Override
     public String getNewTemporaryFolderPath() throws StorageException {
-        File newTempStorageFolder = new File(TEMP_STORAGE_PATH + "/tmp" + folderCount);
+        File newTempStorageFolder = new File(temporaryStoragePath+ "/" + folderCount);
         createNewFolder(newTempStorageFolder);
         folderCount++;
         return newTempStorageFolder.getAbsolutePath();
@@ -42,7 +44,15 @@ public class StorageHandlerImpl implements StorageHandler {
 
     @Override
     public String getPathForFolder(String folderName) throws StorageException{
-        File folderFile = new File(DEFAULT_STORAGE_PATH + "/" + folderName);
+
+        if(folderName == null || folderName.isEmpty())
+            throw new IllegalArgumentException("folderName is null or empty");
+
+        if(folderName.contains("/"))
+            throw new IllegalArgumentException("folderName must not contain path delimiters");
+
+
+        File folderFile = new File(storagePath + "/" + folderName);
         if(folderFile.exists() && folderFile.isDirectory()){
             return folderFile.getAbsolutePath();
         }
@@ -57,14 +67,26 @@ public class StorageHandlerImpl implements StorageHandler {
     }
 
     @Override
-    public boolean checkIfFileExistsInFolder(String folderName, String fileName) {
-        File file = new File(DEFAULT_STORAGE_PATH + "/" + folderName + "/" + fileName);
+    public boolean checkIfFileExistsInFolder(String folderName, String fileName) throws StorageException{
+        if(folderName == null || folderName.isEmpty())
+            throw new IllegalArgumentException("foldername is null or empty");
+
+        if(fileName == null || fileName.isEmpty())
+            throw new IllegalArgumentException("filename is null or empty");
+
+        if(folderName.contains("/") || fileName.contains("/"))
+            throw new IllegalArgumentException("foldername or filename must not contain path slashes");
+
+        if(!Paths.get(storagePath + "/" + folderName).toFile().isDirectory())
+            throw new StorageException("folder with name " + folderName + " does not exist or is not a directory");
+
+        File file = new File(storagePath + "/" + folderName + "/" + fileName);
         return file.exists();
     }
 
     @Override
     public void clearTemporaryStorage() throws StorageException{
-        File tempStorageFile = new File(TEMP_STORAGE_PATH);
+        File tempStorageFile = new File(temporaryStoragePath);
 
         if(tempStorageFile.exists()){
             deleteFilesRecursively(tempStorageFile);
@@ -73,9 +95,11 @@ public class StorageHandlerImpl implements StorageHandler {
     }
 
     protected void initializeStorage() throws StorageException{
+        temporaryStoragePath = storagePath + TEMP_STORAGE_RELATIVE_PATH;
+
         clearTemporaryStorage();
 
-        File tempStorageFile = new File(TEMP_STORAGE_PATH);
+        File tempStorageFile = new File(temporaryStoragePath);
 
         if(!tempStorageFile.mkdirs()){
             throw new StorageException("could not create storage");

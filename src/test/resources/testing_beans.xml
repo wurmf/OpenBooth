@@ -4,6 +4,6 @@
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="testStorageHandler" class="org.openbooth.storage.TestStorageHandler" scope="prototype"/>
+    <bean id="testStorageHandler" class="org.openbooth.TestStorageHandler" scope="prototype"/>
 
 </beans>

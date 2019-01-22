@@ -21,6 +21,8 @@ public interface StorageHandler {
      * Returns the path for the folder with given name and creates it if it does not exist
      * @param folderName the given folder name
      * @return the absolute path to the folder
+     * @throws IllegalArgumentException if the name of the folder contains a path delimiter, is empty or null
+     * @throws StorageException If a file with the given name already exists, but it is not a folder
      */
     String getPathForFolder(String folderName) throws StorageException;
 
@@ -29,8 +31,10 @@ public interface StorageHandler {
      * @param folderName the given folder name
      * @param fileName the given file name
      * @return true if the file exists, false otherwise
+     * @throws StorageException if the given folder does not exist or if it is not a directory
+     * @throws IllegalArgumentException if the given folder name  or filename contains a path delimiter, is empty or null
      */
-    boolean checkIfFileExistsInFolder(String folderName, String fileName);
+    boolean checkIfFileExistsInFolder(String folderName, String fileName) throws StorageException;
 
     /**
      * Deletes all temporary folders
