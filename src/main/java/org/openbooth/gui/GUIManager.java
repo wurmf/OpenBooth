@@ -28,6 +28,8 @@ public class GUIManager {
         parent.addEventFilter(KeyEvent.KEY_PRESSED, keyPressTrigger::trigger);
 
         primaryStage.setScene(new Scene(parent));
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
         primaryStage.show();
     }
 
