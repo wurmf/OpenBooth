@@ -1,8 +1,8 @@
 package org.openbooth.util;
 
 import org.openbooth.config.key.ConfigStringKeys;
-import org.openbooth.storage.ConfigStore;
-import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.ReadOnlyConfigStore;
+import org.openbooth.storage.exception.ConfigStoreException;
 import org.openbooth.util.exceptions.ImageNameHandlingException;
 import org.springframework.stereotype.Component;
 
@@ -13,9 +13,9 @@ import java.time.format.DateTimeFormatter;
 @Component
 public class ImageNameHandler {
 
-    private ConfigStore configStore;
+    private ReadOnlyConfigStore configStore;
 
-    public ImageNameHandler(ConfigStore configStore){
+    public ImageNameHandler(ReadOnlyConfigStore configStore){
         this.configStore = configStore;
     }
 
@@ -25,7 +25,7 @@ public class ImageNameHandler {
             LocalDateTime now = LocalDateTime.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
             return configStore.getString(ConfigStringKeys.IMG_PREFIX.key) + "_" + now.format(formatter);
-        } catch (KeyValueStoreException e) {
+        } catch (ConfigStoreException e) {
             throw new ImageNameHandlingException(e);
         }catch (DateTimeException e){
             throw new ImageNameHandlingException("Error during parsing date formatting string", e);

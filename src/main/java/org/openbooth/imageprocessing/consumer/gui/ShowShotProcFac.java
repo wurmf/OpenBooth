@@ -5,8 +5,8 @@ import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.consumer.ImageConsumer;
 import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
-import org.openbooth.storage.ConfigStore;
-import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.ReadOnlyConfigStore;
+import org.openbooth.storage.exception.ConfigStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 public class ShowShotProcFac implements ImageConsumerFactory {
 
     private ShotFrameController shotFrameController;
-    private ConfigStore configStore;
+    private ReadOnlyConfigStore configStore;
 
-    public ShowShotProcFac(ShotFrameController shotFrameController, ConfigStore configStore){
+    public ShowShotProcFac(ShotFrameController shotFrameController, ReadOnlyConfigStore configStore){
         this.shotFrameController = shotFrameController;
         this.configStore = configStore;
     }
@@ -28,7 +28,7 @@ public class ShowShotProcFac implements ImageConsumerFactory {
         try {
             int showShotTime = configStore.getInt(ConfigIntegerKeys.SHOW_SHOT_TIME.key);
             return new ShowShotProcessor(shotFrameController, showShotTime);
-        } catch (KeyValueStoreException e) {
+        } catch (ConfigStoreException e) {
             throw new ProcessingException(e);
         }
     }

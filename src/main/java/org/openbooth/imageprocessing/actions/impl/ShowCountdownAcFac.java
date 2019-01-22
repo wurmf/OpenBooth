@@ -11,8 +11,8 @@ import org.openbooth.imageprocessing.execution.executor.Executor;
 import org.openbooth.imageprocessing.execution.executor.impl.TimeLimitedExecutor;
 import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.context.ContextInformation;
-import org.openbooth.storage.ConfigStore;
-import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.ReadOnlyConfigStore;
+import org.openbooth.storage.exception.ConfigStoreException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,13 +22,13 @@ import org.springframework.stereotype.Component;
 public class ShowCountdownAcFac implements ActionFactory {
     private ShotFrameController shotFrameController;
 
-    private ConfigStore configStore;
+    private ReadOnlyConfigStore configStore;
     private ContextInformation contextInformation;
 
     private PreviewPipeline previewPipeline;
     private IgnoringExceptionHandler ignoringExceptionHandler;
 
-    public ShowCountdownAcFac(ShotFrameController shotFrameController, ConfigStore configStore, PreviewPipeline previewPipeline, ContextInformation contextInformation, IgnoringExceptionHandler ignoringExceptionHandler) {
+    public ShowCountdownAcFac(ShotFrameController shotFrameController, ReadOnlyConfigStore configStore, PreviewPipeline previewPipeline, ContextInformation contextInformation, IgnoringExceptionHandler ignoringExceptionHandler) {
         this.shotFrameController = shotFrameController;
         this.configStore = configStore;
         this.contextInformation = contextInformation;
@@ -46,7 +46,7 @@ public class ShowCountdownAcFac implements ActionFactory {
             int executionsPerSecond = configStore.getInt(ConfigIntegerKeys.MAX_PREVIEW_REFRESH.key);
             Executor executor = new TimeLimitedExecutor(ignoringExceptionHandler, executionsPerSecond);
             return new ShowCountdownAction(shotFrameController, previewPipeline, executor, counter);
-        } catch (KeyValueStoreException e) {
+        } catch (ConfigStoreException e) {
             throw new ProcessingException(e);
         }
     }

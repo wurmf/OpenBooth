@@ -1,10 +1,11 @@
 package org.openbooth.storage.impl;
 
 import org.openbooth.storage.ConfigStore;
+import org.openbooth.storage.ReadOnlyConfigStore;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.FileTransfer;
-import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.exception.ConfigStoreException;
 import org.openbooth.config.validation.ConfigValidator;
 import org.openbooth.config.validation.ValidationException;
 import org.slf4j.Logger;
@@ -20,7 +21,7 @@ import java.util.Properties;
  * THIS CLASS IS NOT THREAD SAFE FOR CONCURRENT WRITE OPERATIONS!
  */
 @Component
-public class PropertiesConfigStore implements ConfigStore {
+public class PropertiesConfigStore implements ConfigStore, ReadOnlyConfigStore {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigStore.class);
     private static final String CONFIG_FOLDER_NAME = "config";
@@ -58,7 +59,7 @@ public class PropertiesConfigStore implements ConfigStore {
     }
 
     @PostConstruct
-    private void validateKeyValueStore() throws ValidationException, KeyValueStoreException{
+    private void validateKeyValueStore() throws ValidationException, ConfigStoreException {
         configValidator.validate(this);
     }
 
@@ -94,7 +95,7 @@ public class PropertiesConfigStore implements ConfigStore {
     }
 
     @Override
-    public void commit() throws StorageException, ValidationException, KeyValueStoreException {
+    public void commit() throws StorageException, ValidationException, ConfigStoreException {
         configValidator.validate(this);
         try (Writer writer = new FileWriter(configFilePath)){
             writeStorageProperties.store(writer,null);
@@ -114,41 +115,41 @@ public class PropertiesConfigStore implements ConfigStore {
 
 
     @Override
-    public void put(String key, String value) throws StorageException, ValidationException, KeyValueStoreException {
+    public void put(String key, String value) throws StorageException, ValidationException, ConfigStoreException {
         writeStorageProperties.setProperty(key,value);
         if(autoCommitEnabled) commit();
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     @Override
-    public void put(String key, int value) throws StorageException, ValidationException, KeyValueStoreException {
+    public void put(String key, int value) throws StorageException, ValidationException, ConfigStoreException {
         writeStorageProperties.setProperty(key, Integer.toString(value));
         if(autoCommitEnabled) commit();
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     @Override
-    public void put(String key, double value) throws StorageException, ValidationException, KeyValueStoreException {
+    public void put(String key, double value) throws StorageException, ValidationException, ConfigStoreException {
         writeStorageProperties.setProperty(key, Double.toString(value));
         if(autoCommitEnabled) commit();
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
     @Override
-    public void put(String key, boolean value) throws StorageException, ValidationException, KeyValueStoreException {
+    public void put(String key, boolean value) throws StorageException, ValidationException, ConfigStoreException {
         writeStorageProperties.setProperty(key, Boolean.toString(value));
         if(autoCommitEnabled) commit();
         LOGGER.trace("Key {} with value {} stored.", key, value);
     }
 
-    private String getValue(String key) throws KeyValueStoreException{
+    private String getValue(String key) throws ConfigStoreException {
         String value = readStorageProperties.getProperty(key);
-        if (value == null) throw new KeyValueStoreException("No value for key \"" + key + "\" could be found.");
+        if (value == null) throw new ConfigStoreException("No value for key \"" + key + "\" could be found.");
         return value;
     }
 
     @Override
-    public String getString(String key) throws KeyValueStoreException{
+    public String getString(String key) throws ConfigStoreException {
         String value = getValue(key);
         LOGGER.trace("Key {} with value {} retrieved.", key, value);
         return value;
@@ -156,32 +157,32 @@ public class PropertiesConfigStore implements ConfigStore {
 
 
     @Override
-    public int getInt(String key) throws KeyValueStoreException{
+    public int getInt(String key) throws ConfigStoreException {
         try {
             int value = Integer.parseInt(getValue(key));
             LOGGER.trace("Key {} with value {} retrieved.", key, value);
             return value;
         } catch (NumberFormatException e) {
-            throw new KeyValueStoreException("Error when retrieving integer property.", e);
+            throw new ConfigStoreException("Error when retrieving integer property.", e);
         }
     }
 
     @Override
-    public double getDouble(String key) throws KeyValueStoreException{
+    public double getDouble(String key) throws ConfigStoreException {
         try {
             double value = Double.parseDouble(getValue(key));
             LOGGER.trace("Key {} with value {} retrieved.", key, value);
             return value;
         } catch (NumberFormatException e) {
-            throw new KeyValueStoreException("Error when retrieving double property.", e);
+            throw new ConfigStoreException("Error when retrieving double property.", e);
         }
     }
 
     @Override
-    public boolean getBoolean(String key) throws KeyValueStoreException{
+    public boolean getBoolean(String key) throws ConfigStoreException {
         String valueString = getValue(key);
         if(!valueString.equalsIgnoreCase("true") && !valueString.equalsIgnoreCase("false")){
-            throw new KeyValueStoreException("Error when retrieving boolean property '" + key + "': Should be either 'true' or 'false' but was '" + valueString + "'");
+            throw new ConfigStoreException("Error when retrieving boolean property '" + key + "': Should be either 'true' or 'false' but was '" + valueString + "'");
         }
         boolean value = Boolean.parseBoolean(valueString);
         LOGGER.trace("Key {} with value {} retrieved.", key, value);
@@ -189,7 +190,7 @@ public class PropertiesConfigStore implements ConfigStore {
     }
 
     @Override
-    public void restoreDefaultProperties() throws StorageException, ValidationException, KeyValueStoreException {
+    public void restoreDefaultProperties() throws StorageException, ValidationException, ConfigStoreException {
         Properties defaultProperties = new Properties();
         loadPropertiesFromResources(defaultProperties, RESOURCES_DEFAULT_CONFIG_FILE_PATH);
 

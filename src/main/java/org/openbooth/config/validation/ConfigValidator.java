@@ -3,8 +3,8 @@ package org.openbooth.config.validation;
 import org.openbooth.config.key.ConfigBooleanKeys;
 import org.openbooth.config.key.ConfigIntegerKeys;
 import org.openbooth.config.key.ConfigStringKeys;
-import org.openbooth.storage.ConfigStore;
-import org.openbooth.storage.exception.KeyValueStoreException;
+import org.openbooth.storage.ReadOnlyConfigStore;
+import org.openbooth.storage.exception.ConfigStoreException;
 import org.openbooth.util.FileHelper;
 import org.openbooth.util.exceptions.FileHandlingException;
 import org.slf4j.Logger;
@@ -37,14 +37,14 @@ public class ConfigValidator {
      * @param configStore the given key value store
      * @throws ValidationException if a value is invalid or a folder could not be created
      */
-    public void validate(ConfigStore configStore) throws ValidationException, KeyValueStoreException {
+    public void validate(ReadOnlyConfigStore configStore) throws ValidationException, ConfigStoreException {
         validateFolders(configStore);
         validateNumbers(configStore);
         validateBooleans(configStore);
         LOGGER.trace("Configs successfully validated");
     }
 
-    private void validateFolders(ConfigStore configStore) throws ValidationException, KeyValueStoreException{
+    private void validateFolders(ReadOnlyConfigStore configStore) throws ValidationException, ConfigStoreException {
         List<String> folderKeys = Collections.singletonList(ConfigStringKeys.IMAGE_FOLDER.key);
         for(String key : folderKeys){
             try {
@@ -56,14 +56,14 @@ public class ConfigValidator {
         }
     }
 
-    private void validateNumbers(ConfigStore configStore) throws ValidationException, KeyValueStoreException{
+    private void validateNumbers(ReadOnlyConfigStore configStore) throws ValidationException, ConfigStoreException {
 
         for(ConfigIntegerKeys integerKey : ConfigIntegerKeys.values()){
             if(configStore.getInt(integerKey.key) <= integerKey.infimum) throw new ValidationException(integerKey.validationErrorMessage);
         }
     }
 
-    private void validateBooleans(ConfigStore configStore) throws KeyValueStoreException{
+    private void validateBooleans(ReadOnlyConfigStore configStore) throws ConfigStoreException {
         for(ConfigBooleanKeys booleanKey : ConfigBooleanKeys.values()){
             configStore.getBoolean(booleanKey.key);
         }
