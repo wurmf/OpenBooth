@@ -9,7 +9,7 @@ import org.openbooth.imageprocessing.execution.executor.impl.StandardExecutor;
 import org.openbooth.imageprocessing.execution.executor.impl.TimeLimitedExecutor;
 import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.execution.pipelines.impl.ShotPipeline;
-import org.openbooth.storage.KeyValueStore;
+import org.openbooth.storage.ConfigStore;
 import org.openbooth.storage.exception.KeyValueStoreException;
 import org.openbooth.trigger.TriggerManager;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class ImageProcessingManager extends Thread {
 
     private static final Logger LOGGER  = LoggerFactory.getLogger(ImageProcessingManager.class);
 
-    private KeyValueStore keyValueStore;
+    private ConfigStore configStore;
     private TriggerManager triggerManager;
 
     private PreviewPipeline previewPipeline;
@@ -38,8 +38,8 @@ public class ImageProcessingManager extends Thread {
     private boolean triggered = false;
 
     @Autowired
-    public ImageProcessingManager(KeyValueStore keyValueStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
-        this.keyValueStore = keyValueStore;
+    public ImageProcessingManager(ConfigStore configStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
+        this.configStore = configStore;
         this.triggerManager = triggerManager;
         this.exceptionHandler = exceptionHandler;
         this.previewPipeline = previewPipeline;
@@ -56,7 +56,7 @@ public class ImageProcessingManager extends Thread {
 
 
         try {
-            int executionsPerSecond = keyValueStore.getInt(ConfigIntegerKeys.MAX_PREVIEW_REFRESH.key);
+            int executionsPerSecond = configStore.getInt(ConfigIntegerKeys.MAX_PREVIEW_REFRESH.key);
             Executor executor = new TimeLimitedExecutor(exceptionHandler, executionsPerSecond);
             previewPipeline.runWith(executor);
         } catch (KeyValueStoreException e) {

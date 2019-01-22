@@ -1,6 +1,6 @@
 package org.openbooth.storage.impl;
 
-import org.openbooth.storage.KeyValueStore;
+import org.openbooth.storage.ConfigStore;
 import org.openbooth.storage.StorageHandler;
 import org.openbooth.storage.exception.StorageException;
 import org.openbooth.util.FileTransfer;
@@ -20,9 +20,9 @@ import java.util.Properties;
  * THIS CLASS IS NOT THREAD SAFE FOR CONCURRENT WRITE OPERATIONS!
  */
 @Component
-public class PropertiesKeyValueStore implements KeyValueStore {
+public class PropertiesConfigStore implements ConfigStore {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesKeyValueStore.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesConfigStore.class);
     private static final String CONFIG_FOLDER_NAME = "config";
     private static final String CONFIG_FILE_NAME = "config.properties";
     private static final String RESOURCES_DEFAULT_CONFIG_FILE_PATH = "/config/defaults.properties";
@@ -37,7 +37,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
 
 
     @Autowired
-    private PropertiesKeyValueStore(StorageHandler storageHandler, ConfigValidator configValidator) throws StorageException {
+    private PropertiesConfigStore(StorageHandler storageHandler, ConfigValidator configValidator) throws StorageException {
             this.configValidator = configValidator;
 
             configFilePath = storageHandler.getPathForFolder(CONFIG_FOLDER_NAME) + "/" + CONFIG_FILE_NAME;
@@ -85,7 +85,7 @@ public class PropertiesKeyValueStore implements KeyValueStore {
     }
 
     private void loadPropertiesFromResources(Properties properties, String path) throws StorageException {
-        try(Reader reader = new InputStreamReader(PropertiesKeyValueStore.class.getResourceAsStream(path))){
+        try(Reader reader = new InputStreamReader(PropertiesConfigStore.class.getResourceAsStream(path))){
             properties.load(reader);
             LOGGER.debug("config loaded from resources at {}", path);
         }catch (IOException e){

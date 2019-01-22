@@ -6,10 +6,10 @@ import org.openbooth.config.validation.ValidationException;
 
 
 /**
- * This interface represents a key-value store where data can be persisted.
+ * This interface represents a configuration store where data can be persisted.
  * Values are stored and retrieved using a key
  */
-public interface KeyValueStore {
+public interface ConfigStore {
 
     /**
      * Stores the given key with the given value
