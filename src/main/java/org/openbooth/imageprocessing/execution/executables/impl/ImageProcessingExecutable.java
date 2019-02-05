@@ -7,6 +7,7 @@ import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
 import org.openbooth.imageprocessing.producer.ImageProducerFactory;
 
 import java.awt.image.BufferedImage;
+import java.util.Collections;
 import java.util.List;
 
 public class ImageProcessingExecutable implements Executable {
@@ -18,6 +19,12 @@ public class ImageProcessingExecutable implements Executable {
     public ImageProcessingExecutable(ImageProducerFactory producerFactory, List<ImageProcessorFactory> processorFactories, ImageConsumerFactory consumerFactory) {
         this.producerFactory = producerFactory;
         this.processorFactories = processorFactories;
+        this.consumerFactory = consumerFactory;
+    }
+
+    public ImageProcessingExecutable(ImageProducerFactory producerFactory, ImageConsumerFactory consumerFactory){
+        this.producerFactory = producerFactory;
+        this.processorFactories = Collections.emptyList();
         this.consumerFactory = consumerFactory;
     }
 
