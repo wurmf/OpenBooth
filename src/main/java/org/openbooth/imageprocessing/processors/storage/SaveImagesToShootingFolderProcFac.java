@@ -1,5 +1,6 @@
 package org.openbooth.imageprocessing.processors.storage;
 
+import org.openbooth.application.ApplicationContextProvider;
 import org.openbooth.config.key.ConfigStringKeys;
 import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
 import org.openbooth.imageprocessing.exception.ProcessingException;
@@ -9,17 +10,21 @@ import org.openbooth.storage.exception.ConfigStoreException;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.ImageNameHandler;
 import org.openbooth.util.exceptions.ImageNameHandlingException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
 
-@Component
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+
 public class SaveImagesToShootingFolderProcFac implements ImageProcessorFactory {
 
     private ReadOnlyConfigStore configStore;
     private ImageHandler imageHandler;
     private ImageNameHandler imageNameHandler;
+
+    public SaveImagesToShootingFolderProcFac(){
+        ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
+        this.configStore = applicationContext.getBean(ReadOnlyConfigStore.class);
+        this.imageHandler = applicationContext.getBean(ImageHandler.class);
+        this.imageNameHandler = applicationContext.getBean(ImageNameHandler.class);
+    }
 
     public SaveImagesToShootingFolderProcFac(
             ReadOnlyConfigStore configStore,

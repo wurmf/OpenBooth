@@ -1,5 +1,6 @@
 package org.openbooth.imageprocessing.actions.impl;
 
+import org.openbooth.application.ApplicationContextProvider;
 import org.openbooth.config.key.ConfigIntegerKeys;
 import org.openbooth.context.ShotType;
 import org.openbooth.gui.ShotFrameController;
@@ -13,12 +14,10 @@ import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.context.ContextInformation;
 import org.openbooth.storage.ReadOnlyConfigStore;
 import org.openbooth.storage.exception.ConfigStoreException;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.openbooth.storage.exception.StorageException;
+import org.springframework.context.ApplicationContext;
 
-@Component
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+
 public class ShowCountdownAcFac implements ActionFactory {
     private ShotFrameController shotFrameController;
 
@@ -27,6 +26,15 @@ public class ShowCountdownAcFac implements ActionFactory {
 
     private PreviewPipeline previewPipeline;
     private IgnoringExceptionHandler ignoringExceptionHandler;
+
+    public ShowCountdownAcFac() throws StorageException {
+        ApplicationContext applicationContext = ApplicationContextProvider.getApplicationContext();
+        this.shotFrameController = applicationContext.getBean(ShotFrameController.class);
+        this.configStore = applicationContext.getBean(ReadOnlyConfigStore.class);
+        this.contextInformation = applicationContext.getBean(ContextInformation.class);
+        this.previewPipeline = new PreviewPipeline();
+        this.ignoringExceptionHandler = applicationContext.getBean(IgnoringExceptionHandler.class);
+    }
 
     public ShowCountdownAcFac(ShotFrameController shotFrameController, ReadOnlyConfigStore configStore, PreviewPipeline previewPipeline, ContextInformation contextInformation, IgnoringExceptionHandler ignoringExceptionHandler) {
         this.shotFrameController = shotFrameController;

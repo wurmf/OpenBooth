@@ -11,6 +11,7 @@ import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.execution.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.ReadOnlyConfigStore;
 import org.openbooth.storage.exception.ConfigStoreException;
+import org.openbooth.storage.exception.StorageException;
 import org.openbooth.trigger.TriggerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,12 +39,13 @@ public class ImageProcessingManager extends Thread {
     private boolean triggered = false;
 
     @Autowired
-    public ImageProcessingManager(ReadOnlyConfigStore configStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler, PreviewPipeline previewPipeline, ShotPipeline shotPipeline){
+    public ImageProcessingManager(ReadOnlyConfigStore configStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler) throws StorageException {
         this.configStore = configStore;
         this.triggerManager = triggerManager;
         this.exceptionHandler = exceptionHandler;
-        this.previewPipeline = previewPipeline;
-        this.shotPipeline = shotPipeline;
+
+        this.previewPipeline = new PreviewPipeline();
+        this.shotPipeline = new ShotPipeline();
     }
 
 
