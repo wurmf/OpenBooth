@@ -4,6 +4,9 @@ import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.exception.handler.ProcessingExceptionHandler;
+import org.openbooth.storage.StorageHandler;
+import org.openbooth.storage.exception.StorageException;
+import org.openbooth.util.FileTransfer;
 import org.openbooth.util.ImageHandler;
 import org.openbooth.util.exceptions.ImageHandlingException;
 import org.slf4j.Logger;
@@ -12,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +34,13 @@ public class StrictExceptionHandler implements ProcessingExceptionHandler {
     private ShotFrameController shotFrameController;
 
     @Autowired
-    public StrictExceptionHandler(ImageHandler imageHandler, ShotFrameController shotFrameController) throws ImageHandlingException {
-        errorMessage = imageHandler.openImage(this.getClass().getResource("/images/error_message.png").getPath());
+    public StrictExceptionHandler(ImageHandler imageHandler, ShotFrameController shotFrameController, StorageHandler storageHandler) throws ImageHandlingException, StorageException, IOException {
+        String tempStoragePath = storageHandler.getNewTemporaryFolderPath();
+        String errorMessageImageDestPath = tempStoragePath + "/error_message.png";
+        FileTransfer.transfer("/images/error_message.png", errorMessageImageDestPath);
+        errorMessage = imageHandler.openImage(errorMessageImageDestPath);
+
+
         this.shotFrameController = shotFrameController;
     }
 
