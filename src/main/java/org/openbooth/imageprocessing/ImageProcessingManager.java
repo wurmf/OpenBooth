@@ -39,13 +39,10 @@ public class ImageProcessingManager extends Thread {
     private boolean triggered = false;
 
     @Autowired
-    public ImageProcessingManager(ReadOnlyConfigStore configStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler) throws StorageException {
+    public ImageProcessingManager(ReadOnlyConfigStore configStore, TriggerManager triggerManager, StrictExceptionHandler exceptionHandler) {
         this.configStore = configStore;
         this.triggerManager = triggerManager;
         this.exceptionHandler = exceptionHandler;
-
-        this.previewPipeline = new PreviewPipeline();
-        this.shotPipeline = new ShotPipeline();
     }
 
 
@@ -75,6 +72,13 @@ public class ImageProcessingManager extends Thread {
 
     @Override
     public void run() {
+        try {
+            this.previewPipeline = new PreviewPipeline();
+            this.shotPipeline = new ShotPipeline();
+        } catch (StorageException e) {
+            LOGGER.error("Could not create image processing", e);
+        }
+
         isProcessing = true;
 
         triggerManager.setImageProcessingManager(this);
