@@ -2,6 +2,7 @@ package org.openbooth.gui;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.openbooth.trigger.KeyPressTrigger;
@@ -32,6 +33,9 @@ public class GUIManager {
         primaryStage.setFullScreenExitHint("");
 
         ((ShotFrameController)wrapper.getController()).resizeShotViewToStage(primaryStage);
+
+        primaryStage.getIcons().add(new Image(GUIManager.class.getResourceAsStream("/images/openbooth_logo.png")));
+        primaryStage.setTitle("OpenBooth");
 
         primaryStage.show();
     }
