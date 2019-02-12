@@ -27,9 +27,6 @@ public class ImageProcessingManager extends Thread {
     private ReadOnlyConfigStore configStore;
     private TriggerManager triggerManager;
 
-    private PreviewPipeline previewPipeline;
-    private ShotPipeline shotPipeline;
-
     private StrictExceptionHandler exceptionHandler;
 
     private boolean shouldStop = false;
@@ -51,7 +48,7 @@ public class ImageProcessingManager extends Thread {
         triggered = true;
     }
 
-    private void executePreviewPipeline() throws StopExecutionException{
+    private void executePreviewPipeline(PreviewPipeline previewPipeline) throws StopExecutionException{
 
 
         try {
@@ -73,32 +70,32 @@ public class ImageProcessingManager extends Thread {
     @Override
     public void run() {
         try {
-            this.previewPipeline = new PreviewPipeline();
-            this.shotPipeline = new ShotPipeline();
-        } catch (StorageException e) {
-            LOGGER.error("Could not create image processing", e);
-        }
+            PreviewPipeline previewPipeline = new PreviewPipeline();
+            ShotPipeline shotPipeline = new ShotPipeline();
 
-        isProcessing = true;
+            isProcessing = true;
 
-        triggerManager.setImageProcessingManager(this);
+            triggerManager.setImageProcessingManager(this);
 
-        Executor shotExecutor = new StandardExecutor(exceptionHandler);
+            Executor shotExecutor = new StandardExecutor(exceptionHandler);
 
-        try {
             while(!shouldStop){
                 if(triggered) {
                     shotPipeline.runWith(shotExecutor);
                     triggered = false;
                 } else {
-                    executePreviewPipeline();
+                    executePreviewPipeline(previewPipeline);
                 }
 
             }
-            LOGGER.info("Image processing stopped.");
-            isProcessing = false;
+
         } catch (StopExecutionException e) {
             LOGGER.error("Image processing terminated!");
+        } catch (StorageException e){
+            LOGGER.error("Could not create pipelines");
+        } finally {
+            LOGGER.info("Image processing stopped.");
+            isProcessing = false;
         }
     }
 }
