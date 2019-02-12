@@ -4,11 +4,13 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,6 +37,9 @@ public class ShotFrameController {
         shotView.setImage(SwingFXUtils.toFXImage(img,null));
     }
 
+    public void setImageFromInputStream(InputStream inputStream){
+        shotView.setImage(new Image(inputStream));
+    }
 
     public void startTimer(int counter){
         this.counter = counter;
