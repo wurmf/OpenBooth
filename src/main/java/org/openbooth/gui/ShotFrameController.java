@@ -5,6 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.springframework.stereotype.Controller;
 
 import java.awt.image.BufferedImage;
@@ -22,6 +23,13 @@ public class ShotFrameController {
 
     private Timer timer;
 
+
+    void resizeShotViewToStage(Stage stage){
+        shotView.setPreserveRatio(true);
+
+        shotView.fitWidthProperty().bind(stage.widthProperty());
+        shotView.fitHeightProperty().bind(stage.heightProperty());
+    }
 
     public void refreshShot(BufferedImage img) {
         shotView.setImage(SwingFXUtils.toFXImage(img,null));

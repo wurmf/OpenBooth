@@ -30,6 +30,9 @@ public class GUIManager {
         primaryStage.setScene(new Scene(parent));
         primaryStage.setFullScreen(true);
         primaryStage.setFullScreenExitHint("");
+
+        ((ShotFrameController)wrapper.getController()).resizeShotViewToStage(primaryStage);
+
         primaryStage.show();
     }
 
