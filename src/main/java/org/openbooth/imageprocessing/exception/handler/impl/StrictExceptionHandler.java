@@ -1,12 +1,17 @@
 package org.openbooth.imageprocessing.exception.handler.impl;
 
+import org.openbooth.gui.ShotFrameController;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.exception.handler.ProcessingExceptionHandler;
+import org.openbooth.util.ImageHandler;
+import org.openbooth.util.exceptions.ImageHandlingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +23,17 @@ public class StrictExceptionHandler implements ProcessingExceptionHandler {
     private static final int TOLERATED_EXCEPTION_COUNT = 0;
 
     private final Map<Class,Integer> exceptionCounter = new HashMap<>();
+
+    private final BufferedImage errorMessage;
+
+
+    private ShotFrameController shotFrameController;
+
+    @Autowired
+    public StrictExceptionHandler(ImageHandler imageHandler, ShotFrameController shotFrameController) throws ImageHandlingException {
+        errorMessage = imageHandler.openImage(this.getClass().getResource("/images/error_message.png").getPath());
+        this.shotFrameController = shotFrameController;
+    }
 
     @Override
     public void handleProcessingException(ProcessingException e) throws StopExecutionException {
@@ -42,9 +58,11 @@ public class StrictExceptionHandler implements ProcessingExceptionHandler {
         }
     }
 
-    private void showFatalErrorMessageToUser(){throw new UnsupportedOperationException();}
+    private void showFatalErrorMessageToUser(){
+        shotFrameController.refreshShot(errorMessage);
+    }
 
     private void showErrorMessageToUser(){
-        throw new UnsupportedOperationException();
+        //This is not used at the moment and will be used later
     }
 }
