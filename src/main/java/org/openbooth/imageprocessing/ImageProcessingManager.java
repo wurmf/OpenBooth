@@ -1,6 +1,7 @@
 package org.openbooth.imageprocessing;
 
 import org.openbooth.config.key.ConfigIntegerKeys;
+import org.openbooth.imageprocessing.exception.OperationCreationException;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.exception.StopExecutionException;
 import org.openbooth.imageprocessing.exception.handler.impl.StrictExceptionHandler;
@@ -11,7 +12,6 @@ import org.openbooth.imageprocessing.execution.pipelines.impl.PreviewPipeline;
 import org.openbooth.imageprocessing.execution.pipelines.impl.ShotPipeline;
 import org.openbooth.storage.ReadOnlyConfigStore;
 import org.openbooth.storage.exception.ConfigStoreException;
-import org.openbooth.storage.exception.StorageException;
 import org.openbooth.trigger.TriggerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +91,7 @@ public class ImageProcessingManager extends Thread {
 
         } catch (StopExecutionException e) {
             LOGGER.error("Image processing terminated!");
-        } catch (StorageException e){
+        } catch ( OperationCreationException e){
             LOGGER.error("Could not create pipelines");
         } finally {
             LOGGER.info("Image processing stopped.");

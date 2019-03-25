@@ -1,43 +1,76 @@
 package org.openbooth.imageprocessing.execution.executables.impl;
 
-import org.openbooth.imageprocessing.consumer.ImageConsumerFactory;
+import org.openbooth.imageprocessing.exception.OperationCreationException;
 import org.openbooth.imageprocessing.exception.ProcessingException;
 import org.openbooth.imageprocessing.execution.executables.Executable;
-import org.openbooth.imageprocessing.processors.ImageProcessorFactory;
-import org.openbooth.imageprocessing.producer.ImageProducerFactory;
+import org.openbooth.imageprocessing.operations.OperationFactory;
+import org.openbooth.imageprocessing.operations.OperationFactoryProvider;
+import org.openbooth.imageprocessing.operations.consumers.ImageConsumer;
+import org.openbooth.imageprocessing.operations.consumers.ImageConsumingOperation;
+import org.openbooth.imageprocessing.operations.processors.ImageProcessingOperation;
+import org.openbooth.imageprocessing.operations.processors.ImageProcessor;
+import org.openbooth.imageprocessing.operations.producers.ImageProducer;
+import org.openbooth.imageprocessing.operations.producers.ImageProducingOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.awt.image.BufferedImage;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
+
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Component
 public class ImageProcessingExecutable implements Executable {
 
-    private ImageProducerFactory producerFactory;
-    private List<ImageProcessorFactory> processorFactories;
-    private ImageConsumerFactory consumerFactory;
+    private OperationFactory<ImageProducer> producerFactory;
+    private List<OperationFactory<ImageProcessor>> processorFactories;
+    private OperationFactory<ImageConsumer> consumerFactory;
 
-    public ImageProcessingExecutable(ImageProducerFactory producerFactory, List<ImageProcessorFactory> processorFactories, ImageConsumerFactory consumerFactory) {
-        this.producerFactory = producerFactory;
-        this.processorFactories = processorFactories;
-        this.consumerFactory = consumerFactory;
+    private OperationFactoryProvider<ImageProducer, ImageProducingOperation> producerFactoryProvider;
+    private OperationFactoryProvider<ImageProcessor, ImageProcessingOperation> processorFactoryProvider;
+    private OperationFactoryProvider<ImageConsumer, ImageConsumingOperation> consumerFactoryProvider;
+
+
+
+    @Autowired
+    private ImageProcessingExecutable(
+            OperationFactoryProvider<ImageConsumer, ImageConsumingOperation> consumerFactoryProvider,
+            OperationFactoryProvider<ImageProcessor, ImageProcessingOperation> processorFactoryProvider,
+            OperationFactoryProvider<ImageProducer, ImageProducingOperation> producerFactoryProvider
+    ){
+        this.producerFactoryProvider = producerFactoryProvider;
+        this.processorFactoryProvider = processorFactoryProvider;
+        this.consumerFactoryProvider = consumerFactoryProvider;
+
     }
 
-    public ImageProcessingExecutable(ImageProducerFactory producerFactory, ImageConsumerFactory consumerFactory){
-        this.producerFactory = producerFactory;
-        this.processorFactories = Collections.emptyList();
-        this.consumerFactory = consumerFactory;
+    public void setOperations(ImageProducingOperation producingOperation, List<ImageProcessingOperation> processingOperations, ImageConsumingOperation consumingOperation) throws OperationCreationException{
+        this.producerFactory = producerFactoryProvider.getOperationFactory(producingOperation);
+
+        this.processorFactories = new ArrayList<>();
+        for (ImageProcessingOperation processingOperation : processingOperations) {
+            processorFactories.add(processorFactoryProvider.getOperationFactory(processingOperation));
+        }
+
+        this.consumerFactory = consumerFactoryProvider.getOperationFactory(consumingOperation);
+
+
     }
 
 
     @Override
     public void execute() throws ProcessingException {
-            BufferedImage image = producerFactory.getProducer().produce();
 
-            for(ImageProcessorFactory imageProcessorFactory : processorFactories){
-                image = imageProcessorFactory.getProcessor().process(image);
-            }
+        BufferedImage image = producerFactory.getOperation().produce();
 
-            consumerFactory.getConsumer().consume(image);
+        for(OperationFactory<ImageProcessor> imageProcessorFactory : processorFactories){
+            image = imageProcessorFactory.getOperation().process(image);
+        }
+
+        consumerFactory.getOperation().consume(image);
     }
 
 }
